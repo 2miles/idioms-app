@@ -18,6 +18,8 @@ app.get('/', async (req, res) => {
   }
 });
 
+console.log("bro");
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
