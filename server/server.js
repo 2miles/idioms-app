@@ -15,32 +15,101 @@ app.use(morgan("dev"));
 app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
   try {
     const result = await pool.query('SELECT * FROM idioms_test'); // pool.query returns a promise
-    res.json(result.rows); // sends a JSON response back to the client containing the rows from db
+    res.status(200).json( { // sends a JSON response back to the client containing the rows from db
+        status: "success",
+        results: result.rows.length,
+        data: {
+          idioms: result.rows
+        }
+      }
+    ); 
   } catch (error) {
     console.error('Error executing query:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+
 // Get single idiom
-app.get('/api/v1/idioms/:id', (req, res) => {
-  console.log(req.params.id)
-})
+app.get('/api/v1/idioms/:id', async (req, res) => { 
+  try {
+    // Parameterized query
+    const result = await pool.query('SELECT * FROM idioms_test WHERE id = $1', [req.params.id]);
+    res.status(200).json( { 
+        status: "success",
+        data: {
+          idioms: result.rows[0]
+        }
+      }
+    ); 
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Create an idiom
-app.post('/api/v1/idioms', (req, res) => {
-  console.log(req.body)
-})
+app.post('/api/v1/idioms/', async (req, res) => { 
+  try {
+    const result = await pool.query(
+      'INSERT INTO idioms_test (title_old, title_new, definition) values ($1, $2, $3) returning *',
+      [req.body.title_old, req.body.title_new, req.body.definition]);
+    res.status(200).json( { 
+        status: "success",
+        data: {
+          idioms: result.rows[0]
+        }
+      }
+    ); 
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
-// Update an idiom
-app.put('/api/v1/idioms/:id', (req, res) => {
-  console.log(req.params.id)
-})
+// update an idiom
+app.put('/api/v1/idioms/:id', async (req, res) => { 
+  try {
+    const result = await pool.query(
+      'UPDATE idioms_test SET title_old = $1, title_new = $2, definition = $3 WHERE id = $4 returning * ',
+      [req.body.title_old, req.body.title_new, req.body.definition, req.params.id]);
+    res.status(200).json( { 
+        status: "success",
+        data: {
+          idioms: result.rows[0]
+        }
+      }
+    ); 
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
-// Delete an idiom
-app.delete('/api/v1/idioms/:id', (req, res) => {
-  console.log(req.params.id)
-})
+
+// // Delete an idiom
+// app.delete('/api/v1/idioms/:id', (req, res) => {
+//   console.log(req.params.id)
+// })
+
+app.delete('/api/v1/idioms/:id', async (req, res) => { 
+  try {
+    const result = await pool.query(
+      'DELETE FROM idioms_test WHERE id = $1',
+      [req.params.id]);
+    res.status(200).json( { 
+        status: "success",
+        data: {
+          idioms: result.rows[0]
+        }
+      }
+    ); 
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
