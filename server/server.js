@@ -12,9 +12,13 @@ app.use(morgan("dev"));
 
 // Get all idioms
 // This line defines a route for handling HTTP GET requests to the /api/v1/idioms endpoint.
+// Returns the data itself and the number of items returned in the response
 app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
   try {
-    const result = await pool.query('SELECT * FROM idioms_test'); // pool.query returns a promise
+    const result = await pool.query(
+      `
+      SELECT * FROM idioms_test
+      `); // pool.query returns a promise
     res.status(200).json( { // sends a JSON response back to the client containing the rows from db
         status: "success",
         results: result.rows.length,
@@ -31,10 +35,17 @@ app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
 
 
 // Get single idiom
+// Route for handling HTTP GET requests to /api/v1/idioms/:id
+// Return the added idiom in the response
 app.get('/api/v1/idioms/:id', async (req, res) => { 
   try {
     // Parameterized query
-    const result = await pool.query('SELECT * FROM idioms_test WHERE id = $1', [req.params.id]);
+    const result = await pool.query(
+      `
+      SELECT * FROM idioms_test 
+      WHERE id = $1
+      `,
+      [req.params.id]);
     res.status(200).json( { 
         status: "success",
         data: {
@@ -49,10 +60,16 @@ app.get('/api/v1/idioms/:id', async (req, res) => {
 });
 
 // Create an idiom
+// Route for handling HTTP POST requests to /api/v1/idioms/
+// Return the added idiom in the response
 app.post('/api/v1/idioms/', async (req, res) => { 
   try {
     const result = await pool.query(
-      'INSERT INTO idioms_test (title_old, title_new, definition) values ($1, $2, $3) returning *',
+      `
+      INSERT INTO idioms_test (title_old, title_new, definition)
+      values ($1, $2, $3)
+      returning *
+      `,
       [req.body.title_old, req.body.title_new, req.body.definition]);
     res.status(200).json( { 
         status: "success",
@@ -67,11 +84,18 @@ app.post('/api/v1/idioms/', async (req, res) => {
   }
 });
 
-// update an idiom
+// Update an idiom
+// Route for handling HTTP PUT requests to /api/v1/idioms/:id endpoint
+// Return the updated idiom in the response
 app.put('/api/v1/idioms/:id', async (req, res) => { 
   try {
     const result = await pool.query(
-      'UPDATE idioms_test SET title_old = $1, title_new = $2, definition = $3 WHERE id = $4 returning * ',
+      `
+      UPDATE idioms_test 
+      SET title_old = $1, title_new = $2, definition = $3 
+      WHERE id = $4 
+      returning *
+      `, 
       [req.body.title_old, req.body.title_new, req.body.definition, req.params.id]);
     res.status(200).json( { 
         status: "success",
@@ -86,11 +110,15 @@ app.put('/api/v1/idioms/:id', async (req, res) => {
   }
 });
 
-
+// Delete an idiom
+// Route for handling HTTP DELETE requests to /api/v1/idioms/:id
+// Return the deleted idiom in the response
 app.delete('/api/v1/idioms/:id', async (req, res) => { 
   try {
     const result = await pool.query(
-      'DELETE FROM idioms_test WHERE id = $1',
+      `
+      DELETE FROM idioms_test 
+      WHERE id = $1`,
       [req.params.id]);
     res.status(200).json( { 
         status: "success",
