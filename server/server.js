@@ -1,22 +1,36 @@
 const express = require('express');
-const pool = require('./db'); // Path to your db.js file
+const pool = require('./db');
 require("dotenv").config();
+const morgan = require("morgan");
 
 const app = express();
 
 const port = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use(morgan("dev"));
 
-app.get('/', async (req, res) => {
+// Get all idioms
+// This line defines a route for handling HTTP GET requests to the /api/v1/idioms endpoint.
+app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
   try {
-    const result = await pool.query('SELECT * FROM idioms'); // Replace with your actual SQL query
-    res.json(result.rows);
+    const result = await pool.query('SELECT * FROM idioms_test'); // pool.query returns a promise
+    res.json(result.rows); // sends a JSON response back to the client containing the rows from db
   } catch (error) {
     console.error('Error executing query:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// Get single idiom
+app.get('/api/v1/idioms/:id', (req, res) => {
+  console.log(req)
+})
+
+// Create an idiom
+app.post('/api/v1/idioms', (req, res) => {
+  console.log(req)
+})
 
 console.log("bro");
 
