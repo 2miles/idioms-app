@@ -5,10 +5,24 @@
 - I think all of the requests type routes have been written.
 - In general the list number is going to be done dynamically on the fly each time. All that is true is that the serial id keeps them in order, but not necessarily the right numbers.
 
+## Environment
+
+Database
+
+- pgadmin
+- psql cli
+
+- idiom_db tables: idioms_test, idioms
+
+Server
+
+- postman
+
 ## Todo
 
 - The update routes need to be tested.
 - Make a copy of idioms_test postgres table just incase
+- Get a copy of the original idioms_nonum.csv file to put in the repo
 
 ## Commands used when creating the database
 
