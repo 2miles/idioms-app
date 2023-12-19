@@ -24,15 +24,23 @@ app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
 
 // Get single idiom
 app.get('/api/v1/idioms/:id', (req, res) => {
-  console.log(req)
+  console.log(req.params.id)
 })
 
 // Create an idiom
 app.post('/api/v1/idioms', (req, res) => {
-  console.log(req)
+  console.log(req.body)
 })
 
-console.log("bro");
+// Update an idiom
+app.put('/api/v1/idioms/:id', (req, res) => {
+  console.log(req.params.id)
+})
+
+// Delete an idiom
+app.delete('/api/v1/idioms/:id', (req, res) => {
+  console.log(req.params.id)
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
