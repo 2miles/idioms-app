@@ -8,14 +8,16 @@ import { IdiomsContextProvider } from './context/idiomsContext';
 const App = () => {
   return (
     <IdiomsContextProvider>
-      <div className="container">
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/idioms/:id" element={<DetailPage />} />
-            <Route path="/idioms/:id/update" element={<UpdatePage />} />
-          </Routes>
-        </BrowserRouter>
+      <div className="bg-dark">
+        <div className="container">
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/idioms/:id" element={<DetailPage />} />
+              <Route path="/idioms/:id/update" element={<UpdatePage />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
       </div>
     </IdiomsContextProvider>
   );
