@@ -8,7 +8,6 @@ const IdiomList = (props) => {
     const fetchData = async () => {
       try {
         const response = await IdiomFinder.get('/');
-        console.log(response);
         setIdioms(response.data.data.idioms);
       } catch (err) {}
     };
@@ -17,9 +16,10 @@ const IdiomList = (props) => {
 
   return (
     <div>
-      <table className="table table-bordered table-hover">
+      <table className="table table-bordered table-hover table-dark">
         <thead>
           <tr className="big-primary">
+            <th> </th>
             <th>Title</th>
             <th>Definition</th>
             <th>Edit</th>
@@ -27,7 +27,22 @@ const IdiomList = (props) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
+          {idioms.map((idiom) => {
+            return (
+              <tr>
+                <td> {idiom.id}</td>
+                <td> {idiom.title_old}</td>
+                <td> {idiom.definition}</td>
+                <td>
+                  <button className="btn btn-secondary">Edit</button>
+                </td>
+                <td>
+                  <button className="btn btn-danger">Delete</button>
+                </td>
+              </tr>
+            );
+          })}
+          {/* <tr>
             <td>Test Name</td>
             <td>
               When one tests ones name. Usually out of the blue but not always.
@@ -51,10 +66,9 @@ const IdiomList = (props) => {
             <td>
               <button classname="btn btn-danger">Delete</button>
             </td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
-      IdiomList
     </div>
   );
 };
