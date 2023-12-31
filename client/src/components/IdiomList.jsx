@@ -1,9 +1,15 @@
 import React, { useEffect, useContext } from 'react';
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
+import { useNavigate } from 'react-router-dom';
 
 const IdiomList = (props) => {
   const { idioms, setIdioms } = useContext(IdiomsContext);
+
+  const navigate = useNavigate();
+
+  // Will execute this code block only once, right after the component is initially rendered.
+  // If the dependency array is empty, it won't run again on subsequent renders.
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -13,6 +19,21 @@ const IdiomList = (props) => {
     };
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await IdiomFinder.delete(`/${id}`);
+      setIdioms(
+        idioms.filter((idiom) => {
+          return idiom.id !== id;
+        }),
+      );
+    } catch (err) {}
+  };
+
+  const handleUpdate = (id) => {
+    navigate(`/idioms/${id}/update`);
+  };
 
   return (
     <div>
@@ -35,10 +56,20 @@ const IdiomList = (props) => {
                   <td> {idiom.title_old}</td>
                   <td> {idiom.definition}</td>
                   <td>
-                    <button className="btn btn-secondary">Edit</button>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => handleUpdate(idiom.id)}
+                    >
+                      Edit
+                    </button>
                   </td>
                   <td>
-                    <button className="btn btn-danger">Delete</button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(idiom.id)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               );

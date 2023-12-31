@@ -53,7 +53,7 @@ app.get('/api/v1/idioms/:id', async (req, res) => {
     res.status(200).json( { 
         status: "success",
         data: {
-          idioms: result.rows[0]
+          idiom: result.rows[0]
         }
       }
     ); 
@@ -78,7 +78,7 @@ app.post('/api/v1/idioms/', async (req, res) => {
     res.status(200).json( { 
         status: "success",
         data: {
-          idioms: result.rows[0]
+          idiom: result.rows[0]
         }
       }
     ); 
@@ -104,7 +104,7 @@ app.put('/api/v1/idioms/:id', async (req, res) => {
     res.status(200).json( { 
         status: "success",
         data: {
-          idioms: result.rows[0]
+          idiom: result.rows[0]
         }
       }
     ); 
@@ -127,7 +127,7 @@ app.delete('/api/v1/idioms/:id', async (req, res) => {
     res.status(200).json( { 
         status: "success",
         data: {
-          idioms: result.rows[0]
+          idiom: result.rows[0]
         }
       }
     ); 

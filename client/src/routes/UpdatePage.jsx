@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import UpdateIdiom from '../components/UpdateIdiom';
 
 const UpdatePage = () => {
-  return <div>UpdatePage</div>;
+  return (
+    <div>
+      <h1 className="text-center">Update Idiom</h1>
+      <UpdateIdiom />
+    </div>
+  );
 };
 
 export default UpdatePage;
