@@ -57,3 +57,12 @@ DROP TABLE your_table_name;
 ALTER TABLE old_table
 RENAME TO new_table;
 ```
+
+## Todo
+
+- [ ] Update database:
+  - [ ] Rename `idioms_test` table to `idioms_test_bad`
+  - [ ] Copy `idioms` to `idioms_test`
+  - [ ] Delete `idioms_test_bad`
+- [ ] Finish the PERN tutorial
+- [ ] Test all the api routes
