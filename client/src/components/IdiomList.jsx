@@ -20,7 +20,8 @@ const IdiomList = (props) => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
     try {
       const response = await IdiomFinder.delete(`/${id}`);
       setIdioms(
@@ -31,8 +32,13 @@ const IdiomList = (props) => {
     } catch (err) {}
   };
 
-  const handleUpdate = (id) => {
+  const handleUpdate = (e, id) => {
+    e.stopPropagation();
     navigate(`/idioms/${id}/update`);
+  };
+
+  const handleIdiomSelect = (id) => {
+    navigate(`/idioms/${id}`);
   };
 
   return (
@@ -51,14 +57,14 @@ const IdiomList = (props) => {
           {idioms &&
             idioms.map((idiom) => {
               return (
-                <tr>
+                <tr onClick={() => handleIdiomSelect(idiom.id)} key={idiom.id}>
                   <td> {idiom.id}</td>
                   <td> {idiom.title_old}</td>
                   <td> {idiom.definition}</td>
                   <td>
                     <button
                       className="btn btn-secondary"
-                      onClick={() => handleUpdate(idiom.id)}
+                      onClick={(e) => handleUpdate(e, idiom.id)}
                     >
                       Edit
                     </button>
@@ -66,7 +72,7 @@ const IdiomList = (props) => {
                   <td>
                     <button
                       className="btn btn-danger"
-                      onClick={() => handleDelete(idiom.id)}
+                      onClick={(e) => handleDelete(e, idiom.id)}
                     >
                       Delete
                     </button>
