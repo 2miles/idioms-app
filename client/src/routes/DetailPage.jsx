@@ -19,11 +19,19 @@ const DetailPage = () => {
     };
     fetchData();
   }, []);
+
   return (
     <div>
-      <h1>{selectedIdiom && selectedIdiom.title_old}</h1>
-      <h2>{selectedIdiom && selectedIdiom.title_new}</h2>
-      <p>{selectedIdiom && selectedIdiom.definition}</p>
+      {selectedIdiom ? (
+        <>
+          <h1>{selectedIdiom.title_old}</h1>
+          <h2>{selectedIdiom.title_new}</h2>
+          <p>{selectedIdiom.definition}</p>
+        </>
+      ) : (
+        // or handle the case when selectedIdiom is not available
+        <p>Loading...</p>
+      )}
     </div>
   );
 };
