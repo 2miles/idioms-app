@@ -21,12 +21,15 @@ const DetailPage = () => {
   }, []);
 
   return (
-    <div>
+    <div className="text-white">
       {selectedIdiom ? (
         <>
           <h1>{selectedIdiom.title_old}</h1>
           <h2>{selectedIdiom.title_new}</h2>
           <p>{selectedIdiom.definition}</p>
+          <p>{selectedIdiom.day}</p>
+          <p>{selectedIdiom.owner}</p>
+          <p>{selectedIdiom.id}</p>
         </>
       ) : (
         // or handle the case when selectedIdiom is not available
