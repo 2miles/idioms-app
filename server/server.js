@@ -3,13 +3,16 @@ const pool = require('./db');
 require("dotenv").config();
 const morgan = require("morgan");
 
-const cors = require('cors')
+// Allows different domain 
+const cors = require('cors') 
 
 const app = express();
 
 const port = process.env.PORT || 3001;
 
 // Middleware
+// Functions to be invoked in between the request and the response
+
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -21,7 +24,7 @@ app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
   try {
     const result = await pool.query(
       `
-      SELECT * FROM idioms_wide
+      SELECT * FROM idioms_test
       ORDER BY day
       `); // pool.query returns a promise
     res.status(200).json( { // sends a JSON response back to the client containing the rows from db
@@ -47,7 +50,7 @@ app.get('/api/v1/idioms/:id', async (req, res) => {
     // Parameterized query
     const result = await pool.query(
       `
-      SELECT * FROM idioms_wide
+      SELECT * FROM idioms_test
       WHERE id = $1
       `,
       [req.params.id]);
