@@ -3,13 +3,16 @@ const pool = require('./db');
 require("dotenv").config();
 const morgan = require("morgan");
 
-const cors = require('cors')
+// Allows different domain 
+const cors = require('cors') 
 
 const app = express();
 
 const port = process.env.PORT || 3001;
 
 // Middleware
+// Functions to be invoked in between the request and the response
+
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -22,6 +25,7 @@ app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
     const result = await pool.query(
       `
       SELECT * FROM idioms_test
+      ORDER BY day
       `); // pool.query returns a promise
     res.status(200).json( { // sends a JSON response back to the client containing the rows from db
         status: "success",
@@ -46,7 +50,7 @@ app.get('/api/v1/idioms/:id', async (req, res) => {
     // Parameterized query
     const result = await pool.query(
       `
-      SELECT * FROM idioms_test 
+      SELECT * FROM idioms_test
       WHERE id = $1
       `,
       [req.params.id]);
@@ -70,11 +74,11 @@ app.post('/api/v1/idioms/', async (req, res) => {
   try {
     const result = await pool.query(
       `
-      INSERT INTO idioms_test (title_old, title_new, definition)
-      values ($1, $2, $3)
+      INSERT INTO idioms_test (title_old, title_new, definition, day, owner)
+      values ($1, $2, $3, $4, $5)
       returning *
       `,
-      [req.body.title_old, req.body.title_new, req.body.definition]);
+      [req.body.title_old, req.body.title_new, req.body.definition, req.body.day, req.body.owner]);
     res.status(200).json( { 
         status: "success",
         data: {
@@ -96,11 +100,11 @@ app.put('/api/v1/idioms/:id', async (req, res) => {
     const result = await pool.query(
       `
       UPDATE idioms_test 
-      SET title_old = $1, title_new = $2, definition = $3 
-      WHERE id = $4 
+      SET title_old = $1, title_new = $2, definition = $3, day = $4, owner = $5
+      WHERE id = $6 
       returning *
       `, 
-      [req.body.title_old, req.body.title_new, req.body.definition, req.params.id]);
+      [req.body.title_old, req.body.title_new, req.body.definition, req.body.day, req.body.owner, req.params.id]);
     res.status(200).json( { 
         status: "success",
         data: {
