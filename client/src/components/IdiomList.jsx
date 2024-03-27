@@ -6,15 +6,15 @@ import { useNavigate } from 'react-router-dom';
 const IdiomList = (props) => {
   const { idioms, setIdioms } = useContext(IdiomsContext);
   const [sortOrder, setSortOrder] = useState('asc');
-  const [sortField, setSortField] = useState('day');
+  const [sortKey, setSortKey] = useState('day');
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   const handleSort = (field) => {
-    if (field === sortField) {
+    if (field === sortKey) {
       setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
     } else {
-      setSortField(field);
+      setSortKey(field);
       setSortOrder('asc');
     }
   };
@@ -49,24 +49,14 @@ const IdiomList = (props) => {
   );
 
   const sortedIdioms = [...filteredIdioms].sort((a, b) => {
-    // Determine whether to treat the values of a and b as numbers or strings based on sortField
-    const aValue =
-      sortField === 'id' ? Number(a[sortField]) : String(a[sortField]);
-    const bValue =
-      sortField === 'id' ? Number(b[sortField]) : String(b[sortField]);
+    // Determine whether to treat the values of a and b as numbers or strings based on sortKey
+    const aValue = sortKey === 'id' ? Number(a[sortKey]) : String(a[sortKey]);
+    const bValue = sortKey === 'id' ? Number(b[sortKey]) : String(b[sortKey]);
 
     if (sortOrder === 'asc') {
-      if (aValue === bValue) return 0;
-      if (aValue === '' || (sortField === 'id' && isNaN(aValue))) return 1; // Null, empty, or non-numeric strings go to the end
-      if (bValue === '' || (sortField === 'id' && isNaN(bValue))) return -1; // Null, empty, or non-numeric strings go to the end
-
-      return aValue < bValue ? -1 : 1; // Numerical or string comparison
+      return aValue === bValue ? 0 : aValue > bValue ? 1 : -1;
     } else {
-      if (aValue === bValue) return 0; // Values are equal
-      if (aValue === '' || (sortField === 'id' && isNaN(aValue))) return -1; // Null, empty, or non-numeric strings go to the end
-      if (bValue === '' || (sortField === 'id' && isNaN(bValue))) return 1; // Null, empty, or non-numeric strings go to the end
-
-      return bValue < aValue ? -1 : 1; // Numerical or string comparison
+      return aValue === bValue ? 0 : aValue < bValue ? 1 : -1;
     }
   });
 
