@@ -10,6 +10,7 @@ const IdiomList = (props) => {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
+  // Handle button presses //////////////////////
   const handleSort = (field) => {
     if (field === sortKey) {
       setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
@@ -17,23 +18,6 @@ const IdiomList = (props) => {
       setSortKey(field);
       setSortOrder('asc');
     }
-  };
-
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
-    try {
-      const response = await IdiomFinder.delete(`/${id}`);
-      setIdioms(
-        idioms.filter((idiom) => {
-          return idiom.id !== id;
-        }),
-      );
-    } catch (err) {}
-  };
-
-  const handleUpdate = (e, id) => {
-    e.stopPropagation();
-    navigate(`/idioms/${id}/update`);
   };
 
   const handleIdiomSelect = (id) => {
@@ -49,7 +33,6 @@ const IdiomList = (props) => {
   );
 
   const sortedIdioms = [...filteredIdioms].sort((a, b) => {
-    // Determine whether to treat the values of a and b as numbers or strings based on sortKey
     const aValue = sortKey === 'id' ? Number(a[sortKey]) : String(a[sortKey]);
     const bValue = sortKey === 'id' ? Number(b[sortKey]) : String(b[sortKey]);
 
@@ -88,8 +71,6 @@ const IdiomList = (props) => {
             <th onClick={() => handleSort('definition')}>Definition</th>
             <th onClick={() => handleSort('day')}>Day</th>
             <th onClick={() => handleSort('owner')}>Owner</th>
-            <th>Edit</th>
-            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -105,22 +86,6 @@ const IdiomList = (props) => {
                   <td> {idiom.definition}</td>
                   <td> {truncatedDay}</td>
                   <td> {idiom.owner}</td>
-                  <td>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={(e) => handleUpdate(e, idiom.id)}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={(e) => handleDelete(e, idiom.id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
                 </tr>
               );
             })}
