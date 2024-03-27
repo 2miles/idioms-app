@@ -10,6 +10,8 @@ const UpdateIdiom = () => {
   const [title, setTitle] = useState('');
   const [titleNew, setTitleNew] = useState('');
   const [definition, setDefinition] = useState('');
+  const [day, setDay] = useState('');
+  const [owner, setOwner] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,6 +20,8 @@ const UpdateIdiom = () => {
       setTitle(response.data.data.idiom.title_old);
       setTitleNew(response.data.data.idiom.title_new);
       setDefinition(response.data.data.idiom.definition);
+      setDay(response.data.data.idiom.day);
+      setOwner(response.data.data.idiom.owner);
     };
     fetchData();
   }, []);
@@ -25,7 +29,7 @@ const UpdateIdiom = () => {
   useEffect(() => {
     // Executed every time 'title', 'titleNew', or 'definition' changes
     console.log('After setting state:', title, titleNew, definition);
-  }, [title, titleNew, definition]);
+  }, [title, titleNew, definition, day, owner]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,12 +37,14 @@ const UpdateIdiom = () => {
       title_old: title,
       title_new: titleNew,
       definition,
+      day,
+      owner,
     });
     navigate(`/`);
   };
 
   return (
-    <div>
+    <div className="text-white">
       <form action="">
         <div className="form-group">
           <label htmlFor="title">Title</label>
@@ -60,13 +66,34 @@ const UpdateIdiom = () => {
             type="text"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="definition">Definition</label>
-          <input
+          <textarea
             defaultValue={definition}
             onChange={(e) => setDefinition(e.target.value)}
             className="form-control"
             id="definition"
+            rows="4"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="day">Day: YYYY-MM-DD</label>
+          <input
+            defaultValue={day}
+            onChange={(e) => setDefinition(e.target.value)}
+            className="form-control"
+            id="day"
+            type="text"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="owner">Owner</label>
+          <input
+            defaultValue={owner}
+            onChange={(e) => setDefinition(e.target.value)}
+            className="form-control"
+            id="owner"
             type="text"
           />
         </div>
