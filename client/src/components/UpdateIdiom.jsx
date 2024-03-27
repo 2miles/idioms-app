@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { IdiomsContext } from '../context/idiomsContext';
 import IdiomFinder from '../apis/idiomFinder';
 import { useNavigate } from 'react-router-dom';
 
 const UpdateIdiom = () => {
   const { id } = useParams();
-  const { idioms } = useContext(IdiomsContext);
   const [title, setTitle] = useState('');
   const [titleNew, setTitleNew] = useState('');
   const [definition, setDefinition] = useState('');
@@ -42,6 +40,8 @@ const UpdateIdiom = () => {
     });
     navigate(`/`);
   };
+
+  const truncatedDay = day ? day.substring(0, 10) : ''; // Get the first 10 characters
 
   return (
     <div className="text-white">
@@ -80,7 +80,7 @@ const UpdateIdiom = () => {
         <div className="form-group">
           <label htmlFor="day">Day: YYYY-MM-DD</label>
           <input
-            defaultValue={day}
+            defaultValue={truncatedDay}
             onChange={(e) => setDefinition(e.target.value)}
             className="form-control"
             id="day"

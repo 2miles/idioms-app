@@ -47,7 +47,7 @@ const DetailPage = () => {
           <h1>{selectedIdiom.title_old}</h1>
           <h2>{selectedIdiom.title_new}</h2>
           <p>{selectedIdiom.definition}</p>
-          <p>{selectedIdiom.day}</p>
+          <p>{selectedIdiom.day?.substring(0, 10)}</p>
           <p>{selectedIdiom.owner}</p>
           <p>{selectedIdiom.id}</p>
           <button
