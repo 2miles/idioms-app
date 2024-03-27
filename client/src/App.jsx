@@ -8,7 +8,7 @@ import { IdiomsContextProvider } from './context/idiomsContext';
 const App = () => {
   return (
     <IdiomsContextProvider>
-      <div className="bg-dark">
+      <div className="bg-dark" style={{ minHeight: '100vh' }}>
         <div className="container">
           <BrowserRouter>
             <Routes>
