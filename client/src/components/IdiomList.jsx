@@ -5,49 +5,58 @@ import { useNavigate } from 'react-router-dom';
 
 const IdiomList = (props) => {
   const { idioms, setIdioms } = useContext(IdiomsContext);
-  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
-  const [sortField, setSortField] = useState('day'); // 'asc' or 'desc'
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortField, setSortField] = useState('day');
+  const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   const handleSort = (field) => {
-    console.log('handle sort was called');
     if (field === sortField) {
-      // Clicking the same field toggles the sorting order
       setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
     } else {
-      // Clicking a different field sets the new field (ascending)
       setSortField(field);
       setSortOrder('asc');
     }
   };
 
-  // const sortedIdioms = [...idioms].sort((a, b) => {
-  //   if (sortOrder === 'asc') {
-  //     return a[sortField].localeCompare(b[sortField]);
-  //   } else {
-  //     return b[sortField].localeCompare(a[sortField]);
-  //   }
-  // });
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
+    try {
+      const response = await IdiomFinder.delete(`/${id}`);
+      setIdioms(
+        idioms.filter((idiom) => {
+          return idiom.id !== id;
+        }),
+      );
+    } catch (err) {}
+  };
 
-  // const sortedIdioms = [...idioms].sort((a, b) => {
-  //   const aValue = String(a[sortField]);
-  //   const bValue = String(b[sortField]);
+  const handleUpdate = (e, id) => {
+    e.stopPropagation();
+    navigate(`/idioms/${id}/update`);
+  };
 
-  //   if (sortOrder === 'asc') {
-  //     return aValue.localeCompare(bValue);
-  //   } else {
-  //     return bValue.localeCompare(aValue);
-  //   }
-  // });
+  const handleIdiomSelect = (id) => {
+    navigate(`/idioms/${id}`);
+  };
 
-  const sortedIdioms = [...idioms].sort((a, b) => {
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const filteredIdioms = idioms.filter((idiom) =>
+    idiom.title_old?.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const sortedIdioms = [...filteredIdioms].sort((a, b) => {
+    // Determine whether to treat the values of a and b as numbers or strings based on sortField
     const aValue =
       sortField === 'id' ? Number(a[sortField]) : String(a[sortField]);
     const bValue =
       sortField === 'id' ? Number(b[sortField]) : String(b[sortField]);
 
     if (sortOrder === 'asc') {
-      if (aValue === bValue) return 0; // Values are equal
+      if (aValue === bValue) return 0;
       if (aValue === '' || (sortField === 'id' && isNaN(aValue))) return 1; // Null, empty, or non-numeric strings go to the end
       if (bValue === '' || (sortField === 'id' && isNaN(bValue))) return -1; // Null, empty, or non-numeric strings go to the end
 
@@ -73,29 +82,14 @@ const IdiomList = (props) => {
     fetchData();
   }, []);
 
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
-    try {
-      const response = await IdiomFinder.delete(`/${id}`);
-      setIdioms(
-        idioms.filter((idiom) => {
-          return idiom.id !== id;
-        }),
-      );
-    } catch (err) {}
-  };
-
-  const handleUpdate = (e, id) => {
-    e.stopPropagation();
-    navigate(`/idioms/${id}/update`);
-  };
-
-  const handleIdiomSelect = (id) => {
-    navigate(`/idioms/${id}`);
-  };
-
   return (
     <div>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={search}
+        onChange={handleSearchChange}
+      />
       <table className="table table-bordered table-hover table-dark">
         <thead>
           <tr key={idioms.id} className="big-primary">
