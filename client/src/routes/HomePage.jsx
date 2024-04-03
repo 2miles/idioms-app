@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/Header';
 import AddIdiom from '../components/AddIdiom';
 import IdiomList from '../components/IdiomList';
-import Table from '../components/table';
+import Table from '../components/Table';
 
 const HomePage = () => {
   return (
