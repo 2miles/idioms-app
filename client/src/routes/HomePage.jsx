@@ -2,13 +2,15 @@ import React from 'react';
 import Header from '../components/Header';
 import AddIdiom from '../components/AddIdiom';
 import IdiomList from '../components/IdiomList';
-import Table from '../components/Table';
+import Table from '../components/table';
 
 const HomePage = () => {
   return (
     <div className="table_container">
-      {/* <Header />
+      <Header />
       <AddIdiom />
+
+      {/* 
       <IdiomList /> */}
       <Table />
     </div>

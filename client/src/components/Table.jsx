@@ -20,21 +20,35 @@ const Table = () => {
   }, []);
 
   const columns = [
-    { label: 'ID', accessor: 'id' },
-    { label: 'Title', accessor: 'title_old' },
-    { label: 'Definition', accessor: 'definition' },
-    { label: 'Day', accessor: 'day' },
-    { label: 'Owner', accessor: 'owner' },
+    { label: 'ID', accessor: 'id', sortable: true },
+    { label: 'Title', accessor: 'title_old', sortable: true },
+    { label: 'Definition', accessor: 'definition', sortable: true },
+    { label: 'Day', accessor: 'day', sortable: true },
+    { label: 'Owner', accessor: 'owner', sortable: true },
   ];
+
+  const handleSorting = (sortField, sortOrder) => {
+    if (sortField) {
+      const sorted = [...tableData].sort((a, b) => {
+        if (a[sortField] === null) return 1;
+        if (b[sortField] === null) return -1;
+        if (a[sortField] === null && b[sortField] === null) return 0;
+        return (
+          a[sortField].toString().localeCompare(b[sortField].toString(), 'en', {
+            numeric: true,
+          }) * (sortOrder === 'asc' ? 1 : -1)
+        );
+      });
+      setTableData(sorted);
+    }
+  };
 
   return (
     <>
       <table className="table">
-        <caption>All my homies love idoims</caption>
-        <tbody>
-          <TableHead columns={columns} />
-          {tableData && <TableBody columns={columns} tableData={tableData} />}
-        </tbody>
+        <caption>All my friends love idioms</caption>
+        <TableHead columns={columns} handleSorting={handleSorting} />
+        {tableData && <TableBody columns={columns} tableData={tableData} />}
       </table>
     </>
   );
