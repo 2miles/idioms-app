@@ -41,7 +41,7 @@ const DetailPage = () => {
   }, []);
 
   return (
-    <div className="text-white">
+    <div>
       {selectedIdiom ? (
         <>
           <h1>{selectedIdiom.title_old}</h1>

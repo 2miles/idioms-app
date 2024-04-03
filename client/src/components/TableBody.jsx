@@ -1,11 +1,24 @@
+import { useNavigate } from 'react-router-dom';
+
 const TableBody = ({ tableData, columns }) => {
+  const navigate = useNavigate();
+
+  const handleIdiomSelect = (id) => {
+    navigate(`/idioms/${id}`);
+  };
+
   return (
     <tbody>
       {tableData.map((data) => {
         return (
-          <tr key={data.id}>
+          <tr key={data.id} onClick={() => handleIdiomSelect(data.id)}>
             {columns.map(({ accessor }) => {
-              const tData = data[accessor] ? data[accessor] : '——';
+              let tData;
+              if (accessor === 'day') {
+                tData = data[accessor] ? data[accessor].substring(0, 10) : '——';
+              } else {
+                tData = data[accessor] ? data[accessor] : '——';
+              }
               return <td key={accessor}>{tData}</td>;
             })}
           </tr>
