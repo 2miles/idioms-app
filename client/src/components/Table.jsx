@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-// import tableData1 from "../tableData1.json";
 import TableBody from './TableBody';
 import TableHead from './TableHead';
 import IdiomFinder from '../apis/idiomFinder';
+import SearchBar from './SearchBar';
 
 const Table = () => {
-  const [tableData, setTableData] = useState();
+  const [tableData, setTableData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   // Will execute this code block only once, right after the component is initially rendered.
   // If the dependency array is empty, it won't run again on subsequent renders.
@@ -14,10 +15,18 @@ const Table = () => {
       try {
         const response = await IdiomFinder.get('/');
         setTableData(response.data.data.idioms);
+        setFilteredData(response.data.data.idioms);
       } catch (err) {}
     };
     fetchData();
   }, []);
+
+  const handleSearch = (searchTerm) => {
+    const filtered = tableData.filter((item) =>
+      item.title_old.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredData(filtered);
+  };
 
   const columns = [
     { label: 'ID', accessor: 'id', sortable: true },
@@ -29,7 +38,7 @@ const Table = () => {
 
   const handleSorting = (sortField, sortOrder) => {
     if (sortField) {
-      const sorted = [...tableData].sort((a, b) => {
+      const sorted = [...filteredData].sort((a, b) => {
         if (a[sortField] === null) return 1;
         if (b[sortField] === null) return -1;
         if (a[sortField] === null && b[sortField] === null) return 0;
@@ -39,16 +48,16 @@ const Table = () => {
           }) * (sortOrder === 'asc' ? 1 : -1)
         );
       });
-      setTableData(sorted);
+      setFilteredData(sorted);
     }
   };
 
   return (
     <>
+      <SearchBar handleSearch={handleSearch} />
       <table className="table">
-        <caption>All my friends love idioms</caption>
         <TableHead columns={columns} handleSorting={handleSorting} />
-        {tableData && <TableBody columns={columns} tableData={tableData} />}
+        {tableData && <TableBody columns={columns} tableData={filteredData} />}
       </table>
     </>
   );
