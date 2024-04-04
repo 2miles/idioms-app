@@ -7,6 +7,7 @@ import SearchBar from './SearchBar';
 const Table = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [idiomCount, setIdiomCount] = useState(0); // State to store the count of filtered idioms
 
   // Will execute this code block only once, right after the component is initially rendered.
   // If the dependency array is empty, it won't run again on subsequent renders.
@@ -16,6 +17,7 @@ const Table = () => {
         const response = await IdiomFinder.get('/');
         setTableData(response.data.data.idioms);
         setFilteredData(response.data.data.idioms);
+        setIdiomCount(response.data.data.idioms.length);
       } catch (err) {}
     };
     fetchData();
@@ -26,6 +28,7 @@ const Table = () => {
       item.title_old.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredData(filtered);
+    setIdiomCount(filtered.length);
   };
 
   const columns = [
@@ -55,6 +58,9 @@ const Table = () => {
   return (
     <>
       <SearchBar handleSearch={handleSearch} />
+      <div>
+        <p>{idiomCount} Idioms found</p>
+      </div>
       <table className="table">
         <TableHead columns={columns} handleSorting={handleSorting} />
         {tableData && <TableBody columns={columns} tableData={filteredData} />}
