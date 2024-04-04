@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../components/Header';
 import AddIdiom from '../components/AddIdiom';
-import Table from '../components/Table';
+import Table from '../components/Table_';
 
 const HomePage = () => {
   return (
