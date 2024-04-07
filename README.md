@@ -1,174 +1,96 @@
-# Notes to myself
+## Idiom App Documentation
 
-- Im going to use the serial primary key to hold the sequential nature of the list.
-- There will also be a date field for each idiom. So all idioms with the same date will be distinguished temporally by the primary key id.
-- All the dates were manually added by going through my text messages with each contributing person and noting the date the idiom was suggested and the contributer, since many of the idioms were sent through text message.
+### Introduction
 
-- The idioms csv being used is ~/Dev/python/idioms/idioms_nonum.csv
+This documentation provides a guide for setting up and running a React application with a server-side component. The application consists of two main parts: the server directory and the client directory.
 
-## Environment
+### Prerequisites
 
-PERN Stack
+Node.js and npm installed on your machine.
 
-Database
+PostgreSQL installed on your machine.
 
-- pgadmin
-- psql cli
+### Dependencies
 
-### idiom_db tables:
+#### Node Server Packages:
 
-#### idioms
+- `react`: A JavaScript library for building user interfaces.
+- `cors`: Middleware for handling Cross-Origin Resource Sharing (CORS) in Node.js.
+- `dotenv`: Loads environment variables from a .env file into process.env.
+- `express`: Fast, unopinionated, minimalist web framework for Node.js.
+- `morgan`: HTTP request logger middleware for Node.js.
+- `nodemon`: Utility that monitors for changes in your source code and automatically restarts the server.
+- `pg`: Non-blocking PostgreSQL client for Node.js.
 
-This is the main idioms table.
+#### Node Client Packages:
 
-#### idioms_backup
+- `axios`: Promise-based HTTP client for the browser and Node.js.
+- `react`: A JavaScript library for building user interfaces.
+- `react-dom`: DOM-specific methods for React.
+- `react-router-dom`: DOM bindings for React Router.
+- `react-scripts`: Configuration and scripts for Create React App.
+- `web-vitals`: Library for measuring web vitals and other performance metrics.
 
-This is a backup of the main idioms table.
+### Installation
 
-#### idioms_test
+Clone the repository from GitHub:
 
-This is the table to practice and test all the crud operations and api endpoints.
-
-### Node Server Packages
-
-- cors
-- dotenv
-- express
-- morgan
-- nodemon
-- pg
-
-Server
-
-- postman
-
-Frontend
-
-- React
-- Context API
-
-## Routes
-
-List page, add new idiom, filter idioms,
-
-```
-localhost:3000/
+```bash
+git clone <repository_url>
 ```
 
-Detail page
+Navigate into the project directory:
 
-```
-localhost:3000/idioms/{id}
-```
-
-Update page
-
-```
-localhost:3000/idioms/{id}/update
+```bash
+cd <project_directory>
 ```
 
-## Commands used when creating the database
+### Setting Up the Database
 
-```sql
-CREATE TABLE idioms_test
-(
-    id SERIAL PRIMARY KEY,
-    title_old VARCHAR(255),
-    title_new VARCHAR(255),
-    definition TEXT,
-    date DATE,
-    name VARCHAR(50)
-);
+Install PostgreSQL on your machine if you haven't already.
+
+Create a new PostgreSQL database. You can do this using a tool like pgAdmin or the following command in your terminal:
+
+```bash
+createdb my_database_name
 ```
 
-Create table from CSV, ignoring the first line of data
+Create a `.env` file in the server directory and add your database connection information:
 
-```sql
-COPY your_table_name(title_old, title_new, definition)
-FROM '~/Dev/python/idioms/idioms_nonum.csv'
-DELIMITER ','
-CSV HEADER;
+```bash
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_USER=my_username
+    DB_PASSWORD=my_password
+    DB_DATABASE=my_database_name
 ```
 
-Create table from CSV, ignoring the first line of data
+Replace `my_username`, `my_password`, and `my_database_name` with your PostgreSQL credentials.
 
-```sql
-COPY idioms_wide(title_old, title_new, definition, day, owner)
-FROM '~/Dev/python/idioms/idioms_nonum_new_data.csv'
-DELIMITER ','
-CSV HEADER;
+### Setting Up the Server
+
+Navigate into the server directory, install the server dependencies, and start the server:
+
+```bash
+cd server;
+npm install;
+npm start;
 ```
 
-Make a copy of a table
+The server will run on the specified port (usually 3000).
 
-```sql
-CREATE TABLE new_table AS
-SELECT * FROM original_table;
+### Setting Up the Client
+
+Navigate into the client directory, install the server dependencies, and start the server:
+
+```bash
+cd client;
+npm install;
+npm start;
 ```
 
-Delete a table
+This will launch the React development server and open the application in your default web browser.
 
-```sql
-DROP TABLE your_table_name;
-```
+### Usage
 
-Rename a table
-
-```sql
-ALTER TABLE old_table
-RENAME TO new_table;
-```
-
-To create a new table and link it up to the code here: https://www.youtube.com/watch?v=J01rYl9T3BU&t=14130s
-The time is 4:40
-
-Eve
-
-2023-07-14,
-
-- That cuts the mustard
-- No such thing as free lunch
-
-2023-07-14
-
-- Takes the cake
-- Mountain out of a molehill
-- The cheese stands alone
-- 3s a crowd
-- Watch a pot it never boils
-- speak of the devil and he shall appear
-
-2023-07-16
-
-- comparison is the theif of joy
-
-## TODO:
-
-- [ ] Add iPhone notes idioms to this readme right above this todo.
-- [ ] Finish making the sorting buttons for the idiom list frontend.
-- [ ] Clean up the database tables.
-- [ ] Figure out exactly what the idiom scraper does and how to use it. maybe use it again to finish the definitions?
-- [ ] Reorganise the layout of the page.
-  - [ ] in list view make the rows clickable and remove the edit and delete buttons from list view.
-  - [ ] make the idiom list click to the detail view.
-  - [ ] make the detail view contain the edit and delete buttons.
-- [ ] make a backup of the idioms_wide database and rename it.
-- [ ] go through and clean up the READMEs.
-
-- [ ] Update the update function to use new wide data.
-- [ ] Update the add function to use new wide data.
-- [ ] Test all the api routes with new wide data.
-- [ ] Finish the pern tutorial.
-- [x] Update database tables.
-- [ ] The update routes need to be tested.
-- [ ] Get a copy of the original idioms_nonum.csv file to put in the repo
-
-## Log
-
-3-21-24:
-
-- [x] Deleted `idioms_old`. This table was where the id started at 363 instead of 0.
-- [x] Deleted `idioms_test`. This table was were I initially tested the crud operations.
-- [x] Deleted `idioms`. This table was the original complete table. Only id, title_old, and title_new
-- [x] Deleted `idioms_wide`. This table was the original complete table with dates and names.
-- [x] Created `idioms`, `idioms_test`, `idioms_backup`. These tables are all copies of `idioms_wide`.
+Once both the server and client are running, you can interact with the React application in your web browser. Any changes made to the client-side code will automatically trigger a hot reload, allowing you to see the changes in real-time.
