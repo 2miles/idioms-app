@@ -5,7 +5,7 @@
 - [ ] Refresh on why and where I'm using the Context API and how it works. Is it needed in this case.
 - [ ] Add iPhone notes idioms to this readme right above this todo.
 - [ ] Comment out the idiom scraper and document it. Like what it does and how to use it. Add it to the repo.
-- [ ] go through and clean up the READMEs.
+- [x] go through and clean up the READMEs.
 - [ ] Finish the pern tutorial.
 
 ### Testing
@@ -15,6 +15,7 @@
 
 ### Server
 
+- [ ] ID colunm is not populating in the database when addIdiom is executed.
 - [ ] Update the update function to use new wide data.
 - [ ] Update the add function to use new wide data.
 
