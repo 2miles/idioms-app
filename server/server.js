@@ -25,7 +25,7 @@ app.get('/api/v1/idioms', async (req, res) => { // This is the route handler
     const result = await pool.query(
       `
       SELECT * FROM idioms_test
-      ORDER BY day
+      ORDER BY timestamps
       `); // pool.query returns a promise
     res.status(200).json( { // sends a JSON response back to the client containing the rows from db
         status: "success",
@@ -74,11 +74,11 @@ app.post('/api/v1/idioms/', async (req, res) => {
   try {
     const result = await pool.query(
       `
-      INSERT INTO idioms_test (title_old, title_new, definition, day, owner)
+      INSERT INTO idioms_test (title, title_general, definition, timestamps, contributor)
       values ($1, $2, $3, $4, $5)
       returning *
       `,
-      [req.body.title_old, req.body.title_new, req.body.definition, req.body.day, req.body.owner]);
+      [req.body.title, req.body.title_general, req.body.definition, req.body.timestamps, req.body.contributor]);
     res.status(200).json( { 
         status: "success",
         data: {
@@ -100,11 +100,11 @@ app.put('/api/v1/idioms/:id', async (req, res) => {
     const result = await pool.query(
       `
       UPDATE idioms_test 
-      SET title_old = $1, title_new = $2, definition = $3, day = $4, owner = $5
+      SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5
       WHERE id = $6 
       returning *
       `, 
-      [req.body.title_old, req.body.title_new, req.body.definition, req.body.day, req.body.owner, req.params.id]);
+      [req.body.title, req.body.title_general, req.body.definition, req.body.timestamps, req.body.contributor, req.params.id]);
     res.status(200).json( { 
         status: "success",
         data: {

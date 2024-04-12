@@ -14,7 +14,7 @@ const TableBody = ({ tableData, columns }) => {
           <tr key={data.id} onClick={() => handleIdiomSelect(data.id)}>
             {columns.map(({ accessor }) => {
               let tData;
-              if (accessor === 'day') {
+              if (accessor === 'timestamps') {
                 tData = data[accessor] ? data[accessor].substring(0, 10) : '——';
               } else {
                 tData = data[accessor] ? data[accessor] : '——';

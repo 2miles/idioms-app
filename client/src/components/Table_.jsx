@@ -6,10 +6,10 @@ import SearchBar from './SearchBar';
 const Table = ({ tableData, idiomCount, handleSearch, handleSorting }) => {
   const columns = [
     { label: 'ID', accessor: 'id', sortable: true },
-    { label: 'Title', accessor: 'title_old', sortable: true },
+    { label: 'Title', accessor: 'title', sortable: true },
     { label: 'Definition', accessor: 'definition', sortable: true },
-    { label: 'Day', accessor: 'day', sortable: true },
-    { label: 'Owner', accessor: 'owner', sortable: true },
+    { label: 'Day', accessor: 'timestamps', sortable: true },
+    { label: 'Owner', accessor: 'contributor', sortable: true },
   ];
 
   return (

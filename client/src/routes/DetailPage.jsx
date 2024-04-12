@@ -44,11 +44,11 @@ const DetailPage = () => {
     <div>
       {selectedIdiom ? (
         <>
-          <h1>{selectedIdiom.title_old}</h1>
-          <h2>{selectedIdiom.title_new}</h2>
+          <h1>{selectedIdiom.title}</h1>
+          <h2>{selectedIdiom.title_general}</h2>
           <p>{selectedIdiom.definition}</p>
-          <p>{selectedIdiom.day?.substring(0, 10)}</p>
-          <p>{selectedIdiom.owner}</p>
+          <p>{selectedIdiom.timestamps?.substring(0, 10)}</p>
+          <p>{selectedIdiom.contributor}</p>
           <p>{selectedIdiom.id}</p>
           <button
             className="btn btn-secondary"

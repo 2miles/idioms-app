@@ -28,7 +28,7 @@ const HomePage = () => {
 
   const handleSearch = (searchTerm) => {
     const filtered = tableData.filter((item) =>
-      item.title_old.toLowerCase().includes(searchTerm.toLowerCase()),
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredData(filtered);
     setIdiomCount(filtered.length);

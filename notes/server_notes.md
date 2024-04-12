@@ -28,35 +28,26 @@ localhost:3000/idioms/{id}/update
 
 #### `idioms`
 
-This will be the name of the main idioms table. Right now it is a copy of idioms_timestamps. It contains all the timestamps. It still uses the old names and has the date column.
+This will be the name of the main idioms table.
 
 #### `idioms_backup`
 
-This is a backup of the old idioms table, without the timestamps.
-
-#### `idioms_new`
-
-Temporary table name. This is the most updated and correct version of the tabe that will be in use in the future. It is a copy of idioms_timestamps. But this one has updated column names and the date column removed.
-
-#### `idioms_timestamps`
-
-This is the table I used to add the timestamps. It is just like the old tables but contains all the timestamps.
+This is a backup of the idioms.
 
 #### `idioms_test`
 
-This is the table to practice and test all the crud operations and api endpoints. This is the old table. This needs to be updated to the new version with the timestamps and the updated names.
+This is the table to practice and test all the crud operations and api endpoints.
 
 ### Commands used when creating the database
 
 ```sql
 CREATE TABLE idioms(
     id SERIAL PRIMARY KEY,
-    title_old VARCHAR(255),
-    title_new VARCHAR(255),
+    title VARCHAR(255),
+    title_general VARCHAR(255),
     definition TEXT,
-    day DATE,
-    owner VARCHAR(50)
-    insertion_timestamps TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    contributor VARCHAR(50)
+    timestamps TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
@@ -122,11 +113,18 @@ To copy a table and all its properties first create the table using the CREATE T
 Then insert all the data.
 
 ```sql
-CREATE TABLE new_table_name (LIKE original_table_name INCLUDING ALL);
+CREATE TABLE idioms(
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255),
+    title_general VARCHAR(255),
+    definition TEXT,
+    contributor VARCHAR(50)
+    timestamps TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
 ```sql
 INSERT INTO idioms_new (id, title, title_general, definition, contributor, timestamps)
-SELECT id, title_old, title_new, definition, owner, insertion_timestamp
+SELECT id, title, title_general, definition, contributor, timestamps
 FROM idioms;
 ```

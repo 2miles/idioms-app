@@ -7,6 +7,7 @@
 - [ ] Comment out the idiom scraper and document it. Like what it does and how to use it. Add it to the repo.
 - [x] go through and clean up the READMEs.
 - [ ] Finish the pern tutorial.
+- [ ] Get a copy of the original idioms_nonum.csv file to put in the repo
 
 ### Testing
 
@@ -15,15 +16,10 @@
 
 ### Server
 
-- [ ] ID colunm is not populating in the database when addIdiom is executed.
-- [ ] Update the update function to use new wide data.
-- [ ] Update the add function to use new wide data.
-
 ### Client
 
 - [ ] Add pagenation feature
-- [ ] The update routes need to be tested.
-- [ ] Get a copy of the original idioms_nonum.csv file to put in the repo
+- [ ] fix updateIdiom.jsx !!!
 
 ## Log
 
