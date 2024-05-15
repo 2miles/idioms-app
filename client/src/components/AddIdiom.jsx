@@ -4,13 +4,18 @@ import { IdiomsContext } from '../context/idiomsContext';
 
 const AddIdiom = () => {
   const generateInitialTimestamp = () => {
-    const timestamp = new Date();
-    const formattedTimestamp = timestamp
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
-
-    return formattedTimestamp;
+    const ts = new Date();
+    ts.setHours(ts.getHours() - 7); // Adjusting to UTC-7
+    if (ts.getHours() < 0) {
+      ts.setDate(ts.getDate() - 1);
+      ts.setHours(ts.getHours() + 24);
+      if (ts.getUTCMonth() === 11 && ts.getUTCDate() === 31) {
+        ts.setUTCFullYear(ts.getUTCFullYear() - 1);
+      }
+    }
+    // Format the timestamp
+    // 24-5-15 20:33:00
+    return ts.toISOString().slice(0, 19).replace('T', ' ');
   };
 
   const { addIdioms } = useContext(IdiomsContext);
@@ -19,16 +24,16 @@ const AddIdiom = () => {
   const [definition, setDefinition] = useState('');
   const [contributor, setContributor] = useState('');
   const [timestamp, setTimestamp] = useState(generateInitialTimestamp());
+  const [manuallyChanged, setManuallyChanged] = useState(false); // Track manual timestamp changes
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let newTimestamp = generateInitialTimestamp();
       const response = await IdiomFinder.post('/', {
         title: title,
         title_general: titleGeneral,
         definition: definition,
-        timestamps: newTimestamp, // Use the new timestamp
+        timestamps: timestampValue, // Use the new timestamp
         contributor: contributor,
       });
       addIdioms(response.data.data.idioms);
@@ -38,7 +43,15 @@ const AddIdiom = () => {
   const handleTimestampChange = (event) => {
     const input = event.target.value;
     setTimestamp(input);
+    setManuallyChanged(true);
   };
+
+  // If the timestamp is manually changed, use the manually entered timestamp
+  // Otherwise, use the generated timestamp
+  const timestampValue = manuallyChanged
+    ? timestamp
+    : generateInitialTimestamp();
+
   return (
     <div className="mb-4 mx-4">
       <form action="">
@@ -81,7 +94,7 @@ const AddIdiom = () => {
             id="timestamp"
             type="datetime-local"
             className="form-control"
-            value={timestamp}
+            value={timestampValue} //use timestamp value instead of timestamp
             onChange={handleTimestampChange}
           />
         </div>
@@ -105,6 +118,8 @@ const AddIdiom = () => {
             Add
           </button>
         </div>
+        <p>Timestamp = {timestamp}</p>
+        <p>TimestampValue = {timestampValue}</p>
       </form>
     </div>
   );
