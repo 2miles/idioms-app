@@ -118,8 +118,6 @@ const AddIdiom = () => {
             Add
           </button>
         </div>
-        <p>Timestamp = {timestamp}</p>
-        <p>TimestampValue = {timestampValue}</p>
       </form>
     </div>
   );
