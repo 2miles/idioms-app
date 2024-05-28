@@ -25,9 +25,12 @@ const AddIdiom = () => {
   const [contributor, setContributor] = useState('');
   const [timestamp, setTimestamp] = useState(generateInitialTimestamp());
   const [manuallyChanged, setManuallyChanged] = useState(false); // Track manual timestamp changes
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true when the form is submitted
     try {
       const response = await IdiomFinder.post('/', {
         title: title,
@@ -37,7 +40,17 @@ const AddIdiom = () => {
         contributor: contributor,
       });
       addIdioms(response.data.data.idioms);
-    } catch (err) {}
+      // Clear form fields after successful submission
+      setTitle('');
+      setTitleGeneral('');
+      setDefinition('');
+      setContributor('');
+      setTimestamp(generateInitialTimestamp());
+      setLoading(false);
+    } catch (err) {
+      setError('Oops, something went wrong.');
+      setLoading(false);
+    }
   };
 
   const handleTimestampChange = (event) => {
@@ -111,14 +124,16 @@ const AddIdiom = () => {
         </div>
         <div>
           <button
-            className="btn btn-primary"
             type="submit"
+            className="btn btn-primary"
             onClick={handleSubmit}
+            disabled={loading}
           >
-            Add
+            {loading ? 'Adding...' : 'Add'}
           </button>
         </div>
       </form>
+      {error && <div className="error">{error}</div>}
     </div>
   );
 };

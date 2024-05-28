@@ -39,3 +39,9 @@
 - [x] make the idiom list click to the detail view.
 - [x] make the detail view contain the edit and delete buttons.
 - [x] make a backup of the idioms_wide database and rename it.
+
+5-23-24
+
+- [ ] I am able to add an idiom with no title. Why? Fix that.
+- [ ] The Page does not refresh when an idiom is added.
+- [ ] Somehow test the error and loading state variables in the addIdiom context.
