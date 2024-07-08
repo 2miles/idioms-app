@@ -39,13 +39,17 @@ const AddIdiom = () => {
         timestamps: timestampValue, // Use the new timestamp
         contributor: contributor,
       });
-      addIdioms(response.data.data.idioms);
-      // Clear form fields after successful submission
-      setTitle('');
-      setTitleGeneral('');
-      setDefinition('');
-      setContributor('');
-      setTimestamp(generateInitialTimestamp());
+      if (response.data && response.data.data && response.data.data.idiom) {
+        addIdioms(response.data.data.idiom);
+        // Clear form fields after successful submission
+        setTitle('');
+        setTitleGeneral('');
+        setDefinition('');
+        setContributor('');
+        setTimestamp(generateInitialTimestamp());
+      } else {
+        throw new Error('Response does not contain idioms.');
+      }
       setLoading(false);
     } catch (err) {
       setError('Oops, something went wrong.');
