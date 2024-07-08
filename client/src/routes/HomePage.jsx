@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Header from '../components/Header';
 import AddIdiom from '../components/AddIdiom';
 import Table from '../components/Table_';
 import IdiomFinder from '../apis/idiomFinder';
+import { IdiomsContext } from '../context/idiomsContext';
 
 const HomePage = () => {
-  const [tableData, setTableData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const { idioms, setIdioms } = useContext(IdiomsContext);
+  const [filteredData, setFilteredData] = useState([]); // Holds the filtered set of idiom data based on search input.
   const [idiomCount, setIdiomCount] = useState(0); // State to store the count of filtered idioms
 
-  // Will execute this code block only once, right after the component is initially rendered.
-  // If the dependency array is empty, it won't run again on subsequent renders.
+  // Fetches idioms from an API.
+  // Runs only once when the component mounts (or if setIdioms were to change).
+  // Sets both the global idioms state (via context) and local state (filteredData and idiomCount).
+  // crucial for initially loading data from the server when the component mounts.
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await IdiomFinder.get('/');
         const data = response.data.data.idioms;
-        setTableData(data);
+        setIdioms(data);
         setFilteredData(data);
         setIdiomCount(data.length);
       } catch (err) {
@@ -26,8 +29,18 @@ const HomePage = () => {
     fetchData();
   }, []);
 
+  // Syncs the local state (filteredData and idiomCount) with the global idioms state from the context.
+  // Runs every time the idioms state changes.
+  // Ensures that any updates to the idioms state (such as adding a new idiom) are reflected in the
+  // local state used for filtering and displaying the idioms, ensuring the view stays up to date.
+  useEffect(() => {
+    setFilteredData(idioms);
+    setIdiomCount(idioms.length);
+  }, [idioms]);
+
+  // Filters the idioms based on the search term by updating the filteredData and idiomCount state variables
   const handleSearch = (searchTerm) => {
-    const filtered = tableData.filter((item) =>
+    const filtered = idioms.filter((item) =>
       item.title.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredData(filtered);
