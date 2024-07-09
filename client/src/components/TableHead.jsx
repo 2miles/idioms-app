@@ -2,24 +2,23 @@ import { useState } from 'react';
 
 const TableHead = ({ columns, handleSorting }) => {
   const [sortField, setSortField] = useState('');
-  const [order, setOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const handleSortingChange = (accessor) => {
-    const sortOrder =
-      accessor === sortField && order === 'asc' ? 'desc' : 'asc';
+    const newSortOrder =
+      accessor === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(accessor);
-    setOrder(sortOrder);
-    handleSorting(accessor, sortOrder);
-    console.log(accessor);
+    setSortOrder(newSortOrder);
+    handleSorting(accessor, newSortOrder);
   };
   return (
     <thead>
       <tr>
         {columns.map(({ label, accessor, sortable }) => {
           const dynamicClassName = sortable
-            ? sortField === accessor && order === 'asc'
+            ? sortField === accessor && sortOrder === 'asc'
               ? 'up'
-              : sortField === accessor && order == 'desc'
+              : sortField === accessor && sortOrder == 'desc'
               ? 'down'
               : 'default'
             : '';

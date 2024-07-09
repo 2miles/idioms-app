@@ -7,7 +7,7 @@ import { IdiomsContext } from '../context/idiomsContext';
 
 const HomePage = () => {
   const { idioms, setIdioms } = useContext(IdiomsContext);
-  const [filteredData, setFilteredData] = useState([]); // Holds the filtered set of idiom data based on search input.
+  const [filteredIdioms, setFilteredIdioms] = useState([]); // Holds the filtered set of idiom data based on search input.
   const [idiomCount, setIdiomCount] = useState(0); // State to store the count of filtered idioms
 
   // Fetches idioms from an API.
@@ -20,7 +20,7 @@ const HomePage = () => {
         const response = await IdiomFinder.get('/');
         const data = response.data.data.idioms;
         setIdioms(data);
-        setFilteredData(data);
+        setFilteredIdioms(data);
         setIdiomCount(data.length);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -34,22 +34,22 @@ const HomePage = () => {
   // Ensures that any updates to the idioms state (such as adding a new idiom) are reflected in the
   // local state used for filtering and displaying the idioms, ensuring the view stays up to date.
   useEffect(() => {
-    setFilteredData(idioms);
+    setFilteredIdioms(idioms);
     setIdiomCount(idioms.length);
   }, [idioms]);
 
   // Filters the idioms based on the search term by updating the filteredData and idiomCount state variables
   const handleSearch = (searchTerm) => {
-    const filtered = idioms.filter((item) =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    const filtered = idioms.filter((idiom) =>
+      idiom.title.toLowerCase().includes(searchTerm.toLowerCase()),
     );
-    setFilteredData(filtered);
+    setFilteredIdioms(filtered);
     setIdiomCount(filtered.length);
   };
 
   const handleSorting = (sortField, sortOrder) => {
     if (sortField) {
-      const sorted = [...filteredData].sort((a, b) => {
+      const sorted = [...filteredIdioms].sort((a, b) => {
         if (a[sortField] === null) return 1;
         if (b[sortField] === null) return -1;
         if (a[sortField] === null && b[sortField] === null) return 0;
@@ -59,7 +59,7 @@ const HomePage = () => {
           }) * (sortOrder === 'asc' ? 1 : -1)
         );
       });
-      setFilteredData(sorted);
+      setFilteredIdioms(sorted);
     }
   };
 
@@ -68,7 +68,7 @@ const HomePage = () => {
       <Header />
       <AddIdiom />
       <Table
-        tableData={filteredData}
+        tableData={filteredIdioms}
         idiomCount={idiomCount}
         handleSearch={handleSearch}
         handleSorting={handleSorting}

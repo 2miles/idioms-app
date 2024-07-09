@@ -24,11 +24,6 @@ const UpdateIdiom = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    // Executed every time 'title', 'titleNew', or 'definition' changes
-    console.log('After setting state:', title, titleNew, definition);
-  }, [title, titleNew, definition, day, owner]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updateIdiom = await IdiomFinder.put(`/${id}`, {

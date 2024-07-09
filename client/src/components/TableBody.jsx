@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const TableBody = ({ tableData, columns }) => {
   const navigate = useNavigate();
 
-  const handleIdiomSelect = (id) => {
+  const handleRowClick = (id) => {
     navigate(`/idioms/${id}`);
   };
 
@@ -15,11 +15,11 @@ const TableBody = ({ tableData, columns }) => {
     <tbody>
       {tableData && tableData.length > 0 ? (
         // Iterates over each item in tableData. Each data item represents a row in the table.
-        tableData.map((data) => {
+        tableData.map((row) => {
           return (
-            <tr key={data.id} onClick={() => handleIdiomSelect(data.id)}>
+            <tr key={row.id} onClick={() => handleRowClick(row.id)}>
               {columns.map(({ accessor }) => {
-                let tData;
+                let cellData;
                 if (accessor === 'timestamps') {
                   // Format the date
                   const options = {
@@ -27,19 +27,19 @@ const TableBody = ({ tableData, columns }) => {
                     day: '2-digit',
                     year: '2-digit',
                   };
-                  tData = new Date(data[accessor]).toLocaleDateString(
+                  cellData = new Date(row[accessor]).toLocaleDateString(
                     undefined, // LOCALE, I think this can be changed to my timezone to simplify things a bit?
                     options,
                   );
 
                   // Split the date by '/'
-                  const parts = tData.split('/');
+                  const parts = cellData.split('/');
                   // Rearrange the parts and join them with '-'
-                  tData = `${parts[0]}-${parts[1]}-${parts[2]}`;
+                  cellData = `${parts[0]}-${parts[1]}-${parts[2]}`;
                 } else {
-                  tData = data[accessor] ? data[accessor] : '——';
+                  cellData = row[accessor] ? row[accessor] : '——';
                 }
-                return <td key={accessor}>{tData}</td>;
+                return <td key={accessor}>{cellData}</td>;
               })}
             </tr>
           );
