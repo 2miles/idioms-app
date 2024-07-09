@@ -18,14 +18,13 @@ body {
 
 .table_container {
   max-width: 1000px;
-  /* max-height: 500px; */
   margin: 0 auto;
   overflow: auto;
 }
 
 .table {
   width: 100%;
-  border-spacing: 0;
+  border-collapse: collapse; /* Ensure consistent border styling */
 }
 
 caption {
@@ -35,27 +34,27 @@ caption {
 }
 
 .table th {
-  background: #fff;
+  background: #f8f9fa; /* Light grey background */
+  color: #343a40; /* Dark grey text color */
   padding: 8px 10px;
-  border-bottom: 1px solid #1a1a1a;
+  border: 1px solid #1a1a1a; /* Ensure consistent border */
   font-weight: bold;
   text-align: left;
 }
 
 .table th.up {
+  background-color: #e9ecef; /* Slightly darker grey for up */
   background-image: url('./images/up_arrow.png');
-  border-top: 1px solid #5d42a5;
-  border-left: 1px solid #5d42a5;
-  border-right: 1px solid #5d42a5;
+  background-size: 25px 25px; /* Adjust the size of the arrow */
 }
 .table th.down {
+  background-color: #e9ecef; /* Slightly darker grey for up */
   background-image: url('./images/down_arrow.png');
-  border-top: 1px solid #5d42a5;
-  border-left: 1px solid #5d42a5;
-  border-right: 1px solid #5d42a5;
+  background-size: 25px 25px; /* Adjust the size of the arrow */
 }
 .table th.default {
   background-image: url('./images/default.png');
+  background-size: 25px 25px; /* Adjust the size of the arrow */
 }
 th.up,
 th.default,
@@ -66,7 +65,7 @@ th.down {
 }
 
 .table td {
-  border-top: 1px solid #ddd;
+  border: 1px solid #ddd; /* Ensure consistent border */
   padding: 8px 20px;
 }
 
@@ -75,13 +74,13 @@ th.down {
 }
 
 .table tbody tr:nth-child(n) td {
-  background: #eff0f0;
+  background: #ffffff; /* White for odd rows */
 }
 
 .table tbody tr:nth-child(2n) td {
-  background: #fff;
+  background: #f8f9fa; /* Light grey for even rows */
 }
 
 .form-control::placeholder {
-  color: #bbb;
+  color: #adb5bd; /* Light grey for placeholder text */
 }
