@@ -4,17 +4,21 @@ const SearchBar = ({ handleSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleChange = (e) => {
-    setSearchTerm(e.target.value);
-    handleSearch(e.target.value);
+    const value = e.target.value;
+    setSearchTerm(value);
+    handleSearch(value);
   };
 
   return (
-    <input
-      type="text"
-      placeholder="Search..."
-      value={searchTerm}
-      onChange={handleChange}
-    />
+    <div className="input-group mb-3">
+      <input
+        type="text"
+        className="form-control m-3"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={handleChange}
+      />
+    </div>
   );
 };
 
