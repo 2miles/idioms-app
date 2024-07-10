@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Header from '../components/Header';
-import AddIdiom from '../components/AddIdiom';
 import Table from '../components/Table_';
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
+import AddIdiomCollapsible from '../components/AddIdiomCollapsible';
 
 const HomePage = () => {
   const { idioms, setIdioms } = useContext(IdiomsContext);
@@ -66,7 +66,7 @@ const HomePage = () => {
   return (
     <div className="table_container">
       <Header />
-      <AddIdiom />
+      <AddIdiomCollapsible />
       <Table
         tableData={filteredIdioms}
         idiomCount={idiomCount}

@@ -71,7 +71,7 @@ const AddIdiom = () => {
 
   return (
     <div className="mb-4 mx-4">
-      <form action="">
+      <form action="" classname="add-idiom-form">
         <div>
           <label htmlFor="title">Title</label>
           <input
