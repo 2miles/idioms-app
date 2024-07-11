@@ -28,16 +28,19 @@ const AddIdiom = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Helper function to convert empty strings to null
+  const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Set loading state to true when the form is submitted
     try {
       const response = await IdiomFinder.post('/', {
-        title: title,
-        title_general: titleGeneral,
-        definition: definition,
-        timestamps: timestampValue, // Use the new timestamp
-        contributor: contributor,
+        title: emptyStringToNull(title),
+        title_general: emptyStringToNull(titleGeneral),
+        definition: emptyStringToNull(definition),
+        timestamps: emptyStringToNull(timestampValue), // Use the new timestamp
+        contributor: emptyStringToNull(contributor),
       });
       if (response.data && response.data.data && response.data.data.idiom) {
         addIdioms(response.data.data.idiom);
