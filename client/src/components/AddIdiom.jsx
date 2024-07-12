@@ -25,15 +25,18 @@ const AddIdiom = () => {
   const [contributor, setContributor] = useState('');
   const [timestamp, setTimestamp] = useState(generateInitialTimestamp());
   const [manuallyChanged, setManuallyChanged] = useState(false); // Track manual timestamp changes
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [validated, setValidated] = useState(false);
 
   // Helper function to convert empty strings to null
   const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading state to true when the form is submitted
+    setValidated(true);
+
+    if (title.trim() === '') {
+      return; // Prevent form submission if title is empty
+    }
     try {
       const response = await IdiomFinder.post('/', {
         title: emptyStringToNull(title),
@@ -45,19 +48,20 @@ const AddIdiom = () => {
       if (response.data && response.data.data && response.data.data.idiom) {
         addIdioms(response.data.data.idiom);
         // Clear form fields after successful submission
-        setTitle('');
-        setTitleGeneral('');
-        setDefinition('');
-        setContributor('');
-        setTimestamp(generateInitialTimestamp());
-      } else {
-        throw new Error('Response does not contain idioms.');
+        clearFormFields();
       }
-      setLoading(false);
     } catch (err) {
-      setError('Oops, something went wrong.');
-      setLoading(false);
+      throw new Error('Oops, something went wrong.');
     }
+  };
+
+  const clearFormFields = () => {
+    setTitle('');
+    setTitleGeneral('');
+    setDefinition('');
+    setContributor('');
+    setTimestamp(generateInitialTimestamp());
+    setValidated(false);
   };
 
   const handleTimestampChange = (event) => {
@@ -74,7 +78,14 @@ const AddIdiom = () => {
 
   return (
     <div className="mb-4 mx-4">
-      <form action="" classname="add-idiom-form">
+      {/* <form action="" classname="add-idiom-form"> */}
+      <form
+        className={`add-idiom-form needs-validation ${
+          validated ? 'was-validated' : ''
+        }`}
+        noValidate
+        onSubmit={handleSubmit}
+      >
         <div>
           <label htmlFor="title">Title</label>
           <input
@@ -84,7 +95,9 @@ const AddIdiom = () => {
             placeholder="Pull yourself up by your bootstraps"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
           />
+          <div className="invalid-feedback">Please enter a title.</div>
         </div>
         <div>
           <label htmlFor="titleGeneral">General title (optional)</label>
@@ -130,17 +143,11 @@ const AddIdiom = () => {
           />
         </div>
         <div>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? 'Adding...' : 'Add'}
+          <button type="submit" className="btn btn-primary">
+            Add
           </button>
         </div>
       </form>
-      {error && <div className="error">{error}</div>}
     </div>
   );
 };
