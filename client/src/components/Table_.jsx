@@ -3,7 +3,7 @@ import TableBody from './TableBody';
 import TableHead from './TableHead';
 import SearchBar from './SearchBar';
 
-const Table = ({ tableData, idiomCount, handleSearch, handleSorting }) => {
+const Table = ({ tableData, idiomCount, handleSorting }) => {
   const columns = [
     { label: 'ID', accessor: 'id', sortable: true },
     { label: 'Title', accessor: 'title', sortable: true },
@@ -14,7 +14,7 @@ const Table = ({ tableData, idiomCount, handleSearch, handleSorting }) => {
 
   return (
     <>
-      <SearchBar handleSearch={handleSearch} />
+      {/* <SearchBar handleSearch={handleSearch} /> */}
       <div>
         <p>{idiomCount} Idioms found</p>
       </div>
