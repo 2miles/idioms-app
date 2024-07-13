@@ -116,43 +116,10 @@ body {
   Pagination
   =====================
   */
-/* .pagination {
-  display: flex;
-  justify-content: center;
-  padding: 10px 0;
-}
-
-.page-item {
-  margin: 0 5px;
-}
-
-.page-item .page-link {
-  padding: 5px 10px;
-  border: 1px solid #dee2e6;
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.page-item.active .page-link {
-  background-color: #007bff;
-  color: white;
-  border: 1px solid #007bff;
-}
-
-.page-item .page-link:hover {
-  background-color: #e9ecef;
-}
-
-.page-item .page-link {
-  padding: 8px 12px;
-  margin: 0 2px;
-  display: block;
-} */
 
 .pagination {
   display: flex;
-  justify-content: center;
+  justify-content: right;
   padding: 10px 0;
 }
 
@@ -164,14 +131,17 @@ body {
   padding: 8px 12px;
   margin: 0 2px;
   border: 1px solid #dee2e6;
-  color: #007bff;
+  color: black;
   cursor: pointer;
+  width: 40px;
+  text-align: center;
   text-decoration: none;
 }
 
 .page-item.active .page-link {
-  background-color: #007bff;
+  background-color: whitesmoke;
   color: white;
+  color: black;
   border: 1px solid #007bff;
 }
 
