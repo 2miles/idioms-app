@@ -161,3 +161,29 @@ body {
 .page-item .page-link:hover {
   background-color: #e9ecef;
 }
+.pagination-controls {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.pagination-controls label {
+  margin-right: 10px;
+}
+
+.pagination-controls select {
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  /* border: 1px solid #ccc; */
+  border: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  margin-right: 20px; /* Add some margin to separate the dropdown from the pagination links */
+}
+
+.showing-text {
+  font-size: 16px;
+  margin-right: auto; /* Pushes the text all the way to the left */
+  align-self: flex-end; /* Align the text itself to the bottom */
+  margin-bottom: 20px; /* Optional: Add some bottom margin */
+}

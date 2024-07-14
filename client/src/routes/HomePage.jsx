@@ -12,7 +12,7 @@ const HomePage = () => {
   const [filteredIdioms, setFilteredIdioms] = useState([]); // Holds the filtered set of idiom data based on search input.
   const [idiomCount, setIdiomCount] = useState(0); // State to store the count of filtered idioms
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20; // Number of items per page
+  const [itemsPerPage, setItemsPerPage] = useState(20); // Number of items per page
 
   // Fetches idioms from an API.
   // Runs only once when the component mounts (or if setIdioms were to change).
@@ -86,29 +86,47 @@ const HomePage = () => {
   // Handle page change
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleItemsPerPageChange = (itemsPerPage) => {
+    setItemsPerPage(itemsPerPage);
+    setCurrentPage(1); // Reset to first page when items per page changes
+  };
+
+  const showingText = `Showing ${indexOfFirstItem + 1} - ${
+    indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
+  } of ${idiomCount} idioms`;
+
   return (
     <div className="table_container">
       <Header />
       <AddIdiomCollapsible />
       <SearchBar handleSearch={handleSearch} />
+      <div className="pagination-controls">
+        {/* <label htmlFor="itemsPerPage">Items per page: </label> */}
+        <p className="showing-text">{showingText}</p>
+        <select
+          id="itemsPerPage"
+          value={itemsPerPage}
+          onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={idiomCount}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
+      </div>
+      <Table tableData={currentItems} handleSorting={handleSorting} />
       <Pagination
         itemsPerPage={itemsPerPage}
         totalItems={idiomCount}
         paginate={paginate}
         currentPage={currentPage}
-      />
-      <Table
-        tableData={currentItems}
-        idiomCount={idiomCount}
-        handleSorting={handleSorting}
-        itemsPerPage={itemsPerPage}
-        currentPage={currentPage}
-      />
-      <Pagination
-        itemsPerPage={itemsPerPage}
-        totalItems={idiomCount}
-        paginate={paginate}
-        currentPage={currentPage}
+        handleItemsPerPageChange={handleItemsPerPageChange}
       />
     </div>
   );
