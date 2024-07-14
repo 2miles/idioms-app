@@ -101,6 +101,8 @@ const HomePage = () => {
         tableData={currentItems}
         idiomCount={idiomCount}
         handleSorting={handleSorting}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
       />
       <Pagination
         itemsPerPage={itemsPerPage}

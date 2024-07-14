@@ -111,6 +111,12 @@ body {
   color: #adb5bd; /* Light grey for placeholder text */
 }
 
+.showing-text {
+  font-size: 16px; /* Increase the font size */
+  margin-bottom: 10px; /* Add some space below */
+  color: #383f4d; /* Match the text color of the rest of the app */
+}
+
 /* 
   =================
   Pagination

@@ -1,9 +1,14 @@
 import React from 'react';
 import TableBody from './TableBody';
 import TableHead from './TableHead';
-import SearchBar from './SearchBar';
 
-const Table = ({ tableData, idiomCount, handleSorting }) => {
+const Table = ({
+  tableData,
+  idiomCount,
+  handleSorting,
+  currentPage,
+  itemsPerPage,
+}) => {
   const columns = [
     { label: 'ID', accessor: 'id', sortable: true },
     { label: 'Title', accessor: 'title', sortable: true },
@@ -12,11 +17,17 @@ const Table = ({ tableData, idiomCount, handleSorting }) => {
     { label: 'Owner', accessor: 'contributor', sortable: true },
   ];
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const showingText = `Showing ${indexOfFirstItem + 1} - ${
+    indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
+  } of ${idiomCount} idioms`;
+
   return (
     <>
-      {/* <SearchBar handleSearch={handleSearch} /> */}
       <div>
-        <p>{idiomCount} Idioms found</p>
+        <p className="showing-text">{showingText}</p>
       </div>
       <table className="table">
         <TableHead columns={columns} handleSorting={handleSorting} />
