@@ -39,7 +39,14 @@ const TableBody = ({ tableData, columns }) => {
                 } else {
                   cellData = row[accessor] ? row[accessor] : '——';
                 }
-                return <td key={accessor}>{cellData}</td>;
+                return (
+                  <td
+                    key={accessor}
+                    className={accessor === 'title' ? 'title-cell' : ''}
+                  >
+                    {cellData}
+                  </td>
+                );
               })}
             </tr>
           );

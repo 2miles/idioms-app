@@ -13,7 +13,14 @@ const HomePage = () => {
   const [idiomCount, setIdiomCount] = useState(0); // State to store the count of filtered idioms
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20); // Number of items per page
-
+  const [showColumnSelector, setShowColumnSelector] = useState(false);
+  const [columnVisibility, setColumnVisibility] = useState({
+    id: false,
+    title: true,
+    definition: true,
+    timestamps: true,
+    contributor: false,
+  });
   // Fetches idioms from an API.
   // Runs only once when the component mounts (or if setIdioms were to change).
   // Sets both the global idioms state (via context) and local state (filteredData and idiomCount).
@@ -77,7 +84,12 @@ const HomePage = () => {
       setFilteredIdioms(sorted);
     }
   };
-
+  const handleColumnVisibilityChange = (column) => {
+    setColumnVisibility({
+      ...columnVisibility,
+      [column]: !columnVisibility[column],
+    });
+  };
   // Calculate the items to display on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -101,8 +113,6 @@ const HomePage = () => {
       <AddIdiomCollapsible />
       <SearchBar handleSearch={handleSearch} />
       <div className="pagination-controls">
-        {/* <label htmlFor="itemsPerPage">Items per page: </label> */}
-        <p className="showing-text">{showingText}</p>
         <select
           id="itemsPerPage"
           value={itemsPerPage}
@@ -120,7 +130,46 @@ const HomePage = () => {
           currentPage={currentPage}
         />
       </div>
-      <Table tableData={currentItems} handleSorting={handleSorting} />
+      <div className="flex-container">
+        <div className="showing-text-container">
+          <p className="showing-text">{showingText}</p>
+        </div>
+        <div className="dropdown-wrapper">
+          <div
+            id="list1"
+            className={`dropdown-check-list ${
+              showColumnSelector ? 'visible' : ''
+            }`}
+            onClick={(e) => {
+              if (e.target.className.includes('anchor')) {
+                setShowColumnSelector(!showColumnSelector);
+              }
+            }}
+          >
+            <span className="anchor">Columns</span>
+            <ul className="items" onClick={(e) => e.stopPropagation()}>
+              {Object.keys(columnVisibility).map((column) => (
+                <li key={column}>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={columnVisibility[column]}
+                      onChange={() => handleColumnVisibilityChange(column)}
+                    />
+                    {column.charAt(0).toUpperCase() + column.slice(1)}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <Table
+        tableData={currentItems}
+        handleSorting={handleSorting}
+        columnVisibility={columnVisibility}
+      />
       <Pagination
         itemsPerPage={itemsPerPage}
         totalItems={idiomCount}
