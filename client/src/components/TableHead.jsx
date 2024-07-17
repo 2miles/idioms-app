@@ -7,7 +7,7 @@ const TableHead = ({ columns, handleSorting }) => {
   // Call handleSorting initially to apply the default sorting
   useEffect(() => {
     handleSorting(sortField, sortOrder);
-  }, [sortField, sortOrder, handleSorting]);
+  }, []);
 
   const handleSortingChange = (accessor) => {
     const newSortOrder =
