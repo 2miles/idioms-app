@@ -67,6 +67,7 @@ body {
   background-color: #dddddd; /* Light grey background for header */
   color: #343a40; /* Dark grey text color */
   padding: 12px 20px; /* Increased padding for header cells */
+  padding-left: 40px;
   border: 1px solid #dee2e6; /* Light grey border */
   font-weight: bold;
   text-align: left;
@@ -78,6 +79,7 @@ body {
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: right center;
+  background-position: left;
   background-size: 25px 25px;
 }
 
@@ -86,9 +88,6 @@ body {
 }
 .table th.down {
   background-image: url('./images/descending-sorting-24.png');
-}
-.table th.default {
-  background-image: url('./images/default.png');
 }
 
 .table td {
@@ -156,13 +155,14 @@ body {
 }
 
 .page-item {
-  margin: 0 5px;
+  /* margin: 0 5px; */
+  margin: 0px;
 }
 
 .page-item .page-link {
   padding: 8px 12px;
-  margin: 0 2px;
-  border: 1px solid #e9ecef;
+  /* margin: 0 2px; */
+  border: 1px solid #b1b3b5;
   background-color: #f8f9fa;
   color: black;
   cursor: pointer;
