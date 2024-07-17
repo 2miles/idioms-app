@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const TableHead = ({ columns, handleSorting }) => {
-  const [sortField, setSortField] = useState('');
+  const [sortField, setSortField] = useState('timestamps');
   const [sortOrder, setSortOrder] = useState('asc');
+
+  // Call handleSorting initially to apply the default sorting
+  useEffect(() => {
+    handleSorting(sortField, sortOrder);
+  }, [sortField, sortOrder, handleSorting]);
 
   const handleSortingChange = (accessor) => {
     const newSortOrder =
