@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Header from '../components/Header';
-import Table from '../components/Table_';
+
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
+
+import Header from '../components/Header';
+import Table from '../components/Table_';
 import AddIdiomCollapsible from '../components/AddIdiomCollapsible';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
+import ItemsPerPageSelector from '../components/ItemsPerPageSelector';
+import ColumnSelector from '../components/ColumnSelector';
 
 const HomePage = () => {
   const { idioms, setIdioms } = useContext(IdiomsContext);
@@ -13,7 +17,6 @@ const HomePage = () => {
   const [idiomCount, setIdiomCount] = useState(0); // State to store the count of filtered idioms
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20); // Number of items per page
-  const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [columnVisibility, setColumnVisibility] = useState({
     id: false,
     title: true,
@@ -106,16 +109,10 @@ const HomePage = () => {
       </div>
       <div className="table-container">
         <div className="pagination-controls">
-          <select
-            id="itemsPerPage"
-            value={itemsPerPage}
-            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-          </select>
+          <ItemsPerPageSelector
+            itemsPerPage={itemsPerPage}
+            handleItemsPerPageChange={handleItemsPerPageChange}
+          />
           <Pagination
             itemsPerPage={itemsPerPage}
             totalItems={idiomCount}
@@ -127,35 +124,10 @@ const HomePage = () => {
           <div className="showing-text-container">
             <p className="showing-text">{showingText}</p>
           </div>
-          <div className="dropdown-wrapper">
-            <div
-              id="list1"
-              className={`dropdown-check-list ${
-                showColumnSelector ? 'visible' : ''
-              }`}
-              onClick={(e) => {
-                if (e.target.className.includes('anchor')) {
-                  setShowColumnSelector(!showColumnSelector);
-                }
-              }}
-            >
-              <span className="anchor">Columns</span>
-              <ul className="items" onClick={(e) => e.stopPropagation()}>
-                {Object.keys(columnVisibility).map((column) => (
-                  <li key={column}>
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={columnVisibility[column]}
-                        onChange={() => handleColumnVisibilityChange(column)}
-                      />
-                      {column.charAt(0).toUpperCase() + column.slice(1)}
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <ColumnSelector
+            columnVisibility={columnVisibility}
+            handleColumnVisibilityChange={handleColumnVisibilityChange}
+          />
         </div>
 
         <Table
