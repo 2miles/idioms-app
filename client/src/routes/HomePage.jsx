@@ -59,16 +59,6 @@ const HomePage = () => {
     setIdiomCount(idioms.length);
   }, [idioms]);
 
-  // Filters the idioms based on the search term by updating the filteredData and idiomCount state variables
-  // const handleSearch = (searchTerm) => {
-  //   const filtered = idioms.filter((idiom) =>
-  //     idiom.title.toLowerCase().includes(searchTerm.toLowerCase()),
-  //   );
-  //   setFilteredIdioms(filtered);
-  //   setIdiomCount(filtered.length);
-  //   setCurrentPage(1); // Reset to the first page after search
-  // };
-
   const handleSorting = (sortField, sortOrder) => {
     if (sortField) {
       const sorted = [...filteredIdioms].sort((a, b) => {
@@ -108,75 +98,79 @@ const HomePage = () => {
   } of ${idiomCount} idioms`;
 
   return (
-    <div className="table_container">
+    <div>
       <Header />
-      <AddIdiomCollapsible />
-      <SearchBar handleSearch={handleSearch} />
-      <div className="pagination-controls">
-        <select
-          id="itemsPerPage"
-          value={itemsPerPage}
-          onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-        >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
-        </select>
+      <div className="add-idiom-container">
+        <AddIdiomCollapsible />
+        <SearchBar handleSearch={handleSearch} />
+      </div>
+      <div className="table-container">
+        <div className="pagination-controls">
+          <select
+            id="itemsPerPage"
+            value={itemsPerPage}
+            onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={idiomCount}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        </div>
+        <div className="flex-container">
+          <div className="showing-text-container">
+            <p className="showing-text">{showingText}</p>
+          </div>
+          <div className="dropdown-wrapper">
+            <div
+              id="list1"
+              className={`dropdown-check-list ${
+                showColumnSelector ? 'visible' : ''
+              }`}
+              onClick={(e) => {
+                if (e.target.className.includes('anchor')) {
+                  setShowColumnSelector(!showColumnSelector);
+                }
+              }}
+            >
+              <span className="anchor">Columns</span>
+              <ul className="items" onClick={(e) => e.stopPropagation()}>
+                {Object.keys(columnVisibility).map((column) => (
+                  <li key={column}>
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={columnVisibility[column]}
+                        onChange={() => handleColumnVisibilityChange(column)}
+                      />
+                      {column.charAt(0).toUpperCase() + column.slice(1)}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <Table
+          tableData={currentItems}
+          handleSorting={handleSorting}
+          columnVisibility={columnVisibility}
+        />
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={idiomCount}
           paginate={paginate}
           currentPage={currentPage}
+          handleItemsPerPageChange={handleItemsPerPageChange}
         />
       </div>
-      <div className="flex-container">
-        <div className="showing-text-container">
-          <p className="showing-text">{showingText}</p>
-        </div>
-        <div className="dropdown-wrapper">
-          <div
-            id="list1"
-            className={`dropdown-check-list ${
-              showColumnSelector ? 'visible' : ''
-            }`}
-            onClick={(e) => {
-              if (e.target.className.includes('anchor')) {
-                setShowColumnSelector(!showColumnSelector);
-              }
-            }}
-          >
-            <span className="anchor">Columns</span>
-            <ul className="items" onClick={(e) => e.stopPropagation()}>
-              {Object.keys(columnVisibility).map((column) => (
-                <li key={column}>
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={columnVisibility[column]}
-                      onChange={() => handleColumnVisibilityChange(column)}
-                    />
-                    {column.charAt(0).toUpperCase() + column.slice(1)}
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <Table
-        tableData={currentItems}
-        handleSorting={handleSorting}
-        columnVisibility={columnVisibility}
-      />
-      <Pagination
-        itemsPerPage={itemsPerPage}
-        totalItems={idiomCount}
-        paginate={paginate}
-        currentPage={currentPage}
-        handleItemsPerPageChange={handleItemsPerPageChange}
-      />
     </div>
   );
 };
