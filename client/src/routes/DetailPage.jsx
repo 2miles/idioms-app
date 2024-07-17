@@ -31,7 +31,6 @@ const DetailPage = () => {
     const fetchData = async () => {
       try {
         const response = await IdiomFinder.get(`/${id}`);
-        //console.log(response.data.data.idiom);
         setSelectedIdiom(response.data.data.idiom);
       } catch (err) {
         console.log(err);

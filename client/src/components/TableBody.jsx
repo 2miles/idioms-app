@@ -1,6 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Utility function to truncate text and add "..."
+const truncateLength = 150;
+
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.substring(0, maxLength) + '...';
+};
+
 // Renders the rows of a table based on the provided data and column definitions.
 // It uses the useNavigate hook to navigate to a detailed view of a selected idiom when a row is clicked.
 // Dynamically creates rows and cells based on the provided data and column definitions.
@@ -38,6 +48,10 @@ const TableBody = ({ tableData, columns }) => {
                   cellData = `${parts[0]}-${parts[1]}-${parts[2]}`;
                 } else {
                   cellData = row[accessor] ? row[accessor] : '——';
+                }
+                // Apply truncation to the definition cell
+                if (accessor === 'definition') {
+                  cellData = truncateText(cellData, truncateLength);
                 }
                 return (
                   <td

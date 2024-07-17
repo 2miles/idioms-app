@@ -112,7 +112,7 @@ body {
 
 .title-cell {
   font-weight: bold;
-  min-width: 200px; /* Adjust this value as needed */
+  min-width: 200px;
 }
 
 /* 
@@ -162,7 +162,6 @@ body {
 .page-item .page-link {
   padding: 8px 12px;
   margin: 0 2px;
-  /* border: 1px solid #dee2e6; */
   border: 1px solid #e9ecef;
   background-color: #f8f9fa;
   color: black;
