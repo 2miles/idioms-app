@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
 
 import Header from '../components/Header';
@@ -12,36 +11,42 @@ import ItemsPerPageSelector from '../components/ItemsPerPageSelector';
 import ColumnSelector from '../components/ColumnSelector';
 
 const HomePage = () => {
-  const { idioms, setIdioms } = useContext(IdiomsContext);
+  const { idioms } = useContext(IdiomsContext);
   const [filteredIdioms, setFilteredIdioms] = useState([]); // Holds the filtered set of idiom data based on search input.
   const [idiomCount, setIdiomCount] = useState(0); // State to store the count of filtered idioms
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20); // Number of items per page
   const [columnVisibility, setColumnVisibility] = useState({
+    position: true,
     id: false,
     title: true,
     definition: true,
-    timestamps: true,
+    timestamps: false,
     contributor: false,
   });
   // Fetches idioms from an API.
   // Runs only once when the component mounts (or if setIdioms were to change).
   // Sets both the global idioms state (via context) and local state (filteredData and idiomCount).
   // crucial for initially loading data from the server when the component mounts.
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await IdiomFinder.get('/');
+  //       const data = response.data.data.idioms;
+  //       setIdioms(data);
+  //       setFilteredIdioms(data);
+  //       setIdiomCount(data.length);
+  //     } catch (err) {
+  //       console.error('Error fetching data:', err);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await IdiomFinder.get('/');
-        const data = response.data.data.idioms;
-        setIdioms(data);
-        setFilteredIdioms(data);
-        setIdiomCount(data.length);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-      }
-    };
-    fetchData();
-  }, []);
+    setFilteredIdioms(idioms);
+    setIdiomCount(idioms.length);
+  }, [idioms]);
 
   // Handle search
   const handleSearch = (term) => {
