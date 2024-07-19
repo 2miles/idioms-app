@@ -48,12 +48,8 @@ const HomePage = () => {
     setIdiomCount(idioms.length);
   }, [idioms]);
 
-  // Handle search
-  const handleSearch = (term) => {
-    const filtered = idioms.filter((idiom) =>
-      idiom.title.toLowerCase().includes(term.toLowerCase()),
-    );
-    setCurrentPage(1); // Reset to first page on search
+  const handleSearch = (filtered) => {
+    setCurrentPage(1);
     setFilteredIdioms(filtered);
     setIdiomCount(filtered.length);
   };
@@ -82,6 +78,7 @@ const HomePage = () => {
       setFilteredIdioms(sorted);
     }
   };
+
   const handleColumnVisibilityChange = (column) => {
     setColumnVisibility({
       ...columnVisibility,
@@ -110,7 +107,7 @@ const HomePage = () => {
       <Header />
       <div className="add-idiom-container">
         <AddIdiomCollapsible />
-        <SearchBar handleSearch={handleSearch} />
+        <SearchBar handleSearch={handleSearch} idioms={idioms} />
       </div>
       <div className="table-container">
         <div className="pagination-controls">

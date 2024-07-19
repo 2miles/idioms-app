@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 
-const SearchBar = ({ handleSearch }) => {
+const SearchBar = ({ handleSearch, idioms }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    handleSearch(value);
+  const onSearch = (e) => {
+    setSearchTerm(e.target.value);
+    const filtered = idioms.filter((idiom) =>
+      idiom.title.toLowerCase().includes(e.target.value.toLowerCase()),
+    );
+    handleSearch(filtered);
   };
 
   return (
@@ -16,7 +18,7 @@ const SearchBar = ({ handleSearch }) => {
         className="form-control m-3"
         placeholder="Search..."
         value={searchTerm}
-        onChange={handleChange}
+        onChange={onSearch}
       />
     </div>
   );
