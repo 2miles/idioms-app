@@ -18,7 +18,7 @@
 
 ### Client
 
-- [ ] Add pagenation feature
+- [x] Add pagenation feature
 - [ ] fix updateIdiom.jsx !!!
 
 ## Log
@@ -42,6 +42,17 @@
 
 5-23-24
 
-- [ ] I am able to add an idiom with no title. Why? Fix that.
-- [ ] The Page does not refresh when an idiom is added.
-- [ ] Somehow test the error and loading state variables in the addIdiom context.
+- [x] I am able to add an idiom with no title. Why? Fix that.
+- [x] The Page does not refresh when an idiom is added.
+- [x] Somehow test the error and loading state variables in the addIdiom context.
+
+7-18-24
+
+- [ ] Eventually remove the id column from the table
+- [ ] fix the delete functionality so that it prompts 'are you sure'
+- [ ] Go back to HomePage after deletion, with 5 second 'deletion successful message'
+- [ ] Make teh Detail page look better. Use a card.
+- [ ] Change the name of the header labels. title -> idiom, definition -> meaning
+- [ ] Create edit functionallity.
+- [ ] Fix If changing the sorting direction of one of the table columns. Go back to pagination page 1.
+- [ ] Fix Column show dropdown is behind selected pagination page link when table is very short .
