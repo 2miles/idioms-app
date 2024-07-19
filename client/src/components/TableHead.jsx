@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const TableHead = ({ columns, handleSorting }) => {
-  const [sortField, setSortField] = useState('timestamps');
+  const [sortField, setSortField] = useState('position');
   const [sortOrder, setSortOrder] = useState('asc');
 
   // Call handleSorting initially to apply the default sorting
@@ -27,11 +27,12 @@ const TableHead = ({ columns, handleSorting }) => {
               ? 'down'
               : 'default'
             : '';
+          const columnClass = `column-${accessor}`; // Use dynamic class name
           return (
             <th
               key={accessor}
               onClick={sortable ? () => handleSortingChange(accessor) : null}
-              className={dynamicClassName}
+              className={`${dynamicClassName} ${columnClass}`}
             >
               {label}
             </th>

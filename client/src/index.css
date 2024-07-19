@@ -58,16 +58,42 @@ body {
 }
 
 .table {
+  table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.column-position {
+  width: 5%; /* Adjust as needed */
+}
+
+.column-id {
+  width: 10%; /* Adjust as needed */
+}
+
+.column-title {
+  width: 25%; /* Adjust as needed */
+}
+
+.column-definition {
+  width: 35%; /* Adjust as needed */
+}
+
+.column-timestamps {
+  width: 10%; /* Adjust as needed */
+}
+
+.column-contributor {
+  width: 10%; /* Adjust as needed */
+}
+
 .table th {
   background-color: #dddddd; /* Light grey background for header */
   color: #343a40; /* Dark grey text color */
-  padding: 12px 20px; /* Increased padding for header cells */
-  padding-left: 40px;
+  padding: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   border: 1px solid #dee2e6; /* Light grey border */
   font-weight: bold;
   text-align: left;
@@ -78,16 +104,15 @@ body {
 .table th.default {
   cursor: pointer;
   background-repeat: no-repeat;
-  background-position: right center;
-  background-position: left;
+  background-position: right;
   background-size: 25px 25px;
 }
 
 .table th.up {
-  background-image: url('./images/ascending-sorting-24.png');
+  background-image: url('./images/icons8-arrow-up-30.png');
 }
 .table th.down {
-  background-image: url('./images/descending-sorting-24.png');
+  background-image: url('./images/icons8-down-arrow-30.png');
 }
 
 .table td {
@@ -111,7 +136,6 @@ body {
 
 .title-cell {
   font-weight: bold;
-  min-width: 200px;
 }
 
 /* 
