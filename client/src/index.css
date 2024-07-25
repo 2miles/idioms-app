@@ -65,23 +65,25 @@ body {
 }
 
 .column-position {
-  width: 5%; /* Adjust as needed */
+  width: 10%;
 }
 
 .column-id {
-  width: 10%; /* Adjust as needed */
+  min-width: 10%; /* Adjust as needed */
 }
 
 .column-title {
-  width: 25%; /* Adjust as needed */
+  width: 40%; /* Adjust as needed */
 }
 
 .column-definition {
-  width: 35%; /* Adjust as needed */
+  min-width: 300px; /* Adjust as needed */
+  width: 50%; /* Adjust as needed */
 }
 
 .column-timestamps {
-  width: 10%; /* Adjust as needed */
+  min-width: 200px;
+  width: 15%;
 }
 
 .column-contributor {
@@ -249,7 +251,7 @@ body {
   width: max-content;
   border: 1px solid #e9ecef;
   background-color: #f8f9fa;
-  border-radius: 4px;
+  border-radius: 5px;
   z-index: 1;
 }
 
@@ -268,7 +270,6 @@ body {
   cursor: pointer;
   padding: 5px 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
   border: 1px solid #e9ecef;
   background-color: #f8f9fa;
   user-select: none;
@@ -303,7 +304,7 @@ body {
   width: 100%;
   background-color: #fff;
   border: 1px solid #ccc;
-  border-radius: 0 0 4px 4px;
+  border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
@@ -325,6 +326,7 @@ body {
 
 .dropdown-check-list li:hover {
   background-color: #f1f1f1;
+  border-radius: 5px;
 }
 
 .dropdown-check-list label {
@@ -334,4 +336,187 @@ body {
 
 .checkbox-label input[type='checkbox'] {
   margin-right: 10px;
+}
+
+/* .card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  margin: 20px;
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: #343a40;
+  color: #ffffff;
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.card-header h1,
+.card-header h2 {
+  margin: 0;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-body p {
+  margin: 10px 0;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-footer .btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+} */
+
+/* Detail Page */
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  margin: 20px;
+  padding: 20px 40px;
+  border: 1px solid #e0e0e0;
+  font-family: 'Times New Roman', Times, serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.5),
+    rgba(230, 230, 230, 0.7)
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.card-header h1 {
+  font-size: 2em;
+  margin: 0;
+  font-style: italic;
+  font-weight: normal;
+  position: relative;
+  z-index: 1;
+}
+
+.card-header h2 {
+  font-size: 1.5em;
+  margin: 0;
+  font-style: italic;
+  font-weight: normal;
+  color: #555;
+  position: relative;
+  z-index: 1;
+}
+
+.card-body {
+  font-size: 1.2em;
+  line-height: 1.6;
+  z-index: 1;
+}
+
+.card-body p {
+  margin: 10px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.card-footer .btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
 }

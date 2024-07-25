@@ -37,33 +37,40 @@ const DetailPage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [id, setSelectedIdiom]);
 
   return (
-    <div>
+    <div className="card-container">
       {selectedIdiom ? (
         <>
-          <h1>{selectedIdiom.title}</h1>
-          <h2>{selectedIdiom.title_general}</h2>
-          <p>{selectedIdiom.definition}</p>
-          <p>{selectedIdiom.timestamps?.substring(0, 10)}</p>
-          <p>{selectedIdiom.contributor}</p>
-          <p>{selectedIdiom.id}</p>
-          <button
-            className="btn btn-secondary"
-            onClick={(e) => handleUpdate(e, selectedIdiom.id)}
-          >
-            Edit
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={(e) => handleDelete(e, selectedIdiom.id)}
-          >
-            Delete
-          </button>
+          <div className="card">
+            <div className="card-header">
+              <h1>&quot;{selectedIdiom.title}&quot;</h1>
+              <h2>&quot;{selectedIdiom.title_general}&quot;</h2>
+            </div>
+            <div className="card-body">
+              <p>{selectedIdiom.definition}</p>
+              <p>{selectedIdiom.timestamps?.substring(0, 10)}</p>
+              <p>{selectedIdiom.contributor}</p>
+              <p>{selectedIdiom.id}</p>
+            </div>
+            <div className="card-footer">
+              <button
+                className="btn btn-secondary"
+                onClick={(e) => handleUpdate(e, selectedIdiom.id)}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={(e) => handleDelete(e, selectedIdiom.id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </>
       ) : (
-        // or handle the case when selectedIdiom is not available
         <p>Loading...</p>
       )}
     </div>
