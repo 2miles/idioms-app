@@ -18,7 +18,7 @@ const HomePage = () => {
   const [itemsPerPage, setItemsPerPage] = useState(20); // Number of items per page
   const [columnVisibility, setColumnVisibility] = useState({
     position: true,
-    id: false,
+    // id: false,
     title: true,
     definition: true,
     timestamps: false,
