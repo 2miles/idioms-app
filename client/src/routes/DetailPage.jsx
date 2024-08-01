@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import IdiomFinder from '../apis/idiomFinder';
 import { useParams } from 'react-router-dom';
 import { IdiomsContext } from '../context/idiomsContext';
@@ -8,6 +8,7 @@ const DetailPage = () => {
   const { id } = useParams();
   const { idioms, setIdioms } = useContext(IdiomsContext);
   const { selectedIdiom, setSelectedIdiom } = useContext(IdiomsContext);
+  const [examples, setExamples] = useState([]);
   const navigate = useNavigate();
 
   const handleDelete = async (e, id) => {
@@ -32,6 +33,7 @@ const DetailPage = () => {
       try {
         const response = await IdiomFinder.get(`/${id}`);
         setSelectedIdiom(response.data.data.idiom);
+        setExamples(response.data.data.examples);
       } catch (err) {
         console.log(err);
       }
@@ -49,10 +51,17 @@ const DetailPage = () => {
               <h2>&quot;{selectedIdiom.title_general}&quot;</h2>
             </div>
             <div className="card-body">
-              <p>{selectedIdiom.definition}</p>
-              <p>{selectedIdiom.timestamps?.substring(0, 10)}</p>
-              <p>{selectedIdiom.contributor}</p>
-              <p>{selectedIdiom.id}</p>
+              <p># {selectedIdiom.id}</p>
+              {/* <p>Added on {selectedIdiom.timestamps?.substring(0, 10)}</p>
+              <p>{selectedIdiom.contributor}</p> */}
+              <h3>Meaning:</h3>
+              <p className="definition">{selectedIdiom.definition}</p>
+              <h3>Examples:</h3>
+              <ul>
+                {examples.map((example) => (
+                  <li key={example.example_id}>{example.example}</li>
+                ))}
+              </ul>
             </div>
             <div className="card-footer">
               <button

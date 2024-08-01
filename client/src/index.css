@@ -482,11 +482,17 @@ body {
   line-height: 1.6;
   z-index: 1;
 }
+.card-body h3 {
+  margin-top: 30px;
+}
 
 .card-body p {
-  margin: 10px 0;
+  margin: 5px 0;
   position: relative;
   z-index: 1;
+}
+.definition {
+  font-size: 1em;
 }
 
 .card-footer {
