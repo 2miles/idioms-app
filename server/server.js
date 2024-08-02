@@ -12,7 +12,6 @@ const port = process.env.PORT || 3001;
 
 // Middleware
 // Functions to be invoked in between the request and the response
-
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
@@ -157,21 +156,10 @@ app.delete('/api/v1/idioms/:id', async (req, res) => {
   }
 });
 
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);
 });
 
-// module.exports = {
-//   query: (text, params) => pool.query(text, params)
-// };
-
 pool.on('connect', () => {
   console.log('Connected to PostgreSQL database');
 });
-
-// pool.on('error', (err) => {
-//   console.error('Error connecting to PostgreSQL database:', err);
-// });

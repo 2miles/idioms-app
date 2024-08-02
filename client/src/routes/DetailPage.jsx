@@ -9,6 +9,7 @@ const DetailPage = () => {
   const { idioms, setIdioms } = useContext(IdiomsContext);
   const { selectedIdiom, setSelectedIdiom } = useContext(IdiomsContext);
   const [examples, setExamples] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const handleDelete = async (e, id) => {
@@ -34,8 +35,10 @@ const DetailPage = () => {
         const response = await IdiomFinder.get(`/${id}`);
         setSelectedIdiom(response.data.data.idiom);
         setExamples(response.data.data.examples);
+        setLoading(false);
       } catch (err) {
         console.log(err);
+        setLoading(false);
       }
     };
     fetchData();
@@ -43,8 +46,10 @@ const DetailPage = () => {
 
   return (
     <div className="card-container">
-      {selectedIdiom ? (
-        <>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        selectedIdiom && (
           <div className="card">
             <div className="card-header">
               <h1>
@@ -84,9 +89,7 @@ const DetailPage = () => {
               </button>
             </div>
           </div>
-        </>
-      ) : (
-        <p>Loading...</p>
+        )
       )}
     </div>
   );
