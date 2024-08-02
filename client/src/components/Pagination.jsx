@@ -27,7 +27,7 @@ import React from 'react';
 const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
   const pageNumbers = [];
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const maxPageNumbersToShow = 5; // Maximum number of page numbers to show
+  const maxPageNumbersToShow = 3; // Maximum number of page numbers to show
   const halfMaxPages = Math.floor(maxPageNumbersToShow / 2);
 
   // Helper function to add page numbers

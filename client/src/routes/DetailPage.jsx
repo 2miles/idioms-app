@@ -47,8 +47,14 @@ const DetailPage = () => {
         <>
           <div className="card">
             <div className="card-header">
-              <h1>&quot;{selectedIdiom.title}&quot;</h1>
-              <h2>&quot;{selectedIdiom.title_general}&quot;</h2>
+              <h1>
+                &quot;
+                {selectedIdiom.title_general &&
+                selectedIdiom.title_general.trim() !== ''
+                  ? selectedIdiom.title_general
+                  : selectedIdiom.title}
+                &quot;
+              </h1>
             </div>
             <div className="card-body">
               <p># {selectedIdiom.id}</p>

@@ -29,10 +29,28 @@ const TableHead = ({ columns, handleSorting }) => {
             : '';
           const columnClass = `column-${accessor}`; // Use dynamic class name
           return (
+            // <th
+            //   key={accessor}
+            //   onClick={sortable ? () => handleSortingChange(accessor) : null}
+            //   className={`${dynamicClassName} ${columnClass}`}
+            // >
+            //   {label}
+            // </th>
             <th
               key={accessor}
               onClick={sortable ? () => handleSortingChange(accessor) : null}
-              className={`${dynamicClassName} ${columnClass}`}
+              className={`${dynamicClassName} ${columnClass} ${
+                accessor === 'definition'
+                  ? 'definition-column'
+                  : accessor === 'title'
+                  ? 'title-cell'
+                  : accessor === 'timestamps'
+                  ? 'timestamp-column'
+                  : accessor === 'contributor'
+                  ? 'contributor-column'
+                  : ''
+              }
+              }`}
             >
               {label}
             </th>

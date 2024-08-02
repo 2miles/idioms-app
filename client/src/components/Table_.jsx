@@ -6,7 +6,7 @@ const Table = ({ tableData, handleSorting, columnVisibility }) => {
   const columns = [
     { label: '#', accessor: 'position', sortable: true },
     // { label: 'ID', accessor: 'id', sortable: true },
-    { label: 'Title', accessor: 'title', sortable: true },
+    { label: 'Idiom', accessor: 'title', sortable: true },
     { label: 'Definition', accessor: 'definition', sortable: true },
     { label: 'Day', accessor: 'timestamps', sortable: true },
     { label: 'Owner', accessor: 'contributor', sortable: true },

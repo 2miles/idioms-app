@@ -68,26 +68,20 @@ body {
   width: 10%;
 }
 
-.column-id {
-  min-width: 10%; /* Adjust as needed */
+.column-definition {
+  width: 50%;
 }
 
 .column-title {
-  width: 40%; /* Adjust as needed */
-}
-
-.column-definition {
-  min-width: 300px; /* Adjust as needed */
-  width: 50%; /* Adjust as needed */
+  width: 30%;
 }
 
 .column-timestamps {
-  min-width: 200px;
-  width: 15%;
+  width: 20%;
 }
 
 .column-contributor {
-  width: 10%; /* Adjust as needed */
+  width: 20%;
 }
 
 .table th {
@@ -137,7 +131,19 @@ body {
 }
 
 .title-cell {
-  font-weight: bold;
+  font-weight: 550;
+}
+
+@media (max-width: 770px) {
+  .definition-column {
+    display: none;
+  }
+  .timestamp-column {
+    display: none;
+  }
+  .contributor-column {
+    display: none;
+  }
 }
 
 /* 
@@ -231,6 +237,24 @@ body {
   border: 1px solid #e9ecef;
   background-color: #f8f9fa;
   margin-right: 20px; /* Add some margin to separate the dropdown from the pagination links */
+}
+
+/* Media query for small screens */
+@media (max-width: 600px) {
+  .pagination-controls {
+    flex-direction: column;
+    align-items: flex-end; /* Align items to the start of the flex container */
+  }
+
+  .pagination-controls select {
+    margin-bottom: 10px; /* Add some space below the selector */
+    margin-right: 0; /* Remove the right margin */
+  }
+
+  .pagination {
+    justify-content: center; /* Center the pagination links */
+    width: 100%; /* Ensure the pagination takes full width */
+  }
 }
 
 /* 
@@ -338,6 +362,18 @@ body {
   margin-right: 10px;
 }
 
+/* Hide the Column Selector on small screens */
+@media (max-width: 770px) {
+  .dropdown-check-list {
+    display: none;
+  }
+}
+
+/* 
+=============================================================================
+Detail Page 
+=============================================================================
+*/
 /* .card-container {
   display: flex;
   justify-content: center;
@@ -345,81 +381,7 @@ body {
   min-height: 100vh;
   background-color: #f8f9fa;
   padding: 20px;
-}
-
-.card {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  width: 100%;
-  margin: 20px;
-  overflow: hidden;
-}
-
-.card-header {
-  background-color: #343a40;
-  color: #ffffff;
-  padding: 20px;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.card-header h1,
-.card-header h2 {
-  margin: 0;
-}
-
-.card-body {
-  padding: 20px;
-}
-
-.card-body p {
-  margin: 10px 0;
-}
-
-.card-footer {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-top: 1px solid #dee2e6;
-  display: flex;
-  justify-content: space-between;
-}
-
-.card-footer .btn {
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: #ffffff;
-  border: none;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: #ffffff;
-  border: none;
-}
-
-.btn-danger:hover {
-  background-color: #c82333;
 } */
-
-/* Detail Page */
-.card-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f8f9fa;
-  padding: 20px;
-}
 
 .card {
   background-color: #ffffff;
@@ -427,8 +389,9 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 800px;
   width: 100%;
-  margin: 20px;
-  padding: 20px 40px;
+  margin: auto;
+  margin-top: 20px;
+  /* padding: 20px 40px; */
   border: 1px solid #e0e0e0;
   font-family: 'Times New Roman', Times, serif;
   position: relative;
@@ -461,6 +424,7 @@ body {
 .card-header h1 {
   font-size: 2em;
   margin: 0;
+  padding: 20px;
   font-style: italic;
   font-weight: normal;
   position: relative;
@@ -525,4 +489,23 @@ body {
 
 .btn-danger:hover {
   background-color: #c82333;
+}
+
+/* Media query for small screens */
+@media (max-width: 770px) {
+  .card-container {
+    padding: 0;
+  }
+
+  .card {
+    margin: 0;
+  }
+
+  .card-header h1,
+  .card-header h2,
+  .card-body,
+  .card-footer {
+    padding-left: 10px; /* Add some left padding for content */
+    padding-right: 10px; /* Add some right padding for content */
+  }
 }

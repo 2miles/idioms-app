@@ -49,14 +49,23 @@ const TableBody = ({ tableData, columns }) => {
                 } else {
                   cellData = row[accessor] ? row[accessor] : '——';
                 }
-                // Apply truncation to the definition cell
                 if (accessor === 'definition') {
                   cellData = truncateText(cellData, truncateLength);
                 }
                 return (
                   <td
                     key={accessor}
-                    className={accessor === 'title' ? 'title-cell' : ''}
+                    className={
+                      accessor === 'definition'
+                        ? 'definition-column'
+                        : accessor === 'title'
+                        ? 'title-cell'
+                        : accessor === 'timestamps'
+                        ? 'timestamp-column'
+                        : accessor === 'contributor'
+                        ? 'contributor-column'
+                        : ''
+                    }
                   >
                     {cellData}
                   </td>
