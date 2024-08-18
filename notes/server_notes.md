@@ -128,3 +128,18 @@ INSERT INTO idioms_new (id, title, title_general, definition, contributor, times
 SELECT id, title, title_general, definition, contributor, timestamps
 FROM idioms;
 ```
+
+
+## Create blank table
+```
+CREATE TABLE idioms_new (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255),
+    title_general VARCHAR(255),
+    definition TEXT,
+    contributor VARCHAR(50),
+    timestamps TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Populate blank table from csv
