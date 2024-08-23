@@ -43,6 +43,10 @@ const HomePage = () => {
   //   fetchData();
   // }, []);
 
+  // Syncs the local state (filteredData and idiomCount) with the global idioms state from the context.
+  // Runs every time the idioms state changes.
+  // Ensures that any updates to the idioms state (such as adding a new idiom) are reflected in the
+  // local state used for filtering and displaying the idioms, ensuring the view stays up to date.
   useEffect(() => {
     setFilteredIdioms(idioms);
     setIdiomCount(idioms.length);
@@ -53,15 +57,6 @@ const HomePage = () => {
     setFilteredIdioms(filtered);
     setIdiomCount(filtered.length);
   };
-
-  // Syncs the local state (filteredData and idiomCount) with the global idioms state from the context.
-  // Runs every time the idioms state changes.
-  // Ensures that any updates to the idioms state (such as adding a new idiom) are reflected in the
-  // local state used for filtering and displaying the idioms, ensuring the view stays up to date.
-  useEffect(() => {
-    setFilteredIdioms(idioms);
-    setIdiomCount(idioms.length);
-  }, [idioms]);
 
   const handleSorting = (sortField, sortOrder) => {
     if (sortField) {
