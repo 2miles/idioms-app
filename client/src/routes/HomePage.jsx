@@ -98,13 +98,13 @@ const HomePage = () => {
   } of ${idiomCount} idioms`;
 
   return (
-    <div>
+    <div className="page-container">
       <Header />
       <div className="add-idiom-container">
         <AddIdiomCollapsible />
-        <SearchBar handleSearch={handleSearch} idioms={idioms} />
       </div>
       <div className="table-container">
+        <SearchBar handleSearch={handleSearch} idioms={idioms} />
         <div className="pagination-controls">
           <ItemsPerPageSelector
             itemsPerPage={itemsPerPage}

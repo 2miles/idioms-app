@@ -46,7 +46,7 @@ const DetailPage = () => {
   }, [id, setSelectedIdiom]);
 
   return (
-    <>
+    <div className="page-container">
       <div className="card-container">
         {loading ? (
           <p>Loading...</p>
@@ -80,9 +80,9 @@ const DetailPage = () => {
           )
         )}
       </div>
-      <div className="add-idiom-container px-4 pt-4">
+      <div>
         <button className="btn btn-secondary" onClick={handleToggleEdit}>
-          {isEditing ? 'Cancel' : 'Edit Idiom'}
+          {isEditing ? 'Cancel Edit' : 'Edit Idiom'}
         </button>
       </div>
       {isEditing && (
@@ -93,7 +93,7 @@ const DetailPage = () => {
           />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

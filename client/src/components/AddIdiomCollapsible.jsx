@@ -9,12 +9,12 @@ const AddIdiomCollapsible = () => {
   };
 
   return (
-    <div className="add-idiom-container">
+    <div>
       <button
         onClick={handleToggle}
         className={isCollapsed ? 'btn btn-success' : 'btn btn-secondary'}
       >
-        {isCollapsed ? 'Add Idiom' : 'Collapse'}
+        {isCollapsed ? 'Add Idiom' : 'Cancel Add'}
       </button>
 
       {!isCollapsed && (

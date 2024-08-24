@@ -59,8 +59,8 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
   };
 
   return (
-    <div className="mb-4 mx-4">
-      <form onSubmit={handleSubmit} className="add-idiom-form p-4">
+    <div>
+      <form onSubmit={handleSubmit} className="add-idiom-form">
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input
@@ -114,12 +114,14 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
             onChange={(e) => setContributor(e.target.value)}
           />
         </div>
-        <button type="submit" className="btn btn-primary">
-          Update
-        </button>
-        <button type="button" className="btn btn-danger" onClick={onDelete}>
-          Delete
-        </button>
+        <div>
+          <button type="submit" className="btn btn-primary">
+            Update
+          </button>
+          <button type="button" className="btn btn-danger" onClick={onDelete}>
+            Delete
+          </button>
+        </div>
       </form>
     </div>
   );

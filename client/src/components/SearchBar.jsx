@@ -12,10 +12,10 @@ const SearchBar = ({ handleSearch, idioms }) => {
   };
 
   return (
-    <div className="input-group mb-3">
+    <div className="input-group search-bar">
       <input
         type="text"
-        className="form-control m-3"
+        className="form-control"
         placeholder="Search..."
         value={searchTerm}
         onChange={onSearch}

@@ -77,12 +77,10 @@ const AddIdiom = () => {
     : generateInitialTimestamp();
 
   return (
-    <div className="mb-4 mx-4">
+    <div>
       {/* <form action="" classname="add-idiom-form"> */}
       <form
-        className={`add-idiom-form needs-validation ${
-          validated ? 'was-validated' : ''
-        }`}
+        className={`needs-validation ${validated ? 'was-validated' : ''}`}
         noValidate
         onSubmit={handleSubmit}
       >
