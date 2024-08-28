@@ -52,7 +52,7 @@ app.get('/api/v1/idioms/:id', async (req, res) => {
       [req.params.id],
     );
     const examplesQuery = await pool.query(
-      `SELECT * FROM idiom_examples_test WHERE idiom_id = $1`,
+      `SELECT * FROM idioms_examples_test WHERE idiom_id = $1`,
       [req.params.id],
     );
 
