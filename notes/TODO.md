@@ -7,19 +7,19 @@
 - [ ] Comment out the idiom scraper and document it. Like what it does and how to use it. Add it to the repo.
 - [x] go through and clean up the READMEs.
 - [ ] Finish the pern tutorial.
-- [ ] Get a copy of the original idioms_nonum.csv file to put in the repo
+- [x] Get a copy of the original idioms_nonum.csv file to put in the repo
 
 ### Testing
 
 - [ ] Figure out why and how to use Postman
-- [ ] Test all the api routes with new wide data.
+- [x] Test all the api routes with new wide data.
 
 ### Server
 
 ### Client
 
 - [x] Add pagenation feature
-- [ ] fix updateIdiom.jsx !!!
+- [x] fix updateIdiom.jsx !!!
 
 ## Log
 
@@ -48,11 +48,11 @@
 
 7-18-24
 
-- [ ] Eventually remove the id column from the table
+- [x] Eventually remove the id column from the table
 - [ ] fix the delete functionality so that it prompts 'are you sure'
 - [ ] Go back to HomePage after deletion, with 5 second 'deletion successful message'
 - [x] Make teh Detail page look better. Use a card.
 - [x] Change the name of the header labels. title -> idiom, definition -> meaning
-- [ ] Create edit functionallity.
+- [x] Create edit functionallity.
 - [ ] Fix If changing the sorting direction of one of the table columns. Go back to pagination page 1.
 - [ ] Fix Column show dropdown is behind selected pagination page link when table is very short .
