@@ -100,9 +100,7 @@ const HomePage = () => {
   return (
     <div className="page-container">
       <Header />
-      <div className="add-idiom-container">
-        <AddIdiomCollapsible />
-      </div>
+      <AddIdiomCollapsible />
       <div className="table-container">
         <SearchBar handleSearch={handleSearch} idioms={idioms} />
         <div className="pagination-controls">

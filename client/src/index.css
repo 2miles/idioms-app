@@ -3,7 +3,7 @@
 }
 
 body {
-  background-color: #dddddd;
+  background-color: #ddd;
 
   color: #383f4d;
   line-height: 1.5;
@@ -14,8 +14,7 @@ body {
 
 .page-container {
   max-width: 1000px;
-  margin: auto;
-  margin-bottom: 200px;
+  margin: 0 auto 200px;
 }
 
 /* 
@@ -24,17 +23,10 @@ body {
   =============================================================================
   */
 
-.add-idiom-container {
-  border-radius: 5px;
-
-  margin: auto;
-}
-
 .add-idiom-form {
-  background-color: #eeeeee;
+  background-color: #eee;
   border-radius: 5px;
-  margin-top: 16px;
-  margin-bottom: 40px;
+  margin: 16px auto 40px;
   font-size: 16px;
 }
 
@@ -82,16 +74,11 @@ body {
 }
 
 .table-container {
-  margin: auto; /* Add margin for spacing */
-  margin-top: 16px;
-  margin-bottom: 40px;
-  padding: 20px; /* Add padding for spacing */
-  padding-top: 40px;
-
+  margin: 16px auto 40px; /* Add margin for spacing */
+  padding: 20px 20px 40px; /* Add padding for spacing */
   background-color: #efefea; /* Paper color */
   border-radius: 5px; /* Rounded corners for the table container */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-  overflow: auto;
 }
 
 .table {
@@ -150,17 +137,9 @@ body {
 
 .table td {
   padding: 20px 20px; /* Increased padding for table cells */
-  border-bottom: 1.5px solid #dee2e6; /* Light grey border */
+  border-bottom: 3px solid #dee2e6; /* Light grey border */
+  background: #f8f9fa;
 }
-
-.table tbody tr:nth-child(n) td {
-  background: #ffffff; /* White for odd rows */
-  background: #f8f9fa; /* White for odd rows */
-}
-
-/* .table tbody tr:nth-child(2n) td {
-  background: #f8f9fa; 
-} */
 
 /* Add hover effect on table rows */
 .table tbody tr:hover td {
@@ -172,12 +151,8 @@ body {
 }
 
 @media (max-width: 770px) {
-  .definition-column {
-    display: none;
-  }
-  .timestamp-column {
-    display: none;
-  }
+  .definition-column,
+  .timestamp-column,
   .contributor-column {
     display: none;
   }
@@ -369,7 +344,6 @@ body {
   margin-right: 10px;
 }
 
-/* Hide the Column Selector on small screens */
 @media (max-width: 770px) {
   .dropdown-check-list {
     display: none;

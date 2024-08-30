@@ -77,8 +77,7 @@ const AddIdiom = () => {
     : generateInitialTimestamp();
 
   return (
-    <div>
-      {/* <form action="" classname="add-idiom-form"> */}
+    <div className="add-idiom-form">
       <form
         className={`needs-validation ${validated ? 'was-validated' : ''}`}
         noValidate
