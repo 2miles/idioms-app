@@ -47,39 +47,37 @@ const DetailPage = () => {
 
   return (
     <div className="page-container">
-      <div className="card-container">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          selectedIdiom && (
-            <div className="card">
-              <div className="card-header">
-                <h1>
-                  &quot;
-                  {selectedIdiom.title_general &&
-                  selectedIdiom.title_general.trim() !== ''
-                    ? selectedIdiom.title_general
-                    : selectedIdiom.title}
-                  &quot;
-                </h1>
-              </div>
-              <div className="card-body">
-                <p># {selectedIdiom.id}</p>
-                {/* <p>Added on {selectedIdiom.timestamps?.substring(0, 10)}</p>
-              <p>{selectedIdiom.contributor}</p> */}
-                <h3>Meaning:</h3>
-                <p className="definition">{selectedIdiom.definition}</p>
-                <h3>Examples:</h3>
-                <ul>
-                  {examples.map((example) => (
-                    <li key={example.example_id}>{example.example}</li>
-                  ))}
-                </ul>
-              </div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        selectedIdiom && (
+          <div className="card">
+            <div className="card-header">
+              <h1>
+                &quot;
+                {selectedIdiom.title_general &&
+                selectedIdiom.title_general.trim() !== ''
+                  ? selectedIdiom.title_general
+                  : selectedIdiom.title}
+                &quot;
+              </h1>
             </div>
-          )
-        )}
-      </div>
+            <div className="card-body">
+              <p># {selectedIdiom.id}</p>
+              {/* <p>Added on {selectedIdiom.timestamps?.substring(0, 10)}</p>
+              <p>{selectedIdiom.contributor}</p> */}
+              <h3>Meaning:</h3>
+              <p className="definition">{selectedIdiom.definition}</p>
+              <h3>Examples:</h3>
+              <ul>
+                {examples.map((example) => (
+                  <li key={example.example_id}>{example.example}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )
+      )}
       <div>
         <button className="btn btn-secondary" onClick={handleToggleEdit}>
           {isEditing ? 'Cancel Edit' : 'Edit Idiom'}

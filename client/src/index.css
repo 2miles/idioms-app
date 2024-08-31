@@ -17,6 +17,82 @@ body {
   margin: 0 auto 200px;
 }
 
+/* NavBar.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #333;
+  color: white;
+  width: 100%;
+  z-index: 1000;
+}
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+.navbar-logo {
+  margin-right: 4rem;
+}
+
+.navbar-logo a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 0.3rem;
+  cursor: pointer;
+  margin-right: 2rem;
+}
+
+.hamburger .bar {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 770px) {
+  .navbar-links {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #333;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    display: none;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* .navbar-login {
+    display: none;
+  } */
+}
+
 /* 
   =============================================================================
   Add idiom form
@@ -398,6 +474,8 @@ Detail Page
 .card-body {
   font-size: 1.2em;
   line-height: 1.6;
+  padding-left: 50px;
+  padding-right: 50px;
 }
 .card-body h3 {
   margin-top: 30px;
@@ -409,16 +487,6 @@ Detail Page
 
 /* Media query for small screens */
 @media (max-width: 770px) {
-  .card-container {
-    padding: 0;
-  }
-
-  .card {
-    margin: 0;
-  }
-
-  .card-header h1,
-  .card-header h2,
   .card-body {
     padding-left: 10px;
     padding-right: 10px;
