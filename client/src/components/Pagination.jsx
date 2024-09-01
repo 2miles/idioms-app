@@ -65,7 +65,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
       addPageNumber(1);
       if (startPage > 2) {
         pageNumbers.push(
-          <li key="start-ellipsis" className="page-item">
+          <li key="start-ellipsis" className="page-item disabled">
             <span className="page-link">...</span>
           </li>,
         );
@@ -79,7 +79,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pageNumbers.push(
-          <li key="end-ellipsis" className="page-item">
+          <li key="end-ellipsis" className="page-item disabled">
             <span className="page-link">...</span>
           </li>,
         );

@@ -103,26 +103,24 @@ const HomePage = () => {
       <AddIdiomCollapsible />
       <div className="table-container">
         <SearchBar handleSearch={handleSearch} idioms={idioms} />
-        <div className="pagination-controls">
-          <ItemsPerPageSelector
-            itemsPerPage={itemsPerPage}
-            handleItemsPerPageChange={handleItemsPerPageChange}
-          />
-          <Pagination
-            itemsPerPage={itemsPerPage}
-            totalItems={idiomCount}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
-        </div>
-        <div className="flex-container">
-          <div className="showing-text-container">
-            <p className="showing-text">{showingText}</p>
+        <div className="table-controls">
+          <p className="showing-text">{showingText}</p>
+          <div className="right-controls">
+            <ColumnSelector
+              columnVisibility={columnVisibility}
+              handleColumnVisibilityChange={handleColumnVisibilityChange}
+            />
+            <ItemsPerPageSelector
+              itemsPerPage={itemsPerPage}
+              handleItemsPerPageChange={handleItemsPerPageChange}
+            />
+            <Pagination
+              itemsPerPage={itemsPerPage}
+              totalItems={idiomCount}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </div>
-          <ColumnSelector
-            columnVisibility={columnVisibility}
-            handleColumnVisibilityChange={handleColumnVisibilityChange}
-          />
         </div>
 
         <Table
