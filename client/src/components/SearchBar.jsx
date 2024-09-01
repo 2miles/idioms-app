@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import searchIcon from '../images/search-icon-png-24.png';
+import Style from './SearchBar.module.css';
 
 const SearchBar = ({ handleSearch, idioms }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,13 +14,13 @@ const SearchBar = ({ handleSearch, idioms }) => {
   };
 
   return (
-    <div className="search-bar-container">
-      <span className="search-icon-container">
-        <img src={searchIcon} alt="search" className="search-icon" />
+    <div className={Style.container}>
+      <span className={Style.iconContainer}>
+        <img src={searchIcon} alt="search" className={Style.icon} />
       </span>
       <input
         type="text"
-        className="form-control search-input"
+        className={`${Style.input} form-control`}
         placeholder="Search..."
         value={searchTerm}
         onChange={onSearch}

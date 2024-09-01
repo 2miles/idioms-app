@@ -113,39 +113,6 @@ body {
   Table
   =============================================================================
   */
-.search-bar-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  max-width: 600px;
-  width: 100%;
-  margin: auto;
-  margin-bottom: 40px;
-}
-
-.search-icon-container {
-  position: absolute;
-  left: 0; /* Align the container to the left */
-  height: 100%; /* Match the height of the input field */
-  /* background-color: #dddddd;  */
-  padding: 10px; /* Optional: Adjust padding for better spacing */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-}
-
-.search-icon {
-  width: 16px;
-  height: 16px;
-}
-
-.search-input {
-  padding-left: 30px; /* Add space for the icon */
-  width: 100%;
-  border-radius: 20px;
-}
 
 .table-container {
   margin: 16px auto 40px; /* Add margin for spacing */
@@ -265,7 +232,6 @@ body {
   Pagination
   =============================================================================
   */
-
 .page-item {
   margin: 0px;
 }
