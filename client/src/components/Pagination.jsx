@@ -32,11 +32,9 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
 
   // Helper function to add page numbers
   const addPageNumber = (number) => {
+    const isActive = currentPage === number;
     pageNumbers.push(
-      <li
-        key={number}
-        className={`page-item ${currentPage === number ? 'active' : ''}`}
-      >
+      <li key={number} className={`page-item ${isActive ? 'active' : ''}`}>
         <a onClick={() => paginate(number)} href="#" className="page-link">
           {number}
         </a>
