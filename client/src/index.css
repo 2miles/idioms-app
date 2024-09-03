@@ -227,46 +227,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* 
-  =============================================================================
-  Pagination
-  =============================================================================
-  */
-.page-item {
-  margin: 0px;
-}
-.page-link {
-  border: none;
-}
-
-.page-item .page-link {
-  padding: 8px 5px;
-  background-color: #f8f9fa;
-  color: black;
-  cursor: pointer;
-  width: 40px;
-  text-align: center;
-}
-
-.page-item.active .page-link {
-  background-color: #e9ecef;
-  color: black;
-}
-
-.page-item.disabled .page-link {
-  color: #9ca5ae;
-  pointer-events: none;
-}
-
-.page-item .page-link:hover {
-  background-color: #e9ecef;
-}
-
-.page-link:focus {
-  outline: none;
-  box-shadow: none;
-}
-
 .table-controls {
   display: flex;
   justify-content: right;

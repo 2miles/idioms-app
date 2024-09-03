@@ -23,6 +23,7 @@
 //   );
 // };
 import React from 'react';
+import Style from './Pagination.module.css';
 
 const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
   const pageNumbers = [];
@@ -34,8 +35,17 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
   const addPageNumber = (number) => {
     const isActive = currentPage === number;
     pageNumbers.push(
-      <li key={number} className={`page-item ${isActive ? 'active' : ''}`}>
-        <a onClick={() => paginate(number)} href="#" className="page-link">
+      <li
+        key={number}
+        className={`page-item ${Style.pageItem} ${
+          isActive ? `active ${Style.pageItemActive}` : ''
+        }`}
+      >
+        <a
+          onClick={() => paginate(number)}
+          href="#"
+          className={`page-link ${Style.pageLink}`}
+        >
           {number}
         </a>
       </li>,
@@ -63,8 +73,11 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
       addPageNumber(1);
       if (startPage > 2) {
         pageNumbers.push(
-          <li key="start-ellipsis" className="page-item disabled">
-            <span className="page-link">...</span>
+          <li
+            key="start-ellipsis"
+            className={`page-item disabled ${Style.pageItem}`}
+          >
+            <span className={`page-link ${Style.pageLink}`}>...</span>
           </li>,
         );
       }
@@ -77,8 +90,11 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pageNumbers.push(
-          <li key="end-ellipsis" className="page-item disabled">
-            <span className="page-link">...</span>
+          <li
+            key="end-ellipsis"
+            className={`page-item disabled ${Style.pageItem}`}
+          >
+            <span className={`page-link ${Style.pageLink}`}>...</span>
           </li>,
         );
       }
@@ -88,26 +104,32 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
 
   return (
     <nav>
-      <ul className="pagination">
-        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+      <ul className={`pagination ${Style.pagination}`}>
+        <li
+          className={`page-item ${Style.pageItem} ${
+            currentPage === 1 ? `disabled ${Style.pageItemDisabled}` : ''
+          }`}
+        >
           <a
             onClick={() => paginate(currentPage - 1)}
             href="#"
-            className="page-link"
+            className={`page-link ${Style.pageLink}`}
           >
             &lt;
           </a>
         </li>
         {pageNumbers}
         <li
-          className={`page-item ${
-            currentPage === totalPages ? 'disabled' : ''
+          className={`page-item ${Style.pageItem} ${
+            currentPage === totalPages
+              ? `disabled ${Style.pageItemDisabled}`
+              : ''
           }`}
         >
           <a
             onClick={() => paginate(currentPage + 1)}
             href="#"
-            className="page-link"
+            className={`page-link ${Style.pageLink}`}
           >
             &gt;
           </a>
