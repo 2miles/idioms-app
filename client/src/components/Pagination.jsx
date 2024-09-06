@@ -1,64 +1,66 @@
-// const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
-//   const pageNumbers = [];
-
-//   for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-//     pageNumbers.push(i);
-//   }
-
-//   return (
-//     <nav>
-//       <ul className="pagination">
-//         {pageNumbers.map((number) => (
-//           <li
-//             key={number}
-//             className={`page-item ${currentPage === number ? 'active' : ''}`}
-//           >
-//             <a onClick={() => paginate(number)} href="#" className="page-link">
-//               {number}
-//             </a>
-//           </li>
-//         ))}
-//       </ul>
-//     </nav>
-//   );
-// };
 import React from 'react';
-import Style from './Pagination.module.css';
+import styled from 'styled-components';
+
+// Customized Bootstrap pagination
+const PageItem = styled.li`
+  .page-link {
+    padding: 8px 5px;
+    background-color: #f8f9fa;
+    color: black;
+    cursor: pointer;
+    width: 40px;
+    text-align: center;
+    border: none;
+
+    &:hover {
+      background-color: #e9ecef;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  &.disabled .page-link {
+    color: #9ca5ae;
+  }
+
+  &.active .page-link {
+    background-color: lightgray;
+    color: black;
+  }
+
+  &.active .page-link:hover {
+    background-color: lightgray;
+  }
+`;
 
 const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
   const pageNumbers = [];
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const maxPageNumbersToShow = 3; // Maximum number of page numbers to show
+  const maxPageNumbersToShow = 3;
   const halfMaxPages = Math.floor(maxPageNumbersToShow / 2);
 
-  // Helper function to add page numbers
   const addPageNumber = (number) => {
     const isActive = currentPage === number;
     pageNumbers.push(
-      <li
+      <PageItem
         key={number}
-        className={`page-item ${Style.pageItem} ${
-          isActive ? `active ${Style.pageItemActive}` : ''
-        }`}
+        className={`page-item ${isActive ? 'active' : ''}`}
       >
-        <a
-          onClick={() => paginate(number)}
-          href="#"
-          className={`page-link ${Style.pageLink}`}
-        >
+        <a onClick={() => paginate(number)} href="#" className="page-link">
           {number}
         </a>
-      </li>,
+      </PageItem>,
     );
   };
 
   if (totalPages <= maxPageNumbersToShow) {
-    // If the total number of pages is less than or equal to maxPageNumbersToShow, show all pages
     for (let i = 1; i <= totalPages; i++) {
       addPageNumber(i);
     }
   } else {
-    // If there are more pages than maxPageNumbersToShow, show the first, last, and relevant middle pages
     let startPage = Math.max(currentPage - halfMaxPages, 1);
     let endPage = Math.min(currentPage + halfMaxPages, totalPages);
 
@@ -73,12 +75,9 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
       addPageNumber(1);
       if (startPage > 2) {
         pageNumbers.push(
-          <li
-            key="start-ellipsis"
-            className={`page-item disabled ${Style.pageItem}`}
-          >
-            <span className={`page-link ${Style.pageLink}`}>...</span>
-          </li>,
+          <PageItem key="start-ellipsis" className="page-item disabled">
+            <span className="page-link">...</span>
+          </PageItem>,
         );
       }
     }
@@ -90,12 +89,9 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pageNumbers.push(
-          <li
-            key="end-ellipsis"
-            className={`page-item disabled ${Style.pageItem}`}
-          >
-            <span className={`page-link ${Style.pageLink}`}>...</span>
-          </li>,
+          <PageItem key="end-ellipsis" className="page-item disabled">
+            <span className="page-link">...</span>
+          </PageItem>,
         );
       }
       addPageNumber(totalPages);
@@ -104,36 +100,32 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
 
   return (
     <nav>
-      <ul className={`pagination ${Style.pagination}`}>
-        <li
-          className={`page-item ${Style.pageItem} ${
-            currentPage === 1 ? `disabled ${Style.pageItemDisabled}` : ''
-          }`}
+      <ul className="pagination">
+        <PageItem
+          className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}
         >
           <a
             onClick={() => paginate(currentPage - 1)}
             href="#"
-            className={`page-link ${Style.pageLink}`}
+            className="page-link"
           >
             &lt;
           </a>
-        </li>
+        </PageItem>
         {pageNumbers}
-        <li
-          className={`page-item ${Style.pageItem} ${
-            currentPage === totalPages
-              ? `disabled ${Style.pageItemDisabled}`
-              : ''
+        <PageItem
+          className={`page-item ${
+            currentPage === totalPages ? 'disabled' : ''
           }`}
         >
           <a
             onClick={() => paginate(currentPage + 1)}
             href="#"
-            className={`page-link ${Style.pageLink}`}
+            className="page-link"
           >
             &gt;
           </a>
-        </li>
+        </PageItem>
       </ul>
     </nav>
   );
