@@ -1,6 +1,37 @@
 import React, { useState } from 'react';
 import searchIcon from '../images/search-icon-png-24.png';
-import Style from './SearchBar.module.css';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  position: relative;
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 40px;
+`;
+
+const IconContainer = styled.span`
+  position: absolute;
+  left: 0;
+  height: 100%;
+  /* background-color: #dddddd;  */
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+`;
+
+const Icon = styled.img`
+  width: 16px;
+  height: 16px;
+`;
+
+const Input = styled.input`
+  padding-left: 30px;
+  width: 100%;
+  border-radius: 20px;
+`;
 
 const SearchBar = ({ handleSearch, idioms }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,18 +45,18 @@ const SearchBar = ({ handleSearch, idioms }) => {
   };
 
   return (
-    <div className={Style.container}>
-      <span className={Style.iconContainer}>
-        <img src={searchIcon} alt="search" className={Style.icon} />
-      </span>
-      <input
+    <Container>
+      <IconContainer>
+        <Icon src={searchIcon} alt="search" />
+      </IconContainer>
+      <Input
         type="text"
-        className={`${Style.input} form-control`}
+        className="form-control"
         placeholder="Search..."
         value={searchTerm}
         onChange={onSearch}
       />
-    </div>
+    </Container>
   );
 };
 
