@@ -4,7 +4,6 @@ import styled from 'styled-components';
 const ItemsPerPageDropdown = styled.div`
   position: relative;
   display: flex;
-  cursor: pointer;
   user-select: none;
   border: 1px solid #e9ecef;
   background-color: #f8f9fa;
@@ -15,11 +14,12 @@ const ItemsPerPageDropdown = styled.div`
   height: 35px;
 `;
 
-const Selected = styled.span`
+const Anchor = styled.span`
   display: flex;
   align-items: center;
+  cursor: pointer;
 
-  &:after {
+  &::after {
     content: '';
     width: 0;
     height: 0;
@@ -27,15 +27,21 @@ const Selected = styled.span`
     border-right: 6px solid transparent;
     border-top: 6px solid black;
     margin-left: 10px;
+    transition: border-top 0.3s ease, border-bottom 0.3s ease;
   }
-  .visible &::after {
-    border-top: none;
-    border-bottom: 6px solid black;
-  }
+
+  ${(props) =>
+    props.visible &&
+    `
+    &::after {
+      border-top: none;
+      border-bottom: 6px solid black;
+    }
+  `}
 `;
 
-const Options = styled.div`
-  display: block;
+const Options = styled.ul`
+  display: ${(props) => (props.visible ? 'block' : 'none')};
   position: absolute;
   top: calc(100% + 5px);
   right: 0;
@@ -44,14 +50,12 @@ const Options = styled.div`
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
+  padding: 0;
+  list-style: none;
 `;
 
-const Option = styled.div`
+const Option = styled.li`
   padding: 5px 10px;
-  cursor: pointer;
 
   &:hover {
     background-color: #f1f1f1;
@@ -87,20 +91,17 @@ const ItemsPerPageSelector = ({ itemsPerPage, handleItemsPerPageChange }) => {
 
   return (
     <ItemsPerPageDropdown
-      className={showOptions ? 'visible' : ''}
       ref={dropdownRef}
       onClick={() => setShowOptions(!showOptions)}
     >
-      <Selected>{selectedOption} </Selected>
-      {showOptions && (
-        <Options>
-          {options.map((option) => (
-            <Option key={option} onClick={() => handleOptionClick(option)}>
-              {option}
-            </Option>
-          ))}
-        </Options>
-      )}
+      <Anchor visible={showOptions}>{selectedOption} </Anchor>
+      <Options visible={showOptions}>
+        {options.map((option) => (
+          <Option key={option} onClick={() => handleOptionClick(option)}>
+            {option}
+          </Option>
+        ))}
+      </Options>
     </ItemsPerPageDropdown>
   );
 };
