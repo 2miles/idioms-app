@@ -3,8 +3,8 @@ const ColumnSelector = ({ columnVisibility, handleColumnVisibilityChange }) => {
   return (
     <Dropdown
       options={Object.keys(columnVisibility)}
-      selectedOption={columnVisibility}
-      handleOptionChange={handleColumnVisibilityChange}
+      selected={columnVisibility}
+      handleChange={handleColumnVisibilityChange}
       label="Columns"
       isCheckbox={true}
       hideOnSmallScreen={true}

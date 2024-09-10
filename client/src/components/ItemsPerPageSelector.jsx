@@ -6,8 +6,8 @@ const ItemsPerPageSelector = ({ itemsPerPage, handleItemsPerPageChange }) => {
   return (
     <Dropdown
       options={options}
-      selectedOption={itemsPerPage}
-      handleOptionChange={handleItemsPerPageChange}
+      selected={itemsPerPage}
+      handleChange={handleItemsPerPageChange}
     />
   );
 };

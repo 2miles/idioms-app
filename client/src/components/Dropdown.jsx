@@ -78,60 +78,60 @@ const CheckboxLabel = styled.label`
 
 const Dropdown = ({
   options,
-  selectedOption,
-  handleOptionChange,
+  selected,
+  handleChange,
   label,
   hideOnSmallScreen = false,
   isCheckbox = false,
 }) => {
-  const [showOptions, setShowOptions] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowOptions(false);
+        setIsOpen(false);
       }
     };
 
-    if (showOptions) {
+    if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showOptions]);
+  }, [isOpen]);
 
   const displayLabel =
-    typeof selectedOption === 'string' || typeof selectedOption === 'number'
-      ? selectedOption
+    typeof selected === 'string' || typeof selected === 'number'
+      ? selected
       : label;
 
   return (
     <DropdownContainer
       hideOnSmallScreen={hideOnSmallScreen}
       ref={dropdownRef}
-      onClick={() => setShowOptions(!showOptions)}
+      onClick={() => setIsOpen(!isOpen)}
     >
-      <Anchor visible={showOptions}>{displayLabel}</Anchor>
-      <Options visible={showOptions}>
+      <Anchor visible={isOpen}>{displayLabel}</Anchor>
+      <Options visible={isOpen}>
         {options.map((option) => (
           <Option key={option} onClick={(e) => e.stopPropagation()}>
             {isCheckbox ? (
               <CheckboxLabel>
                 <input
                   type="checkbox"
-                  checked={selectedOption[option] || false} // Ensure the value is boolean
-                  onChange={() => handleOptionChange(option)}
+                  checked={selected[option] || false} // Ensure the value is boolean
+                  onChange={() => handleChange(option)}
                 />
                 {option.charAt(0).toUpperCase() + option.slice(1)}
               </CheckboxLabel>
             ) : (
               <span
                 onClick={() => {
-                  handleOptionChange(option);
-                  setShowOptions(false);
+                  handleChange(option);
+                  setIsOpen(false);
                 }}
               >
                 {option}
