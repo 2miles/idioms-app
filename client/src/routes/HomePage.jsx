@@ -7,8 +7,8 @@ import Table from '../components/Table_';
 import AddIdiomCollapsible from '../components/AddIdiomCollapsible';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
-import ItemsPerPageSelector from '../components/ItemsPerPageSelector';
-import ColumnSelector from '../components/ColumnSelector';
+import ItemsPerPageDropdown from '../components/ItemsPerPageDropdown';
+import ColumnDropdown from '../components/ColumnDropdown';
 
 const HomePage = () => {
   const { idioms } = useContext(IdiomsContext);
@@ -106,11 +106,11 @@ const HomePage = () => {
         <div className="table-controls">
           <p className="showing-text">{showingText}</p>
           <div className="right-controls">
-            <ColumnSelector
+            <ColumnDropdown
               columnVisibility={columnVisibility}
               handleColumnVisibilityChange={handleColumnVisibilityChange}
             />
-            <ItemsPerPageSelector
+            <ItemsPerPageDropdown
               itemsPerPage={itemsPerPage}
               handleItemsPerPageChange={handleItemsPerPageChange}
             />
