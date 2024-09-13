@@ -121,7 +121,6 @@ const DetailPage = () => {
             </CardHeader>
             <CardBody className="card-body">
               <p># {selectedIdiom.id}</p>
-              <p>{selectedIdiom.contributor}</p> */}
               <h3>Meaning:</h3>
               <p>{selectedIdiom.definition}</p>
               <h3>Examples:</h3>
