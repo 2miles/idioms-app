@@ -77,13 +77,13 @@ const AddIdiom = () => {
     : generateInitialTimestamp();
 
   return (
-    <div className="add-idiom-form">
+    <div className="form-container">
       <form
         className={`needs-validation ${validated ? 'was-validated' : ''}`}
         noValidate
         onSubmit={handleSubmit}
       >
-        <div>
+        <div className="form-group">
           <label htmlFor="title">Title</label>
           <input
             id="title"
@@ -96,7 +96,7 @@ const AddIdiom = () => {
           />
           <div className="invalid-feedback">Please enter a title.</div>
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="titleGeneral">General title (optional)</label>
           <input
             id="titleGeneral"
@@ -107,7 +107,7 @@ const AddIdiom = () => {
             onChange={(e) => setTitleGeneral(e.target.value)}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="definition">Definition (optional)</label>
           <textarea
             id="definition"
@@ -118,7 +118,7 @@ const AddIdiom = () => {
             rows={3}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="timestamp">Timestamp (optional) :</label>
           <input
             id="timestamp"
@@ -128,7 +128,7 @@ const AddIdiom = () => {
             onChange={handleTimestampChange}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="contributor">Contributor (optional):</label>
           <input
             id="contributor"

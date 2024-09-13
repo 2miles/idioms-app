@@ -97,14 +97,14 @@ body {
   =============================================================================
   */
 
-.add-idiom-form {
+.form-container {
   background-color: #eee;
   border-radius: 5px;
   margin: 16px auto 40px;
   font-size: 16px;
 }
 
-.add-idiom-form div {
+.form-container div {
   padding: 10px;
 }
 

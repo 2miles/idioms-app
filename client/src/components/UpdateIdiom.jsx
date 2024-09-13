@@ -12,7 +12,7 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
   const [definition, setDefinition] = useState(idiom.definition || '');
   const [contributor, setContributor] = useState(idiom.contributor || '');
   const [timestamp, setTimestamp] = useState(null);
-
+  const [validated, setValidated] = useState(false);
   // useEffect(() => {
   //   if (idiom.timestamps) {
   //     const date = new Date(idiom.timestamps);
@@ -33,6 +33,7 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setValidated(true);
     if (title.trim() === '') {
       return; // Prevent form submission if title is empty
     }
@@ -59,8 +60,12 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="add-idiom-form">
+    <div className="form-container">
+      <form
+        className={`needs-validation ${validated ? 'was-validated' : ''}`}
+        noValidate
+        onSubmit={handleSubmit}
+      >
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input
@@ -71,6 +76,7 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+          <div className="invalid-feedback">Please enter a title.</div>
         </div>
         <div className="form-group">
           <label htmlFor="titleGeneral">General title (optional)</label>
