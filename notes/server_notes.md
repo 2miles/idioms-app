@@ -6,11 +6,11 @@ I really wanted to preserve the ordering of the idioms. Since every one of them 
 
 ## Initial data
 
-All the dates and contributor names were manually added by going through my text messages with each person who sent me an idiom. The first n seconds of a given day are assigned to the first n idioms that were sent to me that day. This is how the idioms are sorted. So if I ever need to go back and add an idiom on a given day there will be plenty of 'room' for it.
+All the dates and contributor names were manually added by going through my text messages with each person who sent me an idiom. The first `n` seconds of a given day are assigned to the first `n` idioms that were sent to me that day. This is how the idioms are sorted. So if I ever need to go back and add an idiom on a given day there will be plenty of 'room' for it.
 
 The list had grown to over 1000 idioms before I decided to add to add any extra related data besides the idiom itself.
 
-The timestamp was the first thing I added as I needed a way to preserve the sorting. As I was getting the timestamp for each one, I figured I might as well add the contributor of the idiom too. Since that is kind of fun to know too.
+The timestamp was the first thing I added as I needed a way to preserve the sorting. As I was getting the timestamp for each one, I figured I might as well add the contributor of the idiom too. Since that's also kind of fun to know.
 
 ### Idiom Definitions
 
@@ -114,7 +114,7 @@ ESCAPE '"';
 
 Using GUI delete all tables.
 
-Then run the folling shell command to import the database. It will prompt you for your password
+Then run the following shell command to import the database. It will prompt you for your password
 
 ```shell
 psql -h aws-0-us-west-1.pooler.supabase.com -p 6543 -d postgres -U postgres.erqaqeyusbfwzvftrqjw -f /Users/miles/Code/Github/idioms-app/data/idioms_db_backup.sql

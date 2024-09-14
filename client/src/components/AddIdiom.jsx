@@ -1,21 +1,16 @@
 import React, { useState, useContext } from 'react';
 import IdiomFinder from '../apis/idiomFinder';
+import Datetime from 'react-datetime';
 import { IdiomsContext } from '../context/idiomsContext';
+import 'react-datetime/css/react-datetime.css'; // Import CSS for styling
+import moment from 'moment';
 
 const AddIdiom = () => {
   const generateInitialTimestamp = () => {
-    const ts = new Date();
-    ts.setHours(ts.getHours() - 7); // Adjusting to UTC-7
-    if (ts.getHours() < 0) {
-      ts.setDate(ts.getDate() - 1);
-      ts.setHours(ts.getHours() + 24);
-      if (ts.getUTCMonth() === 11 && ts.getUTCDate() === 31) {
-        ts.setUTCFullYear(ts.getUTCFullYear() - 1);
-      }
-    }
-    // Format the timestamp
-    // 24-5-15 20:33:00
-    return ts.toISOString().slice(0, 19).replace('T', ' ');
+    const now = moment();
+    const offset = -7; // UTC-7
+    const adjustedTime = now.utcOffset(offset * 60); // Convert offset to minutes
+    return adjustedTime; // Format for Datetime input
   };
 
   const { addIdioms } = useContext(IdiomsContext);
@@ -24,7 +19,6 @@ const AddIdiom = () => {
   const [definition, setDefinition] = useState('');
   const [contributor, setContributor] = useState('');
   const [timestamp, setTimestamp] = useState(generateInitialTimestamp());
-  const [manuallyChanged, setManuallyChanged] = useState(false); // Track manual timestamp changes
   const [validated, setValidated] = useState(false);
 
   // Helper function to convert empty strings to null
@@ -33,21 +27,21 @@ const AddIdiom = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidated(true);
-
     if (title.trim() === '') {
       return; // Prevent form submission if title is empty
     }
     try {
+      // Format for the backend to be able to parse properly
+      const formattedTimestamp = timestamp ? timestamp.toISOString() : null;
       const response = await IdiomFinder.post('/', {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
         definition: emptyStringToNull(definition),
-        timestamps: emptyStringToNull(timestampValue), // Use the new timestamp
+        timestamps: emptyStringToNull(formattedTimestamp),
         contributor: emptyStringToNull(contributor),
       });
       if (response.data && response.data.data && response.data.data.idiom) {
         addIdioms(response.data.data.idiom);
-        // Clear form fields after successful submission
         clearFormFields();
       }
     } catch (err) {
@@ -64,17 +58,9 @@ const AddIdiom = () => {
     setValidated(false);
   };
 
-  const handleTimestampChange = (event) => {
-    const input = event.target.value;
-    setTimestamp(input);
-    setManuallyChanged(true);
+  const handleDateChange = (date) => {
+    setTimestamp(date); // Update the timestamp with the selected date
   };
-
-  // If the timestamp is manually changed, use the manually entered timestamp
-  // Otherwise, use the generated timestamp
-  const timestampValue = manuallyChanged
-    ? timestamp
-    : generateInitialTimestamp();
 
   return (
     <div className="form-container">
@@ -120,12 +106,15 @@ const AddIdiom = () => {
         </div>
         <div className="form-group">
           <label htmlFor="timestamp">Timestamp (optional) :</label>
-          <input
+          <Datetime
             id="timestamp"
-            type="datetime-local"
-            className="form-control"
-            value={timestampValue} //use timestamp value instead of timestamp
-            onChange={handleTimestampChange}
+            value={timestamp} // Convert ISO to Date object
+            onChange={handleDateChange}
+            dateFormat="YYYY-MM-DD"
+            timeFormat="HH:mm:ss"
+            inputProps={{
+              className: 'form-control',
+            }}
           />
         </div>
         <div className="form-group">

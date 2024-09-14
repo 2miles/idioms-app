@@ -56,3 +56,8 @@
 - [x] Create edit functionallity.
 - [ ] Fix If changing the sorting direction of one of the table columns. Go back to pagination page 1.
 - [ ] Fix Column show dropdown is behind selected pagination page link when table is very short .
+
+9-12-24
+
+- [ ] Fix delete idiom.
+- [ ]

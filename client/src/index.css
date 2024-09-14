@@ -104,8 +104,12 @@ body {
   font-size: 16px;
 }
 
-.form-container div {
+.form-container .form-group {
   padding: 10px;
+}
+
+.form-container button {
+  margin: 10px;
 }
 
 /* 
