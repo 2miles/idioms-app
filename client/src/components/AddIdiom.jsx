@@ -5,6 +5,22 @@ import TextAreaField from './formFields/TextAreaField';
 import TextField from './formFields/TextField';
 import TimestampField from './formFields/TimestampField';
 import moment from 'moment';
+import styled from 'styled-components';
+
+const FormContainer = styled.div`
+  background-color: #eee;
+  border-radius: 5px;
+  margin: 16px auto 40px;
+  font-size: 16px;
+
+  .form-group {
+    padding: 10px;
+  }
+
+  button {
+    margin: 10px;
+  }
+`;
 
 const AddIdiom = () => {
   const generateInitialTimestamp = () => {
@@ -46,7 +62,7 @@ const AddIdiom = () => {
         clearFormFields();
       }
     } catch (err) {
-      throw new Error('Oops, something went wrong.');
+      console.Error('Error adding idiom.', err);
     }
   };
 
@@ -59,12 +75,8 @@ const AddIdiom = () => {
     setValidated(false);
   };
 
-  const handleDateChange = (date) => {
-    setTimestamp(date); // Update the timestamp with the selected date
-  };
-
   return (
-    <div className="form-container">
+    <FormContainer>
       <form
         className={`needs-validation ${validated ? 'was-validated' : ''}`}
         noValidate
@@ -97,10 +109,7 @@ const AddIdiom = () => {
           label="Timestamp"
           id="timestamp"
           value={timestamp}
-          onChange={handleDateChange}
-          inputProps={{
-            className: 'form-control',
-          }}
+          onChange={setTimestamp}
         />
         <TextField
           label="Contributor"
@@ -115,7 +124,7 @@ const AddIdiom = () => {
           </button>
         </div>
       </form>
-    </div>
+    </FormContainer>
   );
 };
 

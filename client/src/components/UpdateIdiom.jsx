@@ -1,10 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import IdiomFinder from '../apis/idiomFinder';
 import TextAreaField from './formFields/TextAreaField';
 import TextField from './formFields/TextField';
 import TimestampField from './formFields/TimestampField';
 import { IdiomsContext } from '../context/idiomsContext';
 import moment from 'moment';
+import styled from 'styled-components';
+
+const FormContainer = styled.div`
+  background-color: #eee;
+  border-radius: 5px;
+  margin: 16px auto 40px;
+  font-size: 16px;
+
+  .form-group {
+    padding: 10px;
+  }
+
+  button {
+    margin: 10px;
+  }
+`;
 
 const UpdateIdiom = ({ idiom, onDelete }) => {
   const { updateIdiom } = useContext(IdiomsContext);
@@ -12,14 +28,10 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
   const [titleGeneral, setTitleGeneral] = useState(idiom.title_general || '');
   const [definition, setDefinition] = useState(idiom.definition || '');
   const [contributor, setContributor] = useState(idiom.contributor || '');
-  const [timestamp, setTimestamp] = useState(null);
+  const [timestamp, setTimestamp] = useState(
+    idiom.timestamps ? moment(idiom.timestamps) : null,
+  );
   const [validated, setValidated] = useState(false);
-
-  useEffect(() => {
-    if (idiom.timestamps) {
-      setTimestamp(moment(idiom.timestamps));
-    }
-  }, [idiom]);
 
   const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
 
@@ -47,12 +59,8 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
     }
   };
 
-  const handleDateChange = (date) => {
-    setTimestamp(date);
-  };
-
   return (
-    <div className="form-container">
+    <FormContainer>
       <form
         className={`needs-validation ${validated ? 'was-validated' : ''}`}
         noValidate
@@ -82,10 +90,7 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
           label="Timestamp"
           id="timestamp"
           value={timestamp}
-          onChange={handleDateChange}
-          inputProps={{
-            className: 'form-control',
-          }}
+          onChange={setTimestamp}
         />
         <TextField
           label="Contributor"
@@ -102,7 +107,7 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
           </button>
         </div>
       </form>
-    </div>
+    </FormContainer>
   );
 };
 
