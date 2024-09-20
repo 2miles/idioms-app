@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Datetime from 'react-datetime';
 import IdiomFinder from '../apis/idiomFinder';
+import TextAreaField from './formFields/TextAreaField';
+import TextField from './formFields/TextField';
+import TimestampField from './formFields/TimestampField';
 import { IdiomsContext } from '../context/idiomsContext';
-import 'react-datetime/css/react-datetime.css'; // Import CSS for styling
 import moment from 'moment';
 
 const UpdateIdiom = ({ idiom, onDelete }) => {
@@ -13,15 +14,6 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
   const [contributor, setContributor] = useState(idiom.contributor || '');
   const [timestamp, setTimestamp] = useState(null);
   const [validated, setValidated] = useState(false);
-  // useEffect(() => {
-  //   if (idiom.timestamps) {
-  //     const date = new Date(idiom.timestamps);
-  //     const offset = date.getTimezoneOffset() * 60000;
-  //     const localDate = new Date(date.getTime() - offset);
-  //     const formattedTimestamp = localDate.toISOString().slice(0, 19);
-  //     setTimestamp(formattedTimestamp);
-  //   }
-  // }, [idiom]);
 
   useEffect(() => {
     if (idiom.timestamps) {
@@ -66,60 +58,41 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
         noValidate
         onSubmit={handleSubmit}
       >
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            id="title"
-            type="text"
-            className="form-control"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-          <div className="invalid-feedback">Please enter a title.</div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="titleGeneral">General title (optional)</label>
-          <input
-            id="titleGeneral"
-            type="text"
-            className="form-control"
-            value={titleGeneral}
-            onChange={(e) => setTitleGeneral(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="definition">Definition (optional)</label>
-          <textarea
-            id="definition"
-            className="form-control"
-            value={definition}
-            onChange={(e) => setDefinition(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="timestamp">Time (optional)</label>
-          <Datetime
-            id="timestamp"
-            value={timestamp}
-            onChange={handleDateChange}
-            dateFormat="YYYY-MM-DD"
-            timeFormat="HH:mm:ss"
-            inputProps={{ className: 'form-control' }}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="contributor">Contributor (optional)</label>
-          <input
-            id="contributor"
-            type="text"
-            className="form-control"
-            value={contributor}
-            onChange={(e) => setContributor(e.target.value)}
-          />
-        </div>
+        <TextField
+          label="Title"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <TextField
+          label="Title General"
+          id="titleGeneral"
+          value={titleGeneral}
+          onChange={(e) => setTitleGeneral(e.target.value)}
+        />
+        <TextAreaField
+          label="Definition"
+          id="definition"
+          value={definition}
+          onChange={(e) => setDefinition(e.target.value)}
+          rows={3}
+        />
+        <TimestampField
+          label="Timestamp"
+          id="timestamp"
+          value={timestamp}
+          onChange={handleDateChange}
+          inputProps={{
+            className: 'form-control',
+          }}
+        />
+        <TextField
+          label="Contributor"
+          id="contributor"
+          value={contributor}
+          onChange={(e) => setContributor(e.target.value)}
+        />
         <div>
           <button type="submit" className="btn btn-primary">
             Update

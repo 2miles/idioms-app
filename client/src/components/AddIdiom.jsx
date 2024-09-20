@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
-import IdiomFinder from '../apis/idiomFinder';
-import Datetime from 'react-datetime';
 import { IdiomsContext } from '../context/idiomsContext';
-import 'react-datetime/css/react-datetime.css'; // Import CSS for styling
+import IdiomFinder from '../apis/idiomFinder';
+import TextAreaField from './formFields/TextAreaField';
+import TextField from './formFields/TextField';
+import TimestampField from './formFields/TimestampField';
 import moment from 'moment';
 
 const AddIdiom = () => {
@@ -69,65 +70,45 @@ const AddIdiom = () => {
         noValidate
         onSubmit={handleSubmit}
       >
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            id="title"
-            type="text"
-            className="form-control"
-            placeholder="Pull yourself up by your bootstraps"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-          <div className="invalid-feedback">Please enter a title.</div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="titleGeneral">General title (optional)</label>
-          <input
-            id="titleGeneral"
-            type="text"
-            className="form-control"
-            placeholder="Pull (oneself) up by (one's) (own) bootstraps"
-            value={titleGeneral}
-            onChange={(e) => setTitleGeneral(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="definition">Definition (optional)</label>
-          <textarea
-            id="definition"
-            className="form-control"
-            placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
-            value={definition}
-            onChange={(e) => setDefinition(e.target.value)}
-            rows={3}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="timestamp">Timestamp (optional) :</label>
-          <Datetime
-            id="timestamp"
-            value={timestamp} // Convert ISO to Date object
-            onChange={handleDateChange}
-            dateFormat="YYYY-MM-DD"
-            timeFormat="HH:mm:ss"
-            inputProps={{
-              className: 'form-control',
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="contributor">Contributor (optional):</label>
-          <input
-            id="contributor"
-            type="text"
-            className="form-control"
-            placeholder="Miles"
-            value={contributor}
-            onChange={(e) => setContributor(e.target.value)}
-          />
-        </div>
+        <TextField
+          label="Title"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Pull yourself up by your bootstraps"
+          required
+        />
+        <TextField
+          label="Title General"
+          id="titleGeneral"
+          value={titleGeneral}
+          onChange={(e) => setTitleGeneral(e.target.value)}
+          placeholder="Pull (oneself) up by (one's) (own) bootstraps"
+        />
+        <TextAreaField
+          label="Definition"
+          id="definition"
+          value={titleGeneral}
+          onChange={(e) => setDefinition(e.target.value)}
+          placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
+          rows={3}
+        />
+        <TimestampField
+          label="Timestamp"
+          id="timestamp"
+          value={timestamp}
+          onChange={handleDateChange}
+          inputProps={{
+            className: 'form-control',
+          }}
+        />
+        <TextField
+          label="Contributor"
+          id="contributor"
+          placeholder="Miles"
+          value={contributor}
+          onChange={(e) => setContributor(e.target.value)}
+        />
         <div>
           <button type="submit" className="btn btn-primary">
             Add
