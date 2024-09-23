@@ -60,4 +60,9 @@
 9-12-24
 
 - [ ] Fix delete idiom.
-- [ ]
+
+9-21-24
+
+- [x] Add 7 hours to the timestamp column in all rows of idioms_test
+- [x] Update the addIdiom form to adjust to this change
+- [x] Update the updateIdiom form to adjust to this change

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { IdiomsContext } from '../context/idiomsContext';
 import UpdateIdiom from '../components/UpdateIdiom';
 import styled from 'styled-components';
+import moment from 'moment';
 
 const Card = styled.div`
   &.card {
@@ -121,6 +122,11 @@ const DetailPage = () => {
             </CardHeader>
             <CardBody className="card-body">
               <p># {selectedIdiom.id}</p>
+              <p>
+                {'Added on '}
+                {moment(selectedIdiom.timestamps).format('MM-DD-YY')}
+              </p>
+
               <h3>Meaning:</h3>
               <p>{selectedIdiom.definition}</p>
               <h3>Examples:</h3>

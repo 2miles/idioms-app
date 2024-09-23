@@ -42,8 +42,10 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
       return; // Prevent form submission if title is empty
     }
     try {
-      // Convert the timestamp back to an ISO string for submission
-      const formattedTimestamp = timestamp ? timestamp.toISOString() : null;
+      // Format for the backend and remove milliseconds
+      const formattedTimestamp = timestamp
+        ? timestamp.toISOString().split('.')[0] + 'Z'
+        : null;
       const response = await IdiomFinder.put(`/${idiom.id}`, {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),

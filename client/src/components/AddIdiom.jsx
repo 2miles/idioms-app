@@ -23,19 +23,12 @@ const FormContainer = styled.div`
 `;
 
 const AddIdiom = () => {
-  const generateInitialTimestamp = () => {
-    const now = moment();
-    const offset = -7; // UTC-7
-    const adjustedTime = now.utcOffset(offset * 60); // Convert offset to minutes
-    return adjustedTime; // Format for Datetime input
-  };
-
   const { addIdioms } = useContext(IdiomsContext);
   const [title, setTitle] = useState('');
   const [titleGeneral, setTitleGeneral] = useState('');
   const [definition, setDefinition] = useState('');
   const [contributor, setContributor] = useState('');
-  const [timestamp, setTimestamp] = useState(generateInitialTimestamp());
+  const [timestamp, setTimestamp] = useState(moment());
   const [validated, setValidated] = useState(false);
 
   // Helper function to convert empty strings to null
@@ -48,8 +41,10 @@ const AddIdiom = () => {
       return; // Prevent form submission if title is empty
     }
     try {
-      // Format for the backend to be able to parse properly
-      const formattedTimestamp = timestamp ? timestamp.toISOString() : null;
+      // Format for the backend and remove milliseconds
+      const formattedTimestamp = timestamp
+        ? timestamp.toISOString().split('.')[0] + 'Z'
+        : null;
       const response = await IdiomFinder.post('/', {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
@@ -71,7 +66,7 @@ const AddIdiom = () => {
     setTitleGeneral('');
     setDefinition('');
     setContributor('');
-    setTimestamp(generateInitialTimestamp());
+    setTimestamp(moment());
     setValidated(false);
   };
 
