@@ -1,5 +1,12 @@
 // InputField.jsx
 import React from 'react';
+import styled from 'styled-components';
+
+const StyledInput = styled.input`
+  &::placeholder {
+    color: #adb5bd;
+  }
+`;
 
 const TextField = ({
   id,
@@ -12,7 +19,7 @@ const TextField = ({
   return (
     <div className="form-group">
       <label htmlFor={id}>{label}</label>
-      <input
+      <StyledInput
         type="text"
         className="form-control"
         id={id}

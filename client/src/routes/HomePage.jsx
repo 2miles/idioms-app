@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-
 import { IdiomsContext } from '../context/idiomsContext';
-
+import styled from 'styled-components';
+import PageContainer from '../components/PageContainer';
 import Header from '../components/Header';
 import Table from '../components/Table_';
 import AddIdiomCollapsible from '../components/AddIdiomCollapsible';
@@ -9,6 +9,37 @@ import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
 import ItemsPerPageDropdown from '../components/ItemsPerPageDropdown';
 import ColumnDropdown from '../components/ColumnDropdown';
+
+const TableSection = styled.div`
+  margin: 16px auto 40px;
+  padding: 20px 20px 40px;
+  background-color: #efefea;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const TableControls = styled.div`
+  display: flex;
+  justify-content: right !important;
+  align-items: center;
+
+  @media (max-width: 660px) {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+`;
+
+const ShowingText = styled.p`
+  margin-right: auto;
+  font-size: 18px;
+  margin-bottom: 0px;
+  color: #383f4d;
+`;
+
+const RightControls = styled.div`
+  display: flex;
+  margin-top: 10px;
+`;
 
 const HomePage = () => {
   const { idioms } = useContext(IdiomsContext);
@@ -24,24 +55,6 @@ const HomePage = () => {
     timestamps: false,
     contributor: false,
   });
-  // Fetches idioms from an API.
-  // Runs only once when the component mounts (or if setIdioms were to change).
-  // Sets both the global idioms state (via context) and local state (filteredData and idiomCount).
-  // crucial for initially loading data from the server when the component mounts.
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await IdiomFinder.get('/');
-  //       const data = response.data.data.idioms;
-  //       setIdioms(data);
-  //       setFilteredIdioms(data);
-  //       setIdiomCount(data.length);
-  //     } catch (err) {
-  //       console.error('Error fetching data:', err);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
 
   // Syncs the local state (filteredData and idiomCount) with the global idioms state from the context.
   // Runs every time the idioms state changes.
@@ -98,14 +111,14 @@ const HomePage = () => {
   } of ${idiomCount} idioms`;
 
   return (
-    <div className="page-container">
+    <PageContainer>
       <Header />
       <AddIdiomCollapsible />
-      <div className="table-container">
+      <TableSection>
         <SearchBar handleSearch={handleSearch} idioms={idioms} />
-        <div className="table-controls">
-          <p className="showing-text">{showingText}</p>
-          <div className="right-controls">
+        <TableControls>
+          <ShowingText>{showingText}</ShowingText>
+          <RightControls>
             <ColumnDropdown
               columnVisibility={columnVisibility}
               handleColumnVisibilityChange={handleColumnVisibilityChange}
@@ -120,23 +133,24 @@ const HomePage = () => {
               paginate={paginate}
               currentPage={currentPage}
             />
-          </div>
-        </div>
-
+          </RightControls>
+        </TableControls>
         <Table
           tableData={currentItems}
           handleSorting={handleSorting}
           columnVisibility={columnVisibility}
         />
-        <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={idiomCount}
-          paginate={paginate}
-          currentPage={currentPage}
-          handleItemsPerPageChange={handleItemsPerPageChange}
-        />
-      </div>
-    </div>
+        <TableControls>
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={idiomCount}
+            paginate={paginate}
+            currentPage={currentPage}
+            handleItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </TableControls>
+      </TableSection>
+    </PageContainer>
   );
 };
 

@@ -1,5 +1,12 @@
 // TextAreaField.jsx
 import React from 'react';
+import styled from 'styled-components';
+
+const StyledTextArea = styled.input`
+  &::placeholder {
+    color: #adb5bd;
+  }
+`;
 
 const TextAreaField = ({
   label,
@@ -11,12 +18,12 @@ const TextAreaField = ({
   return (
     <div className="form-group">
       <label>{label}</label>
-      <textarea
+      <StyledTextArea
+        className="form-control"
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         rows={rows}
-        className="form-control"
       />
     </div>
   );

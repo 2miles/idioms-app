@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import IdiomFinder from '../apis/idiomFinder';
 import { useParams } from 'react-router-dom';
 import { IdiomsContext } from '../context/idiomsContext';
+import PageContainer from '../components/PageContainer';
 import UpdateIdiom from '../components/UpdateIdiom';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -104,7 +105,7 @@ const DetailPage = () => {
   }, [id, setSelectedIdiom]);
 
   return (
-    <div className="page-container">
+    <PageContainer>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -145,14 +146,12 @@ const DetailPage = () => {
         </button>
       </div>
       {isEditing && (
-        <div className="add-idiom-container">
-          <UpdateIdiom
-            idiom={selectedIdiom}
-            onDelete={() => handleDelete(null, selectedIdiom.id)}
-          />
-        </div>
+        <UpdateIdiom
+          idiom={selectedIdiom}
+          onDelete={() => handleDelete(null, selectedIdiom.id)}
+        />
       )}
-    </div>
+    </PageContainer>
   );
 };
 
