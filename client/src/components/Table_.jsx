@@ -1,15 +1,23 @@
 import React from 'react';
 import TableBody from './TableBody';
 import TableHead from './TableHead';
+import styled from 'styled-components';
+
+export const StyledTable = styled.table`
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+`;
 
 const Table = ({ tableData, handleSorting, columnVisibility }) => {
   const columns = [
-    { label: '#', accessor: 'position', sortable: true },
+    { label: '#', accessor: 'position' },
     // { label: 'ID', accessor: 'id', sortable: true },
-    { label: 'Idiom', accessor: 'title', sortable: true },
-    { label: 'Definition', accessor: 'definition', sortable: true },
-    { label: 'Day', accessor: 'timestamps', sortable: true },
-    { label: 'Owner', accessor: 'contributor', sortable: true },
+    { label: 'Idiom', accessor: 'title' },
+    { label: 'Definition', accessor: 'definition' },
+    { label: 'Day', accessor: 'timestamps' },
+    { label: 'Owner', accessor: 'contributor' },
   ];
 
   const visibleColumns = columns.filter(
@@ -18,12 +26,12 @@ const Table = ({ tableData, handleSorting, columnVisibility }) => {
 
   return (
     <>
-      <table className="table">
+      <StyledTable className="table">
         <TableHead columns={visibleColumns} handleSorting={handleSorting} />
         {tableData && (
           <TableBody columns={visibleColumns} tableData={tableData} />
         )}
-      </table>
+      </StyledTable>
     </>
   );
 };

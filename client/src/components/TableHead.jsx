@@ -1,4 +1,49 @@
 import { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import arrowUp from '../images/icons8-arrow-up-30.png';
+import arrowDown from '../images/icons8-down-arrow-30.png';
+
+const StyledTh = styled.th`
+  background-color: #dddddd !important; //override bootstrap
+  font-weight: 500;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: 25px 25px;
+
+  width: ${(props) => {
+    const widths = {
+      position: '10%',
+      definition: '50%',
+      title: '30%',
+      timestamps: '20%',
+      contributor: '20%',
+    };
+    return widths[props.accessor] || 'auto';
+  }};
+
+  ${(props) =>
+    props.sortOrder === 'asc' &&
+    `
+      background-image: url('../images/icons8-arrow-up-30.png');
+      background-image: url(${arrowUp});
+    `}
+
+  ${(props) =>
+    props.sortOrder === 'desc' &&
+    `
+      background-image: url('../images/icons8-down-arrow-30.png');
+      background-image: url(${arrowDown});
+    `}
+
+  @media (max-width: 770px) {
+    ${(props) =>
+      ['definition', 'timestamps', 'contributor'].includes(props.accessor) &&
+      `
+        display: none;
+      `}
+  }
+`;
 
 const TableHead = ({ columns, handleSorting }) => {
   const [sortField, setSortField] = useState('position');
@@ -19,41 +64,18 @@ const TableHead = ({ columns, handleSorting }) => {
   return (
     <thead>
       <tr>
-        {columns.map(({ label, accessor, sortable }) => {
-          const dynamicClassName = sortable
-            ? sortField === accessor && sortOrder === 'asc'
-              ? 'up'
-              : sortField === accessor && sortOrder == 'desc'
-              ? 'down'
-              : 'default'
-            : '';
-          const columnClass = `column-${accessor}`; // Use dynamic class name
+        {columns.map(({ label, accessor }) => {
+          const currentSortOrder =
+            sortField === accessor ? sortOrder : 'default'; // Use 'none' for non-sorted columns
           return (
-            // <th
-            //   key={accessor}
-            //   onClick={sortable ? () => handleSortingChange(accessor) : null}
-            //   className={`${dynamicClassName} ${columnClass}`}
-            // >
-            //   {label}
-            // </th>
-            <th
+            <StyledTh
               key={accessor}
-              onClick={sortable ? () => handleSortingChange(accessor) : null}
-              className={`${dynamicClassName} ${columnClass} ${
-                accessor === 'definition'
-                  ? 'definition-column'
-                  : accessor === 'title'
-                  ? 'title-cell'
-                  : accessor === 'timestamps'
-                  ? 'timestamp-column'
-                  : accessor === 'contributor'
-                  ? 'contributor-column'
-                  : ''
-              }
-              }`}
+              accessor={accessor}
+              sortOrder={currentSortOrder} // Pass sortOrder only for the sorted column
+              onClick={() => handleSortingChange(accessor)}
             >
               {label}
-            </th>
+            </StyledTh>
           );
         })}
       </tr>

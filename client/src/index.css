@@ -29,60 +29,6 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
 }
 
-.table {
-  table-layout: fixed;
-  width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.column-position {
-  width: 10%;
-}
-
-.column-definition {
-  width: 50%;
-}
-
-.column-title {
-  width: 30%;
-}
-
-.column-timestamps {
-  width: 20%;
-}
-
-.column-contributor {
-  width: 20%;
-}
-
-.table th {
-  background-color: #dddddd; /* Light grey background for header */
-  color: #343a40; /* Dark grey text color */
-  padding: 20px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  border: 1px solid #dee2e6; /* Light grey border */
-  font-weight: bold;
-  text-align: left;
-}
-
-.table th.up,
-.table th.down,
-.table th.default {
-  cursor: pointer;
-  background-repeat: no-repeat;
-  background-position: right;
-  background-size: 25px 25px;
-}
-
-.table th.up {
-  background-image: url('./images/icons8-arrow-up-30.png');
-}
-.table th.down {
-  background-image: url('./images/icons8-down-arrow-30.png');
-}
-
 .table td {
   padding: 20px 20px; /* Increased padding for table cells */
   border-bottom: 3px solid #dee2e6; /* Light grey border */
