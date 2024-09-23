@@ -1,7 +1,7 @@
 import React from 'react';
+import styled from 'styled-components';
 import TableBody from './TableBody';
 import TableHead from './TableHead';
-import styled from 'styled-components';
 
 export const StyledTable = styled.table`
   table-layout: fixed;

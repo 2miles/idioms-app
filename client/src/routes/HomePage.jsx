@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { IdiomsContext } from '../context/idiomsContext';
 import styled from 'styled-components';
+
+import { IdiomsContext } from '../context/idiomsContext';
 import PageContainer from '../components/PageContainer';
 import Header from '../components/Header';
 import Table from '../components/Table_';

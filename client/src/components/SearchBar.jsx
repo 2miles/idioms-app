@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import searchIcon from '../images/search-icon-png-24.png';
 import styled from 'styled-components';
+import searchIcon from '../images/search-icon-png-24.png';
 
 const Container = styled.div`
   position: relative;

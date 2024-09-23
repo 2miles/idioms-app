@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
+import styled from 'styled-components';
+import moment from 'moment';
+
 import { IdiomsContext } from '../context/idiomsContext';
 import IdiomFinder from '../apis/idiomFinder';
 import TextAreaField from './formFields/TextAreaField';
 import TextField from './formFields/TextField';
 import TimestampField from './formFields/TimestampField';
-import moment from 'moment';
-import styled from 'styled-components';
 
 const FormContainer = styled.div`
   background-color: #eee;

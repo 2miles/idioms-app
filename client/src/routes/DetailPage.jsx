@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import IdiomFinder from '../apis/idiomFinder';
 import { useParams } from 'react-router-dom';
-import { IdiomsContext } from '../context/idiomsContext';
-import PageContainer from '../components/PageContainer';
-import UpdateIdiom from '../components/UpdateIdiom';
 import styled from 'styled-components';
 import moment from 'moment';
+
+import { IdiomsContext } from '../context/idiomsContext';
+import IdiomFinder from '../apis/idiomFinder';
+import PageContainer from '../components/PageContainer';
+import UpdateIdiom from '../components/UpdateIdiom';
 
 const Card = styled.div`
   &.card {
