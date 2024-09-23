@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import moment from 'moment';
 
 // Utility function to truncate text and add "..."
 const truncateLength = 150;
@@ -10,6 +12,34 @@ const truncateText = (text, maxLength) => {
   }
   return text.substring(0, maxLength) + '...';
 };
+
+const StyledTr = styled.tr`
+  &:hover {
+    td {
+      background-color: #f5f5f5 !important;
+    }
+  }
+`;
+
+const StyledTd = styled.td`
+  padding: 20px 20px !important;
+  border-bottom: 3px solid #dee2e6 !important;
+  background: #f8f9fa !important;
+
+  ${(props) =>
+    props.accessor === 'title' &&
+    `
+      font-weight: 550;
+  `}
+
+  @media (max-width: 770px) {
+    ${(props) =>
+      ['definition', 'timestamps', 'contributor'].includes(props.accessor) &&
+      `
+        display: none;
+      `}
+  }
+`;
 
 // Renders the rows of a table based on the provided data and column definitions.
 // It uses the useNavigate hook to navigate to a detailed view of a selected idiom when a row is clicked.
@@ -27,25 +57,11 @@ const TableBody = ({ tableData, columns }) => {
         // Iterates over each item in tableData. Each data item represents a row in the table.
         tableData.map((row) => {
           return (
-            <tr key={row.id} onClick={() => handleRowClick(row.id)}>
+            <StyledTr key={row.id} onClick={() => handleRowClick(row.id)}>
               {columns.map(({ accessor }) => {
                 let cellData;
                 if (accessor === 'timestamps') {
-                  // Format the date
-                  const options = {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: '2-digit',
-                  };
-                  cellData = new Date(row[accessor]).toLocaleDateString(
-                    undefined, // LOCALE, I think this can be changed to my timezone to simplify things a bit?
-                    options,
-                  );
-
-                  // Split the date by '/'
-                  const parts = cellData.split('/');
-                  // Rearrange the parts and join them with '-'
-                  cellData = `${parts[0]}-${parts[1]}-${parts[2]}`;
+                  cellData = moment(row[accessor]).format('MM-DD-YY'); // Format the date as MM-DD-YY
                 } else {
                   cellData = row[accessor] ? row[accessor] : '——';
                 }
@@ -53,30 +69,17 @@ const TableBody = ({ tableData, columns }) => {
                   cellData = truncateText(cellData, truncateLength);
                 }
                 return (
-                  <td
-                    key={accessor}
-                    className={
-                      accessor === 'definition'
-                        ? 'definition-column'
-                        : accessor === 'title'
-                        ? 'title-cell'
-                        : accessor === 'timestamps'
-                        ? 'timestamp-column'
-                        : accessor === 'contributor'
-                        ? 'contributor-column'
-                        : ''
-                    }
-                  >
+                  <StyledTd key={accessor} accessor={accessor}>
                     {cellData}
-                  </td>
+                  </StyledTd>
                 );
               })}
-            </tr>
+            </StyledTr>
           );
         })
       ) : (
         <tr>
-          <td colSpan={columns.length}>No data available</td>
+          <StyledTd colSpan={columns.length}>No data available</StyledTd>
         </tr>
       )}
     </tbody>
