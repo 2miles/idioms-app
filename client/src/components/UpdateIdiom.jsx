@@ -1,9 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
-import Datetime from 'react-datetime';
+import React, { useContext, useState } from 'react';
+import moment from 'moment';
+import styled from 'styled-components';
+
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
-import 'react-datetime/css/react-datetime.css'; // Import CSS for styling
-import moment from 'moment';
+import TextAreaField from './formFields/TextAreaField';
+import TextField from './formFields/TextField';
+import TimestampField from './formFields/TimestampField';
+
+const FormContainer = styled.div`
+  background-color: #eee;
+  border-radius: 5px;
+  margin: 16px auto 40px;
+  font-size: 16px;
+
+  .form-group {
+    padding: 10px;
+  }
+
+  button {
+    margin: 10px;
+  }
+`;
 
 const UpdateIdiom = ({ idiom, onDelete }) => {
   const { updateIdiom } = useContext(IdiomsContext);
@@ -11,34 +29,24 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
   const [titleGeneral, setTitleGeneral] = useState(idiom.title_general || '');
   const [definition, setDefinition] = useState(idiom.definition || '');
   const [contributor, setContributor] = useState(idiom.contributor || '');
-  const [timestamp, setTimestamp] = useState(null);
-
-  // useEffect(() => {
-  //   if (idiom.timestamps) {
-  //     const date = new Date(idiom.timestamps);
-  //     const offset = date.getTimezoneOffset() * 60000;
-  //     const localDate = new Date(date.getTime() - offset);
-  //     const formattedTimestamp = localDate.toISOString().slice(0, 19);
-  //     setTimestamp(formattedTimestamp);
-  //   }
-  // }, [idiom]);
-
-  useEffect(() => {
-    if (idiom.timestamps) {
-      setTimestamp(moment(idiom.timestamps));
-    }
-  }, [idiom]);
+  const [timestamp, setTimestamp] = useState(
+    idiom.timestamps ? moment(idiom.timestamps) : null,
+  );
+  const [validated, setValidated] = useState(false);
 
   const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setValidated(true);
     if (title.trim() === '') {
       return; // Prevent form submission if title is empty
     }
     try {
-      // Convert the timestamp back to an ISO string for submission
-      const formattedTimestamp = timestamp ? timestamp.toISOString() : null;
+      // Format for the backend and remove milliseconds
+      const formattedTimestamp = timestamp
+        ? timestamp.toISOString().split('.')[0] + 'Z'
+        : null;
       const response = await IdiomFinder.put(`/${idiom.id}`, {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
@@ -54,66 +62,45 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
     }
   };
 
-  const handleDateChange = (date) => {
-    setTimestamp(date);
-  };
-
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="add-idiom-form">
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            id="title"
-            type="text"
-            className="form-control"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="titleGeneral">General title (optional)</label>
-          <input
-            id="titleGeneral"
-            type="text"
-            className="form-control"
-            value={titleGeneral}
-            onChange={(e) => setTitleGeneral(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="definition">Definition (optional)</label>
-          <textarea
-            id="definition"
-            className="form-control"
-            value={definition}
-            onChange={(e) => setDefinition(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="timestamp">Time (optional)</label>
-          <Datetime
-            id="timestamp"
-            value={timestamp}
-            onChange={handleDateChange}
-            dateFormat="YYYY-MM-DD"
-            timeFormat="HH:mm:ss"
-            inputProps={{ className: 'form-control' }}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="contributor">Contributor (optional)</label>
-          <input
-            id="contributor"
-            type="text"
-            className="form-control"
-            value={contributor}
-            onChange={(e) => setContributor(e.target.value)}
-          />
-        </div>
+    <FormContainer>
+      <form
+        className={`needs-validation ${validated ? 'was-validated' : ''}`}
+        noValidate
+        onSubmit={handleSubmit}
+      >
+        <TextField
+          label="Title"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <TextField
+          label="Title General"
+          id="titleGeneral"
+          value={titleGeneral}
+          onChange={(e) => setTitleGeneral(e.target.value)}
+        />
+        <TextAreaField
+          label="Definition"
+          id="definition"
+          value={definition}
+          onChange={(e) => setDefinition(e.target.value)}
+          rows={3}
+        />
+        <TimestampField
+          label="Timestamp"
+          id="timestamp"
+          value={timestamp}
+          onChange={setTimestamp}
+        />
+        <TextField
+          label="Contributor"
+          id="contributor"
+          value={contributor}
+          onChange={(e) => setContributor(e.target.value)}
+        />
         <div>
           <button type="submit" className="btn btn-primary">
             Update
@@ -123,7 +110,7 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
           </button>
         </div>
       </form>
-    </div>
+    </FormContainer>
   );
 };
 

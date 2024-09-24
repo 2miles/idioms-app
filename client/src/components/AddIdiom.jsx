@@ -1,30 +1,35 @@
 import React, { useState, useContext } from 'react';
-import IdiomFinder from '../apis/idiomFinder';
+import styled from 'styled-components';
+import moment from 'moment';
+
 import { IdiomsContext } from '../context/idiomsContext';
+import IdiomFinder from '../apis/idiomFinder';
+import TextAreaField from './formFields/TextAreaField';
+import TextField from './formFields/TextField';
+import TimestampField from './formFields/TimestampField';
+
+const FormContainer = styled.div`
+  background-color: #eee;
+  border-radius: 5px;
+  margin: 16px auto 40px;
+  font-size: 16px;
+
+  .form-group {
+    padding: 10px;
+  }
+
+  button {
+    margin: 10px;
+  }
+`;
 
 const AddIdiom = () => {
-  const generateInitialTimestamp = () => {
-    const ts = new Date();
-    ts.setHours(ts.getHours() - 7); // Adjusting to UTC-7
-    if (ts.getHours() < 0) {
-      ts.setDate(ts.getDate() - 1);
-      ts.setHours(ts.getHours() + 24);
-      if (ts.getUTCMonth() === 11 && ts.getUTCDate() === 31) {
-        ts.setUTCFullYear(ts.getUTCFullYear() - 1);
-      }
-    }
-    // Format the timestamp
-    // 24-5-15 20:33:00
-    return ts.toISOString().slice(0, 19).replace('T', ' ');
-  };
-
   const { addIdioms } = useContext(IdiomsContext);
   const [title, setTitle] = useState('');
   const [titleGeneral, setTitleGeneral] = useState('');
   const [definition, setDefinition] = useState('');
   const [contributor, setContributor] = useState('');
-  const [timestamp, setTimestamp] = useState(generateInitialTimestamp());
-  const [manuallyChanged, setManuallyChanged] = useState(false); // Track manual timestamp changes
+  const [timestamp, setTimestamp] = useState(moment());
   const [validated, setValidated] = useState(false);
 
   // Helper function to convert empty strings to null
@@ -33,25 +38,27 @@ const AddIdiom = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidated(true);
-
     if (title.trim() === '') {
       return; // Prevent form submission if title is empty
     }
     try {
+      // Format for the backend and remove milliseconds
+      const formattedTimestamp = timestamp
+        ? timestamp.toISOString().split('.')[0] + 'Z'
+        : null;
       const response = await IdiomFinder.post('/', {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
         definition: emptyStringToNull(definition),
-        timestamps: emptyStringToNull(timestampValue), // Use the new timestamp
+        timestamps: emptyStringToNull(formattedTimestamp),
         contributor: emptyStringToNull(contributor),
       });
       if (response.data && response.data.data && response.data.data.idiom) {
         addIdioms(response.data.data.idiom);
-        // Clear form fields after successful submission
         clearFormFields();
       }
     } catch (err) {
-      throw new Error('Oops, something went wrong.');
+      console.Error('Error adding idiom.', err);
     }
   };
 
@@ -60,92 +67,60 @@ const AddIdiom = () => {
     setTitleGeneral('');
     setDefinition('');
     setContributor('');
-    setTimestamp(generateInitialTimestamp());
+    setTimestamp(moment());
     setValidated(false);
   };
 
-  const handleTimestampChange = (event) => {
-    const input = event.target.value;
-    setTimestamp(input);
-    setManuallyChanged(true);
-  };
-
-  // If the timestamp is manually changed, use the manually entered timestamp
-  // Otherwise, use the generated timestamp
-  const timestampValue = manuallyChanged
-    ? timestamp
-    : generateInitialTimestamp();
-
   return (
-    <div className="add-idiom-form">
+    <FormContainer>
       <form
         className={`needs-validation ${validated ? 'was-validated' : ''}`}
         noValidate
         onSubmit={handleSubmit}
       >
-        <div>
-          <label htmlFor="title">Title</label>
-          <input
-            id="title"
-            type="text"
-            className="form-control"
-            placeholder="Pull yourself up by your bootstraps"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-          <div className="invalid-feedback">Please enter a title.</div>
-        </div>
-        <div>
-          <label htmlFor="titleGeneral">General title (optional)</label>
-          <input
-            id="titleGeneral"
-            type="text"
-            className="form-control"
-            placeholder="Pull (oneself) up by (one's) (own) bootstraps"
-            value={titleGeneral}
-            onChange={(e) => setTitleGeneral(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="definition">Definition (optional)</label>
-          <textarea
-            id="definition"
-            className="form-control"
-            placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
-            value={definition}
-            onChange={(e) => setDefinition(e.target.value)}
-            rows={3}
-          />
-        </div>
-        <div>
-          <label htmlFor="timestamp">Timestamp (optional) :</label>
-          <input
-            id="timestamp"
-            type="datetime-local"
-            className="form-control"
-            value={timestampValue} //use timestamp value instead of timestamp
-            onChange={handleTimestampChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="contributor">Contributor (optional):</label>
-          <input
-            id="contributor"
-            type="text"
-            className="form-control"
-            placeholder="Miles"
-            value={contributor}
-            onChange={(e) => setContributor(e.target.value)}
-          />
-        </div>
+        <TextField
+          label="Title"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Pull yourself up by your bootstraps"
+          required
+        />
+        <TextField
+          label="Title General"
+          id="titleGeneral"
+          value={titleGeneral}
+          onChange={(e) => setTitleGeneral(e.target.value)}
+          placeholder="Pull (oneself) up by (one's) (own) bootstraps"
+        />
+        <TextAreaField
+          label="Definition"
+          id="definition"
+          value={titleGeneral}
+          onChange={(e) => setDefinition(e.target.value)}
+          placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
+          rows={3}
+        />
+        <TimestampField
+          label="Timestamp"
+          id="timestamp"
+          value={timestamp}
+          onChange={setTimestamp}
+        />
+        <TextField
+          label="Contributor"
+          id="contributor"
+          placeholder="Miles"
+          value={contributor}
+          onChange={(e) => setContributor(e.target.value)}
+        />
         <div>
           <button type="submit" className="btn btn-primary">
             Add
           </button>
         </div>
       </form>
-    </div>
+    </FormContainer>
   );
 };
 

@@ -1,8 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import IdiomFinder from '../apis/idiomFinder';
 import { useParams } from 'react-router-dom';
+
 import { IdiomsContext } from '../context/idiomsContext';
+import IdiomFinder from '../apis/idiomFinder';
+import PageContainer from '../components/PageContainer';
 import UpdateIdiom from '../components/UpdateIdiom';
+import DetailCard from '../components/DetailCard';
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -46,36 +49,12 @@ const DetailPage = () => {
   }, [id, setSelectedIdiom]);
 
   return (
-    <div className="page-container">
+    <PageContainer>
       {loading ? (
         <p>Loading...</p>
       ) : (
         selectedIdiom && (
-          <div className="card">
-            <div className="card-header">
-              <h1>
-                &quot;
-                {selectedIdiom.title_general &&
-                selectedIdiom.title_general.trim() !== ''
-                  ? selectedIdiom.title_general
-                  : selectedIdiom.title}
-                &quot;
-              </h1>
-            </div>
-            <div className="card-body">
-              <p># {selectedIdiom.id}</p>
-              {/* <p>Added on {selectedIdiom.timestamps?.substring(0, 10)}</p>
-              <p>{selectedIdiom.contributor}</p> */}
-              <h3>Meaning:</h3>
-              <p className="definition">{selectedIdiom.definition}</p>
-              <h3>Examples:</h3>
-              <ul>
-                {examples.map((example) => (
-                  <li key={example.example_id}>{example.example}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <DetailCard selectedIdiom={selectedIdiom} examples={examples} />
         )
       )}
       <div>
@@ -84,14 +63,12 @@ const DetailPage = () => {
         </button>
       </div>
       {isEditing && (
-        <div className="add-idiom-container">
-          <UpdateIdiom
-            idiom={selectedIdiom}
-            onDelete={() => handleDelete(null, selectedIdiom.id)}
-          />
-        </div>
+        <UpdateIdiom
+          idiom={selectedIdiom}
+          onDelete={() => handleDelete(null, selectedIdiom.id)}
+        />
       )}
-    </div>
+    </PageContainer>
   );
 };
 
