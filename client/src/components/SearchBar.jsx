@@ -5,8 +5,8 @@ import searchIcon from '../images/search-icon-png-24.png';
 const Container = styled.div`
   position: relative;
   max-width: 600px;
-  margin: auto;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  margin-right: 3px;
 `;
 
 const IconContainer = styled.span`
@@ -30,17 +30,49 @@ const Icon = styled.img`
 const Input = styled.input`
   padding-left: 30px;
   width: 100%;
-  border-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 `;
 
-const SearchBar = ({ handleSearch, idioms }) => {
+const SearchBar = ({ handleSearch, idioms, activeSearchColumn }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  // const onSearch = (e) => {
+  //   const value = e.target.value;
+  //   setSearchTerm(value);
+  //   if (value.trim() === '') {
+  //     handleSearch(idioms);
+  //   } else {
+  //     const filtered = idioms.filter((idiom) =>
+  //       idiom[activeSearchColumn]
+  //         ?.toLowerCase()
+  //         .includes(e.target.value.toLowerCase()),
+  //     );
+  //     handleSearch(filtered);
+  //   }
+  // };
   const onSearch = (e) => {
-    setSearchTerm(e.target.value);
-    const filtered = idioms.filter((idiom) =>
-      idiom.title.toLowerCase().includes(e.target.value.toLowerCase()),
-    );
+    const searchTerm = e.target.value;
+    setSearchTerm(searchTerm);
+    // If searchTerm is empty, reset to full idiom list
+    if (searchTerm === '') {
+      handleSearch(idioms);
+      return;
+    }
+    const filtered = idioms.filter((idiom) => {
+      const columnData = idiom[activeSearchColumn];
+      // Check if column data is a number
+      if (typeof columnData === 'number') {
+        return columnData === Number(searchTerm); // Compare for equality if searching in a number field
+      }
+      // Otherwise, handle it as a string comparison using .includes()
+      return columnData
+        ?.toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    });
     handleSearch(filtered);
   };
 

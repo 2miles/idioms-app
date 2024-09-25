@@ -6,7 +6,7 @@
 
 ## Styled components Refactor
 
-- [ ] Merge styled-components into main.
+- [x] Merge styled-components into main.
 
 ## CSS organization
 
@@ -94,7 +94,9 @@
 - [x] Update the addIdiom form to adjust to this change
 - [x] Update the updateIdiom form to adjust to this change
 
-9-23-24
+9-25-24
+
+- [ ] Integrate the search column dropdown into the search bar
 
 # Doubles
 

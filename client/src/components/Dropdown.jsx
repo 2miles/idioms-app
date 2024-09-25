@@ -14,6 +14,17 @@ const DropdownContainer = styled.div`
   padding: 0px 10px;
   height: 35px;
 
+  ${(props) =>
+    props.variant === 'searchColumn' &&
+    `
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    background-color: white;
+    height: 37px;
+  `}
+
   @media (max-width: 770px) {
     display: ${(props) => (props.hideOnSmallScreen ? 'none' : 'flex')};
   }
@@ -75,6 +86,7 @@ const Dropdown = ({
   options,
   closeOnSelect,
   onOptionClick,
+  variant,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -109,6 +121,7 @@ const Dropdown = ({
       hideOnSmallScreen={hideOnSmallScreen}
       ref={dropdownRef}
       onClick={() => setIsOpen(!isOpen)}
+      variant={variant}
     >
       <Anchor visible={isOpen}>{label}</Anchor>
       <Options visible={isOpen}>

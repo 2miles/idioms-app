@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+
 import SearchBar from './SearchBar';
 import Table from './Table_';
 import Pagination from './Pagination';
 import ItemsPerPageDropdown from './ItemsPerPageDropdown';
 import ColumnDropdown from './ColumnDropdown';
+import SearchColumnDropdown from './SearchColumnDropdown'; // Import the new dropdown
 
 const TableSectionWrapper = styled.div`
   margin: 16px auto 40px;
@@ -37,11 +39,18 @@ const RightControls = styled.div`
   margin-top: 10px;
 `;
 
+const SearchAndFilterWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
 const TableSection = ({ idioms }) => {
   const [filteredIdioms, setFilteredIdioms] = useState(idioms);
   const [idiomCount, setIdiomCount] = useState(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [activeSearchColumn, setActiveSearchColumn] = useState('title'); // Default active column
   const [columnVisibility, setColumnVisibility] = useState({
     position: true,
     title: true,
@@ -55,6 +64,11 @@ const TableSection = ({ idioms }) => {
     setFilteredIdioms(filtered);
     setIdiomCount(filtered.length);
     setCurrentPage(1);
+  };
+
+  // Handle the search column change
+  const handleSearchColumnChange = (column) => {
+    setActiveSearchColumn(column);
   };
 
   useEffect(() => {
@@ -101,7 +115,18 @@ const TableSection = ({ idioms }) => {
 
   return (
     <TableSectionWrapper>
-      <SearchBar handleSearch={handleSearch} idioms={idioms} />
+      <SearchAndFilterWrapper>
+        <SearchBar
+          handleSearch={handleSearch}
+          idioms={idioms}
+          activeSearchColumn={activeSearchColumn}
+        />
+        <SearchColumnDropdown
+          activeColumn={activeSearchColumn}
+          handleColumnChange={handleSearchColumnChange}
+        />
+      </SearchAndFilterWrapper>
+      {/* <SearchBar handleSearch={handleSearch} idioms={idioms} /> */}
       <TableControls>
         <ShowingText>{showingText}</ShowingText>
         <RightControls>
@@ -132,7 +157,6 @@ const TableSection = ({ idioms }) => {
           totalItems={idiomCount}
           paginate={paginate}
           currentPage={currentPage}
-          handleItemsPerPageChange={handleItemsPerPageChange}
         />
       </TableControls>
     </TableSectionWrapper>
