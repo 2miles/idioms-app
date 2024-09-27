@@ -73,7 +73,7 @@ const SearchBar = ({
       });
       handleSearch(filtered);
     }
-  }, [searchTerm, activeSearchColumn, idioms, handleSearch]);
+  }, [searchTerm, activeSearchColumn, idioms]);
 
   const onSearch = (e) => {
     setSearchTerm(e.target.value);
