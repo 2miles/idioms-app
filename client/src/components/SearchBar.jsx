@@ -6,7 +6,10 @@ import SearchColumnDropdown from './SearchColumnDropdown';
 const Container = styled.div`
   position: relative;
   margin-bottom: 20px;
-  width: 50%;
+  width: 60%;
+  @media (max-width: 660px) {
+    width: 100%;
+  }
 `;
 
 const IconContainer = styled.span`

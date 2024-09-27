@@ -123,7 +123,6 @@ const TableSection = ({ idioms }) => {
           handleSearchColumnChange={handleSearchColumnChange}
         />
       </SearchAndFilterWrapper>
-      {/* <SearchBar handleSearch={handleSearch} idioms={idioms} /> */}
       <TableControls>
         <ShowingText>{showingText}</ShowingText>
         <RightControls>
