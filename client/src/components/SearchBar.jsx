@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import searchIcon from '../images/search-icon-png-24.png';
 import SearchColumnDropdown from './SearchColumnDropdown';
@@ -56,24 +56,27 @@ const SearchBar = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const onSearch = (e) => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
+  // Effect to update search results whenever the column changes
+  useEffect(() => {
     if (searchTerm === '') {
-      handleSearch(idioms);
-      return;
+      handleSearch(idioms); // Show all idioms if search is empty
+    } else {
+      const filtered = idioms.filter((idiom) => {
+        const columnData = idiom[activeSearchColumn];
+        if (typeof columnData === 'number') {
+          return columnData === Number(searchTerm);
+        }
+        return columnData
+          ?.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      });
+      handleSearch(filtered);
     }
-    const filtered = idioms.filter((idiom) => {
-      const columnData = idiom[activeSearchColumn];
-      if (typeof columnData === 'number') {
-        return columnData === Number(searchTerm);
-      }
-      return columnData
-        ?.toString()
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-    });
-    handleSearch(filtered);
+  }, [searchTerm, activeSearchColumn, idioms, handleSearch]);
+
+  const onSearch = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
