@@ -46,6 +46,11 @@
 - [ ] Watch youtube about it
 - [ ] Convert project to typescript
 
+## Search Column Dropdown
+
+- [ ] Integrate the search column dropdown into the search bar
+- [ ] Bug fix: timestamp column search not working
+
 # Log
 
 3-21-24:
@@ -95,8 +100,6 @@
 - [x] Update the updateIdiom form to adjust to this change
 
 9-25-24
-
-- [ ] Integrate the search column dropdown into the search bar
 
 # Doubles
 

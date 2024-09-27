@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import searchIcon from '../images/search-icon-png-24.png';
+import SearchColumnDropdown from './SearchColumnDropdown';
 
 const Container = styled.div`
   position: relative;
-  max-width: 600px;
   margin-bottom: 20px;
-  margin-right: 3px;
+  width: 50%;
 `;
 
 const IconContainer = styled.span`
   position: absolute;
-  left: 0;
+  left: 10px;
   height: 100%;
   /* background-color: #dddddd;  */
-  padding: 10px;
+  padding: 4;
   display: flex;
   align-items: center;
   justify-content: center;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
+  z-index: 1;
 `;
 
 const Icon = styled.img`
@@ -28,46 +29,42 @@ const Icon = styled.img`
 `;
 
 const Input = styled.input`
+  position: relative;
   padding-left: 30px;
+  padding-right: 120px; /* Reserve space for the dropdown */
   width: 100%;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
+  border-radius: 20px;
 `;
 
-const SearchBar = ({ handleSearch, idioms, activeSearchColumn }) => {
+const DropdownWrapper = styled.div`
+  position: absolute;
+  top: 9px;
+  right: 1px;
+  height: 95%;
+  display: flex;
+  align-items: center;
+`;
+
+const SearchBar = ({
+  handleSearch,
+  idioms,
+  activeSearchColumn,
+  handleSearchColumnChange,
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // const onSearch = (e) => {
-  //   const value = e.target.value;
-  //   setSearchTerm(value);
-  //   if (value.trim() === '') {
-  //     handleSearch(idioms);
-  //   } else {
-  //     const filtered = idioms.filter((idiom) =>
-  //       idiom[activeSearchColumn]
-  //         ?.toLowerCase()
-  //         .includes(e.target.value.toLowerCase()),
-  //     );
-  //     handleSearch(filtered);
-  //   }
-  // };
   const onSearch = (e) => {
     const searchTerm = e.target.value;
     setSearchTerm(searchTerm);
-    // If searchTerm is empty, reset to full idiom list
     if (searchTerm === '') {
       handleSearch(idioms);
       return;
     }
     const filtered = idioms.filter((idiom) => {
       const columnData = idiom[activeSearchColumn];
-      // Check if column data is a number
       if (typeof columnData === 'number') {
-        return columnData === Number(searchTerm); // Compare for equality if searching in a number field
+        return columnData === Number(searchTerm);
       }
-      // Otherwise, handle it as a string comparison using .includes()
       return columnData
         ?.toString()
         .toLowerCase()
@@ -88,6 +85,12 @@ const SearchBar = ({ handleSearch, idioms, activeSearchColumn }) => {
         value={searchTerm}
         onChange={onSearch}
       />
+      <DropdownWrapper>
+        <SearchColumnDropdown
+          activeColumn={activeSearchColumn}
+          handleColumnChange={handleSearchColumnChange}
+        />
+      </DropdownWrapper>
     </Container>
   );
 };

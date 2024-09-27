@@ -12,20 +12,25 @@ const DropdownContainer = styled.div`
   margin-right: 20px;
   margin-bottom: 1rem;
   padding: 0px 10px;
-  height: 35px;
-
-  ${(props) =>
-    props.variant === 'searchColumn' &&
-    `
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+  align-items: center;
+  height: 100%
+    ${(props) =>
+      props.variant === 'searchColumn' &&
+      `
+    border-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     background-color: white;
-    height: 37px;
+    height: 100%;
+    margin-right: 0px;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: 2px solid #e9ecef;
   `}
-
-  @media (max-width: 770px) {
+    @media (max-width: 770px) {
     display: ${(props) => (props.hideOnSmallScreen ? 'none' : 'flex')};
   }
 `;
@@ -65,7 +70,7 @@ const Options = styled.ul`
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1;
+  z-index: 4;
   padding: 0;
   list-style: none;
 `;

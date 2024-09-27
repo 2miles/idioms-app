@@ -6,7 +6,6 @@ import Table from './Table_';
 import Pagination from './Pagination';
 import ItemsPerPageDropdown from './ItemsPerPageDropdown';
 import ColumnDropdown from './ColumnDropdown';
-import SearchColumnDropdown from './SearchColumnDropdown'; // Import the new dropdown
 
 const TableSectionWrapper = styled.div`
   margin: 16px auto 40px;
@@ -42,6 +41,7 @@ const RightControls = styled.div`
 const SearchAndFilterWrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 10px;
 `;
 
@@ -120,10 +120,7 @@ const TableSection = ({ idioms }) => {
           handleSearch={handleSearch}
           idioms={idioms}
           activeSearchColumn={activeSearchColumn}
-        />
-        <SearchColumnDropdown
-          activeColumn={activeSearchColumn}
-          handleColumnChange={handleSearchColumnChange}
+          handleSearchColumnChange={handleSearchColumnChange}
         />
       </SearchAndFilterWrapper>
       {/* <SearchBar handleSearch={handleSearch} idioms={idioms} /> */}
