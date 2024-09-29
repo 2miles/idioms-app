@@ -1,11 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { IdiomsContext } from '../context/idiomsContext';
 import IdiomFinder from '../apis/idiomFinder';
 import PageContainer from '../components/PageContainer';
 import UpdateIdiom from '../components/UpdateIdiom';
 import DetailCard from '../components/DetailCard';
+
+const UpdateButtonWrapper = styled.div`
+  margin-top: 20px !important;
+`;
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -57,11 +62,11 @@ const DetailPage = () => {
           <DetailCard selectedIdiom={selectedIdiom} examples={examples} />
         )
       )}
-      <div>
+      <UpdateButtonWrapper>
         <button className="btn btn-secondary" onClick={handleToggleEdit}>
           {isEditing ? 'Cancel Edit' : 'Edit Idiom'}
         </button>
-      </div>
+      </UpdateButtonWrapper>
       {isEditing && (
         <UpdateIdiom
           idiom={selectedIdiom}

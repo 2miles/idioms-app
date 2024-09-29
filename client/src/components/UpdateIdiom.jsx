@@ -10,6 +10,7 @@ import TimestampField from './formFields/TimestampField';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
+  border: 1px solid var(--color-ui-border);
   border-radius: 5px;
   margin: 16px auto 40px;
   font-size: 16px;
@@ -22,6 +23,19 @@ const FormContainer = styled.div`
 
   & button {
     margin-top: 40px !important;
+  }
+`;
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start; // Ensures the buttons start aligned on the left
+
+  button {
+    margin: 20px;
+  }
+
+  .btn-danger {
+    margin-left: auto; // This pushes the delete button to the right
   }
 `;
 
@@ -103,14 +117,14 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
           value={contributor}
           onChange={(e) => setContributor(e.target.value)}
         />
-        <div>
+        <ButtonsWrapper>
           <button type="submit" className="btn btn-primary">
             Update
           </button>
           <button type="button" className="btn btn-danger" onClick={onDelete}>
             Delete
           </button>
-        </div>
+        </ButtonsWrapper>
       </form>
     </FormContainer>
   );
