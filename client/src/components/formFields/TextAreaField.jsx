@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const StyledTextArea = styled.input`
+const StyledTextArea = styled.textarea`
   &::placeholder {
     color: #adb5bd;
   }

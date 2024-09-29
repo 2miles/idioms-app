@@ -38,6 +38,11 @@ const DetailPage = () => {
     setIsEditing(!isEditing);
   };
 
+  // Scroll to the top when the component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
