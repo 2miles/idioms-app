@@ -16,6 +16,7 @@ const truncateText = (text, maxLength) => {
 const StyledTr = styled.tr`
   border-left: 1px solid var(--color-ui-border) !important;
   border-right: 1px solid var(--color-ui-border) !important;
+  cursor: pointer;
 
   &:hover {
     td {
