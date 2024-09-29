@@ -9,16 +9,18 @@ import ColumnDropdown from './ColumnDropdown';
 
 const TableSectionWrapper = styled.div`
   margin: 16px auto 40px;
-  padding: 20px 20px 40px;
-  background-color: #efefea;
+  background-color: var(--color-canvas);
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const TableControls = styled.div`
   display: flex;
   justify-content: right;
   align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  padding-top: 16px;
 
   @media (max-width: 660px) {
     flex-direction: column;
@@ -28,9 +30,10 @@ const TableControls = styled.div`
 
 const ShowingText = styled.p`
   margin-right: auto;
+  white-space: nowrap;
   font-size: 18px;
   margin-bottom: 0px;
-  color: #383f4d;
+  color: var(--color-text-primary);
 `;
 
 const RightControls = styled.div`

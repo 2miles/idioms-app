@@ -15,7 +15,7 @@ const HomePage = () => {
 
   return (
     <PageContainer>
-      <Header />
+      {/* <Header /> */}
       <AddIdiomCollapsible />
       <TableSection idioms={filteredIdioms} />
     </PageContainer>

@@ -9,7 +9,8 @@ import TextField from './formFields/TextField';
 import TimestampField from './formFields/TimestampField';
 
 const FormContainer = styled.div`
-  background-color: #eee;
+  background-color: var(--color-ui-primary);
+  border: 1px solid var(--color-ui-border);
   border-radius: 5px;
   margin: 16px auto 40px;
   font-size: 16px;

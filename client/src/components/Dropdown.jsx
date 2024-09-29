@@ -2,37 +2,41 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 // Styled components
+
 const DropdownContainer = styled.div`
   position: relative;
   display: flex;
   user-select: none;
-  border: 1px solid #e9ecef;
-  background-color: #f8f9fa;
+  border: 1px solid var(--color-ui-border);
+  background-color: var(--color-ui-primary);
   border-radius: 5px;
   margin-right: 20px;
   margin-bottom: 1rem;
   padding: 0px 10px;
   align-items: center;
-  height: 100%
-    ${(props) =>
-      props.variant === 'searchColumn' &&
-      `
-    border-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    background-color: white;
-    height: 100%;
-    margin-right: 0px;
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-    border-left: 2px solid #e9ecef;
-  `}
-    @media (max-width: 770px) {
+
+  /* Media query for small screens */
+  @media (max-width: 780px) {
     display: ${(props) => (props.hideOnSmallScreen ? 'none' : 'flex')};
   }
+
+  ${(props) =>
+    props.variant === 'searchColumn' &&
+    `
+      border: 1px solid var(--color-ui-border) !important;
+      border-radius: 0px;
+      border-bottom-left-radius: 0px;
+      border-top-left-radius: 0px;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      background-color: var(--color-ui-primary);
+      height: 100%;
+      margin-right: 0px;
+      border-top: none !important;
+      border-right: none !important;
+      border-bottom: none !important;
+      border-left: 2px solid var(--color-ui-border);
+    `}
 `;
 
 const Anchor = styled.span`
@@ -46,7 +50,7 @@ const Anchor = styled.span`
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid black;
+    border-top: 6px solid var(--color-text-primary);
     margin-left: 10px;
     transition: border-top 0.3s ease, border-bottom 0.3s ease;
   }
@@ -56,7 +60,7 @@ const Anchor = styled.span`
     `
     &::after {
       border-top: none;
-      border-bottom: 6px solid black;
+      border-bottom: 6px solid var(--color-text-primary);
     }
   `}
 `;
@@ -66,8 +70,7 @@ const Options = styled.ul`
   position: absolute;
   top: calc(100% + 5px);
   right: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: var(--color-ui-primary);
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 4;
@@ -80,7 +83,7 @@ const Option = styled.li`
   cursor: pointer;
 
   &:hover {
-    background-color: #f1f1f1;
+    background-color: var(--hilite-ui-primary);
   }
 `;
 

@@ -10,11 +10,11 @@ const Card = styled.div`
       rgba(230, 230, 230, 0.7)
     );
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    margin: 20px auto;
     border: 1px solid #e0e0e0;
     font-family: 'Times New Roman', Times, serif;
     overflow: hidden;
+
+    margin-top: 40px;
   }
 `;
 

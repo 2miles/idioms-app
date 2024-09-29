@@ -16,7 +16,6 @@ const IconContainer = styled.span`
   position: absolute;
   left: 10px;
   height: 100%;
-  /* background-color: #dddddd;  */
   padding: 4;
   display: flex;
   align-items: center;
@@ -37,6 +36,7 @@ const Input = styled.input`
   padding-right: 120px; /* Reserve space for the dropdown */
   width: 100%;
   border-radius: 20px;
+  border: 1px solid var(--color-ui-border) !important;
 `;
 
 const DropdownWrapper = styled.div`

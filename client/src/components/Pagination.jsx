@@ -5,15 +5,16 @@ import styled from 'styled-components';
 const PageItem = styled.li`
   .page-link {
     padding: 8px 5px;
-    background-color: #f8f9fa;
-    color: black;
+    background-color: var(--color-ui-primary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-ui-border) !important;
     cursor: pointer;
     width: 40px;
     text-align: center;
     border: none;
 
     &:hover {
-      background-color: #e9ecef;
+      background-color: var(--hilite-ui-primary);
     }
 
     &:focus {
@@ -23,16 +24,16 @@ const PageItem = styled.li`
   }
 
   &.disabled .page-link {
-    color: #9ca5ae;
+    color: var(--dim-text-primary);
   }
 
   &.active .page-link {
-    background-color: lightgray;
-    color: black;
+    background-color: var(--color-brand-primary);
+    color: var(--color-text-primary);
   }
 
   &.active .page-link:hover {
-    background-color: lightgray;
+    background-color: var(--color-brand-primary);
   }
 `;
 

@@ -4,8 +4,13 @@ import arrowUp from '../images/icons8-arrow-up-30.png';
 import arrowDown from '../images/icons8-down-arrow-30.png';
 
 const StyledTh = styled.th`
-  background-color: #dddddd !important; //override bootstrap
-  font-weight: 500;
+  background-color: ${(props) =>
+    props.isSorted
+      ? 'var(--hilite-ui-primary)'
+      : 'var(--color-ui-primary)'} !important; // Conditionally apply background color
+  border: 1px solid var(--color-ui-border) !important; //override bootstrap
+  font-weight: 800;
+  color: var(--color-text-primary) !important;
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: right;
@@ -67,12 +72,15 @@ const TableHead = ({ columns, handleSorting }) => {
         {columns.map(({ label, accessor }) => {
           const currentSortOrder =
             sortField === accessor ? sortOrder : 'default'; // Use 'none' for non-sorted columns
+          const isSorted = sortField === accessor; // Check if this is the active column
+
           return (
             <StyledTh
               key={accessor}
               accessor={accessor}
               sortOrder={currentSortOrder} // Pass sortOrder only for the sorted column
               onClick={() => handleSortingChange(accessor)}
+              isSorted={isSorted}
             >
               {label}
             </StyledTh>

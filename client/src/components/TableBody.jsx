@@ -14,17 +14,21 @@ const truncateText = (text, maxLength) => {
 };
 
 const StyledTr = styled.tr`
+  border-left: 1px solid var(--color-ui-border) !important;
+  border-right: 1px solid var(--color-ui-border) !important;
+
   &:hover {
     td {
-      background-color: #f5f5f5 !important;
+      background-color: var(--hilite-ui-primary) !important;
     }
   }
 `;
 
 const StyledTd = styled.td`
   padding: 20px 20px !important;
-  border-bottom: 3px solid #dee2e6 !important;
-  background: #f8f9fa !important;
+  border-bottom: 1px solid var(--color-ui-border) !important;
+  background: var(--color-ui-primary) !important;
+  color: var(--color-text-primary) !important;
 
   ${(props) =>
     props.accessor === 'title' &&

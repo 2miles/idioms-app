@@ -9,17 +9,19 @@ import TextField from './formFields/TextField';
 import TimestampField from './formFields/TimestampField';
 
 const FormContainer = styled.div`
-  background-color: #eee;
+  background-color: var(--color-ui-primary);
   border-radius: 5px;
   margin: 16px auto 40px;
   font-size: 16px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 
   .form-group {
-    padding: 10px;
+    padding: 16px;
   }
 
-  button {
-    margin: 10px;
+  & button {
+    margin-top: 40px !important;
   }
 `;
 
