@@ -37,6 +37,9 @@ const DropdownContainer = styled.div`
       border-bottom: none !important;
       border-left: 2px solid var(--color-ui-border);
     `}
+  &:active {
+    background-color: var(--hilite-ui-primary); // Customize this color
+  }
 `;
 
 const Anchor = styled.span`
