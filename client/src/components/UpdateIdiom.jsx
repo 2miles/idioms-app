@@ -35,7 +35,7 @@ const ButtonsWrapper = styled.div`
   }
 
   .btn-danger {
-    margin-left: auto; // This pushes the delete button to the right
+    margin-left: auto;
   }
 `;
 

@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import SearchBar from './SearchBar';
 import Table from './Table_';
 import Pagination from './Pagination';
-import ItemsPerPageDropdown from './ItemsPerPageDropdown';
-import ColumnDropdown from './ColumnDropdown';
+import ItemsPerPageDropdown from './dropdowns/ItemsPerPageDropdown';
+import ColumnDropdown from './dropdowns/ColumnDropdown';
 
 const TableSectionWrapper = styled.div`
   margin: 16px auto 40px;

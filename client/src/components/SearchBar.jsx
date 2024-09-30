@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import searchIcon from '../images/search-icon-png-24.png';
-import SearchColumnDropdown from './SearchColumnDropdown';
+import SearchColumnDropdown from './dropdowns/SearchColumnDropdown';
 
 const Container = styled.div`
   position: relative;
