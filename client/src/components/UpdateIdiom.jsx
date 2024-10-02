@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
@@ -41,47 +39,6 @@ const ButtonsWrapper = styled.div`
   }
 `;
 
-const ConfirmationModal = styled.div`
-  display: ${(props) => (props.show ? 'block' : 'none')};
-  position: fixed;
-  z-index: 9999;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-
-  .modal-header {
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-
-  .modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-
-    button {
-      padding: 10px 20px;
-    }
-  }
-`;
-
-const SuccessBanner = styled.div`
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  display: ${(props) => (props.show ? 'block' : 'none')};
-`;
-
 const UpdateIdiom = ({ idiom, onDelete }) => {
   const { updateIdiom } = useContext(IdiomsContext);
   const [title, setTitle] = useState(idiom.title || '');
@@ -92,10 +49,6 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
     idiom.timestamps ? moment(idiom.timestamps) : null,
   );
   const [validated, setValidated] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
-
-  const navigate = useNavigate();
 
   const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
 
