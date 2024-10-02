@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '../context/idiomsContext';
 import IdiomFinder from '../apis/idiomFinder';
@@ -19,18 +20,42 @@ const DetailPage = () => {
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
   const handleDelete = async (e, id) => {
     e.stopPropagation();
-    try {
-      const response = await IdiomFinder.delete(`/${id}`);
-      setIdioms(
-        idioms.filter((idiom) => {
-          return idiom.id !== id;
-        }),
-      );
-    } catch (err) {
-      console.log('Error deleting idiom: ', err);
+
+    const confirmResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this idiom!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        await IdiomFinder.delete(`/${id}`);
+        setIdioms(idioms.filter((idiom) => idiom.id !== id));
+
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'The idiom has been successfully deleted.',
+          icon: 'success',
+          timer: 1800,
+          showConfirmButton: false,
+        });
+
+        navigate('/');
+      } catch (err) {
+        console.error('Error deleting idiom:', err);
+        Swal.fire({
+          title: 'Error',
+          text: 'There was a problem deleting the idiom.',
+          icon: 'error',
+        });
+      }
     }
   };
 
@@ -75,7 +100,7 @@ const DetailPage = () => {
       {isEditing && (
         <UpdateIdiom
           idiom={selectedIdiom}
-          onDelete={() => handleDelete(null, selectedIdiom.id)}
+          onDelete={(e) => handleDelete(e, selectedIdiom.id)}
         />
       )}
     </PageContainer>
