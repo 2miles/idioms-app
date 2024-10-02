@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { IdiomsContext } from '../context/idiomsContext';
@@ -19,16 +19,20 @@ const DetailPage = () => {
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
   const handleDelete = async (e, id) => {
     e.stopPropagation();
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this idiom?',
+    );
+
+    if (!confirmDelete) return;
+
     try {
       const response = await IdiomFinder.delete(`/${id}`);
-      setIdioms(
-        idioms.filter((idiom) => {
-          return idiom.id !== id;
-        }),
-      );
+      setIdioms(idioms.filter((idiom) => idiom.id !== id));
+      navigate('/'); // Redirect to homepage after deletion
     } catch (err) {
       console.log('Error deleting idiom: ', err);
     }
@@ -75,7 +79,7 @@ const DetailPage = () => {
       {isEditing && (
         <UpdateIdiom
           idiom={selectedIdiom}
-          onDelete={() => handleDelete(null, selectedIdiom.id)}
+          onDelete={(e) => handleDelete(e, selectedIdiom.id)}
         />
       )}
     </PageContainer>
