@@ -97,7 +97,7 @@ const AddIdiom = () => {
         <TextAreaField
           label="Definition"
           id="definition"
-          value={titleGeneral}
+          value={definition}
           onChange={(e) => setDefinition(e.target.value)}
           placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
           rows={3}
