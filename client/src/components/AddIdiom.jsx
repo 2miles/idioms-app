@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '../context/idiomsContext';
 import IdiomFinder from '../apis/idiomFinder';
@@ -57,9 +58,21 @@ const AddIdiom = () => {
       if (response.data && response.data.data && response.data.data.idiom) {
         addIdioms(response.data.data.idiom);
         clearFormFields();
+        Swal.fire({
+          title: 'Idiom Added!',
+          text: 'The idiom has been successfully added.',
+          icon: 'success',
+          timer: 1500, // 1.5 second timer before auto close
+          showConfirmButton: false,
+        });
       }
     } catch (err) {
       console.Error('Error adding idiom.', err);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was a problem adding the idiom.',
+        icon: 'error',
+      });
     }
   };
 
