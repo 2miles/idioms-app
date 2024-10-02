@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';

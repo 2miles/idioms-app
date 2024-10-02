@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '../context/idiomsContext';
 import IdiomFinder from '../apis/idiomFinder';
@@ -23,18 +24,38 @@ const DetailPage = () => {
 
   const handleDelete = async (e, id) => {
     e.stopPropagation();
-    const confirmDelete = window.confirm(
-      'Are you sure you want to delete this idiom?',
-    );
 
-    if (!confirmDelete) return;
+    const confirmResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this idiom!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    });
 
-    try {
-      const response = await IdiomFinder.delete(`/${id}`);
-      setIdioms(idioms.filter((idiom) => idiom.id !== id));
-      navigate('/'); // Redirect to homepage after deletion
-    } catch (err) {
-      console.log('Error deleting idiom: ', err);
+    if (confirmResult.isConfirmed) {
+      try {
+        await IdiomFinder.delete(`/${id}`);
+        setIdioms(idioms.filter((idiom) => idiom.id !== id));
+
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'The idiom has been successfully deleted.',
+          icon: 'success',
+          timer: 1800,
+          showConfirmButton: false,
+        });
+
+        navigate('/');
+      } catch (err) {
+        console.error('Error deleting idiom:', err);
+        Swal.fire({
+          title: 'Error',
+          text: 'There was a problem deleting the idiom.',
+          icon: 'error',
+        });
+      }
     }
   };
 
