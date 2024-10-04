@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AddIdiom from './AddIdiom'; // Import the AddIdiom component
+import AddIdiom from './AddIdiom';
 import styled from 'styled-components';
 
 const AddIdiomContainer = styled.div`
@@ -10,19 +10,23 @@ const AddIdiomContainer = styled.div`
 const AddIdiomCollapsible = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const handleToggle = () => {
+  const collapseForm = () => {
+    setIsCollapsed(true);
+  };
+
+  const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   return (
     <AddIdiomContainer>
       <button
-        onClick={handleToggle}
+        onClick={handleToggleCollapse}
         className={isCollapsed ? 'btn btn-success' : 'btn btn-secondary'}
       >
         {isCollapsed ? 'Add Idiom' : 'Cancel Add'}
       </button>
-      {!isCollapsed && <AddIdiom />}
+      {!isCollapsed && <AddIdiom collapseForm={collapseForm} />}
     </AddIdiomContainer>
   );
 };
