@@ -32,14 +32,14 @@ const StyledTd = styled.td`
   color: var(--color-text-primary) !important;
 
   ${(props) =>
-    props.accessor === 'title' &&
+    props.$accessor === 'title' &&
     `
       font-weight: 550;
   `}
 
   @media (max-width: 770px) {
     ${(props) =>
-      ['definition', 'timestamps', 'contributor'].includes(props.accessor) &&
+      ['definition', 'timestamps', 'contributor'].includes(props.$accessor) &&
       `
         display: none;
       `}
@@ -74,7 +74,7 @@ const TableBody = ({ tableData, columns }) => {
                   cellData = truncateText(cellData, truncateLength);
                 }
                 return (
-                  <StyledTd key={accessor} accessor={accessor}>
+                  <StyledTd key={accessor} $accessor={accessor}>
                     {cellData}
                   </StyledTd>
                 );

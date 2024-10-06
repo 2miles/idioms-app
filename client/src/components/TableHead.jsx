@@ -5,7 +5,7 @@ import arrowDown from '../images/icons8-down-arrow-30.png';
 
 const StyledTh = styled.th`
   background-color: ${(props) =>
-    props.isSorted
+    props.$isSorted
       ? 'var(--hilite-ui-primary)'
       : 'var(--color-ui-primary)'} !important; // Conditionally apply background color
   border: 1px solid var(--color-ui-border) !important; //override bootstrap
@@ -24,18 +24,18 @@ const StyledTh = styled.th`
       timestamps: '20%',
       contributor: '20%',
     };
-    return widths[props.accessor] || 'auto';
+    return widths[props.$accessor] || 'auto';
   }};
 
   ${(props) =>
-    props.sortOrder === 'asc' &&
+    props.$sortOrder === 'asc' &&
     `
       background-image: url('../images/icons8-arrow-up-30.png');
       background-image: url(${arrowUp});
     `}
 
   ${(props) =>
-    props.sortOrder === 'desc' &&
+    props.$sortOrder === 'desc' &&
     `
       background-image: url('../images/icons8-down-arrow-30.png');
       background-image: url(${arrowDown});
@@ -43,7 +43,7 @@ const StyledTh = styled.th`
 
   @media (max-width: 770px) {
     ${(props) =>
-      ['definition', 'timestamps', 'contributor'].includes(props.accessor) &&
+      ['definition', 'timestamps', 'contributor'].includes(props.$accessor) &&
       `
         display: none;
       `}
@@ -77,10 +77,10 @@ const TableHead = ({ columns, handleSorting }) => {
           return (
             <StyledTh
               key={accessor}
-              accessor={accessor}
-              sortOrder={currentSortOrder} // Pass sortOrder only for the sorted column
               onClick={() => handleSortingChange(accessor)}
-              isSorted={isSorted}
+              $accessor={accessor}
+              $sortOrder={currentSortOrder} // Pass sortOrder only for the sorted column
+              $isSorted={isSorted}
             >
               {label}
             </StyledTh>
