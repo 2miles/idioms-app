@@ -34,7 +34,7 @@ const NavbarLinks = styled.div`
     background-color: var(--color-canvas-inverted);
     flex-direction: column;
     width: 100%;
-    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
   }
 `;
 
@@ -109,7 +109,7 @@ const NavBar = () => {
         </div>
         <NavbarLinks
           className={`navbar-collapse ${isOpen ? 'open' : ''}`}
-          isOpen={isOpen}
+          $isOpen={isOpen}
         >
           <Link to="/" onClick={closeMenu} className="nav-link">
             Home

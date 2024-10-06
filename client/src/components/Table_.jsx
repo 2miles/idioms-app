@@ -13,7 +13,6 @@ export const StyledTable = styled.table`
 const Table = ({ tableData, handleSorting, columnVisibility }) => {
   const columns = [
     { label: '#', accessor: 'position' },
-    // { label: 'ID', accessor: 'id', sortable: true },
     { label: 'Idiom', accessor: 'title' },
     { label: 'Definition', accessor: 'definition' },
     { label: 'Day', accessor: 'timestamps' },

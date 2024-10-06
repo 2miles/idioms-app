@@ -17,11 +17,11 @@ const DropdownContainer = styled.div`
 
   /* Media query for small screens */
   @media (max-width: 780px) {
-    display: ${(props) => (props.hideOnSmallScreen ? 'none' : 'flex')};
+    display: ${(props) => (props.$hideOnSmallScreen ? 'none' : 'flex')};
   }
 
   ${(props) =>
-    props.variant === 'searchColumn' &&
+    props.$variant === 'searchColumn' &&
     `
       border: 1px solid var(--color-ui-border) !important;
       border-radius: 0px;
@@ -59,7 +59,7 @@ const Anchor = styled.span`
   }
 
   ${(props) =>
-    props.visible &&
+    props.$visible &&
     `
     &::after {
       border-top: none;
@@ -69,7 +69,7 @@ const Anchor = styled.span`
 `;
 
 const Options = styled.ul`
-  display: ${(props) => (props.visible ? 'block' : 'none')};
+  display: ${(props) => (props.$visible ? 'block' : 'none')};
   position: absolute;
   top: calc(100% + 5px);
   right: 0;
@@ -129,13 +129,13 @@ const Dropdown = ({
 
   return (
     <DropdownContainer
-      hideOnSmallScreen={hideOnSmallScreen}
+      $hideOnSmallScreen={hideOnSmallScreen}
       ref={dropdownRef}
       onClick={() => setIsOpen(!isOpen)}
-      variant={variant}
+      $variant={variant}
     >
-      <Anchor visible={isOpen}>{label}</Anchor>
-      <Options visible={isOpen}>
+      <Anchor $visible={isOpen}>{label}</Anchor>
+      <Options $visible={isOpen}>
         {options.map((option, index) => (
           <Option key={index} onClick={() => handleOptionClick(option)}>
             {option}

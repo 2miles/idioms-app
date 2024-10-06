@@ -16,7 +16,7 @@ const ItemsPerPageDropdown = ({ handleItemsPerPageChange }) => {
       options={options}
       onOptionClick={handleOptionClick}
       closeOnSelect={true}
-      hideOnSmallScreen={false}
+      $hideOnSmallScreen={false}
     />
   );
 };
