@@ -1,6 +1,4 @@
-## Idioms that need to be added
-
-Eve
+### Eve
 
 2023-07-14,
 
@@ -19,3 +17,8 @@ Eve
 2023-07-16
 
 - comparison is the theif of joy
+
+### Others
+
+- Cutting off one's nose to spite one's face
+- Elect a clown, expect a circus
