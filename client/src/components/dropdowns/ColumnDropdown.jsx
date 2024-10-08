@@ -32,7 +32,7 @@ const ColumnDropdown = ({ columnVisibility, handleColumnVisibilityChange }) => {
       label="Columns"
       options={options}
       closeOnSelect={false}
-      $hideOnSmallScreen={true}
+      hideOnSmallScreen={true}
     />
   );
 };
