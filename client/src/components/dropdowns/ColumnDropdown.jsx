@@ -8,7 +8,7 @@ const CheckboxLabel = styled.label`
   cursor: pointer;
 
   input[type='checkbox'] {
-    margin-right: 10px;
+    margin-right: var(--margin-md);
   }
 `;
 
@@ -32,7 +32,7 @@ const ColumnDropdown = ({ columnVisibility, handleColumnVisibilityChange }) => {
       label="Columns"
       options={options}
       closeOnSelect={false}
-      $hideOnSmallScreen={true}
+      hideOnSmallScreen={true}
     />
   );
 };

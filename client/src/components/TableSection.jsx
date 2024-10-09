@@ -8,19 +8,17 @@ import ItemsPerPageDropdown from './dropdowns/ItemsPerPageDropdown';
 import ColumnDropdown from './dropdowns/ColumnDropdown';
 
 const TableSectionWrapper = styled.div`
-  margin: 16px auto 40px;
+  margin: var(--margin-md) auto var(--margin-xxl);
   background-color: var(--color-canvas);
-  border-radius: 5px;
-  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-sm);
 `;
 
 const TableControls = styled.div`
   display: flex;
   justify-content: right;
-  align-items: center;
+  align-items: end;
   flex-wrap: wrap;
-  padding-bottom: 16px;
-  padding-top: 16px;
+  padding-bottom: var(--padding-sm);
 
   @media (max-width: 660px) {
     flex-direction: column;
@@ -31,21 +29,21 @@ const TableControls = styled.div`
 const ShowingText = styled.p`
   margin-right: auto;
   white-space: nowrap;
-  font-size: 18px;
-  margin-bottom: 0px;
+  font-size: var(--font-md);
+  margin-bottom: var(--margin-sm);
+  padding-bottom: var(--padding-sm);
   color: var(--color-text-primary);
 `;
 
 const RightControls = styled.div`
   display: flex;
-  margin-top: 10px;
 `;
 
 const SearchAndFilterWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: var(--margin-sm);
 `;
 
 const TableSection = ({ idioms }) => {

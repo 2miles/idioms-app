@@ -4,12 +4,12 @@ import styled from 'styled-components';
 // Customized Bootstrap pagination
 const PageItem = styled.li`
   .page-link {
-    padding: 8px 5px;
+    padding: var(--padding-sm) var(--padding-xs);
     background-color: var(--color-ui-primary);
     color: var(--color-text-primary);
     border: 1px solid var(--color-ui-border) !important;
     cursor: pointer;
-    width: 40px;
+    width: var(--space-xxxl);
     text-align: center;
     border: none;
 

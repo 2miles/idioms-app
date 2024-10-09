@@ -5,7 +5,7 @@ import SearchColumnDropdown from './dropdowns/SearchColumnDropdown';
 
 const Container = styled.div`
   position: relative;
-  margin-bottom: 20px;
+  margin: var(--margin-xxl);
   width: 60%;
   @media (max-width: 660px) {
     width: 100%;
@@ -14,14 +14,11 @@ const Container = styled.div`
 
 const IconContainer = styled.span`
   position: absolute;
-  left: 10px;
+  left: 8px;
   height: 100%;
-  padding: 4;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
   z-index: 1;
 `;
 
@@ -32,10 +29,9 @@ const Icon = styled.img`
 
 const Input = styled.input`
   position: relative;
-  padding-left: 30px;
-  padding-right: 120px; /* Reserve space for the dropdown */
+  padding-left: var(--padding-xxl);
   width: 100%;
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--color-ui-border) !important;
 `;
 

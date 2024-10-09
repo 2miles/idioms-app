@@ -50,6 +50,48 @@
   --dim-ui-ok: ;
   --dim-ui-warn: ;
   --dim-ui-danger: ;
+
+  /* Spacing scale (multiples of base space unit) */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 20px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  --space-xxxl: 40px;
+
+  /* Font sizes (modular scale) */
+  --font-xs: 0.75rem; /* 12px */
+  --font-sm: 0.875rem; /* 14px */
+  --font-md: 1rem; /* 16px */
+  --font-lg: 1.25rem; /* 20px */
+  --font-xl: 1.5rem; /* 24px */
+  --font-xxl: 2rem; /* 32px */
+  --font-xxxl: 2.5rem; /* 40px */
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+
+  /* Padding and Margin scale */
+  --padding-xs: 4px;
+  --padding-sm: 8px;
+  --padding-ms: 12px;
+  --padding-md: 16px;
+  --padding-lg: 20px;
+  --padding-xl: 24px;
+  --padding-xxl: 32px;
+
+  --margin-xs: 4px;
+  --margin-sm: 8px;
+  --margin-ms: 12px;
+  --margin-md: 16px;
+  --margin-lg: 20px;
+  --margin-xl: 24px;
+  --margin-xxl: 32px;
 }
 
 * {

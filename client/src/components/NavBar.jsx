@@ -5,31 +5,31 @@ import styled from 'styled-components';
 const NavBarWrapper = styled.nav`
   background-color: var(--color-canvas-inverted);
   color: var(--color-text-inverted);
-  padding: 1rem;
+  padding: var(--padding-md);
   width: 100%;
   z-index: 1000;
 
   .navbar-brand a {
     text-decoration: none;
-    font-size: 32px;
+    font-size: var(--font-xxl);
     color: var(--color-brand-primary);
-    padding-right: 40px;
+    padding-right: var(--padding-xxl);
   }
 `;
 
 const NavbarLinks = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: var(--space-xxl);
 
   a {
     color: var(--color-text-inverted);
     text-decoration: none;
-    font-size: 1.25rem;
+    font-size: var(--font-lg);
   }
 
   @media (max-width: 770px) {
     position: absolute;
-    top: 60px;
+    top: 80px;
     right: 0;
     background-color: var(--color-canvas-inverted);
     flex-direction: column;
@@ -41,13 +41,13 @@ const NavbarLinks = styled.div`
 const Hamburger = styled.div`
   display: none;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 8px;
   cursor: pointer;
-  margin-right: 2rem;
+  margin-right: var(--space-xxl);
 
   .bar {
-    width: 25px;
-    height: 3px;
+    width: 32px;
+    height: 4px;
     background-color: var(--color-text-inverted);
   }
 
@@ -62,9 +62,9 @@ const NavbarLogin = styled.div`
   button {
     color: var(--color-white);
     border: none;
-    padding: 0.5rem 1rem;
+    padding: var(--padding-sm) var(--padding-md);
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
 `;
 
@@ -122,7 +122,7 @@ const NavBar = () => {
           </Link>
         </NavbarLinks>
       </div>
-      <NavbarLogin className="ml-auto">
+      <NavbarLogin>
         <button className="btn btn-secondary">Login</button>
       </NavbarLogin>
     </NavBarWrapper>
