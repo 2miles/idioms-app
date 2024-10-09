@@ -26,7 +26,7 @@ const StyledTr = styled.tr`
 `;
 
 const StyledTd = styled.td`
-  padding: 20px 20px !important;
+  padding: var(--padding-lg) var(--padding-lg) !important;
   border-bottom: 1px solid var(--color-ui-border) !important;
   background: var(--color-ui-primary) !important;
   color: var(--color-text-primary) !important;

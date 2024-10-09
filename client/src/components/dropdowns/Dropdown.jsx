@@ -9,10 +9,10 @@ const DropdownContainer = styled.div`
   user-select: none;
   border: 1px solid var(--color-ui-border);
   background-color: var(--color-ui-primary);
-  border-radius: 5px;
-  margin-right: 20px;
-  margin-bottom: 1rem;
-  padding: 0px 10px;
+  border-radius: var(--radius-sm);
+  margin-right: var(--margin-lg);
+  margin-bottom: var(--margin-md);
+  padding: 0px var(--padding-ms);
   align-items: center;
 
   /* Media query for small screens */
@@ -27,8 +27,8 @@ const DropdownContainer = styled.div`
       border-radius: 0px;
       border-bottom-left-radius: 0px;
       border-top-left-radius: 0px;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
+      border-top-right-radius: var(--radius-xl);
+      border-bottom-right-radius: var(--radius-xl);
       background-color: var(--color-ui-primary);
       height: 100%;
       margin-right: 0px;
@@ -54,7 +54,7 @@ const Anchor = styled.span`
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-top: 6px solid var(--color-text-primary);
-    margin-left: 10px;
+    margin-left: var(--margin-ms);
     transition: border-top 0.3s ease, border-bottom 0.3s ease;
   }
 
@@ -74,7 +74,7 @@ const Options = styled.ul`
   top: calc(100% + 5px);
   right: 0;
   background-color: var(--color-ui-primary);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 4;
   padding: 0;
@@ -82,7 +82,7 @@ const Options = styled.ul`
 `;
 
 const Option = styled.li`
-  padding: 5px 10px;
+  padding: var(--padding-sm) var(--padding-sm);
   cursor: pointer;
 
   &:hover {

@@ -3,8 +3,8 @@ import AddIdiom from './AddIdiom';
 import styled from 'styled-components';
 
 const AddIdiomContainer = styled.div`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: var(--margin-lg);
+  margin-bottom: var(--margin-lg);
 `;
 
 const AddIdiomCollapsible = () => {

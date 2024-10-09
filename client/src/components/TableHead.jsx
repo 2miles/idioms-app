@@ -7,10 +7,10 @@ const StyledTh = styled.th`
   background-color: ${(props) =>
     props.$isSorted
       ? 'var(--hilite-ui-primary)'
-      : 'var(--color-ui-primary)'} !important; // Conditionally apply background color
-  border: 1px solid var(--color-ui-border) !important; //override bootstrap
-  font-weight: 800;
+      : 'var(--color-ui-primary)'} !important;
+  border: 1px solid var(--color-ui-border) !important;
   color: var(--color-text-primary) !important;
+  font-weight: 800;
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: right;

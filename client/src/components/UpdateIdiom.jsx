@@ -11,18 +11,18 @@ import TimestampField from './formFields/TimestampField';
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
   border: 1px solid var(--color-ui-border);
-  border-radius: 5px;
-  margin: 16px auto 40px;
-  font-size: 16px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  border-radius: var(--radius-sm);
+  margin: var(--margin-md) auto var(--margin-xxl);
+  font-size: var(--font-md);
+  margin-bottom: var(--margin-lg);
+  margin-top: var(--margin-lg);
 
   .form-group {
-    padding: 16px;
+    padding: var(--padding-md);
   }
 
   & button {
-    margin-top: 40px !important;
+    margin-top: var(--margin-xxl) !important;
   }
 `;
 
@@ -31,7 +31,7 @@ const ButtonsWrapper = styled.div`
   justify-content: flex-start; // Ensures the buttons start aligned on the left
 
   button {
-    margin: 20px;
+    margin: var(--margin-lg);
   }
 
   .btn-danger {

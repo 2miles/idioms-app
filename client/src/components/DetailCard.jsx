@@ -13,8 +13,7 @@ const Card = styled.div`
     border: 1px solid #e0e0e0;
     font-family: 'Times New Roman', Times, serif;
     overflow: hidden;
-
-    margin-top: 40px;
+    margin-top: var(--margin-xxl);
   }
 `;
 
@@ -23,15 +22,15 @@ const CardHeader = styled.div`
   margin-bottom: 20px;
 
   h1 {
-    font-size: 2em;
+    font-size: var(--font-xxl);
     margin: 0;
-    padding: 20px;
+    padding: var(--padding-lg);
     font-style: italic;
     font-weight: normal;
   }
 
   h2 {
-    font-size: 1.5em;
+    font-size: var(--font-xl);
     margin: 0;
     font-style: italic;
     font-weight: normal;
@@ -40,22 +39,27 @@ const CardHeader = styled.div`
 `;
 
 const CardBody = styled.div`
-  font-size: 1.2em;
-  line-height: 1.6;
-  padding-left: 50px;
-  padding-right: 50px;
+  font-size: var(--font-lg);
+
+  padding-left: var(--padding-xxl);
+  padding-right: var(--padding-xxl);
 
   h3 {
-    margin-top: 30px;
+    margin-top: var(--margin-xxl);
   }
 
   p {
-    margin: 5px 0;
+    margin: var(--margin-md) 0;
+  }
+
+  li {
+    padding-top: var(--padding-sm);
+    padding-bottom: var(--padding-sm);
   }
 
   @media (max-width: 770px) {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: var(--padding-lg);
+    padding-right: var(--padding-lg);
   }
 `;
 

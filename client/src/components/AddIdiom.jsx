@@ -12,26 +12,26 @@ import TimestampField from './formFields/TimestampField';
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
   border: 1px solid var(--color-ui-border);
-  border-radius: 5px;
-  margin: 16px auto 40px;
-  font-size: 16px;
+  border-radius: var(--radius-sm);
+  margin: var(--margin-md) auto var(--margin-xxl);
+  font-size: var(--font-md);
 
   .form-group {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: var(--margin-lg);
+    margin-bottom: var(--margin-lg);
   }
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: var(--padding-lg);
+  padding-right: var(--padding-lg);
 `;
 
 const FormControlsWrapper = styled.div`
   display: flex;
   align-items: center;
   .form-check {
-    margin: 20px;
+    margin: var(--margin-lg);
   }
   .button {
-    margin: 20px;
+    margin: var(--margin-lg);
   }
 `;
 
