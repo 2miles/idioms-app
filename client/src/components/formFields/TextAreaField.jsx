@@ -8,18 +8,12 @@ const StyledTextArea = styled.textarea`
   }
 `;
 
-const TextAreaField = ({
-  label,
-  value,
-  onChange,
-  placeholder = '',
-  rows = 4,
-}) => {
+const TextAreaField = ({ label, value, onChange, placeholder = '', rows = 4 }) => {
   return (
-    <div className="form-group">
+    <div className='form-group'>
       <label>{label}</label>
       <StyledTextArea
-        className="form-control"
+        className='form-control'
         value={value}
         onChange={onChange}
         placeholder={placeholder}

@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import arrowUp from '../images/icons8-arrow-up-30.png';
 import arrowDown from '../images/icons8-down-arrow-30.png';
 
 const StyledTh = styled.th`
   background-color: ${(props) =>
-    props.$isSorted
-      ? 'var(--hilite-ui-primary)'
-      : 'var(--color-ui-primary)'} !important;
+    props.$isSorted ? 'var(--hilite-ui-primary)' : 'var(--color-ui-primary)'} !important;
   border: 1px solid var(--color-ui-border) !important;
   color: var(--color-text-primary) !important;
   font-weight: 800;
@@ -29,14 +27,14 @@ const StyledTh = styled.th`
 
   ${(props) =>
     props.$sortOrder === 'asc' &&
-    `
+    css`
       background-image: url('../images/icons8-arrow-up-30.png');
       background-image: url(${arrowUp});
     `}
 
   ${(props) =>
     props.$sortOrder === 'desc' &&
-    `
+    css`
       background-image: url('../images/icons8-down-arrow-30.png');
       background-image: url(${arrowDown});
     `}
@@ -44,7 +42,7 @@ const StyledTh = styled.th`
   @media (max-width: 770px) {
     ${(props) =>
       ['definition', 'timestamps', 'contributor'].includes(props.$accessor) &&
-      `
+      css`
         display: none;
       `}
   }
@@ -60,8 +58,7 @@ const TableHead = ({ columns, handleSorting }) => {
   }, []);
 
   const handleSortingChange = (accessor) => {
-    const newSortOrder =
-      accessor === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
+    const newSortOrder = accessor === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(accessor);
     setSortOrder(newSortOrder);
     handleSorting(accessor, newSortOrder);
@@ -70,8 +67,7 @@ const TableHead = ({ columns, handleSorting }) => {
     <thead>
       <tr>
         {columns.map(({ label, accessor }) => {
-          const currentSortOrder =
-            sortField === accessor ? sortOrder : 'default'; // Use 'none' for non-sorted columns
+          const currentSortOrder = sortField === accessor ? sortOrder : 'default'; // Use 'none' for non-sorted columns
           const isSorted = sortField === accessor; // Check if this is the active column
 
           return (

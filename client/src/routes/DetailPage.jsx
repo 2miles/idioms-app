@@ -67,7 +67,6 @@ const DetailPage = () => {
     setIsEditing(false); // Close the update form
   };
 
-  // Scroll to the top when the component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -92,12 +91,10 @@ const DetailPage = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        selectedIdiom && (
-          <DetailCard selectedIdiom={selectedIdiom} examples={examples} />
-        )
+        selectedIdiom && <DetailCard selectedIdiom={selectedIdiom} examples={examples} />
       )}
       <UpdateButtonWrapper>
-        <button className="btn btn-secondary" onClick={handleToggleEdit}>
+        <button className='btn btn-secondary' onClick={handleToggleEdit}>
           {isEditing ? 'Cancel Edit' : 'Edit Idiom'}
         </button>
       </UpdateButtonWrapper>

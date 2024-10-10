@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 // Styled components
 
@@ -22,7 +22,7 @@ const DropdownContainer = styled.div`
 
   ${(props) =>
     props.$variant === 'searchColumn' &&
-    `
+    css`
       border: 1px solid var(--color-ui-border) !important;
       border-radius: 0px;
       border-bottom-left-radius: 0px;
@@ -60,12 +60,12 @@ const Anchor = styled.span`
 
   ${(props) =>
     props.$visible &&
-    `
-    &::after {
-      border-top: none;
-      border-bottom: 6px solid var(--color-text-primary);
-    }
-  `}
+    css`
+      &::after {
+        border-top: none;
+        border-bottom: 6px solid var(--color-text-primary);
+      }
+    `}
 `;
 
 const Options = styled.ul`
@@ -91,14 +91,7 @@ const Option = styled.li`
 `;
 
 // Dropdown component
-const Dropdown = ({
-  label,
-  hideOnSmallScreen,
-  options,
-  closeOnSelect,
-  onOptionClick,
-  variant,
-}) => {
+const Dropdown = ({ label, hideOnSmallScreen, options, closeOnSelect, onOptionClick, variant }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 

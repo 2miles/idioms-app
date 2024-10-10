@@ -46,9 +46,7 @@ const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
   const [titleGeneral, setTitleGeneral] = useState(idiom.title_general || '');
   const [definition, setDefinition] = useState(idiom.definition || '');
   const [contributor, setContributor] = useState(idiom.contributor || '');
-  const [timestamp, setTimestamp] = useState(
-    idiom.timestamps ? moment(idiom.timestamps) : null,
-  );
+  const [timestamp, setTimestamp] = useState(idiom.timestamps ? moment(idiom.timestamps) : null);
   const [validated, setValidated] = useState(false);
 
   const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
@@ -61,9 +59,7 @@ const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
     }
     try {
       // Format for the backend and remove milliseconds
-      const formattedTimestamp = timestamp
-        ? timestamp.toISOString().split('.')[0] + 'Z'
-        : null;
+      const formattedTimestamp = timestamp ? timestamp.toISOString().split('.')[0] + 'Z' : null;
       const response = await IdiomFinder.put(`/${idiom.id}`, {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
@@ -105,42 +101,42 @@ const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
         onSubmit={handleSubmit}
       >
         <TextField
-          label="Title"
-          id="title"
+          label='Title'
+          id='title'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
         />
         <TextField
-          label="Title General"
-          id="titleGeneral"
+          label='Title General'
+          id='titleGeneral'
           value={titleGeneral}
           onChange={(e) => setTitleGeneral(e.target.value)}
         />
         <TextAreaField
-          label="Definition"
-          id="definition"
+          label='Definition'
+          id='definition'
           value={definition}
           onChange={(e) => setDefinition(e.target.value)}
           rows={3}
         />
         <TimestampField
-          label="Timestamp"
-          id="timestamp"
+          label='Timestamp'
+          id='timestamp'
           value={timestamp}
           onChange={setTimestamp}
         />
         <TextField
-          label="Contributor"
-          id="contributor"
+          label='Contributor'
+          id='contributor'
           value={contributor}
           onChange={(e) => setContributor(e.target.value)}
         />
         <ButtonsWrapper>
-          <button type="submit" className="btn btn-primary">
+          <button type='submit' className='btn btn-primary'>
             Update
           </button>
-          <button type="button" className="btn btn-danger" onClick={onDelete}>
+          <button type='button' className='btn btn-danger' onClick={onDelete}>
             Delete
           </button>
         </ButtonsWrapper>

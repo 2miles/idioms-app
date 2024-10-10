@@ -43,18 +43,14 @@ export const IdiomsContextProvider = (props) => {
   // Update an idiom and recalculate positions
   const updateIdiom = (updatedIdiom) => {
     const updatedIdioms = calculatePositions(
-      idioms.map((idiom) =>
-        idiom.id === updatedIdiom.id ? updatedIdiom : idiom,
-      ),
+      idioms.map((idiom) => (idiom.id === updatedIdiom.id ? updatedIdiom : idiom)),
     );
     setIdioms(updatedIdioms);
   };
 
   // Delete an idiom and recalculate positions
   const deleteIdiom = (id) => {
-    const updatedIdioms = calculatePositions(
-      idioms.filter((idiom) => idiom.id !== id),
-    );
+    const updatedIdioms = calculatePositions(idioms.filter((idiom) => idiom.id !== id));
     setIdioms(updatedIdioms);
   };
 

@@ -123,55 +123,55 @@ const AddIdiom = ({ collapseForm }) => {
         onSubmit={handleSubmit}
       >
         <TextField
-          label="Title"
-          id="title"
+          label='Title'
+          id='title'
           value={formData.title}
           onChange={handleInputChange}
-          placeholder="Pull yourself up by your bootstraps"
+          placeholder='Pull yourself up by your bootstraps'
           required
         />
         <TextField
-          label="Title General"
-          id="titleGeneral"
+          label='Title General'
+          id='titleGeneral'
           value={formData.titleGeneral}
           onChange={handleInputChange}
           placeholder="Pull (oneself) up by (one's) (own) bootstraps"
         />
         <TextAreaField
-          label="Definition"
-          id="definition"
+          label='Definition'
+          id='definition'
           value={formData.definition}
           onChange={handleInputChange}
           placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
           rows={3}
         />
         <TimestampField
-          label="Timestamp"
-          id="timestamp"
+          label='Timestamp'
+          id='timestamp'
           value={formData.timestamp}
           onChange={handleInputChange}
         />
         <TextField
-          label="Contributor"
-          id="contributor"
-          placeholder="Miles"
+          label='Contributor'
+          id='contributor'
+          placeholder='Miles'
           value={formData.contributor}
           onChange={handleInputChange}
         />
         <FormControlsWrapper>
-          <button type="submit" className="btn btn-primary">
+          <button type='submit' className='btn btn-primary'>
             Add
           </button>
-          <div className="form-check">
+          <div className='form-check'>
             <input
-              id="flexCheckDefault"
-              type="checkbox"
-              value=""
-              className="form-check-input"
+              id='flexCheckDefault'
+              type='checkbox'
+              value=''
+              className='form-check-input'
               checked={keepOpen}
               onChange={(e) => setKeepOpen(e.target.checked)}
             />
-            <label className="form-check-label" for="flexCheckDefault">
+            <label className='form-check-label' for='flexCheckDefault'>
               Keep Open
             </label>
           </div>

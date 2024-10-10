@@ -19,7 +19,7 @@ const ColumnDropdown = ({ columnVisibility, handleColumnVisibilityChange }) => {
   const options = columns.map((column) => (
     <CheckboxLabel key={column}>
       <input
-        type="checkbox"
+        type='checkbox'
         checked={columnVisibility[column]}
         onChange={() => handleColumnVisibilityChange(column)}
       />
@@ -28,12 +28,7 @@ const ColumnDropdown = ({ columnVisibility, handleColumnVisibilityChange }) => {
   ));
 
   return (
-    <Dropdown
-      label="Columns"
-      options={options}
-      closeOnSelect={false}
-      hideOnSmallScreen={true}
-    />
+    <Dropdown label='Columns' options={options} closeOnSelect={false} hideOnSmallScreen={true} />
   );
 };
 

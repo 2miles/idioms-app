@@ -95,35 +95,32 @@ const NavBar = () => {
   }, [isOpen]);
 
   return (
-    <NavBarWrapper ref={navRef} className="navbar navbar-expand-lg">
-      <div className="d-flex align-items-center">
-        <Hamburger onClick={toggleMenu} className="navbar-toggler">
-          <div className="bar"></div>
-          <div className="bar"></div>
-          <div className="bar"></div>
+    <NavBarWrapper ref={navRef} className='navbar navbar-expand-lg'>
+      <div className='d-flex align-items-center'>
+        <Hamburger onClick={toggleMenu} className='navbar-toggler'>
+          <div className='bar'></div>
+          <div className='bar'></div>
+          <div className='bar'></div>
         </Hamburger>
-        <div className="navbar-brand">
-          <Link to="/" onClick={closeMenu}>
+        <div className='navbar-brand'>
+          <Link to='/' onClick={closeMenu}>
             IdiomVault
           </Link>
         </div>
-        <NavbarLinks
-          className={`navbar-collapse ${isOpen ? 'open' : ''}`}
-          $isOpen={isOpen}
-        >
-          <Link to="/" onClick={closeMenu} className="nav-link">
+        <NavbarLinks className={`navbar-collapse ${isOpen ? 'open' : ''}`} $isOpen={isOpen}>
+          <Link to='/' onClick={closeMenu} className='nav-link'>
             Home
           </Link>
-          <Link to="/about" onClick={closeMenu} className="nav-link">
+          <Link to='/about' onClick={closeMenu} className='nav-link'>
             About
           </Link>
-          <Link to="/list" onClick={closeMenu} className="nav-link">
+          <Link to='/list' onClick={closeMenu} className='nav-link'>
             List
           </Link>
         </NavbarLinks>
       </div>
       <NavbarLogin>
-        <button className="btn btn-secondary">Login</button>
+        <button className='btn btn-secondary'>Login</button>
       </NavbarLogin>
     </NavBarWrapper>
   );

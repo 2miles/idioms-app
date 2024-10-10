@@ -46,11 +46,8 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
   const addPageNumber = (number) => {
     const isActive = currentPage === number;
     pageNumbers.push(
-      <PageItem
-        key={number}
-        className={`page-item ${isActive ? 'active' : ''}`}
-      >
-        <a onClick={() => paginate(number)} href="#" className="page-link">
+      <PageItem key={number} className={`page-item ${isActive ? 'active' : ''}`}>
+        <a onClick={() => paginate(number)} href='#' className='page-link'>
           {number}
         </a>
       </PageItem>,
@@ -76,8 +73,8 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
       addPageNumber(1);
       if (startPage > 2) {
         pageNumbers.push(
-          <PageItem key="start-ellipsis" className="page-item disabled">
-            <span className="page-link">...</span>
+          <PageItem key='start-ellipsis' className='page-item disabled'>
+            <span className='page-link'>...</span>
           </PageItem>,
         );
       }
@@ -90,8 +87,8 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pageNumbers.push(
-          <PageItem key="end-ellipsis" className="page-item disabled">
-            <span className="page-link">...</span>
+          <PageItem key='end-ellipsis' className='page-item disabled'>
+            <span className='page-link'>...</span>
           </PageItem>,
         );
       }
@@ -101,29 +98,15 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
 
   return (
     <nav>
-      <ul className="pagination">
-        <PageItem
-          className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}
-        >
-          <a
-            onClick={() => paginate(currentPage - 1)}
-            href="#"
-            className="page-link"
-          >
+      <ul className='pagination'>
+        <PageItem className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+          <a onClick={() => paginate(currentPage - 1)} href='#' className='page-link'>
             &lt;
           </a>
         </PageItem>
         {pageNumbers}
-        <PageItem
-          className={`page-item ${
-            currentPage === totalPages ? 'disabled' : ''
-          }`}
-        >
-          <a
-            onClick={() => paginate(currentPage + 1)}
-            href="#"
-            className="page-link"
-          >
+        <PageItem className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+          <a onClick={() => paginate(currentPage + 1)} href='#' className='page-link'>
             &gt;
           </a>
         </PageItem>
