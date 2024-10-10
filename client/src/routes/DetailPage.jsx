@@ -63,6 +63,10 @@ const DetailPage = () => {
     setIsEditing(!isEditing);
   };
 
+  const handleUpdateSuccess = () => {
+    setIsEditing(false); // Close the update form
+  };
+
   // Scroll to the top when the component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -101,6 +105,7 @@ const DetailPage = () => {
         <UpdateIdiom
           idiom={selectedIdiom}
           onDelete={(e) => handleDelete(e, selectedIdiom.id)}
+          onSuccess={handleUpdateSuccess}
         />
       )}
     </PageContainer>

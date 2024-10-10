@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
@@ -39,7 +40,7 @@ const ButtonsWrapper = styled.div`
   }
 `;
 
-const UpdateIdiom = ({ idiom, onDelete }) => {
+const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
   const { updateIdiom } = useContext(IdiomsContext);
   const [title, setTitle] = useState(idiom.title || '');
   const [titleGeneral, setTitleGeneral] = useState(idiom.title_general || '');
@@ -72,9 +73,27 @@ const UpdateIdiom = ({ idiom, onDelete }) => {
       });
       if (response.data && response.data.data && response.data.data.idiom) {
         updateIdiom(response.data.data.idiom);
+        // Show success message
+        Swal.fire({
+          title: 'Updated!',
+          text: 'The idiom has been successfully updated.',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        // Call onSuccess to hide the form
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     } catch (err) {
       console.error('Error updating idiom:', err);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was a problem updating the idiom.',
+        icon: 'error',
+      });
     }
   };
 
