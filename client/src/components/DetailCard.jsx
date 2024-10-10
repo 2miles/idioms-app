@@ -65,18 +65,17 @@ const CardBody = styled.div`
 
 const DetailCard = ({ selectedIdiom, examples }) => {
   return (
-    <Card className="card">
-      <CardHeader className="card-header">
+    <Card className='card'>
+      <CardHeader className='card-header'>
         <h1>
           &quot;
-          {selectedIdiom.title_general &&
-          selectedIdiom.title_general.trim() !== ''
+          {selectedIdiom.title_general && selectedIdiom.title_general.trim() !== ''
             ? selectedIdiom.title_general
             : selectedIdiom.title}
           &quot;
         </h1>
       </CardHeader>
-      <CardBody className="card-body">
+      <CardBody className='card-body'>
         <p># {selectedIdiom.id}</p>
         <p>
           {'Added on '}

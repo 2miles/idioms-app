@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import SearchBar from './SearchBar';
-import Table from './Table_';
+import Table from './Table';
 import Pagination from './Pagination';
 import ItemsPerPageDropdown from './dropdowns/ItemsPerPageDropdown';
 import ColumnDropdown from './dropdowns/ColumnDropdown';

@@ -1,6 +1,6 @@
 // SearchColumnDropdown.js
 import React from 'react';
-import Dropdown from './Dropdown'; // Assuming this is your existing Dropdown component
+import Dropdown from './Dropdown';
 
 const SearchColumnDropdown = ({ activeColumn, handleColumnChange }) => {
   const columns = [
@@ -14,9 +14,8 @@ const SearchColumnDropdown = ({ activeColumn, handleColumnChange }) => {
   const handleOptionClick = (selectedLabel) => {
     const selectedColumn = columns.find((col) => col.label === selectedLabel);
     if (selectedColumn) {
-      handleColumnChange(selectedColumn.value); // Ensure the value is passed
+      handleColumnChange(selectedColumn.value);
     }
-    // handleColumnChange(option.value);
   };
 
   return (
@@ -25,7 +24,7 @@ const SearchColumnDropdown = ({ activeColumn, handleColumnChange }) => {
       options={columns.map((column) => column.label)}
       onOptionClick={handleOptionClick}
       closeOnSelect={true}
-      variant="searchColumn"
+      variant='searchColumn'
     />
   );
 };

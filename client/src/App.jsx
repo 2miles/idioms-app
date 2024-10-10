@@ -11,8 +11,8 @@ const App = () => {
       <BrowserRouter>
         <NavBar />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/idioms/:id" element={<DetailPage />} />
+          <Route path='/' element={<HomePage />} />
+          <Route path='/idioms/:id' element={<DetailPage />} />
         </Routes>
       </BrowserRouter>
     </IdiomsContextProvider>

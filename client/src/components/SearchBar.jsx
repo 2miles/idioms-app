@@ -44,12 +44,7 @@ const DropdownWrapper = styled.div`
   align-items: center;
 `;
 
-const SearchBar = ({
-  handleSearch,
-  idioms,
-  activeSearchColumn,
-  handleSearchColumnChange,
-}) => {
+const SearchBar = ({ handleSearch, idioms, activeSearchColumn, handleSearchColumnChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Effect to update search results whenever the column changes
@@ -62,10 +57,7 @@ const SearchBar = ({
         if (typeof columnData === 'number') {
           return columnData === Number(searchTerm);
         }
-        return columnData
-          ?.toString()
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+        return columnData?.toString().toLowerCase().includes(searchTerm.toLowerCase());
       });
       handleSearch(filtered);
     }
@@ -78,12 +70,12 @@ const SearchBar = ({
   return (
     <Container>
       <IconContainer>
-        <Icon src={searchIcon} alt="search" />
+        <Icon src={searchIcon} alt='search' />
       </IconContainer>
       <Input
-        type="text"
-        className="form-control"
-        placeholder="Search..."
+        type='text'
+        className='form-control'
+        placeholder='Search...'
         value={searchTerm}
         onChange={onSearch}
       />

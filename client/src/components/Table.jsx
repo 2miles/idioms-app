@@ -7,7 +7,7 @@ export const StyledTable = styled.table`
   table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 `;
 
 const Table = ({ tableData, handleSorting, columnVisibility }) => {
@@ -19,17 +19,13 @@ const Table = ({ tableData, handleSorting, columnVisibility }) => {
     { label: 'Owner', accessor: 'contributor' },
   ];
 
-  const visibleColumns = columns.filter(
-    (col) => columnVisibility[col.accessor],
-  );
+  const visibleColumns = columns.filter((col) => columnVisibility[col.accessor]);
 
   return (
     <>
-      <StyledTable className="table">
+      <StyledTable className='table'>
         <TableHead columns={visibleColumns} handleSorting={handleSorting} />
-        {tableData && (
-          <TableBody columns={visibleColumns} tableData={tableData} />
-        )}
+        {tableData && <TableBody columns={visibleColumns} tableData={tableData} />}
       </StyledTable>
     </>
   );
