@@ -10,7 +10,8 @@ export const IdiomsContextProvider = (props) => {
   const [selectedIdiom, setSelectedIdiom] = useState(null);
 
   // Calculate the positions of idioms based on their timestamps
-  const calculatePositions = (idioms) => {
+  // Adds a position field to the idioms
+  const addPositionsToIdioms = (idioms) => {
     return idioms
       .sort((a, b) => new Date(a.timestamps) - new Date(b.timestamps))
       .map((idiom, index) => ({
@@ -23,7 +24,7 @@ export const IdiomsContextProvider = (props) => {
   const fetchData = async () => {
     try {
       const response = await IdiomFinder.get('/');
-      const idiomsWithPositions = calculatePositions(response.data.data.idioms);
+      const idiomsWithPositions = addPositionsToIdioms(response.data.data.idioms);
       setIdioms(idiomsWithPositions);
     } catch (err) {
       console.log(err);
@@ -36,13 +37,13 @@ export const IdiomsContextProvider = (props) => {
 
   // Add an idiom and recalculate positions
   const addIdioms = (idiom) => {
-    const updatedIdioms = calculatePositions([...idioms, idiom]);
+    const updatedIdioms = addPositionsToIdioms([...idioms, idiom]);
     setIdioms(updatedIdioms);
   };
 
   // Update an idiom and recalculate positions
   const updateIdiom = (updatedIdiom) => {
-    const updatedIdioms = calculatePositions(
+    const updatedIdioms = addPositionsToIdioms(
       idioms.map((idiom) => (idiom.id === updatedIdiom.id ? updatedIdiom : idiom)),
     );
     setIdioms(updatedIdioms);
@@ -50,7 +51,7 @@ export const IdiomsContextProvider = (props) => {
 
   // Delete an idiom and recalculate positions
   const deleteIdiom = (id) => {
-    const updatedIdioms = calculatePositions(idioms.filter((idiom) => idiom.id !== id));
+    const updatedIdioms = addPositionsToIdioms(idioms.filter((idiom) => idiom.id !== id));
     setIdioms(updatedIdioms);
   };
 
