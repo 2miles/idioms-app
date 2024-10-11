@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -17,7 +17,11 @@ const NavBarWrapper = styled.nav`
   }
 `;
 
-const NavbarLinks = styled.div`
+type NavbarLinksProps = {
+  $isOpen: boolean;
+};
+
+const NavbarLinks = styled.div<NavbarLinksProps>`
   display: flex;
   gap: var(--space-xxl);
 
@@ -70,7 +74,7 @@ const NavbarLogin = styled.div`
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navRef = useRef(null);
+  const navRef = useRef<HTMLDivElement | null>(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -81,8 +85,8 @@ const NavBar = () => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (navRef.current && !navRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
