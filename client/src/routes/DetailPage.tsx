@@ -7,22 +7,32 @@ import { IdiomsContext } from '../context/idiomsContext';
 import IdiomFinder from '../apis/idiomFinder';
 import PageContainer from '../components/PageContainer';
 import UpdateIdiom from '../components/UpdateIdiom';
-import DetailCard from '../components/DetailCard';
+import DetailCard from 'components/DetailCard';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;
 `;
 
+type Idiom = {
+  id: number;
+  title: string;
+  title_general: string | null;
+  definition: string | null;
+  timestamps: string;
+  contributor: string | null;
+  position: number;
+};
+
+//
 const DetailPage = () => {
   const { id } = useParams();
-  const { idioms, setIdioms } = useContext(IdiomsContext);
-  const { selectedIdiom, setSelectedIdiom } = useContext(IdiomsContext);
+  const { idioms, setIdioms, selectedIdiom, setSelectedIdiom } = useContext(IdiomsContext);
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
-  const handleDelete = async (e, id) => {
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
     const confirmResult = await Swal.fire({
@@ -37,7 +47,7 @@ const DetailPage = () => {
     if (confirmResult.isConfirmed) {
       try {
         await IdiomFinder.delete(`/${id}`);
-        setIdioms(idioms.filter((idiom) => idiom.id !== id));
+        setIdioms(idioms.filter((idiom: Idiom) => idiom.id !== Number(id)));
 
         Swal.fire({
           title: 'Deleted!',
@@ -101,7 +111,7 @@ const DetailPage = () => {
       {isEditing && (
         <UpdateIdiom
           idiom={selectedIdiom}
-          onDelete={(e) => handleDelete(e, selectedIdiom.id)}
+          onDelete={(e: React.MouseEvent<HTMLButtonElement>) => handleDelete(e)}
           onSuccess={handleUpdateSuccess}
         />
       )}

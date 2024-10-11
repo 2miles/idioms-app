@@ -1,7 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 
+//
 const Card = styled.div`
   &.card {
     background: linear-gradient(
@@ -63,7 +63,27 @@ const CardBody = styled.div`
   }
 `;
 
-const DetailCard = ({ selectedIdiom, examples }) => {
+type Example = {
+  example_id: number;
+  example: string;
+};
+
+type SelectedIdiom = {
+  id: number;
+  title: string;
+  title_general: string | null;
+  definition: string | null;
+  timestamps: string;
+  contributor: string | null;
+  position: number | null;
+};
+
+type DetailCardProps = {
+  selectedIdiom: SelectedIdiom;
+  examples: Example[];
+};
+
+const DetailCard = ({ selectedIdiom, examples }: DetailCardProps) => {
   return (
     <Card className='card'>
       <CardHeader className='card-header'>
