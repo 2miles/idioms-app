@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import TableBody from './TableBody';
 import TableHead from './TableHead';
@@ -10,8 +9,32 @@ export const StyledTable = styled.table`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 `;
 
-const Table = ({ tableData, handleSorting, columnVisibility }) => {
-  const columns = [
+type Idiom = {
+  id: number;
+  title: string;
+  title_general: string | null;
+  definition: string | null;
+  timestamps: string;
+  contributor: string | null;
+  position: number | null;
+};
+
+type ColumnVisibility = {
+  position: boolean;
+  title: boolean;
+  definition: boolean;
+  timestamps: boolean;
+  contributor: boolean;
+};
+
+type TableProps = {
+  tableData: Idiom[];
+  handleSorting: (sortField: keyof Idiom, sortOrder: 'asc' | 'desc') => void;
+  columnVisibility: ColumnVisibility;
+};
+
+const Table = ({ tableData, handleSorting, columnVisibility }: TableProps) => {
+  const columns: { label: string; accessor: keyof ColumnVisibility }[] = [
     { label: '#', accessor: 'position' },
     { label: 'Idiom', accessor: 'title' },
     { label: 'Definition', accessor: 'definition' },
