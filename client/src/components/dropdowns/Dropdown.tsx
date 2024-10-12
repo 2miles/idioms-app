@@ -1,9 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-// Styled components
+type DropdownVariantType = 'searchColumn';
 
-const DropdownContainer = styled.div`
+type StyleProps = {
+  $hideOnSmallScreen?: boolean;
+  $variant?: DropdownVariantType;
+  $visible?: boolean;
+};
+
+const DropdownContainer = styled.div<StyleProps>`
   position: relative;
   display: flex;
   user-select: none;
@@ -42,7 +48,7 @@ const DropdownContainer = styled.div`
   }
 `;
 
-const Anchor = styled.span`
+const Anchor = styled.span<StyleProps>`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -68,7 +74,7 @@ const Anchor = styled.span`
     `}
 `;
 
-const Options = styled.ul`
+const Options = styled.ul<StyleProps>`
   display: ${(props) => (props.$visible ? 'block' : 'none')};
   position: absolute;
   top: calc(100% + 5px);
@@ -89,15 +95,30 @@ const Option = styled.li`
     background-color: var(--hilite-ui-primary);
   }
 `;
+type DropdownProps = {
+  label: string;
+  hideOnSmallScreen?: boolean;
+  options: (string | number | JSX.Element)[];
+  closeOnSelect?: boolean;
+  onOptionClick?: (option: string | number | JSX.Element) => void;
+  variant?: 'searchColumn';
+};
 
 // Dropdown component
-const Dropdown = ({ label, hideOnSmallScreen, options, closeOnSelect, onOptionClick, variant }) => {
+const Dropdown = ({
+  label,
+  hideOnSmallScreen,
+  options,
+  closeOnSelect,
+  onOptionClick,
+  variant,
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -111,7 +132,7 @@ const Dropdown = ({ label, hideOnSmallScreen, options, closeOnSelect, onOptionCl
     };
   }, [isOpen]);
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = (option: string | number | JSX.Element) => {
     if (onOptionClick) {
       onOptionClick(option);
     }
