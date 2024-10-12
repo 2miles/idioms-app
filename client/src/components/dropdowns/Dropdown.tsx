@@ -99,17 +99,16 @@ type DropdownProps = {
   label: string;
   hideOnSmallScreen?: boolean;
   options: (string | number | JSX.Element)[];
-  closeOnSelect?: boolean;
+  closeOnSelect: boolean;
   onOptionClick?: (option: string | number | JSX.Element) => void;
   variant?: 'searchColumn';
 };
 
-// Dropdown component
 const Dropdown = ({
   label,
   hideOnSmallScreen,
   options,
-  closeOnSelect,
+  closeOnSelect = false,
   onOptionClick,
   variant,
 }: DropdownProps) => {
@@ -119,7 +118,7 @@ const Dropdown = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        setIsOpen(false); // Close dropdown if clicking outside
       }
     };
 
@@ -141,14 +140,16 @@ const Dropdown = ({
     }
   };
 
+  // Toggle dropdown on label click
+  const handleLabelClick = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
-    <DropdownContainer
-      $hideOnSmallScreen={hideOnSmallScreen}
-      ref={dropdownRef}
-      onClick={() => setIsOpen(!isOpen)}
-      $variant={variant}
-    >
-      <Anchor $visible={isOpen}>{label}</Anchor>
+    <DropdownContainer $hideOnSmallScreen={hideOnSmallScreen} ref={dropdownRef} $variant={variant}>
+      <Anchor $visible={isOpen} onClick={handleLabelClick}>
+        {label}
+      </Anchor>
       <Options $visible={isOpen}>
         {options.map((option, index) => (
           <Option key={index} onClick={() => handleOptionClick(option)}>

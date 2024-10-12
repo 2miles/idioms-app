@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import Dropdown from './Dropdown';
 
@@ -12,7 +11,15 @@ const CheckboxLabel = styled.label`
   }
 `;
 
-const ColumnDropdown = ({ columnVisibility, handleColumnVisibilityChange }) => {
+type ColumnDropdownProps = {
+  columnVisibility: { [key: string]: boolean };
+  handleColumnVisibilityChange: (column: string) => void;
+};
+
+const ColumnDropdown = ({
+  columnVisibility,
+  handleColumnVisibilityChange,
+}: ColumnDropdownProps) => {
   const columns = Object.keys(columnVisibility);
 
   // Pass JSX directly into the options array
