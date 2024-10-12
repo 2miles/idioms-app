@@ -6,17 +6,13 @@ type ItemsPerPageDropdownProps = {
 };
 
 const ItemsPerPageDropdown = ({ handleItemsPerPageChange }: ItemsPerPageDropdownProps) => {
-  const [selectedOption, setSelectedOption] = useState(20);
-  const options = [10, 20, 50, 100];
+  const [selectedOption, setSelectedOption] = useState('20');
+  const options = ['10', '20', '50', '100'];
 
-  // const handleOptionClick = (option: number) => {
-  //   setSelectedOption(option); // Handle selection logic here
-  //   handleItemsPerPageChange(option);
-  // };
-  const handleOptionClick = (option: string | number | JSX.Element) => {
-    if (typeof option === 'number') {
-      setSelectedOption(option); // Handle selection logic here
-      handleItemsPerPageChange(option);
+  const handleOptionClick = (option: string | JSX.Element) => {
+    if (typeof option !== 'object') {
+      setSelectedOption(option);
+      handleItemsPerPageChange(Number(option));
     }
   };
 

@@ -21,7 +21,6 @@ const DropdownContainer = styled.div<StyleProps>`
   padding: 0px var(--padding-ms);
   align-items: center;
 
-  /* Media query for small screens */
   @media (max-width: 780px) {
     display: ${(props) => (props.$hideOnSmallScreen ? 'none' : 'flex')};
   }
@@ -98,9 +97,9 @@ const Option = styled.li`
 type DropdownProps = {
   label: string;
   hideOnSmallScreen?: boolean;
-  options: (string | number | JSX.Element)[];
+  options: (string | JSX.Element)[];
   closeOnSelect: boolean;
-  onOptionClick?: (option: string | number | JSX.Element) => void;
+  onOptionClick?: (option: string | JSX.Element) => void;
   variant?: 'searchColumn';
 };
 
@@ -131,7 +130,7 @@ const Dropdown = ({
     };
   }, [isOpen]);
 
-  const handleOptionClick = (option: string | number | JSX.Element) => {
+  const handleOptionClick = (option: string | JSX.Element) => {
     if (onOptionClick) {
       onOptionClick(option);
     }
