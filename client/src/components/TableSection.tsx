@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import SearchBar from './SearchBar';
@@ -46,13 +46,37 @@ const SearchAndFilterWrapper = styled.div`
   margin-bottom: var(--margin-sm);
 `;
 
-const TableSection = ({ idioms }) => {
+type ColumnVisibilityType = {
+  position: boolean;
+  title: boolean;
+  definition: boolean;
+  timestamps: boolean;
+  contributor: boolean;
+};
+
+type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
+
+type Idiom = {
+  id: number;
+  title: string;
+  title_general: string | null;
+  definition: string | null;
+  timestamps: string;
+  contributor: string | null;
+  position: number | null;
+};
+
+type TableSectionProps = {
+  idioms: Idiom[];
+};
+
+const TableSection = ({ idioms }: TableSectionProps) => {
   const [filteredIdioms, setFilteredIdioms] = useState(idioms);
   const [idiomCount, setIdiomCount] = useState(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [activeSearchColumn, setActiveSearchColumn] = useState('title'); // Default active column
-  const [columnVisibility, setColumnVisibility] = useState({
+  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibilityType>({
     position: true,
     title: true,
     definition: true,
@@ -61,14 +85,14 @@ const TableSection = ({ idioms }) => {
   });
 
   // Updates filtered idioms when the search changes
-  const handleSearch = (filtered) => {
+  const handleSearch = (filtered: Idiom[]) => {
     setFilteredIdioms(filtered);
     setIdiomCount(filtered.length);
     setCurrentPage(1);
   };
 
   // Handle the search column change
-  const handleSearchColumnChange = (column) => {
+  const handleSearchColumnChange = (column: ColumnValues) => {
     setActiveSearchColumn(column);
   };
 
@@ -77,7 +101,7 @@ const TableSection = ({ idioms }) => {
     setIdiomCount(idioms.length);
   }, [idioms]);
 
-  const handleSorting = (sortField, sortOrder) => {
+  const handleSorting = (sortField: ColumnValues, sortOrder: 'desc' | 'asc') => {
     if (sortField) {
       const sorted = [...filteredIdioms].sort((a, b) => {
         if (a[sortField] === null) return 1;
@@ -92,7 +116,7 @@ const TableSection = ({ idioms }) => {
     }
   };
 
-  const handleColumnVisibilityChange = (column) => {
+  const handleColumnVisibilityChange = (column: ColumnValues) => {
     setColumnVisibility({
       ...columnVisibility,
       [column]: !columnVisibility[column],
@@ -103,9 +127,9 @@ const TableSection = ({ idioms }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const handleItemsPerPageChange = (itemsPerPage) => {
+  const handleItemsPerPageChange = (itemsPerPage: number) => {
     setItemsPerPage(itemsPerPage);
     setCurrentPage(1);
   };
@@ -131,10 +155,7 @@ const TableSection = ({ idioms }) => {
             columnVisibility={columnVisibility}
             handleColumnVisibilityChange={handleColumnVisibilityChange}
           />
-          <ItemsPerPageDropdown
-            itemsPerPage={itemsPerPage}
-            handleItemsPerPageChange={handleItemsPerPageChange}
-          />
+          <ItemsPerPageDropdown handleItemsPerPageChange={handleItemsPerPageChange} />
           <Pagination
             itemsPerPage={itemsPerPage}
             totalItems={idiomCount}

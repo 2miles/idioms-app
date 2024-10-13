@@ -27,9 +27,11 @@ type ColumnVisibility = {
   contributor: boolean;
 };
 
+type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
+
 type TableProps = {
   tableData: Idiom[];
-  handleSorting: (sortField: keyof Idiom, sortOrder: 'asc' | 'desc') => void;
+  handleSorting: (sortField: ColumnValues, sortOrder: 'asc' | 'desc') => void;
   columnVisibility: ColumnVisibility;
 };
 

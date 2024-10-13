@@ -11,16 +11,26 @@ const CheckboxLabel = styled.label`
   }
 `;
 
+type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
+
+type ColumnVisibilityType = {
+  position: boolean;
+  title: boolean;
+  definition: boolean;
+  timestamps: boolean;
+  contributor: boolean;
+};
+
 type ColumnDropdownProps = {
-  columnVisibility: { [key: string]: boolean };
-  handleColumnVisibilityChange: (column: string) => void;
+  columnVisibility: ColumnVisibilityType;
+  handleColumnVisibilityChange: (column: ColumnValues) => void;
 };
 
 const ColumnDropdown = ({
   columnVisibility,
   handleColumnVisibilityChange,
 }: ColumnDropdownProps) => {
-  const columns = Object.keys(columnVisibility);
+  const columns = Object.keys(columnVisibility) as ColumnValues[];
 
   // Pass JSX directly into the options array
   const options = columns.map((column) => (
