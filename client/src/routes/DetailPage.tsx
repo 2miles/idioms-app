@@ -20,7 +20,7 @@ type Idiom = {
   definition: string | null;
   timestamps: string;
   contributor: string | null;
-  position: number;
+  position: number | null;
 };
 
 //

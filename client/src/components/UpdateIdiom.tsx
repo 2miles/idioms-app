@@ -51,18 +51,18 @@ type Idiom = {
 };
 
 type UpdateIdiomProps = {
-  idiom: Idiom;
+  idiom: Idiom | null;
   onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
   handleToggleEdit: () => void;
 };
 
 const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
-  const [title, setTitle] = useState(idiom.title || '');
-  const [titleGeneral, setTitleGeneral] = useState(idiom.title_general || '');
-  const [definition, setDefinition] = useState(idiom.definition || '');
-  const [contributor, setContributor] = useState(idiom.contributor || '');
-  const [timestamp, setTimestamp] = useState<moment.Moment>(moment(idiom.timestamps));
+  const [title, setTitle] = useState(idiom?.title || '');
+  const [titleGeneral, setTitleGeneral] = useState(idiom?.title_general || '');
+  const [definition, setDefinition] = useState(idiom?.definition || '');
+  const [contributor, setContributor] = useState(idiom?.contributor || '');
+  const [timestamp, setTimestamp] = useState<moment.Moment>(moment(idiom?.timestamps));
   const [validated, setValidated] = useState(false);
 
   const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
@@ -76,7 +76,7 @@ const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) =>
     try {
       // Format for the backend and remove milliseconds
       const formattedTimestamp = timestamp.toISOString().split('.')[0] + 'Z';
-      const response = await IdiomFinder.put(`/${idiom.id}`, {
+      const response = await IdiomFinder.put(`/${idiom?.id}`, {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
         definition: emptyStringToNull(definition),
