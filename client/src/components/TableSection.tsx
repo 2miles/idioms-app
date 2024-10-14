@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { IdiomsContext } from '../context/idiomsContext';
 import styled from 'styled-components';
 
 import SearchBar from './SearchBar';
@@ -66,11 +67,9 @@ type Idiom = {
   position: number | null;
 };
 
-type TableSectionProps = {
-  idioms: Idiom[];
-};
+const TableSection = () => {
+  const { idioms } = useContext(IdiomsContext);
 
-const TableSection = ({ idioms }: TableSectionProps) => {
   const [filteredIdioms, setFilteredIdioms] = useState(idioms);
   const [idiomCount, setIdiomCount] = useState(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
