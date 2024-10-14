@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 
 import IdiomFinder from '../apis/idiomFinder';
 import { IdiomsContext } from '../context/idiomsContext';
+import { Idiom } from '../types';
 import TextAreaField from './formFields/TextAreaField';
 import TextField from './formFields/TextField';
 import TimestampField from './formFields/TimestampField';
@@ -39,16 +40,6 @@ const ButtonsWrapper = styled.div`
     margin-left: auto;
   }
 `;
-
-type Idiom = {
-  id: number;
-  title: string;
-  title_general: string | null;
-  definition: string | null;
-  timestamps: string;
-  contributor: string | null;
-  position: number | null;
-};
 
 type UpdateIdiomProps = {
   idiom: Idiom | null;

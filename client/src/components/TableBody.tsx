@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
+import { Idiom, Columns, ColumnLabels, ColumnValues } from '../types';
 
 const truncateLength = 150;
 const truncateText = (text: string, maxLength: number) => {
@@ -47,28 +48,10 @@ const StyledTd = styled.td<StyleProps>`
   }
 `;
 
-type Idiom = {
-  id: number;
-  title: string;
-  title_general: string | null;
-  definition: string | null;
-  timestamps: string;
-  contributor: string | null;
-  position: number | null;
-};
-
-type ColumnVisibility = {
-  position: boolean;
-  title: boolean;
-  definition: boolean;
-  timestamps: boolean;
-  contributor: boolean;
-};
-
-type Columns = {
-  label: string;
-  accessor: keyof ColumnVisibility;
-}[];
+// type Columns = {
+//   label: ColumnLabels;
+//   accessor: ColumnValues;
+// }[];
 
 type TableBodyProps = {
   tableData: Idiom[];

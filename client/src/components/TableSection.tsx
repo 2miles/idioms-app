@@ -7,6 +7,7 @@ import Table from './Table';
 import Pagination from './Pagination';
 import ItemsPerPageDropdown from './dropdowns/ItemsPerPageDropdown';
 import ColumnDropdown from './dropdowns/ColumnDropdown';
+import { Idiom, ColumnVisibility, ColumnValues } from 'types';
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
@@ -47,26 +48,6 @@ const SearchAndFilterWrapper = styled.div`
   margin-bottom: var(--margin-sm);
 `;
 
-type ColumnVisibilityType = {
-  position: boolean;
-  title: boolean;
-  definition: boolean;
-  timestamps: boolean;
-  contributor: boolean;
-};
-
-type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
-
-type Idiom = {
-  id: number;
-  title: string;
-  title_general: string | null;
-  definition: string | null;
-  timestamps: string;
-  contributor: string | null;
-  position: number | null;
-};
-
 const TableSection = () => {
   const { idioms } = useContext(IdiomsContext);
 
@@ -75,7 +56,7 @@ const TableSection = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnValues>('title'); // Default active column
-  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibilityType>({
+  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
     title: true,
     definition: true,
