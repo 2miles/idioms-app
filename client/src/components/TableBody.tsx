@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Idiom, Columns, ColumnLabels, ColumnValues } from '../types';
+
+import { Idiom, Column } from '../types';
 
 const truncateLength = 150;
 const truncateText = (text: string, maxLength: number) => {
@@ -48,14 +49,9 @@ const StyledTd = styled.td<StyleProps>`
   }
 `;
 
-// type Columns = {
-//   label: ColumnLabels;
-//   accessor: ColumnValues;
-// }[];
-
 type TableBodyProps = {
   tableData: Idiom[];
-  columns: Columns;
+  columns: Column[];
 };
 
 // Renders the rows of a table based on the provided data and column definitions.

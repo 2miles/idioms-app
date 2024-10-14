@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+
+import { ColumnAccessors, ColumnVisibility } from 'types';
 import Dropdown from './Dropdown';
 
 const CheckboxLabel = styled.label`
@@ -11,26 +13,16 @@ const CheckboxLabel = styled.label`
   }
 `;
 
-type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
-
-type ColumnVisibilityType = {
-  position: boolean;
-  title: boolean;
-  definition: boolean;
-  timestamps: boolean;
-  contributor: boolean;
-};
-
 type ColumnDropdownProps = {
-  columnVisibility: ColumnVisibilityType;
-  handleColumnVisibilityChange: (column: ColumnValues) => void;
+  columnVisibility: ColumnVisibility;
+  handleColumnVisibilityChange: (column: ColumnAccessors) => void;
 };
 
 const ColumnDropdown = ({
   columnVisibility,
   handleColumnVisibilityChange,
 }: ColumnDropdownProps) => {
-  const columns = Object.keys(columnVisibility) as ColumnValues[];
+  const columns = Object.keys(columnVisibility) as ColumnAccessors[];
 
   // Pass JSX directly into the options array
   const options = columns.map((column) => (

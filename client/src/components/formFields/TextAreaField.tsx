@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const StyledTextArea = styled.textarea`
   &::placeholder {
-    color: #adb5bd;
+    color: var(--dim-text-primary);
   }
 `;
 type TextAreaFieldProps = {
@@ -21,7 +21,7 @@ const TextAreaField = ({
   label,
   value,
   onChange,
-  placeholder = '',
+  placeholder,
   rows = 4,
 }: TextAreaFieldProps) => {
   return (

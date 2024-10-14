@@ -34,6 +34,7 @@ const FormControlsWrapper = styled.div`
     margin: var(--margin-lg);
   }
 `;
+
 type AddIdiomProps = {
   collapseForm: () => void;
 };

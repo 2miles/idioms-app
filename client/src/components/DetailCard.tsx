@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import moment from 'moment';
 
+import { Idiom } from '../types';
+
 //
 const Card = styled.div`
   &.card {
@@ -68,18 +70,8 @@ type Example = {
   example: string;
 };
 
-type SelectedIdiom = {
-  id: number;
-  title: string;
-  title_general: string | null;
-  definition: string | null;
-  timestamps: string;
-  contributor: string | null;
-  position: number | null;
-};
-
 type DetailCardProps = {
-  selectedIdiom: SelectedIdiom;
+  selectedIdiom: Idiom;
   examples: Example[];
 };
 

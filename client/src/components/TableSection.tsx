@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
-import { IdiomsContext } from '../context/idiomsContext';
 import styled from 'styled-components';
 
+import { IdiomsContext } from '../context/idiomsContext';
+import { Idiom, ColumnVisibility, ColumnAccessors } from 'types';
 import SearchBar from './SearchBar';
 import Table from './Table';
 import Pagination from './Pagination';
 import ItemsPerPageDropdown from './dropdowns/ItemsPerPageDropdown';
 import ColumnDropdown from './dropdowns/ColumnDropdown';
-import { Idiom, ColumnVisibility, ColumnValues } from 'types';
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
@@ -55,7 +55,7 @@ const TableSection = () => {
   const [idiomCount, setIdiomCount] = useState<number>(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnValues>('title'); // Default active column
+  const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnAccessors>('title'); // Default active column
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
     title: true,
@@ -72,7 +72,7 @@ const TableSection = () => {
   };
 
   // Handle the search column change
-  const handleSearchColumnChange = (column: ColumnValues) => {
+  const handleSearchColumnChange = (column: ColumnAccessors) => {
     setActiveSearchColumn(column);
   };
 
@@ -81,7 +81,7 @@ const TableSection = () => {
     setIdiomCount(idioms.length);
   }, [idioms]);
 
-  const handleSorting = (sortField: ColumnValues, sortOrder: 'desc' | 'asc') => {
+  const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
     if (sortField) {
       const sorted = [...filteredIdioms].sort((a, b) => {
         if (a[sortField] === null) return 1;
@@ -96,7 +96,7 @@ const TableSection = () => {
     }
   };
 
-  const handleColumnVisibilityChange = (column: ColumnValues) => {
+  const handleColumnVisibilityChange = (column: ColumnAccessors) => {
     setColumnVisibility({
       ...columnVisibility,
       [column]: !columnVisibility[column],

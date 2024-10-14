@@ -8,23 +8,13 @@ export type Idiom = {
   position: number | null;
 };
 
-export const ColumnsObj = [
-  { label: '#', accessor: 'position' },
-  { label: 'Idiom', accessor: 'title' },
-  { label: 'Definition', accessor: 'definition' },
-  { label: 'Day', accessor: 'timestamps' },
-  { label: 'Owner', accessor: 'contributor' },
-];
-
-export type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
+export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
 export type ColumnLabels = '#' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
-// export type ColumnValues = Columns[number]['accessor']; // 'position' | 'title' | 'definition' | 'timestamps' | 'contributor'
-// export type ColumnLabels = Columns[number]['label']; // '#' | 'Idiom' | 'Definition' | 'Day' | 'Owner'
 
-export type Columns = {
+export type Column = {
   label: ColumnLabels;
-  accessor: ColumnValues;
-}[];
+  accessor: ColumnAccessors;
+};
 
 export type ColumnVisibility = {
   position: boolean;
@@ -33,3 +23,11 @@ export type ColumnVisibility = {
   timestamps: boolean;
   contributor: boolean;
 };
+
+export const Columns: Column[] = [
+  { accessor: 'title', label: 'Title' },
+  { accessor: 'definition', label: 'Definition' },
+  { accessor: 'contributor', label: 'Owner' },
+  { accessor: 'timestamps', label: 'Day' },
+  { accessor: 'position', label: '#' },
+];

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+
+import { Idiom, ColumnLabels, ColumnAccessors, ColumnVisibility } from '../types';
 import TableBody from './TableBody';
 import TableHead from './TableHead';
-import { Idiom, ColumnLabels, ColumnValues, ColumnVisibility } from '../types';
 
 export const StyledTable = styled.table`
   table-layout: fixed;
@@ -12,12 +13,12 @@ export const StyledTable = styled.table`
 
 type TableProps = {
   tableData: Idiom[];
-  handleSorting: (sortField: ColumnValues, sortOrder: 'asc' | 'desc') => void;
+  handleSorting: (sortField: ColumnAccessors, sortOrder: 'asc' | 'desc') => void;
   columnVisibility: ColumnVisibility;
 };
 
 const Table = ({ tableData, handleSorting, columnVisibility }: TableProps) => {
-  const columns: { label: ColumnLabels; accessor: ColumnValues }[] = [
+  const columns: { label: ColumnLabels; accessor: ColumnAccessors }[] = [
     { label: '#', accessor: 'position' },
     { label: 'Idiom', accessor: 'title' },
     { label: 'Definition', accessor: 'definition' },

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+
+import { Idiom, ColumnAccessors } from '../types';
 import searchIcon from '../images/search-icon-png-24.png';
 import SearchColumnDropdown from './dropdowns/SearchColumnDropdown';
 
@@ -44,34 +46,22 @@ const DropdownWrapper = styled.div`
   align-items: center;
 `;
 
-type Idiom = {
-  id: number;
-  title: string;
-  title_general: string | null;
-  definition: string | null;
-  timestamps: string;
-  contributor: string | null;
-  position: number | null;
-};
-
-type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
-
 type SearchBarProps = {
-  handleSearch: (filtered: Idiom[]) => void;
   idioms: Idiom[];
-  activeSearchColumn: ColumnValues;
-  handleSearchColumnChange: (column: ColumnValues) => void;
+  activeSearchColumn: ColumnAccessors;
+  handleSearch: (filtered: Idiom[]) => void;
+  handleSearchColumnChange: (column: ColumnAccessors) => void;
 };
 
 const SearchBar = ({
-  handleSearch,
   idioms,
   activeSearchColumn,
+  handleSearch,
   handleSearchColumnChange,
 }: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Effect to update search results whenever the column changes
+  // Effect to update search results whenever the search column changes
   useEffect(() => {
     if (searchTerm === '') {
       handleSearch(idioms); // Show all idioms if search is empty

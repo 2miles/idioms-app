@@ -1,13 +1,9 @@
 import { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+
+import { Column } from '../types';
 import arrowUp from 'images/icons8-arrow-up-30.png';
 import arrowDown from 'images/icons8-down-arrow-30.png';
-import { ColumnValues, ColumnLabels } from '../types';
-
-type Column = {
-  label: ColumnLabels;
-  accessor: ColumnValues;
-};
 
 type TableHeadProps = {
   columns: Column[];
