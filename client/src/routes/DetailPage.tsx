@@ -73,10 +73,6 @@ const DetailPage = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleUpdateSuccess = () => {
-    setIsEditing(false); // Close the update form
-  };
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -112,7 +108,7 @@ const DetailPage = () => {
         <UpdateIdiom
           idiom={selectedIdiom}
           onDelete={(e: React.MouseEvent<HTMLButtonElement>) => handleDelete(e)}
-          onSuccess={handleUpdateSuccess}
+          handleToggleEdit={handleToggleEdit}
         />
       )}
     </PageContainer>

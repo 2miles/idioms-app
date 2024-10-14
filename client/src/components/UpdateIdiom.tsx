@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
@@ -40,18 +40,34 @@ const ButtonsWrapper = styled.div`
   }
 `;
 
-const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
+type Idiom = {
+  id: number;
+  title: string;
+  title_general: string | null;
+  definition: string | null;
+  timestamps: string;
+  contributor: string | null;
+  position: number | null;
+};
+
+type UpdateIdiomProps = {
+  idiom: Idiom;
+  onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleToggleEdit: () => void;
+};
+
+const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
   const [title, setTitle] = useState(idiom.title || '');
   const [titleGeneral, setTitleGeneral] = useState(idiom.title_general || '');
   const [definition, setDefinition] = useState(idiom.definition || '');
   const [contributor, setContributor] = useState(idiom.contributor || '');
-  const [timestamp, setTimestamp] = useState(idiom.timestamps ? moment(idiom.timestamps) : null);
+  const [timestamp, setTimestamp] = useState<moment.Moment>(moment(idiom.timestamps));
   const [validated, setValidated] = useState(false);
 
-  const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
+  const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
     if (title.trim() === '') {
@@ -59,7 +75,7 @@ const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
     }
     try {
       // Format for the backend and remove milliseconds
-      const formattedTimestamp = timestamp ? timestamp.toISOString().split('.')[0] + 'Z' : null;
+      const formattedTimestamp = timestamp.toISOString().split('.')[0] + 'Z';
       const response = await IdiomFinder.put(`/${idiom.id}`, {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
@@ -77,11 +93,8 @@ const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
           timer: 1500,
           showConfirmButton: false,
         });
-
         // Call onSuccess to hide the form
-        if (onSuccess) {
-          onSuccess();
-        }
+        handleToggleEdit();
       }
     } catch (err) {
       console.error('Error updating idiom:', err);
