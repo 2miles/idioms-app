@@ -1,9 +1,16 @@
 // TimestampField.jsx
-import React from 'react';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 
-const TimestampField = ({ label, id, value, onChange }) => {
+type TimestampFieldProps = {
+  id: string;
+  label: string;
+  value: moment.Moment;
+  required?: boolean;
+  onChange: (value: moment.Moment | string) => void;
+};
+
+const TimestampField = ({ label, id, value, onChange }: TimestampFieldProps) => {
   return (
     <div className='form-group'>
       <label htmlFor={id}>{label}</label>

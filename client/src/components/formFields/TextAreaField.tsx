@@ -7,12 +7,28 @@ const StyledTextArea = styled.textarea`
     color: #adb5bd;
   }
 `;
-
-const TextAreaField = ({ label, value, onChange, placeholder = '', rows = 4 }) => {
+type TextAreaFieldProps = {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  placeholder?: string;
+  rows?: number;
+  required?: boolean;
+};
+const TextAreaField = ({
+  id,
+  label,
+  value,
+  onChange,
+  placeholder = '',
+  rows = 4,
+}: TextAreaFieldProps) => {
   return (
     <div className='form-group'>
       <label>{label}</label>
       <StyledTextArea
+        id={id}
         className='form-control'
         value={value}
         onChange={onChange}
