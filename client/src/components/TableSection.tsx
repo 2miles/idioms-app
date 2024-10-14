@@ -75,7 +75,7 @@ const TableSection = ({ idioms }: TableSectionProps) => {
   const [idiomCount, setIdiomCount] = useState(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [activeSearchColumn, setActiveSearchColumn] = useState('title'); // Default active column
+  const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnValues>('title'); // Default active column
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibilityType>({
     position: true,
     title: true,

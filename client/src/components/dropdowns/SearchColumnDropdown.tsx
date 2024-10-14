@@ -1,9 +1,11 @@
 // SearchColumnDropdown.js
 import Dropdown from './Dropdown';
 
+type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
+
 type SearchColumnDropdownProps = {
   activeColumn: string;
-  handleColumnChange: (columnValue: string) => void;
+  handleColumnChange: (columnValue: ColumnValues) => void;
 };
 
 const SearchColumnDropdown = ({ activeColumn, handleColumnChange }: SearchColumnDropdownProps) => {
@@ -19,7 +21,7 @@ const SearchColumnDropdown = ({ activeColumn, handleColumnChange }: SearchColumn
     if (typeof selectedLabel === 'string') {
       const selectedColumn = columns.find((col) => col.label === selectedLabel);
       if (selectedColumn) {
-        handleColumnChange(selectedColumn.value);
+        handleColumnChange(selectedColumn.value as ColumnValues);
       }
     }
   };

@@ -44,7 +44,31 @@ const DropdownWrapper = styled.div`
   align-items: center;
 `;
 
-const SearchBar = ({ handleSearch, idioms, activeSearchColumn, handleSearchColumnChange }) => {
+type Idiom = {
+  id: number;
+  title: string;
+  title_general: string | null;
+  definition: string | null;
+  timestamps: string;
+  contributor: string | null;
+  position: number | null;
+};
+
+type ColumnValues = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
+
+type SearchBarProps = {
+  handleSearch: (filtered: Idiom[]) => void;
+  idioms: Idiom[];
+  activeSearchColumn: ColumnValues;
+  handleSearchColumnChange: (column: ColumnValues) => void;
+};
+
+const SearchBar = ({
+  handleSearch,
+  idioms,
+  activeSearchColumn,
+  handleSearchColumnChange,
+}: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Effect to update search results whenever the column changes
@@ -63,7 +87,7 @@ const SearchBar = ({ handleSearch, idioms, activeSearchColumn, handleSearchColum
     }
   }, [searchTerm, activeSearchColumn, idioms]);
 
-  const onSearch = (e) => {
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
