@@ -71,7 +71,7 @@ const TableSection = () => {
   const { idioms } = useContext(IdiomsContext);
 
   const [filteredIdioms, setFilteredIdioms] = useState(idioms);
-  const [idiomCount, setIdiomCount] = useState(idioms.length);
+  const [idiomCount, setIdiomCount] = useState<number>(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnValues>('title'); // Default active column
