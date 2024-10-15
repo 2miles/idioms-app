@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { Idiom, ColumnLabels, ColumnAccessors, ColumnVisibility } from '../types';
-import TableBody from './TableBody';
-import TableHead from './TableHead';
+import { Idiom, ColumnAccessors, ColumnVisibility, Columns } from 'types';
+import TableBody from 'components/TableBody';
+import TableHead from 'components/TableHead';
 
 export const StyledTable = styled.table`
   table-layout: fixed;
@@ -18,14 +18,7 @@ type TableProps = {
 };
 
 const Table = ({ tableData, handleSorting, columnVisibility }: TableProps) => {
-  const columns: { label: ColumnLabels; accessor: ColumnAccessors }[] = [
-    { label: '#', accessor: 'position' },
-    { label: 'Idiom', accessor: 'title' },
-    { label: 'Definition', accessor: 'definition' },
-    { label: 'Day', accessor: 'timestamps' },
-    { label: 'Owner', accessor: 'contributor' },
-  ];
-
+  const columns = Columns;
   const visibleColumns = columns.filter((col) => columnVisibility[col.accessor]);
 
   return (

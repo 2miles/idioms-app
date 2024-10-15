@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { ColumnAccessors, ColumnVisibility } from 'types';
-import Dropdown from './Dropdown';
+import { ColumnAccessors, ColumnVisibility, Columns } from 'types';
+import Dropdown from 'components/dropdowns/Dropdown';
 
 const CheckboxLabel = styled.label`
   display: flex;
@@ -15,24 +15,25 @@ const CheckboxLabel = styled.label`
 
 type ColumnDropdownProps = {
   columnVisibility: ColumnVisibility;
-  handleColumnVisibilityChange: (column: ColumnAccessors) => void;
+  handleColumnVisibilityChange: (accessor: ColumnAccessors) => void;
 };
 
 const ColumnDropdown = ({
   columnVisibility,
   handleColumnVisibilityChange,
 }: ColumnDropdownProps) => {
-  const columns = Object.keys(columnVisibility) as ColumnAccessors[];
+  // const accessors = Object.keys(columnVisibility) as ColumnAccessors[];
+  const accessors = Columns.map((column) => column.accessor);
 
   // Pass JSX directly into the options array
-  const options = columns.map((column) => (
-    <CheckboxLabel key={column}>
+  const options = accessors.map((accessor) => (
+    <CheckboxLabel key={accessor}>
       <input
         type='checkbox'
-        checked={columnVisibility[column]}
-        onChange={() => handleColumnVisibilityChange(column)}
+        checked={columnVisibility[accessor]}
+        onChange={() => handleColumnVisibilityChange(accessor)}
       />
-      {column.charAt(0).toUpperCase() + column.slice(1)}
+      {accessor.charAt(0).toUpperCase() + accessor.slice(1)}
     </CheckboxLabel>
   ));
 

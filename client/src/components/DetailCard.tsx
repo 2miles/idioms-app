@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { Idiom } from '../types';
+import { Idiom } from 'types';
 
 //
 const Card = styled.div`
@@ -71,31 +71,31 @@ type Example = {
 };
 
 type DetailCardProps = {
-  selectedIdiom: Idiom;
+  idiom: Idiom;
   examples: Example[];
 };
 
-const DetailCard = ({ selectedIdiom, examples }: DetailCardProps) => {
+const DetailCard = ({ idiom, examples }: DetailCardProps) => {
   return (
     <Card className='card'>
       <CardHeader className='card-header'>
         <h1>
           &quot;
-          {selectedIdiom.title_general && selectedIdiom.title_general.trim() !== ''
-            ? selectedIdiom.title_general
-            : selectedIdiom.title}
+          {idiom.title_general && idiom.title_general.trim() !== ''
+            ? idiom.title_general
+            : idiom.title}
           &quot;
         </h1>
       </CardHeader>
       <CardBody className='card-body'>
-        <p># {selectedIdiom.id}</p>
+        <p># {idiom.id}</p>
         <p>
           {'Added on '}
-          {moment(selectedIdiom.timestamps).format('MM-DD-YY')}
+          {moment(idiom.timestamps).format('MM-DD-YY')}
         </p>
 
         <h3>Meaning:</h3>
-        <p>{selectedIdiom.definition}</p>
+        <p>{idiom.definition}</p>
         <h3>Examples:</h3>
         <ul>
           {examples.map((example) => (

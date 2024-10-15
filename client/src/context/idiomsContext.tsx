@@ -1,15 +1,7 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
-import IdiomFinder from '../apis/idiomFinder';
 
-type Idiom = {
-  id: number;
-  title: string;
-  title_general: string | null;
-  definition: string | null;
-  timestamps: string;
-  contributor: string | null;
-  position: number | null;
-};
+import { Idiom } from 'types';
+import IdiomFinder from 'apis/idiomFinder';
 
 // Define the structure of the context
 type IdiomsContextType = {
@@ -100,11 +92,11 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     <IdiomsContext.Provider
       value={{
         idioms,
+        selectedIdiom,
         setIdioms,
         addIdioms,
         updateIdiom,
         deleteIdiom,
-        selectedIdiom,
         setSelectedIdiom,
       }}
     >

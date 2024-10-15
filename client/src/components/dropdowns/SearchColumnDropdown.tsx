@@ -1,6 +1,6 @@
 // SearchColumnDropdown.js
 import { ColumnAccessors, Columns } from 'types';
-import Dropdown from './Dropdown';
+import Dropdown from 'components/dropdowns/Dropdown';
 
 type SearchColumnDropdownProps = {
   activeColumn: string;
@@ -8,13 +8,6 @@ type SearchColumnDropdownProps = {
 };
 
 const SearchColumnDropdown = ({ activeColumn, handleColumnChange }: SearchColumnDropdownProps) => {
-  // const columns = [
-  //   { value: 'title', label: 'Title' },
-  //   { value: 'definition', label: 'Definition' },
-  //   { value: 'contributor', label: 'Contributor' },
-  //   { value: 'timestamps', label: 'Timestamp' },
-  //   { value: 'position', label: 'Position' },
-  // ];
   const columns = Columns;
 
   const handleOptionClick = (selectedLabel: string | JSX.Element) => {

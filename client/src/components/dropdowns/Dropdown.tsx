@@ -43,7 +43,7 @@ const DropdownContainer = styled.div<StyleProps>`
       border-left: 2px solid var(--color-ui-border);
     `}
   &:active {
-    background-color: var(--hilite-ui-primary); // Customize this color
+    background-color: var(--hilite-ui-primary);
   }
 `;
 
@@ -117,7 +117,7 @@ const Dropdown = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false); // Close dropdown if clicking outside
+        setIsOpen(false);
       }
     };
 
@@ -139,7 +139,6 @@ const Dropdown = ({
     }
   };
 
-  // Toggle dropdown on label click
   const handleLabelClick = () => {
     setIsOpen((prev) => !prev);
   };

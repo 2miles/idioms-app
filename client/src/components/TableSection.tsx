@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
-import { IdiomsContext } from '../context/idiomsContext';
+import { IdiomsContext } from 'context/idiomsContext';
 import { Idiom, ColumnVisibility, ColumnAccessors } from 'types';
-import SearchBar from './SearchBar';
-import Table from './Table';
-import Pagination from './Pagination';
-import ItemsPerPageDropdown from './dropdowns/ItemsPerPageDropdown';
-import ColumnDropdown from './dropdowns/ColumnDropdown';
+import SearchBar from 'components/SearchBar';
+import Table from 'components/Table';
+import Pagination from 'components/Pagination';
+import ItemsPerPageDropdown from 'components/dropdowns/ItemsPerPageDropdown';
+import ColumnDropdown from 'components/dropdowns/ColumnDropdown';
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
@@ -96,10 +96,10 @@ const TableSection = () => {
     }
   };
 
-  const handleColumnVisibilityChange = (column: ColumnAccessors) => {
+  const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
     setColumnVisibility({
       ...columnVisibility,
-      [column]: !columnVisibility[column],
+      [accessor]: !columnVisibility[accessor],
     });
   };
 

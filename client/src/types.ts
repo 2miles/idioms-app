@@ -9,7 +9,7 @@ export type Idiom = {
 };
 
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
-export type ColumnLabels = '#' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
+export type ColumnLabels = 'Position' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
 
 export type Column = {
   label: ColumnLabels;
@@ -25,9 +25,9 @@ export type ColumnVisibility = {
 };
 
 export const Columns: Column[] = [
-  { accessor: 'title', label: 'Title' },
+  { accessor: 'position', label: 'Position' },
+  { accessor: 'title', label: 'Idiom' },
   { accessor: 'definition', label: 'Definition' },
-  { accessor: 'contributor', label: 'Owner' },
   { accessor: 'timestamps', label: 'Day' },
-  { accessor: 'position', label: '#' },
+  { accessor: 'contributor', label: 'Owner' },
 ];

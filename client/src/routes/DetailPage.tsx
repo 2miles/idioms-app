@@ -3,25 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import { IdiomsContext } from '../context/idiomsContext';
-import IdiomFinder from '../apis/idiomFinder';
-import PageContainer from '../components/PageContainer';
-import UpdateIdiom from '../components/UpdateIdiom';
+import { IdiomsContext } from 'context/idiomsContext';
+import { Idiom } from 'types';
+import IdiomFinder from 'apis/idiomFinder';
+import PageContainer from 'components/PageContainer';
+import UpdateIdiom from 'components/UpdateIdiom';
 import DetailCard from 'components/DetailCard';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;
 `;
-
-type Idiom = {
-  id: number;
-  title: string;
-  title_general: string | null;
-  definition: string | null;
-  timestamps: string;
-  contributor: string | null;
-  position: number | null;
-};
 
 //
 const DetailPage = () => {
@@ -97,7 +88,7 @@ const DetailPage = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        selectedIdiom && <DetailCard selectedIdiom={selectedIdiom} examples={examples} />
+        selectedIdiom && <DetailCard idiom={selectedIdiom} examples={examples} />
       )}
       <UpdateButtonWrapper>
         <button className='btn btn-secondary' onClick={handleToggleEdit}>

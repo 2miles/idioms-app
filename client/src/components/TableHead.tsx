@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Column } from '../types';
+import { Column, ColumnAccessors } from 'types';
 import arrowUp from 'images/icons8-arrow-up-30.png';
 import arrowDown from 'images/icons8-down-arrow-30.png';
 
 type TableHeadProps = {
   columns: Column[];
-  handleSorting: (sortField: Column['accessor'], sortOrder: 'asc' | 'desc') => void;
+  handleSorting: (sortField: ColumnAccessors, sortOrder: 'asc' | 'desc') => void;
 };
 
 type StyledThProps = {
   $isSorted?: boolean;
-  $accessor: Column['accessor'];
+  $accessor: ColumnAccessors;
   $sortOrder: 'asc' | 'desc' | 'default';
 };
 
@@ -60,7 +60,7 @@ const StyledTh = styled.th<StyledThProps>`
 `;
 
 const TableHead = ({ columns, handleSorting }: TableHeadProps) => {
-  const [sortField, setSortField] = useState<Column['accessor']>('position');
+  const [sortField, setSortField] = useState<ColumnAccessors>('position');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   // Call handleSorting initially to apply the default sorting
@@ -68,7 +68,7 @@ const TableHead = ({ columns, handleSorting }: TableHeadProps) => {
     handleSorting(sortField, sortOrder);
   }, []);
 
-  const handleSortingChange = (accessor: Column['accessor']) => {
+  const handleSortingChange = (accessor: ColumnAccessors) => {
     const newSortOrder = accessor === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(accessor);
     setSortOrder(newSortOrder);
