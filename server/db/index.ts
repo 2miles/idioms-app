@@ -1,9 +1,10 @@
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-let pool: Pool;
+let pool: pkg.Pool;
 
 if (process.env.USE_SUPABASE === 'true') {
   pool = new Pool({
@@ -22,4 +23,4 @@ if (process.env.USE_SUPABASE === 'true') {
   });
 }
 
-module.exports = pool;
+export default pool;

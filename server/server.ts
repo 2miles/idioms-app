@@ -1,14 +1,14 @@
-const express = require('express');
-const pool = require('./db');
-require('dotenv').config();
-const morgan = require('morgan');
+import express, { Request, Response } from 'express';
+import pool from './db/index.js';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import cors from 'cors';
 
-// Allows different domain
-const cors = require('cors');
+dotenv.config();
 
 const app = express();
 
-const port = process.env.PORT || 3001;
+const port = parseInt(process.env.PORT || '3001', 10);
 
 // Middleware
 // Functions to be invoked in between the request and the response
@@ -19,7 +19,7 @@ app.use(morgan('dev'));
 // Get all idioms
 // This line defines a route for handling HTTP GET requests to the /api/v1/idioms endpoint.
 // Returns the data itself and the number of items returned in the response
-app.get('/api/v1/idioms', async (req, res) => {
+app.get('/api/v1/idioms', async (req: Request, res: Response) => {
   // This is the route handler
   try {
     const result = await pool.query(
@@ -45,7 +45,7 @@ app.get('/api/v1/idioms', async (req, res) => {
 // Get single idiom, and get examples for that idiom
 // Route for handling HTTP GET requests to /api/v1/idioms/:id
 // Return the added idiom, and its examples in the response
-app.get('/api/v1/idioms/:id', async (req, res) => {
+app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
     const idiomQuery = await pool.query(
       ` SELECT * FROM idioms_test WHERE id = $1 `,
@@ -72,7 +72,7 @@ app.get('/api/v1/idioms/:id', async (req, res) => {
 // Create an idiom
 // Route for handling HTTP POST requests to /api/v1/idioms/
 // Return the added idiom in the response
-app.post('/api/v1/idioms/', async (req, res) => {
+app.post('/api/v1/idioms/', async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
       `
@@ -103,7 +103,7 @@ app.post('/api/v1/idioms/', async (req, res) => {
 // Update an idiom
 // Route for handling HTTP PUT requests to /api/v1/idioms/:id endpoint
 // Return the updated idiom in the response
-app.put('/api/v1/idioms/:id', async (req, res) => {
+app.put('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
       `
@@ -136,7 +136,7 @@ app.put('/api/v1/idioms/:id', async (req, res) => {
 // Delete an idiom
 // Route for handling HTTP DELETE requests to /api/v1/idioms/:id
 // Return the deleted idiom in the response
-app.delete('/api/v1/idioms/:id', async (req, res) => {
+app.delete('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
       `
