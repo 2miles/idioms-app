@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import searchIcon from '../images/search-icon-png-24.png';
-import SearchColumnDropdown from './dropdowns/SearchColumnDropdown';
+
+import { Idiom, ColumnAccessors } from 'types';
+import searchIcon from 'images/search-icon-png-24.png';
+import SearchColumnDropdown from 'components/dropdowns/SearchColumnDropdown';
 
 const Container = styled.div`
   position: relative;
@@ -44,10 +46,22 @@ const DropdownWrapper = styled.div`
   align-items: center;
 `;
 
-const SearchBar = ({ handleSearch, idioms, activeSearchColumn, handleSearchColumnChange }) => {
+type SearchBarProps = {
+  idioms: Idiom[];
+  activeSearchColumn: ColumnAccessors;
+  handleSearch: (filtered: Idiom[]) => void;
+  handleSearchColumnChange: (column: ColumnAccessors) => void;
+};
+
+const SearchBar = ({
+  idioms,
+  activeSearchColumn,
+  handleSearch,
+  handleSearchColumnChange,
+}: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Effect to update search results whenever the column changes
+  // Effect to update search results whenever the search column changes
   useEffect(() => {
     if (searchTerm === '') {
       handleSearch(idioms); // Show all idioms if search is empty
@@ -63,7 +77,7 @@ const SearchBar = ({ handleSearch, idioms, activeSearchColumn, handleSearchColum
     }
   }, [searchTerm, activeSearchColumn, idioms]);
 
-  const onSearch = (e) => {
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 

@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
-import { IdiomsContext } from '../context/idiomsContext';
-import IdiomFinder from '../apis/idiomFinder';
-import TextAreaField from './formFields/TextAreaField';
-import TextField from './formFields/TextField';
-import TimestampField from './formFields/TimestampField';
+import { IdiomsContext } from 'context/idiomsContext';
+import IdiomFinder from 'apis/idiomFinder';
+import TextAreaField from 'components/formFields/TextAreaField';
+import TextField from 'components/formFields/TextField';
+import TimestampField from 'components/formFields/TimestampField';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
@@ -35,7 +35,11 @@ const FormControlsWrapper = styled.div`
   }
 `;
 
-const AddIdiom = ({ collapseForm }) => {
+type AddIdiomProps = {
+  collapseForm: () => void;
+};
+
+const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
   const { addIdioms } = useContext(IdiomsContext);
 
   const [validated, setValidated] = useState(false);
@@ -48,9 +52,9 @@ const AddIdiom = ({ collapseForm }) => {
     timestamp: moment(),
   });
 
-  const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
+  const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
     if (formData.title.trim() === '') {
@@ -58,9 +62,7 @@ const AddIdiom = ({ collapseForm }) => {
     }
     try {
       // Format for the backend and remove milliseconds
-      const formattedTimestamp = formData.timestamp
-        ? formData.timestamp.toISOString().split('.')[0] + 'Z'
-        : null;
+      const formattedTimestamp: string = formData.timestamp.toISOString().split('.')[0] + 'Z';
       const response = await IdiomFinder.post('/', {
         title: emptyStringToNull(formData.title),
         title_general: emptyStringToNull(formData.titleGeneral),
@@ -106,15 +108,6 @@ const AddIdiom = ({ collapseForm }) => {
     setValidated(false);
   };
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
-
   return (
     <FormContainer>
       <form
@@ -126,7 +119,7 @@ const AddIdiom = ({ collapseForm }) => {
           label='Title'
           id='title'
           value={formData.title}
-          onChange={handleInputChange}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           placeholder='Pull yourself up by your bootstraps'
           required
         />
@@ -134,14 +127,14 @@ const AddIdiom = ({ collapseForm }) => {
           label='Title General'
           id='titleGeneral'
           value={formData.titleGeneral}
-          onChange={handleInputChange}
+          onChange={(e) => setFormData({ ...formData, titleGeneral: e.target.value })}
           placeholder="Pull (oneself) up by (one's) (own) bootstraps"
         />
         <TextAreaField
           label='Definition'
           id='definition'
           value={formData.definition}
-          onChange={handleInputChange}
+          onChange={(e) => setFormData({ ...formData, definition: e.target.value })}
           placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
           rows={3}
         />
@@ -149,14 +142,14 @@ const AddIdiom = ({ collapseForm }) => {
           label='Timestamp'
           id='timestamp'
           value={formData.timestamp}
-          onChange={handleInputChange}
+          onChange={(value) => setFormData({ ...formData, timestamp: moment(value) })}
         />
         <TextField
           label='Contributor'
           id='contributor'
           placeholder='Miles'
           value={formData.contributor}
-          onChange={handleInputChange}
+          onChange={(e) => setFormData({ ...formData, contributor: e.target.value })}
         />
         <FormControlsWrapper>
           <button type='submit' className='btn btn-primary'>
@@ -171,7 +164,7 @@ const AddIdiom = ({ collapseForm }) => {
               checked={keepOpen}
               onChange={(e) => setKeepOpen(e.target.checked)}
             />
-            <label className='form-check-label' for='flexCheckDefault'>
+            <label className='form-check-label' htmlFor='flexCheckDefault'>
               Keep Open
             </label>
           </div>

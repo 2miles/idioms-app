@@ -1,14 +1,22 @@
 // InputField.jsx
-import React from 'react';
 import styled from 'styled-components';
 
 const StyledInput = styled.input`
   &::placeholder {
-    color: #adb5bd;
+    color: var(--dim-text-primary);
   }
 `;
 
-const TextField = ({ id, label, value, onChange, placeholder = '', required = false }) => {
+type TextFieldProps = {
+  id: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  required?: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+const TextField = ({ id, label, value, placeholder, required, onChange }: TextFieldProps) => {
   return (
     <div className='form-group'>
       <label htmlFor={id}>{label}</label>

@@ -1,16 +1,19 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
 
-// Utility function to truncate text and add "..."
-const truncateLength = 150;
+import { Idiom, Column } from 'types';
 
-const truncateText = (text, maxLength) => {
+const truncateLength = 150;
+const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) {
     return text;
   }
   return text.substring(0, maxLength) + '...';
+};
+
+type StyleProps = {
+  $accessor: string;
 };
 
 const StyledTr = styled.tr`
@@ -25,7 +28,7 @@ const StyledTr = styled.tr`
   }
 `;
 
-const StyledTd = styled.td`
+const StyledTd = styled.td<StyleProps>`
   padding: var(--padding-lg) var(--padding-lg) !important;
   border-bottom: 1px solid var(--color-ui-border) !important;
   background: var(--color-ui-primary) !important;
@@ -46,29 +49,32 @@ const StyledTd = styled.td`
   }
 `;
 
+type TableBodyProps = {
+  tableData: Idiom[];
+  columns: Column[];
+};
+
 // Renders the rows of a table based on the provided data and column definitions.
 // It uses the useNavigate hook to navigate to a detailed view of a selected idiom when a row is clicked.
-// Dynamically creates rows and cells based on the provided data and column definitions.
-const TableBody = ({ tableData, columns }) => {
+const TableBody = ({ tableData, columns }: TableBodyProps) => {
   const navigate = useNavigate();
 
-  const handleRowClick = (id) => {
+  const handleRowClick = (id: number) => {
     navigate(`/idioms/${id}`);
   };
 
   return (
     <tbody>
       {tableData && tableData.length > 0 ? (
-        // Iterates over each item in tableData. Each data item represents a row in the table.
         tableData.map((row) => {
           return (
             <StyledTr key={row.id} onClick={() => handleRowClick(row.id)}>
               {columns.map(({ accessor }) => {
-                let cellData;
+                let cellData: string;
                 if (accessor === 'timestamps') {
-                  cellData = moment(row[accessor]).format('MM-DD-YY'); // Format the date as MM-DD-YY
+                  cellData = moment(row[accessor]).format('MM-DD-YY');
                 } else {
-                  cellData = row[accessor] ? row[accessor] : '——';
+                  cellData = String(row[accessor] ? row[accessor] : '——');
                 }
                 if (accessor === 'definition') {
                   cellData = truncateText(cellData, truncateLength);
@@ -84,7 +90,9 @@ const TableBody = ({ tableData, columns }) => {
         })
       ) : (
         <tr>
-          <StyledTd colSpan={columns.length}>No data available</StyledTd>
+          <StyledTd colSpan={columns.length} $accessor='default'>
+            No data available
+          </StyledTd>
         </tr>
       )}
     </tbody>

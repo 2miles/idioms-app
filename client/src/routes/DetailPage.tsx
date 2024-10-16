@@ -3,26 +3,27 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import { IdiomsContext } from '../context/idiomsContext';
-import IdiomFinder from '../apis/idiomFinder';
-import PageContainer from '../components/PageContainer';
-import UpdateIdiom from '../components/UpdateIdiom';
-import DetailCard from '../components/DetailCard';
+import { IdiomsContext } from 'context/idiomsContext';
+import { Idiom } from 'types';
+import IdiomFinder from 'apis/idiomFinder';
+import PageContainer from 'components/PageContainer';
+import UpdateIdiom from 'components/UpdateIdiom';
+import DetailCard from 'components/DetailCard';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;
 `;
 
+//
 const DetailPage = () => {
   const { id } = useParams();
-  const { idioms, setIdioms } = useContext(IdiomsContext);
-  const { selectedIdiom, setSelectedIdiom } = useContext(IdiomsContext);
+  const { idioms, setIdioms, selectedIdiom, setSelectedIdiom } = useContext(IdiomsContext);
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
-  const handleDelete = async (e, id) => {
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
     const confirmResult = await Swal.fire({
@@ -37,7 +38,7 @@ const DetailPage = () => {
     if (confirmResult.isConfirmed) {
       try {
         await IdiomFinder.delete(`/${id}`);
-        setIdioms(idioms.filter((idiom) => idiom.id !== id));
+        setIdioms(idioms.filter((idiom: Idiom) => idiom.id !== Number(id)));
 
         Swal.fire({
           title: 'Deleted!',
@@ -61,10 +62,6 @@ const DetailPage = () => {
 
   const handleToggleEdit = () => {
     setIsEditing(!isEditing);
-  };
-
-  const handleUpdateSuccess = () => {
-    setIsEditing(false); // Close the update form
   };
 
   useEffect(() => {
@@ -91,7 +88,7 @@ const DetailPage = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        selectedIdiom && <DetailCard selectedIdiom={selectedIdiom} examples={examples} />
+        selectedIdiom && <DetailCard idiom={selectedIdiom} examples={examples} />
       )}
       <UpdateButtonWrapper>
         <button className='btn btn-secondary' onClick={handleToggleEdit}>
@@ -101,8 +98,8 @@ const DetailPage = () => {
       {isEditing && (
         <UpdateIdiom
           idiom={selectedIdiom}
-          onDelete={(e) => handleDelete(e, selectedIdiom.id)}
-          onSuccess={handleUpdateSuccess}
+          onDelete={(e: React.MouseEvent<HTMLButtonElement>) => handleDelete(e)}
+          handleToggleEdit={handleToggleEdit}
         />
       )}
     </PageContainer>

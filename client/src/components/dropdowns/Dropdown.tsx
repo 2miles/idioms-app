@@ -1,9 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-// Styled components
+type DropdownVariantType = 'searchColumn';
 
-const DropdownContainer = styled.div`
+type StyleProps = {
+  $hideOnSmallScreen?: boolean;
+  $variant?: DropdownVariantType;
+  $visible?: boolean;
+};
+
+const DropdownContainer = styled.div<StyleProps>`
   position: relative;
   display: flex;
   user-select: none;
@@ -15,7 +21,6 @@ const DropdownContainer = styled.div`
   padding: 0px var(--padding-ms);
   align-items: center;
 
-  /* Media query for small screens */
   @media (max-width: 780px) {
     display: ${(props) => (props.$hideOnSmallScreen ? 'none' : 'flex')};
   }
@@ -38,11 +43,11 @@ const DropdownContainer = styled.div`
       border-left: 2px solid var(--color-ui-border);
     `}
   &:active {
-    background-color: var(--hilite-ui-primary); // Customize this color
+    background-color: var(--hilite-ui-primary);
   }
 `;
 
-const Anchor = styled.span`
+const Anchor = styled.span<StyleProps>`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -68,7 +73,7 @@ const Anchor = styled.span`
     `}
 `;
 
-const Options = styled.ul`
+const Options = styled.ul<StyleProps>`
   display: ${(props) => (props.$visible ? 'block' : 'none')};
   position: absolute;
   top: calc(100% + 5px);
@@ -89,15 +94,29 @@ const Option = styled.li`
     background-color: var(--hilite-ui-primary);
   }
 `;
+type DropdownProps = {
+  label: string;
+  hideOnSmallScreen?: boolean;
+  options: (string | JSX.Element)[];
+  closeOnSelect: boolean;
+  onOptionClick?: (option: string | JSX.Element) => void;
+  variant?: 'searchColumn';
+};
 
-// Dropdown component
-const Dropdown = ({ label, hideOnSmallScreen, options, closeOnSelect, onOptionClick, variant }) => {
+const Dropdown = ({
+  label,
+  hideOnSmallScreen,
+  options,
+  closeOnSelect = false,
+  onOptionClick,
+  variant,
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -111,7 +130,7 @@ const Dropdown = ({ label, hideOnSmallScreen, options, closeOnSelect, onOptionCl
     };
   }, [isOpen]);
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = (option: string | JSX.Element) => {
     if (onOptionClick) {
       onOptionClick(option);
     }
@@ -120,14 +139,15 @@ const Dropdown = ({ label, hideOnSmallScreen, options, closeOnSelect, onOptionCl
     }
   };
 
+  const handleLabelClick = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
-    <DropdownContainer
-      $hideOnSmallScreen={hideOnSmallScreen}
-      ref={dropdownRef}
-      onClick={() => setIsOpen(!isOpen)}
-      $variant={variant}
-    >
-      <Anchor $visible={isOpen}>{label}</Anchor>
+    <DropdownContainer $hideOnSmallScreen={hideOnSmallScreen} ref={dropdownRef} $variant={variant}>
+      <Anchor $visible={isOpen} onClick={handleLabelClick}>
+        {label}
+      </Anchor>
       <Options $visible={isOpen}>
         {options.map((option, index) => (
           <Option key={index} onClick={() => handleOptionClick(option)}>

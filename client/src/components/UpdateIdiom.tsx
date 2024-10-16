@@ -1,13 +1,14 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import IdiomFinder from '../apis/idiomFinder';
-import { IdiomsContext } from '../context/idiomsContext';
-import TextAreaField from './formFields/TextAreaField';
-import TextField from './formFields/TextField';
-import TimestampField from './formFields/TimestampField';
+import IdiomFinder from 'apis/idiomFinder';
+import { IdiomsContext } from 'context/idiomsContext';
+import { Idiom } from 'types';
+import TextAreaField from 'components/formFields/TextAreaField';
+import TextField from 'components/formFields/TextField';
+import TimestampField from 'components/formFields/TimestampField';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
@@ -40,18 +41,24 @@ const ButtonsWrapper = styled.div`
   }
 `;
 
-const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
+type UpdateIdiomProps = {
+  idiom: Idiom | null;
+  onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleToggleEdit: () => void;
+};
+
+const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
-  const [title, setTitle] = useState(idiom.title || '');
-  const [titleGeneral, setTitleGeneral] = useState(idiom.title_general || '');
-  const [definition, setDefinition] = useState(idiom.definition || '');
-  const [contributor, setContributor] = useState(idiom.contributor || '');
-  const [timestamp, setTimestamp] = useState(idiom.timestamps ? moment(idiom.timestamps) : null);
+  const [title, setTitle] = useState(idiom?.title || '');
+  const [titleGeneral, setTitleGeneral] = useState(idiom?.title_general || '');
+  const [definition, setDefinition] = useState(idiom?.definition || '');
+  const [contributor, setContributor] = useState(idiom?.contributor || '');
+  const [timestamp, setTimestamp] = useState<moment.Moment>(moment(idiom?.timestamps));
   const [validated, setValidated] = useState(false);
 
-  const emptyStringToNull = (value) => (value.trim() === '' ? null : value);
+  const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
     if (title.trim() === '') {
@@ -59,8 +66,8 @@ const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
     }
     try {
       // Format for the backend and remove milliseconds
-      const formattedTimestamp = timestamp ? timestamp.toISOString().split('.')[0] + 'Z' : null;
-      const response = await IdiomFinder.put(`/${idiom.id}`, {
+      const formattedTimestamp = timestamp.toISOString().split('.')[0] + 'Z';
+      const response = await IdiomFinder.put(`/${idiom?.id}`, {
         title: emptyStringToNull(title),
         title_general: emptyStringToNull(titleGeneral),
         definition: emptyStringToNull(definition),
@@ -77,11 +84,8 @@ const UpdateIdiom = ({ idiom, onDelete, onSuccess }) => {
           timer: 1500,
           showConfirmButton: false,
         });
-
         // Call onSuccess to hide the form
-        if (onSuccess) {
-          onSuccess();
-        }
+        handleToggleEdit();
       }
     } catch (err) {
       console.error('Error updating idiom:', err);

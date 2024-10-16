@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
-import SearchBar from './SearchBar';
-import Table from './Table';
-import Pagination from './Pagination';
-import ItemsPerPageDropdown from './dropdowns/ItemsPerPageDropdown';
-import ColumnDropdown from './dropdowns/ColumnDropdown';
+import { IdiomsContext } from 'context/idiomsContext';
+import { Idiom, ColumnVisibility, ColumnAccessors } from 'types';
+import SearchBar from 'components/SearchBar';
+import Table from 'components/Table';
+import Pagination from 'components/Pagination';
+import ItemsPerPageDropdown from 'components/dropdowns/ItemsPerPageDropdown';
+import ColumnDropdown from 'components/dropdowns/ColumnDropdown';
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
@@ -46,13 +48,15 @@ const SearchAndFilterWrapper = styled.div`
   margin-bottom: var(--margin-sm);
 `;
 
-const TableSection = ({ idioms }) => {
+const TableSection = () => {
+  const { idioms } = useContext(IdiomsContext);
+
   const [filteredIdioms, setFilteredIdioms] = useState(idioms);
-  const [idiomCount, setIdiomCount] = useState(idioms.length);
+  const [idiomCount, setIdiomCount] = useState<number>(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [activeSearchColumn, setActiveSearchColumn] = useState('title'); // Default active column
-  const [columnVisibility, setColumnVisibility] = useState({
+  const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnAccessors>('title'); // Default active column
+  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
     title: true,
     definition: true,
@@ -61,14 +65,14 @@ const TableSection = ({ idioms }) => {
   });
 
   // Updates filtered idioms when the search changes
-  const handleSearch = (filtered) => {
+  const handleSearch = (filtered: Idiom[]) => {
     setFilteredIdioms(filtered);
     setIdiomCount(filtered.length);
     setCurrentPage(1);
   };
 
   // Handle the search column change
-  const handleSearchColumnChange = (column) => {
+  const handleSearchColumnChange = (column: ColumnAccessors) => {
     setActiveSearchColumn(column);
   };
 
@@ -77,7 +81,7 @@ const TableSection = ({ idioms }) => {
     setIdiomCount(idioms.length);
   }, [idioms]);
 
-  const handleSorting = (sortField, sortOrder) => {
+  const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
     if (sortField) {
       const sorted = [...filteredIdioms].sort((a, b) => {
         if (a[sortField] === null) return 1;
@@ -92,10 +96,10 @@ const TableSection = ({ idioms }) => {
     }
   };
 
-  const handleColumnVisibilityChange = (column) => {
+  const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
     setColumnVisibility({
       ...columnVisibility,
-      [column]: !columnVisibility[column],
+      [accessor]: !columnVisibility[accessor],
     });
   };
 
@@ -103,9 +107,9 @@ const TableSection = ({ idioms }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const handleItemsPerPageChange = (itemsPerPage) => {
+  const handleItemsPerPageChange = (itemsPerPage: number) => {
     setItemsPerPage(itemsPerPage);
     setCurrentPage(1);
   };
@@ -131,10 +135,7 @@ const TableSection = ({ idioms }) => {
             columnVisibility={columnVisibility}
             handleColumnVisibilityChange={handleColumnVisibilityChange}
           />
-          <ItemsPerPageDropdown
-            itemsPerPage={itemsPerPage}
-            handleItemsPerPageChange={handleItemsPerPageChange}
-          />
+          <ItemsPerPageDropdown handleItemsPerPageChange={handleItemsPerPageChange} />
           <Pagination
             itemsPerPage={itemsPerPage}
             totalItems={idiomCount}

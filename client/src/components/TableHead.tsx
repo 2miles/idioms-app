@@ -1,9 +1,22 @@
 import { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import arrowUp from '../images/icons8-arrow-up-30.png';
-import arrowDown from '../images/icons8-down-arrow-30.png';
 
-const StyledTh = styled.th`
+import { Column, ColumnAccessors } from 'types';
+import arrowUp from 'images/icons8-arrow-up-30.png';
+import arrowDown from 'images/icons8-down-arrow-30.png';
+
+type TableHeadProps = {
+  columns: Column[];
+  handleSorting: (sortField: ColumnAccessors, sortOrder: 'asc' | 'desc') => void;
+};
+
+type StyledThProps = {
+  $isSorted?: boolean;
+  $accessor: ColumnAccessors;
+  $sortOrder: 'asc' | 'desc' | 'default';
+};
+
+const StyledTh = styled.th<StyledThProps>`
   background-color: ${(props) =>
     props.$isSorted ? 'var(--hilite-ui-primary)' : 'var(--color-ui-primary)'} !important;
   border: 1px solid var(--color-ui-border) !important;
@@ -15,7 +28,7 @@ const StyledTh = styled.th`
   background-size: 25px 25px;
 
   width: ${(props) => {
-    const widths = {
+    const widths: Record<StyledThProps['$accessor'], string> = {
       position: '10%',
       definition: '50%',
       title: '30%',
@@ -28,14 +41,12 @@ const StyledTh = styled.th`
   ${(props) =>
     props.$sortOrder === 'asc' &&
     css`
-      background-image: url('../images/icons8-arrow-up-30.png');
       background-image: url(${arrowUp});
     `}
 
   ${(props) =>
     props.$sortOrder === 'desc' &&
     css`
-      background-image: url('../images/icons8-down-arrow-30.png');
       background-image: url(${arrowDown});
     `}
 
@@ -48,16 +59,16 @@ const StyledTh = styled.th`
   }
 `;
 
-const TableHead = ({ columns, handleSorting }) => {
-  const [sortField, setSortField] = useState('position');
-  const [sortOrder, setSortOrder] = useState('asc');
+const TableHead = ({ columns, handleSorting }: TableHeadProps) => {
+  const [sortField, setSortField] = useState<ColumnAccessors>('position');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   // Call handleSorting initially to apply the default sorting
   useEffect(() => {
     handleSorting(sortField, sortOrder);
   }, []);
 
-  const handleSortingChange = (accessor) => {
+  const handleSortingChange = (accessor: ColumnAccessors) => {
     const newSortOrder = accessor === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(accessor);
     setSortOrder(newSortOrder);

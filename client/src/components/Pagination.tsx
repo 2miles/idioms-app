@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 // Customized Bootstrap pagination
@@ -37,18 +36,25 @@ const PageItem = styled.li`
   }
 `;
 
-const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
+type PaginationProps = {
+  itemsPerPage: number;
+  totalItems: number;
+  currentPage: number;
+  paginate: (pageNumber: number) => void;
+};
+
+const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: PaginationProps) => {
   const pageNumbers = [];
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const maxPageNumbersToShow = 3;
   const halfMaxPages = Math.floor(maxPageNumbersToShow / 2);
 
-  const addPageNumber = (number) => {
-    const isActive = currentPage === number;
+  const addPageNumber = (page: number) => {
+    const isActive = currentPage === page;
     pageNumbers.push(
-      <PageItem key={number} className={`page-item ${isActive ? 'active' : ''}`}>
-        <a onClick={() => paginate(number)} href='#' className='page-link'>
-          {number}
+      <PageItem key={page} className={`page-item ${isActive ? 'active' : ''}`}>
+        <a onClick={() => paginate(page)} href='#' className='page-link'>
+          {page}
         </a>
       </PageItem>,
     );
