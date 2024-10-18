@@ -52,7 +52,6 @@ const TableSection = () => {
   const { idioms } = useContext(IdiomsContext);
 
   const [filteredIdioms, setFilteredIdioms] = useState(idioms);
-  const [idiomCount, setIdiomCount] = useState<number>(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
@@ -65,13 +64,12 @@ const TableSection = () => {
 
   useEffect(() => {
     setFilteredIdioms(idioms);
-    setIdiomCount(idioms.length);
+    setCurrentPage(1); // Reset to the first page when idioms change
   }, [idioms]);
 
   // Updates filtered idioms when the search changes
   const handleSearch = (filtered: Idiom[]) => {
     setFilteredIdioms(filtered);
-    setIdiomCount(filtered.length);
     setCurrentPage(1);
   };
 
@@ -112,6 +110,7 @@ const TableSection = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
 
+  const idiomCount = filteredIdioms.length; // Derived value
   const showingText = `Showing ${indexOfFirstItem + 1} - ${
     indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
   } of ${idiomCount} idioms`;
