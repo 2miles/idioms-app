@@ -41,7 +41,7 @@ const RightControls = styled.div`
   display: flex;
 `;
 
-const SearchAndFilterWrapper = styled.div`
+const SearchBarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,7 +55,6 @@ const TableSection = () => {
   const [idiomCount, setIdiomCount] = useState<number>(idioms.length);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnAccessors>('title'); // Default active column
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
     title: true,
@@ -64,6 +63,11 @@ const TableSection = () => {
     contributor: false,
   });
 
+  useEffect(() => {
+    setFilteredIdioms(idioms);
+    setIdiomCount(idioms.length);
+  }, [idioms]);
+
   // Updates filtered idioms when the search changes
   const handleSearch = (filtered: Idiom[]) => {
     setFilteredIdioms(filtered);
@@ -71,29 +75,23 @@ const TableSection = () => {
     setCurrentPage(1);
   };
 
-  // Handle the search column change
-  const handleSearchColumnChange = (column: ColumnAccessors) => {
-    setActiveSearchColumn(column);
-  };
-
-  useEffect(() => {
-    setFilteredIdioms(idioms);
-    setIdiomCount(idioms.length);
-  }, [idioms]);
-
+  /**
+   * Modifies the `filteredIdioms` state.
+   */
   const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
-    if (sortField) {
-      const sorted = [...filteredIdioms].sort((a, b) => {
-        if (a[sortField] === null) return 1;
-        if (b[sortField] === null) return -1;
-        return (
-          a[sortField].toString().localeCompare(b[sortField].toString(), 'en', {
-            numeric: true,
-          }) * (sortOrder === 'asc' ? 1 : -1)
-        );
-      });
-      setFilteredIdioms(sorted);
-    }
+    if (!sortField) return; // Early return if no sort field is provided
+
+    const sorted = [...filteredIdioms].sort((a, b) => {
+      const aValue = a[sortField]?.toString() || ''; // Optional chaining and fallback to empty string
+      const bValue = b[sortField]?.toString() || '';
+
+      if (aValue === null || aValue === '') return 1; // Handle null and empty values
+      if (bValue === null || bValue === '') return -1;
+
+      return aValue.localeCompare(bValue, 'en', { numeric: true }) * (sortOrder === 'asc' ? 1 : -1);
+    });
+
+    setFilteredIdioms(sorted);
   };
 
   const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
@@ -103,16 +101,16 @@ const TableSection = () => {
     });
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   const handleItemsPerPageChange = (itemsPerPage: number) => {
     setItemsPerPage(itemsPerPage);
     setCurrentPage(1);
   };
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
 
   const showingText = `Showing ${indexOfFirstItem + 1} - ${
     indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
@@ -120,14 +118,9 @@ const TableSection = () => {
 
   return (
     <TableSectionWrapper>
-      <SearchAndFilterWrapper>
-        <SearchBar
-          handleSearch={handleSearch}
-          idioms={idioms}
-          activeSearchColumn={activeSearchColumn}
-          handleSearchColumnChange={handleSearchColumnChange}
-        />
-      </SearchAndFilterWrapper>
+      <SearchBarWrapper>
+        <SearchBar handleSearch={handleSearch} idioms={idioms} />
+      </SearchBarWrapper>
       <TableControls>
         <ShowingText>{showingText}</ShowingText>
         <RightControls>

@@ -48,18 +48,12 @@ const DropdownWrapper = styled.div`
 
 type SearchBarProps = {
   idioms: Idiom[];
-  activeSearchColumn: ColumnAccessors;
   handleSearch: (filtered: Idiom[]) => void;
-  handleSearchColumnChange: (column: ColumnAccessors) => void;
 };
 
-const SearchBar = ({
-  idioms,
-  activeSearchColumn,
-  handleSearch,
-  handleSearchColumnChange,
-}: SearchBarProps) => {
+const SearchBar = ({ idioms, handleSearch }: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnAccessors>('title');
 
   // Effect to update search results whenever the search column changes
   useEffect(() => {
@@ -79,6 +73,10 @@ const SearchBar = ({
 
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleSearchColumnChange = (column: ColumnAccessors) => {
+    setActiveSearchColumn(column);
   };
 
   return (
