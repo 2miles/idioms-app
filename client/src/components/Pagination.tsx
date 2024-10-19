@@ -27,12 +27,12 @@ const PageItem = styled.li`
   }
 
   &.active .page-link {
-    background-color: var(--color-brand-primary);
+    background-color: var(--color-brand-secondary);
     color: var(--color-text-primary);
   }
 
   &.active .page-link:hover {
-    background-color: var(--color-brand-primary);
+    background-color: var(--color-brand-secondary);
   }
 `;
 
