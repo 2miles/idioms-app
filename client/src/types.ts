@@ -14,7 +14,7 @@ export type Example = {
 };
 
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
-export type ColumnLabels = 'Position' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
+export type ColumnLabels = 'Order' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
 
 export type Column = {
   label: ColumnLabels;
@@ -30,7 +30,7 @@ export type ColumnVisibility = {
 };
 
 export const Columns: Column[] = [
-  { accessor: 'position', label: 'Position' },
+  { accessor: 'position', label: 'Order' },
   { accessor: 'title', label: 'Idiom' },
   { accessor: 'definition', label: 'Definition' },
   { accessor: 'timestamps', label: 'Day' },
