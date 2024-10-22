@@ -54,6 +54,21 @@ const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
 
   const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleTimestampChange = (value: moment.Moment) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      timestamp: value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
@@ -119,7 +134,7 @@ const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
           label='Title'
           id='title'
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={handleInputChange}
           placeholder='Pull yourself up by your bootstraps'
           required
         />
@@ -127,14 +142,14 @@ const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
           label='Title General'
           id='titleGeneral'
           value={formData.titleGeneral}
-          onChange={(e) => setFormData({ ...formData, titleGeneral: e.target.value })}
+          onChange={handleInputChange}
           placeholder="Pull (oneself) up by (one's) (own) bootstraps"
         />
         <TextAreaField
           label='Definition'
           id='definition'
           value={formData.definition}
-          onChange={(e) => setFormData({ ...formData, definition: e.target.value })}
+          onChange={handleInputChange}
           placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
           rows={3}
         />
@@ -142,14 +157,14 @@ const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
           label='Timestamp'
           id='timestamp'
           value={formData.timestamp}
-          onChange={(value) => setFormData({ ...formData, timestamp: moment(value) })}
+          onChange={handleTimestampChange}
         />
         <TextField
           label='Contributor'
           id='contributor'
           placeholder='Miles'
           value={formData.contributor}
-          onChange={(e) => setFormData({ ...formData, contributor: e.target.value })}
+          onChange={handleInputChange}
         />
         <FormControlsWrapper>
           <button type='submit' className='btn btn-primary'>
