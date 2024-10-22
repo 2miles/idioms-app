@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from 'context/idiomsContext';
-import { Idiom } from 'types';
+import { Example, Idiom } from 'types';
 import IdiomFinder from 'apis/idiomFinder';
 import PageContainer from 'components/PageContainer';
 import UpdateIdiom from 'components/UpdateIdiom';
@@ -17,8 +17,9 @@ const UpdateButtonWrapper = styled.div`
 //
 const DetailPage = () => {
   const { id } = useParams();
-  const { idioms, setIdioms, selectedIdiom, setSelectedIdiom } = useContext(IdiomsContext);
-  const [examples, setExamples] = useState([]);
+  const { idioms, setIdioms } = useContext(IdiomsContext);
+  const [examples, setExamples] = useState<Example[]>([]);
+  const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
@@ -68,28 +69,35 @@ const DetailPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Fetch idiom examples when the page loads
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchExamples = async () => {
       try {
         const response = await IdiomFinder.get(`/${id}`);
-        setSelectedIdiom(response.data.data.idiom);
         setExamples(response.data.data.examples);
-        setLoading(false);
       } catch (err) {
-        console.log(err);
+        console.error('Error fetching examples:', err);
+      } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [id, setSelectedIdiom]);
+
+    // Find idiom from context by ID, avoid re-fetching
+    const idiomFromContext = idioms.find((idiom) => idiom.id === Number(id));
+    if (idiomFromContext) {
+      setSelectedIdiom(idiomFromContext);
+      fetchExamples();
+    } else {
+      setLoading(false);
+    }
+  }, [id, idioms]);
+  if (loading || !selectedIdiom) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <PageContainer>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        selectedIdiom && <DetailCard idiom={selectedIdiom} examples={examples} />
-      )}
+      <DetailCard idiom={selectedIdiom} examples={examples} />
       <UpdateButtonWrapper>
         <button className='btn btn-secondary' onClick={handleToggleEdit}>
           {isEditing ? 'Cancel Edit' : 'Edit Idiom'}

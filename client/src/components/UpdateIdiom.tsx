@@ -30,7 +30,7 @@ const FormContainer = styled.div`
 
 const ButtonsWrapper = styled.div`
   display: flex;
-  justify-content: flex-start; // Ensures the buttons start aligned on the left
+  justify-content: flex-start;
 
   button {
     margin: var(--margin-lg);
@@ -49,34 +49,50 @@ type UpdateIdiomProps = {
 
 const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
-  const [title, setTitle] = useState(idiom?.title || '');
-  const [titleGeneral, setTitleGeneral] = useState(idiom?.title_general || '');
-  const [definition, setDefinition] = useState(idiom?.definition || '');
-  const [contributor, setContributor] = useState(idiom?.contributor || '');
-  const [timestamp, setTimestamp] = useState<moment.Moment>(moment(idiom?.timestamps));
+  const [formData, setFormData] = useState({
+    title: idiom?.title || '',
+    titleGeneral: idiom?.title_general || '',
+    definition: idiom?.definition || '',
+    contributor: idiom?.contributor || '',
+    timestamp: moment(idiom?.timestamps),
+  });
   const [validated, setValidated] = useState(false);
 
   const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleTimestampChange = (value: moment.Moment) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      timestamp: value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
-    if (title.trim() === '') {
+    if (formData.title.trim() === '') {
       return; // Prevent form submission if title is empty
     }
     try {
       // Format for the backend and remove milliseconds
-      const formattedTimestamp = timestamp.toISOString().split('.')[0] + 'Z';
+      const formattedTimestamp = formData.timestamp.toISOString().split('.')[0] + 'Z';
       const response = await IdiomFinder.put(`/${idiom?.id}`, {
-        title: emptyStringToNull(title),
-        title_general: emptyStringToNull(titleGeneral),
-        definition: emptyStringToNull(definition),
-        contributor: emptyStringToNull(contributor),
+        title: emptyStringToNull(formData.title),
+        title_general: emptyStringToNull(formData.titleGeneral),
+        definition: emptyStringToNull(formData.definition),
+        contributor: emptyStringToNull(formData.contributor),
         timestamps: emptyStringToNull(formattedTimestamp),
       });
       if (response.data && response.data.data && response.data.data.idiom) {
         updateIdiom(response.data.data.idiom);
-        // Show success message
         Swal.fire({
           title: 'Updated!',
           text: 'The idiom has been successfully updated.',
@@ -107,34 +123,34 @@ const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) =>
         <TextField
           label='Title'
           id='title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={formData.title}
+          onChange={handleInputChange}
           required
         />
         <TextField
           label='Title General'
           id='titleGeneral'
-          value={titleGeneral}
-          onChange={(e) => setTitleGeneral(e.target.value)}
+          value={formData.titleGeneral}
+          onChange={handleInputChange}
         />
         <TextAreaField
           label='Definition'
           id='definition'
-          value={definition}
-          onChange={(e) => setDefinition(e.target.value)}
+          value={formData.definition}
+          onChange={handleInputChange}
           rows={3}
         />
         <TimestampField
           label='Timestamp'
           id='timestamp'
-          value={timestamp}
-          onChange={setTimestamp}
+          value={formData.timestamp}
+          onChange={handleTimestampChange}
         />
         <TextField
           label='Contributor'
           id='contributor'
-          value={contributor}
-          onChange={(e) => setContributor(e.target.value)}
+          value={formData.contributor}
+          onChange={handleInputChange}
         />
         <ButtonsWrapper>
           <button type='submit' className='btn btn-primary'>
