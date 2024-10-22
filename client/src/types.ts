@@ -8,6 +8,11 @@ export type Idiom = {
   position: number | null;
 };
 
+export type Example = {
+  example_id: number;
+  example: string;
+};
+
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
 export type ColumnLabels = 'Position' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
 

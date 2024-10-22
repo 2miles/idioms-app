@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { Idiom } from 'types';
+import { Idiom, Example } from 'types';
 import { useEffect } from 'react';
 
 //
@@ -70,11 +70,6 @@ const ExampleItem = styled.li`
 const ExampleList = styled.ul`
   padding-left: var(--padding-lg) !important;
 `;
-
-type Example = {
-  example_id: number;
-  example: string;
-};
 
 type DetailCardProps = {
   idiom: Idiom;
