@@ -2,17 +2,13 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import { Idiom } from 'types';
+import { useEffect } from 'react';
 
 //
 const Card = styled.div`
   &.card {
-    background: linear-gradient(
-      to bottom right,
-      rgba(255, 255, 255, 0.5),
-      rgba(230, 230, 230, 0.7)
-    );
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e0e0e0;
+    background: var(--color-ui-primary);
+    border: 1px solid var(--color-ui-border);
     font-family: 'Times New Roman', Times, serif;
     overflow: hidden;
     margin-top: var(--margin-xxl);
@@ -22,6 +18,8 @@ const Card = styled.div`
 const CardHeader = styled.div`
   text-align: center;
   margin-bottom: 20px;
+  background-color: var(--color-brand-secondary);
+  color: var(--color-text-primary);
 
   h1 {
     font-size: var(--font-xxl);
@@ -64,6 +62,14 @@ const CardBody = styled.div`
     padding-right: var(--padding-lg);
   }
 `;
+const ExampleItem = styled.li`
+  /* border-bottom: 1px solid var(--color-ui-border); */
+  padding-left: 0px !important;
+`;
+
+const ExampleList = styled.ul`
+  padding-left: var(--padding-lg) !important;
+`;
 
 type Example = {
   example_id: number;
@@ -88,20 +94,20 @@ const DetailCard = ({ idiom, examples }: DetailCardProps) => {
         </h1>
       </CardHeader>
       <CardBody className='card-body'>
-        <p># {idiom.id}</p>
+        <p>{`Idiom #${idiom.position}, `}</p>
         <p>
-          {'Added on '}
-          {moment(idiom.timestamps).format('MM-DD-YY')}
+          {`Added on ${moment(idiom.timestamps).format('MM-DD-YY')}`}
+          {idiom.contributor ? ` by ${idiom.contributor}` : ''}
         </p>
 
         <h3>Meaning:</h3>
         <p>{idiom.definition}</p>
         <h3>Examples:</h3>
-        <ul>
+        <ExampleList>
           {examples.map((example) => (
-            <li key={example.example_id}>{example.example}</li>
+            <ExampleItem key={example.example_id}>{example.example}</ExampleItem>
           ))}
-        </ul>
+        </ExampleList>
       </CardBody>
     </Card>
   );
