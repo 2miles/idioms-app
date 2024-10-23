@@ -87,7 +87,7 @@ const Options = styled.ul<StyleProps>`
 `;
 
 const Option = styled.li`
-  padding: var(--padding-sm) var(--padding-sm);
+  padding: var(--padding-sm) var(--padding-md);
   cursor: pointer;
 
   &:hover {
