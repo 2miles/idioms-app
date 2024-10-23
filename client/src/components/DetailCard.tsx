@@ -2,9 +2,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import { Idiom, Example } from 'types';
-import { useEffect } from 'react';
 
-//
 const Card = styled.div`
   &.card {
     background: var(--color-ui-primary);
@@ -17,9 +15,9 @@ const Card = styled.div`
 
 const CardHeader = styled.div`
   text-align: center;
-  margin-bottom: 20px;
-  background-color: var(--color-brand-secondary);
+  background-color: var(--hilite-ui-primary);
   color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-ui-border);
 
   h1 {
     font-size: var(--font-xxl);
@@ -34,7 +32,6 @@ const CardHeader = styled.div`
     margin: 0;
     font-style: italic;
     font-weight: normal;
-    color: #555;
   }
 `;
 
@@ -62,8 +59,36 @@ const CardBody = styled.div`
     padding-right: var(--padding-lg);
   }
 `;
+
+const IdiomInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  padding-left: var(--padding-lg);
+  padding-right: var(--padding-lg);
+  padding-top: var(--padding-sm);
+  padding-bottom: var(--padding-sm);
+
+  background-color: var(--color-ui-primary);
+`;
+
+const Position = styled.p`
+  margin: 0;
+  font-size: var(--font-lg);
+  color: var(--color-text-primary);
+  align-self: flex-start;
+
+  border-radius: var(--radius-sm);
+`;
+
+const Contributor = styled.p`
+  margin: 0;
+  font-size: var(--font-lg);
+  color: var(--color-text-primary);
+  align-self: flex-end;
+`;
+
 const ExampleItem = styled.li`
-  /* border-bottom: 1px solid var(--color-ui-border); */
   padding-left: 0px !important;
 `;
 
@@ -88,13 +113,14 @@ const DetailCard = ({ idiom, examples }: DetailCardProps) => {
           &quot;
         </h1>
       </CardHeader>
-      <CardBody className='card-body'>
-        <p>{`Idiom #${idiom.position}, `}</p>
-        <p>
-          {`Added on ${moment(idiom.timestamps).format('MM-DD-YY')}`}
+      <IdiomInfo>
+        <Position>{`Idiom: ${idiom.position}`}</Position>
+        <Contributor>
+          {`Added: ${moment(idiom.timestamps).format('MM-DD-YY')}`}
           {idiom.contributor ? ` by ${idiom.contributor}` : ''}
-        </p>
-
+        </Contributor>
+      </IdiomInfo>
+      <CardBody className='card-body'>
         <h3>Meaning:</h3>
         <p>{idiom.definition}</p>
         <h3>Examples:</h3>

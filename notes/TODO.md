@@ -12,6 +12,4 @@
 
 ## Fetch Refactor
 
-- Add a fetchExamplesForIdiom function in the context to fetch examples on demand.
-- Check and conditionally fetch examples in the DetailPage using the context.
-- Consider memoization for improving performance in calculating positions.
+- Fix: Toggling 'edit idiom / cancel edit' button effects page margins.

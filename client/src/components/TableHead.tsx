@@ -18,7 +18,9 @@ type StyledThProps = {
 
 const StyledTh = styled.th<StyledThProps>`
   background-color: ${(props) =>
-    props.$isSorted ? 'var(--hilite-ui-primary)' : 'var(--color-ui-primary)'} !important;
+    props.$isSorted
+      ? 'var(--color-brand-secondary) !important'
+      : 'var(--color-ui-primary) !important'};
   border: 1px solid var(--color-ui-border) !important;
   color: var(--color-text-primary) !important;
   font-weight: 800;
@@ -49,6 +51,13 @@ const StyledTh = styled.th<StyledThProps>`
     css`
       background-image: url(${arrowDown});
     `}
+
+  &:hover {
+    background-color: ${(props) =>
+      props.$isSorted
+        ? 'var(--color-brand-secondary) !important'
+        : 'var(--hilite-ui-primary) !important'};
+  }
 
   @media (max-width: 770px) {
     ${(props) =>
