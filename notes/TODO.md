@@ -10,6 +10,8 @@
 - [ ] Finish the pern tutorial.
 - [ ] Refresh on why and where I'm using the Context API and how it works. Is it needed in this case.
 
-## Fetch Refactor
+# Known issues
 
 - Fix: Toggling 'edit idiom / cancel edit' button effects page margins.
+- Bug: Mobile runtime error when tapping on search bar
+- Bug: Title cell of table header shrinks on small screens when there are no idioms to show
