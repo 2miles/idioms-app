@@ -42,76 +42,31 @@ cp -R ~/Code/Github/idioms-app-old/notes ~/Code/Github/idioms-app/notes
 cp -R ~/Code/Github/idioms-app-old/server ~/Code/Github/idioms-app/server
 ```
 
-### 6. Add old stuff to root package.json.
+### 7. Update the root package.json.
 
-Add `"start": "nodemon server.js"` to `"scripts"`
-
-### 7. Manage all the package.json files.
-
-### 8. Add the following to root package.json
+#### Remove from package.json:
 
 ```json
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/2miles/idioms-app.git"
+"version" "1.0.0":,
+"description": "",
+"main": "index.js",
+
+"scripts": {
+  "test": "echo \"Error: no test specified\" && 1"
+}
+```
+
+#### Add to package.json:
+
+```json
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/2miles/idioms-app/issues"
-  },
-  "homepage": "https://github.com/2miles/idioms-app#readme"
-```
-
-### 9. Move all the devDependences **except** for the following from package.json to client/package.json
-
-```json
-    "@eslint/js": "^9.13.0",
-    "eslint": "^9.13.0",
-    "vite": "^5.4.9"
-
-```
-
-### 10. Remove the following dependencies from client/package.json
-
-```json
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-```
-
-Vite and CRA do testing differently. And I'm not even testing yet.
-
-### 11. Remove `react-scripts` dependency.
-
-This package is specific to Create React App (CRA) and is not needed for Vite.
-
-### 12 Add the following to client/package.json
-
-```json
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.3",
-    "vite": "^5.4.9",
-    "eslint": "^9.13.0",
-    "@eslint/js": "^9.13.0"
+    "@eslint/js": "^9.13.0",
+    "eslint": "^9.13.0"
   },
-```
-
-### 13 Cange client scripts to the following
-
-```json
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vite test"
-  },
-```
-
-### 13 Change eslint config to the following
-
-```json
   "eslintConfig": {
     "extends": [
       "eslint:recommended",
@@ -120,23 +75,96 @@ This package is specific to Create React App (CRA) and is not needed for Vite.
   },
 ```
 
-### Mange tsconfig.json files.
+### 8. Update the client/package.json.
+
+#### Remove from client/package.json:
+
+```json
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "install": "^0.13.0",
+    "npm": "^10.9.0",
+    "react-scripts": "5.0.1",
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+  },
+  "eslintConfig": { //this is moving to client
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ]
+  }
+```
+
+#### Add to client/package.json:
+
+```json
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.3",
+    "vite": "^5.4.9",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.13",
+    "globals": "^15.11.0",
+    "typescript-eslint": "^8.10.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vite test"
+  }
+```
+
+### 9. Mange tsconfig.json files.
 
 The root folder should have a `tsconfig.json`. The client and server will have `tsconfig.app.json` and `tsconfig.node.json` files respectively.
 
 Merge the old `client/tsconfig.json` into `client/tsconfig.app.json` and delete the former, take care of `server/tsconfig.json` similarly.
 
-### Move misc files int0 client directory
+### 10. Update index.html
+
+- (Merge old `client/public/index.html` into `client/index.html`).
+- Remove any `%PUBLIC_URL%` from all the references.
+- Add `<script type="module" src="/src/main.tsx"></script>` to the body tag.
+- Remove cra comments
+- Organize the links
+
+### 10. Move files int0 client directory
 
 Move the following files and folders into the client directory
 
-- `index.html` (Merge old `client/public/index.html` into `client/index.html`). Remove any %PUBLIC_URL% from all the references.
+- `index.html`
 - `Assets/`
 - Merge `Public/` folders into `client/Public`
 
-### 5. Install client dependencies
+### 11. Install dependencies
 
-### 5. Install root dependencies
+#### Install root dependencies
+
+```zsh
+cd Root/of/project
+npm install
+```
+
+#### Install server dependencies
+
+```zsh
+cd server
+npm install
+```
+
+#### Install client dependencies
+
+```zsh
+cd client
+npm install
+```
 
 ## Misc notes
 
