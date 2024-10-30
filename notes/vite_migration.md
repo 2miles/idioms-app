@@ -166,6 +166,32 @@ cd client
 npm install
 ```
 
+### 12. Fix start script
+
+I got a bunch of import errors when trying to run the server.
+
+I encountered errors when starting the TypeScript server using nodemon and ts-node due to conflicts between the TypeScript module import syntax and the configuration options used.
+
+TypeScript Import Errors: errors indicating that certain modules (like express, dotenv, etc.) could not be default-imported unless the esModuleInterop flag was enabled.
+
+This is because some CommonJS modules are being imported as ES modules without the appropriate compatibility options set in your TypeScript configuration.
+
+Using the `--loader ts-node/esm` option in the start script can cause conflicts with module imports because it changes how modules are loaded, leading to the aforementioned import errors.
+
+I changed teh script from:
+
+```json
+"start": "nodemon --loader ts-node/esm --project tsconfig.node.json --experimental-specifier-resolution=node server.ts"
+```
+
+to:
+
+```json
+"start": "nodemon --exec 'npx ts-node --esm --project tsconfig.node.json --experimental-specifier-resolution=node' server.ts"
+```
+
+By using --exec, you explicitly define that nodemon should use ts-node to execute your TypeScript files. This avoids issues related to module loaders since ts-node handles TypeScript compilation and execution without needing the --loader flag.
+
 ## Misc notes
 
 - Make sure your Vite project is configured to run both the client and server (as mentioned earlier, you might need to create separate start:client and start:server scripts).

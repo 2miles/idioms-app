@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --esm server.ts"
+    "start": "nodemon --exec 'npx ts-node --esm --project tsconfig.node.json --experimental-specifier-resolution=node' server.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +20,8 @@
     "morgan": "^1.10.0",
     "nodemon": "^3.0.2",
     "pg": "^8.11.3",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
