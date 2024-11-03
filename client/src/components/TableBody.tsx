@@ -54,8 +54,6 @@ type TableBodyProps = {
   columns: Column[];
 };
 
-// Renders the rows of a table based on the provided data and column definitions.
-// It uses the useNavigate hook to navigate to a detailed view of a selected idiom when a row is clicked.
 const TableBody = ({ tableData, columns }: TableBodyProps) => {
   const navigate = useNavigate();
 

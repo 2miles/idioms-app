@@ -1,4 +1,3 @@
-// SearchColumnDropdown.js
 import { ColumnAccessors, Columns } from '@/types';
 import Dropdown from '@/components/dropdowns/Dropdown';
 

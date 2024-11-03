@@ -192,6 +192,30 @@ to:
 
 By using --exec, you explicitly define that nodemon should use ts-node to execute your TypeScript files. This avoids issues related to module loaders since ts-node handles TypeScript compilation and execution without needing the --loader flag.
 
+## 13. Fix import errors, allow access to app on local network from outside devices.
+
+- Prepend all the old absolute imports with `@/` and set vite `/src` alias.
+- Update server config for client.
+- Update import paths for typescript.
+
+```ts
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
+  server: {
+    host: '0.0.0.0', // This allows access from other devices on the local network
+    port: 5173,
+  },
+```
+
+```json
+    "paths": {
+      "@/*": ["*"]
+    }
+```
+
 ## Misc notes
 
 - Make sure your Vite project is configured to run both the client and server (as mentioned earlier, you might need to create separate start:client and start:server scripts).
