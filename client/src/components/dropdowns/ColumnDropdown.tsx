@@ -1,17 +1,7 @@
 import styled from 'styled-components';
 
-import { ColumnAccessors, ColumnVisibility, Columns } from 'types';
-import Dropdown from 'components/dropdowns/Dropdown';
-
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-
-  input[type='checkbox'] {
-    margin-right: var(--margin-md);
-  }
-`;
+import { ColumnAccessors, ColumnVisibility, Columns } from '@/types';
+import Dropdown from '@/components/dropdowns/Dropdown';
 
 const ToggleSwitch = styled.label`
   display: flex;
@@ -27,7 +17,7 @@ const ToggleSwitch = styled.label`
     transition: background-color 0.2s, border-color 0.2s;
 
     &:checked {
-      background-color: var(--color-brand-primary); /* Change background color */
+      background-color: var(--color-brand-primary);
       border: 1px solid var(--color-brand-primary);
     }
 

@@ -197,3 +197,5 @@ By using --exec, you explicitly define that nodemon should use ts-node to execut
 - Make sure your Vite project is configured to run both the client and server (as mentioned earlier, you might need to create separate start:client and start:server scripts).
 
 - (server/package.json) If you are using ES modules ("type": "module"), ensure your imports and exports in your TypeScript files are compatible.
+
+- Vite uses a different syntax for environment variables. Change your .env variables to use the VITE\_ prefix (e.g., VITE_API_URL). Access them in your code using import.meta.env.VITE_API_URL.

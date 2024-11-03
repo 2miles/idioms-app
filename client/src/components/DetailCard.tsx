@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { Idiom, Example } from 'types';
+import { Idiom, Example } from '@/types';
 
 const Card = styled.div`
   &.card {

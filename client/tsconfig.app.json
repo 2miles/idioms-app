@@ -30,7 +30,10 @@
     "noEmit": true,
 
     /* Base URL */
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }

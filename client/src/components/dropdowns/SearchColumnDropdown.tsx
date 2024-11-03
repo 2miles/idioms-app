@@ -1,6 +1,6 @@
 // SearchColumnDropdown.js
-import { ColumnAccessors, Columns } from 'types';
-import Dropdown from 'components/dropdowns/Dropdown';
+import { ColumnAccessors, Columns } from '@/types';
+import Dropdown from '@/components/dropdowns/Dropdown';
 
 type SearchColumnDropdownProps = {
   activeColumn: string;

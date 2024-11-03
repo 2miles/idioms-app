@@ -19,7 +19,7 @@ app.use(morgan('dev'));
 // Get all idioms
 // This line defines a route for handling HTTP GET requests to the /api/v1/idioms endpoint.
 // Returns the data itself and the number of items returned in the response
-app.get('/api/v1/idioms', async (req: Request, res: Response) => {
+app.get('/api/v1/idioms', async (_: Request, res: Response) => {
   // This is the route handler
   try {
     const result = await pool.query(
