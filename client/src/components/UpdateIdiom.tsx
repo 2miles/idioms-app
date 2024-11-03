@@ -3,12 +3,12 @@ import moment from 'moment';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import IdiomFinder from 'apis/idiomFinder';
-import { IdiomsContext } from 'context/idiomsContext';
-import { Idiom } from 'types';
-import TextAreaField from 'components/formFields/TextAreaField';
-import TextField from 'components/formFields/TextField';
-import TimestampField from 'components/formFields/TimestampField';
+import IdiomFinder from '@/apis/idiomFinder';
+import { IdiomsContext } from '@/context/idiomsContext';
+import { Idiom } from '@/types';
+import TextAreaField from '@/components/formFields/TextAreaField';
+import TextField from '@/components/formFields/TextField';
+import TimestampField from '@/components/formFields/TimestampField';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);

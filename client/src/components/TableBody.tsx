@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { Idiom, Column } from 'types';
+import { Idiom, Column } from '@/types';
 
 const truncateLength = 150;
 const truncateText = (text: string, maxLength: number) => {
@@ -54,8 +54,6 @@ type TableBodyProps = {
   columns: Column[];
 };
 
-// Renders the rows of a table based on the provided data and column definitions.
-// It uses the useNavigate hook to navigate to a detailed view of a selected idiom when a row is clicked.
 const TableBody = ({ tableData, columns }: TableBodyProps) => {
   const navigate = useNavigate();
 

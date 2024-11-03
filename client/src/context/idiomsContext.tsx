@@ -1,6 +1,6 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
-import { Idiom } from 'types';
-import IdiomFinder from 'apis/idiomFinder';
+import { Idiom } from '@/types';
+import IdiomFinder from '@/apis/idiomFinder';
 
 type IdiomsContextType = {
   idioms: Idiom[];

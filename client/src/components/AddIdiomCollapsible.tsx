@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import AddIdiom from 'components/AddIdiom';
+import AddIdiom from '@/components/AddIdiom';
 
 const AddIdiomContainer = styled.div`
   margin-top: var(--margin-lg);

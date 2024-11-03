@@ -3,12 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import { IdiomsContext } from 'context/idiomsContext';
-import { Example, Idiom } from 'types';
-import IdiomFinder from 'apis/idiomFinder';
-import PageContainer from 'components/PageContainer';
-import UpdateIdiom from 'components/UpdateIdiom';
-import DetailCard from 'components/DetailCard';
+import { IdiomsContext } from '@/context/idiomsContext';
+import { Example, Idiom } from '@/types';
+import IdiomFinder from '@/apis/idiomFinder';
+import PageContainer from '@/components/PageContainer';
+import UpdateIdiom from '@/components/UpdateIdiom';
+import DetailCard from '@/components/DetailCard';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;

@@ -1,4 +1,3 @@
-// TimestampField.jsx
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import moment, { Moment } from 'moment';
@@ -12,7 +11,6 @@ type TimestampFieldProps = {
 };
 
 const TimestampField = ({ label, id, value, onChange }: TimestampFieldProps) => {
-  // Handle both Moment and string values from react-datetime
   const handleChange = (newValue: string | Moment) => {
     const momentValue = moment.isMoment(newValue) ? newValue : moment(newValue);
     if (momentValue.isValid()) {

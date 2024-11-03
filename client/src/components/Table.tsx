@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { Idiom, ColumnAccessors, ColumnVisibility, Columns } from 'types';
-import TableBody from 'components/TableBody';
-import TableHead from 'components/TableHead';
+import { Idiom, ColumnAccessors, ColumnVisibility, Columns } from '@/types';
+import TableBody from '@/components/TableBody';
+import TableHead from '@/components/TableHead';
 
 export const StyledTable = styled.table`
   table-layout: fixed;
