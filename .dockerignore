@@ -1,0 +1,32 @@
+# node_modules
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Log files
+*.log
+
+# Environment files
+.env
+server/.env
+client/.env
+
+# Dockerfile and docker-compose.override.yml files
+Dockerfile*
+docker-compose.override.yml
+
+# Git files
+.git/
+.gitignore
+
+# Build artifacts (e.g., dist, build)
+client/dist/
+client/build/
+server/dist/
+server/build/
+
+# IDE files
+.vscode/
+
+# Unnecessary system files
+.DS_Store
