@@ -131,3 +131,21 @@ server/build/
 ## Module System Change: CommonJS for Docker Compatibility
 
 To ensure compatibility with the Docker environment and certain dependencies, the module setting in tsconfig.node.json was changed from ESNext to CommonJS. This change aligns with Node.js's default module format, commonly expected by many back-end libraries and Docker configurations. Using CommonJS ensures that module imports and exports work reliably in the container environment.
+
+## Update server package.json
+
+### Change start script
+
+```json
+  "scripts": {
+    "start": "nodemon --exec 'ts-node --project tsconfig.node.json' server.ts",
+  },
+```
+
+## remove:
+
+```json
+{
+  "type": "module"
+}
+```
