@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import pool from './db/index.js';
+import pool from './db/index.ts';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
