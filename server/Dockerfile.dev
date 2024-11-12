@@ -10,9 +10,12 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Install tsx globally for running the TypeScript server with watch
+RUN npm install -g tsx
+
 # Copy the rest of the server code
 COPY . .
 
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]

@@ -4,11 +4,11 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile.dev # Use the dev Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
-      - '3001:3001' # Map container port 3000 to host port 3000 (host:container)
+      - '3001:3001' # (host:container) mapping
     env_file:
-      - ./server/.env # Load environment variables from server/.env
+      - ./server/.env
     environment:
       - NODE_ENV=development
     volumes:
@@ -18,7 +18,7 @@ services:
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile.dev # Use the dev Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - '5173:5173'
     environment:

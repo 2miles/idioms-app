@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "nodemon --exec 'ts-node --project tsconfig.node.json' server.ts",
-    "dev": "nodemon --exec 'ts-node --project tsconfig.node.json' server.ts"
+    "start": "tsx server.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,8 +24,7 @@
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.7.5",
-    "ts-node": "^10.9.2",
-    "nodemon": "^3.1.7",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   }
 }
