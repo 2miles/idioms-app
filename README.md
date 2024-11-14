@@ -19,7 +19,7 @@ This is a web application for exploring and managing idioms. Users can search th
 - **Styling**: Styled Components
 - **Other Libraries**: Axios, SweetAlert2, Moment, React Router
 
-#### Node Server Packages:
+### Node Server Packages:
 
 - `react`: A JavaScript library for building user interfaces.
 - `cors`: Middleware for handling Cross-Origin Resource Sharing (CORS) in Node.js.
@@ -28,7 +28,7 @@ This is a web application for exploring and managing idioms. Users can search th
 - `morgan`: HTTP request logger middleware for Node.js.
 - `pg`: Non-blocking PostgreSQL client for Node.js.
 
-#### Client Packages:
+### Client Packages:
 
 - `axios`: Promise-based HTTP client for the browser and Node.js.
 - `react`: A JavaScript library for building user interfaces.
@@ -36,8 +36,6 @@ This is a web application for exploring and managing idioms. Users can search th
 - `react-router-dom`: DOM bindings for React Router.
 - `react-scripts`: Configuration and scripts for Create React App.
 - `web-vitals`: Library for measuring web vitals and other performance metrics.
-
-# Installation
 
 You can run the project either with Docker or by setting it up locally.
 
@@ -47,6 +45,8 @@ You can run the project either with Docker or by setting it up locally.
 - **Docker(optional)**: If using Docker, make sure Docker is installed and running.
 - **PostgreSQL**: If running locally without Docker, you’ll need to have PostgreSQL installed.
 
+## Installing and Running
+
 ### Clone the Repository:
 
 ```bash
@@ -54,7 +54,45 @@ git clone https://github.com/2miles/idioms-app.git
 cd idioms-app
 ```
 
-### Configure Environment Variables:
+### Set up database
+
+Create a PostgreSQL database from a .sql file backup. (pgAdmin 4 or the command line).
+
+#### Using pgAdmin 4
+
+- Open pgAdmin 4 and log in to your PostgreSQL server.
+- Create a new, empty database (if needed):
+- Right-click on Databases in the left sidebar.
+- Select Create > Database… and give it a name.
+- Right-click on the newly created database and select Restore….
+- In the Restore dialog:
+- Select Format as "Custom or tar".
+- For Filename, click the file browser button and choose your .sql file.
+- Adjust any other settings as needed.
+- Click Restore. This should populate the new database with the data from your .sql file.
+
+#### Using the Command Line
+
+- Open your command line or terminal.
+- Connect to your PostgreSQL server (optional if already connected) by running:
+
+```bash
+psql -U username -W
+```
+
+- Create an empty database to import into (if not created yet):
+
+```bash
+createdb -U username new_database
+```
+
+- Use the psql command to import the .sql file:
+
+```bash
+psql -U username -d new_database -f path/to/yourfile.sql
+```
+
+### Environment Variables:
 
 Before running the application, you'll need to set up your database connection. Right now I have it set up for two options:
 
@@ -85,38 +123,48 @@ DB_URL_SUPABASE=postgresql://<username>:<password>@<host>:<port>/<database_name>
 
 - You can find these values in your Supabase project under `Settings > Database > Connection Pooling`.
 
-## Run the Application (option 2, locally)
+## Running locally (option 2)
 
-### Install Dependencies:
+Now that you have the project cloned and your .env set up.
+
+1. Install the dependencies:
 
 ```bash
 # Root directory:
 npm install
+
+# Client (React frontend):
 cd client
 npm install
+
+# Server (Node.js backend):
 cd ../server
 npm install
 ```
 
-From the root directory, start both the client and server with this single command:
+2. Run both the client and server:
 
 ```bash
-npm start
+   npm start
 ```
 
-## Run the Application (option 1, Docker)
+## Running in Docker (option 1)
 
-### Build and Run Containers:
+Use Docker Compose to run the application in containers.
 
-Use Docker Compose to build, start, and stop the containers.
+1. Build the Docker containers:
 
 ```bash
 docker-compose build
 ```
 
+2. Start the containers:
+
 ```bash
 docker-compose up
 ```
+
+To stop the containers:
 
 ```bash
 docker-compose down
@@ -124,8 +172,7 @@ docker-compose down
 
 ##
 
-- Client: http://localhost:5173,
-- Server API: http://localhost:3001.
+After running the app, you can access the client at `http://localhost:5173` and the backend API at `http://localhost:3001`.
 
 ## Scripts
 
@@ -144,39 +191,39 @@ Server:
 
 - `npm start`: Starts the backend server.
 
-Project Structure
+## Project Structure
 
 ```bash
 idioms-app
 │
-├── client      # Frontend (React + Vite) - This folder contains the client-side React app built using Vite
-│ └── src       # React components, pages, and styles - All source code for the React application
-│ └── tsconfig.app.json  # TypeScript configuration specific to the frontend (React app)
-│ └── vite.config.ts      # Vite configuration file, including plugins, aliases, and environment variables
-│ └── Dockerfile.dev      # Dockerfile for setting up the development environment for the React frontend
-│ └── package.json        # Contains dependencies, scripts, and other configurations for the React app
+├── client               # Frontend (React + Vite) - Client-side React app built using Vite
+│ └── src                # React components. All source code for the React application
+│ └── tsconfig.app.json  # TypeScript configuration for frontend
+│ └── vite.config.ts     # Vite configuration file, including plugins, aliases, and environment variables
+│ └── Dockerfile.dev     # Dockerfile for setting up the development environment for the React frontend
+│ └── package.json       # Dependencies, scripts, and other configurations for the React app
 │
-├── data        # SQL files to rebuild database - Contains SQL scripts to create tables and seed data
+├── data                 # SQL files to rebuild database.
 │ └── idioms_db_backup_24-10-06.sql  # SQL script to create necessary tables in the database
 │
-├── notes       # Personal notes, documentation - This folder contains additional project notes and documentation
+├── notes                # Personal notes, documentation
 │
-├── server      # Backend (Node.js + Express) - Contains the server-side Node.js code
-│ ├── db           # Database connection and queries
-│ │ └── index.ts   # Establishes the connection to the database using `pg` and exports a pool or client
-│ └── server.ts    # Main entry point of the backend Express server. Sets up routes, middleware, and starts the server
-│ └── .env         # Environment variables for backend (e.g., database URL, API keys)
-│ └── tsconfig.node.json  # TypeScript configuration for backend code (Node.js)
-│ └── Dockerfile.dev      # Dockerfile to build and run the Node.js backend in a development environment
-│ └── package.json        # Dependencies and scripts for the backend (Node.js server)
+├── server               # Backend (Node.js + Express) - Contains the server-side Node.js code
+│ ├── db                 # Database connection and queries
+│ │ └── index.ts         # Establishes connection to the database using `pg` and exports a pool or client
+│ └── server.ts          # Main entry point of the Express server. Sets up routes, middleware, starts server
+│ └── .env               # Environment variables for backend (e.g., database URL, API keys)
+│ └── tsconfig.node.json # TypeScript configuration for backend code (Node.js)
+│ └── Dockerfile.dev     # Dockerfile to build and run the Node.js backend in a development environment
+│ └── package.json       # Backend dependencies and scripts
 │
-├── docker-compose.yml # Docker Compose configuration to define and run multi-container Docker applications
-├── eslint.config.js   # ESLint configuration to enforce code quality and consistency
-├── .gitignore         # Specifies which files/folders to ignore in version control (e.g., node_modules)
-├── .dockerignore      # Specifies which files/folders to ignore in the Docker build context (e.g., .git, node_modules)
-├── tsconfig.json      # Main TypeScript configuration file, shared by both frontend and backend
-├── package.json       # Root package.json to manage dependencies that are used across both frontend and backend
-└── README.md          # Project documentation file with instructions on how to set up and use the project
+├── docker-compose.yml   # Docker Compose configuration to define and run multi-container Docker applications
+├── eslint.config.js     # ESLint configuration to enforce code quality and consistency
+├── .gitignore           # Specifies which files/folders to ignore in version control
+├── .dockerignore        # Specifies which files/folders to ignore in the Docker build context
+├── tsconfig.json        # Main TypeScript configuration file
+├── package.json         # Root dependencies and scripts
+└── README.md            # Project documentation
 ```
 
 ---
