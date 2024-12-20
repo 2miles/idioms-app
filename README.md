@@ -2,21 +2,21 @@
 
 ## Overview
 
-This is a web application for exploring and managing idioms. Users can search through a table of idioms and view detailed information on each idiom. Built with a React frontend, Express and Node.js backend, and PostgreSQL database, the app provides a smooth and user-friendly experience for exploring idioms in a data-rich format.
+This is a web application for managing a list of idioms. The idioms are presented as a pagenated data table that can be searched, filtered, and sorted. For each idiom there is a detail page that can be accessed by clicking on any idiom in the table.
 
 ## Features
 
-- **Idiom Search**: Search and filter idioms through a data table.
+- **Store Idioms**: Add, edit, delete idioms.
+- **Idiom Search**: Search and filter idioms. View through a data table.
 - **Detail Pages**: Click on any idiom to view a detail page with additional information.
 - **Responsive Design**: Optimized for both desktop and mobile.
 - **Data Persistence**: Data is stored in a PostgreSQL database.
-- **Modular Structure**: Easily extensible, with separate frontend and backend components.
 
 ## Tech Stack
 
-- **Frontend**: React, Vite, TypeScript, Styled Components
+- **Frontend**: React, Vite, TypeScript
 - **Backend**: Node.js, Express, PostgreSQL
-- **Styling**: Styled Components
+- **Styling**: Styled Components, Bootstrap
 - **Other Libraries**: Axios, SweetAlert2, Moment, React Router
 
 ### Node Server Packages:
@@ -30,20 +30,21 @@ This is a web application for exploring and managing idioms. Users can search th
 
 ### Client Packages:
 
-- `axios`: Promise-based HTTP client for the browser and Node.js.
+- `typescript`
 - `react`: A JavaScript library for building user interfaces.
 - `react-dom`: DOM-specific methods for React.
 - `react-router-dom`: DOM bindings for React Router.
-- `react-scripts`: Configuration and scripts for Create React App.
-- `web-vitals`: Library for measuring web vitals and other performance metrics.
-
-You can run the project either with Docker or by setting it up locally.
+- `axios`: Promise-based HTTP client for the browser and Node.js.
+- `styled-components`: library for styling React components using CSS-in-JS with scoped styles
+- `moment`: Library for parsing, validating, and formatting dates and times.
+- `react-datetime`: React date and time picker component
+- `sweetalert2`: Library for creating customizable alert popups.
 
 ## Prerequisites
 
-- **Node.js**: Ensure that you have Node.js (version 18 or higher recommended).
-- **Docker(optional)**: If using Docker, make sure Docker is installed and running.
-- **PostgreSQL**: If running locally without Docker, you’ll need to have PostgreSQL installed.
+- Node.js
+- Docker (optional)
+- PostgreSQL
 
 ## Installing and Running
 
@@ -56,37 +57,37 @@ cd idioms-app
 
 ### Set up database
 
-Create a PostgreSQL database from a .sql file backup. (pgAdmin 4 or the command line).
+Create a PostgreSQL database from the .sql files in /data.
+There is one with just the table schemas and there is one that is also populated with data.
 
-#### Using pgAdmin 4
+#### (option 1) PgAdmin GUI
 
-- Open pgAdmin 4 and log in to your PostgreSQL server.
-- Create a new, empty database (if needed):
-- Right-click on Databases in the left sidebar.
-- Select Create > Database… and give it a name.
-- Right-click on the newly created database and select Restore….
-- In the Restore dialog:
-- Select Format as "Custom or tar".
-- For Filename, click the file browser button and choose your .sql file.
-- Adjust any other settings as needed.
-- Click Restore. This should populate the new database with the data from your .sql file.
+1. Open PgAdmin and log in to your PostgreSQL server.
+2. Create a new, empty database:
+   - Click on Databases in the left sidebar.
+   - Select Create > Database and give it a name.
+3. Click on the newly created database and select Restore.
+4. In the Restore dialog:
+   - Select Format as "Custom or tar".
+   - For Filename, click the file browser button and choose your .sql file.
+5. Adjust any other settings as needed.
+6. Click Restore. This should populate the new database with the data from your .sql file.
 
-#### Using the Command Line
+#### (option 2) Command Line
 
-- Open your command line or terminal.
-- Connect to your PostgreSQL server (optional if already connected) by running:
+1. Connect to your PostgreSQL server
 
 ```bash
 psql -U username -W
 ```
 
-- Create an empty database to import into (if not created yet):
+2. Create an empty database to import into:
 
 ```bash
 createdb -U username new_database
 ```
 
-- Use the psql command to import the .sql file:
+3. Import the .sql file:
 
 ```bash
 psql -U username -d new_database -f path/to/yourfile.sql
@@ -94,12 +95,11 @@ psql -U username -d new_database -f path/to/yourfile.sql
 
 ### Environment Variables:
 
-Before running the application, you'll need to set up your database connection. Right now I have it set up for two options:
+Before running the application, you'll need to set up your database connection. Right now I have it set up so you can choose between using either Supabase or a local Postgres database.
 
-- Supabase
-- Local PostgreSQL Database
+### Create the `.env` file with PostgreSQL connection details.
 
-### Create a `.env` file in the server directory and set your PostgreSQL connection details.
+In the server directory use the following as a template:
 
 ```ts
 PORT=3001
@@ -120,10 +120,35 @@ DB_URL_SUPABASE=postgresql://<username>:<password>@<host>:<port>/<database_name>
 ```
 
 - Replace `<username>`, `<password>`, `<host>`, `<port>`, and `<database_name>` with your Supabase database credentials.
-
 - You can find these values in your Supabase project under `Settings > Database > Connection Pooling`.
 
-## Running locally (option 2)
+## Running the program
+
+If you have docker you can use that or you can install the dependencies yourself and use the start command.
+
+### (option 1) Docker
+
+Use Docker Compose to run the application in containers.
+
+1. Build the Docker containers:
+
+```bash
+docker-compose build
+```
+
+2. Start the containers:
+
+```bash
+docker-compose up
+```
+
+To stop the containers:
+
+```bash
+docker-compose down
+```
+
+### (option 2) Locally
 
 Now that you have the project cloned and your .env set up.
 
@@ -147,30 +172,6 @@ npm install
 ```bash
    npm start
 ```
-
-## Running in Docker (option 1)
-
-Use Docker Compose to run the application in containers.
-
-1. Build the Docker containers:
-
-```bash
-docker-compose build
-```
-
-2. Start the containers:
-
-```bash
-docker-compose up
-```
-
-To stop the containers:
-
-```bash
-docker-compose down
-```
-
-##
 
 After running the app, you can access the client at `http://localhost:5173` and the backend API at `http://localhost:3001`.
 

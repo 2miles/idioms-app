@@ -90,3 +90,7 @@ Go into the properties of `idioms_test_backup_id_seq` and change the next val to
 - Update the `idiom_test` id column default to `idioms_test_id_seq::regclass`
 - Update the sequence `idiom_test_id_seq` next value to correct number: (1 + number of idioms)
 - Delete `idiom_test_delete`
+
+## Connect local PGAdmin 4 instance to remote Supabase.
+
+https://www.youtube.com/watch?v=2ZMYqAYwNWk
