@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "lint": "eslint .",
-    "start": "nodemon server.js"
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "start:server": "cd server && npx tsx server.ts",
+    "start:client": "cd client && npm run dev"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -13,6 +15,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "concurrently": "^9.1.0",
     "eslint": "^9.13.0"
   },
   "eslintConfig": {
