@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
+import { ThreeDots } from 'react-loader-spinner';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Example, Idiom } from '@/types';
@@ -12,6 +13,13 @@ import DetailCard from '@/components/DetailCard';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;
+`;
+
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;
 
 //
@@ -91,8 +99,19 @@ const DetailPage = () => {
       setLoading(false);
     }
   }, [id, idioms]);
+
   if (loading || !selectedIdiom) {
-    return <p>Loading...</p>;
+    return (
+      <SpinnerWrapper>
+        <ThreeDots
+          visible={true}
+          height='80'
+          width='80'
+          color='var(--color-brand-primary)'
+          ariaLabel='three-dots-loading'
+        />
+      </SpinnerWrapper>
+    );
   }
 
   return (
