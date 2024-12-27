@@ -27,23 +27,22 @@ const ModalOverlay = styled.div`
 const ModalHeader = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: var(--margin-sm);
-  position: relative; /* Enable absolute positioning for the close button */
+  position: relative;
 `;
 
 const ModalTitle = styled.div`
-  padding: 0px var(--padding-sm);
   color: var(--color-text-primary) !important;
+  padding-top: var(--padding-sm);
+  padding-left: var(--padding-sm);
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: var(--font-xl);
 `;
 
 const ModalContent = styled.div`
   background: white;
   background: var(--color-canvas);
 
-  padding: var(--padding-md);
-  padding-top: var(--padding-sm);
+  padding: var(--padding-sm);
   border-radius: var(--radius-sm);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
@@ -52,29 +51,22 @@ const ModalContent = styled.div`
 `;
 
 const CloseButton = styled.button`
-  position: absolute; /* Position it within the ModalHeader */
-  right: 0; /* Align to the right */
-  top: 50%; /* Vertically center */
-  transform: translateY(-50%); /* Adjust for centering alignment */
-  padding: 0px var(--padding-sm);
-  background: var(--hilite-ui-primary);
+  padding: 0px 11px;
+  margin-left: auto;
+  margin-bottom: var(--margin-sm);
+  background: var(--color-ui-primary);
   border: 1px solid var(--color-ui-border);
+  color: var(--color-ui-border);
   border-radius: var(--radius-sm);
-  font-size: 1rem;
+  font-size: 24px;
   cursor: pointer;
+  &:hover {
+    background: var(--hilite-ui-primary);
+  }
 `;
 
 const HomePage = () => {
-  // const [isCollapsed, setIsCollapsed] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // const collapseForm = () => {
-  //   setIsCollapsed(true);
-  // };
-
-  // const handleToggleCollapse = () => {
-  //   setIsCollapsed(!isCollapsed);
-  // };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -87,15 +79,9 @@ const HomePage = () => {
   return (
     <PageContainer>
       <AddIdiomContainer>
-        <button
-          // onClick={handleToggleCollapse}
-          onClick={openModal}
-          // className={isCollapsed ? 'btn btn-success' : 'btn btn-secondary'}
-          className='btn btn-success'
-        >
+        <button onClick={openModal} className='btn btn-success'>
           Add Idiom
         </button>
-        {/* {!isCollapsed && <AddIdiom collapseForm={collapseForm} />} */}
       </AddIdiomContainer>
       <TableSection />
 

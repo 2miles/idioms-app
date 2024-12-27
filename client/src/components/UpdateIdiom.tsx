@@ -14,10 +14,7 @@ const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
   border: 1px solid var(--color-ui-border);
   border-radius: var(--radius-sm);
-  margin: var(--margin-md) auto var(--margin-xxl);
   font-size: var(--font-md);
-  margin-bottom: var(--margin-lg);
-  margin-top: var(--margin-lg);
 
   .form-group {
     padding: var(--padding-md);
@@ -44,10 +41,10 @@ const ButtonsWrapper = styled.div`
 type UpdateIdiomProps = {
   idiom: Idiom | null;
   onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  handleToggleEdit: () => void;
+  collapseForm: () => void;
 };
 
-const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) => {
+const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
   const [formData, setFormData] = useState({
     title: idiom?.title || '',
@@ -101,7 +98,7 @@ const UpdateIdiom = ({ idiom, onDelete, handleToggleEdit }: UpdateIdiomProps) =>
           showConfirmButton: false,
         });
         // Call onSuccess to hide the form
-        handleToggleEdit();
+        onClose();
       }
     } catch (err) {
       console.error('Error updating idiom:', err);
