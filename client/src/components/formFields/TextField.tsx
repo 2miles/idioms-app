@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const StyledInput = styled.input`
   &::placeholder {
-    color: var(--dim-text-primary);
+    color: var(--dim-text-secondary);
   }
 `;
 

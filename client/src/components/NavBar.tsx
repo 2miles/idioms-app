@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const NavBarWrapper = styled.nav`
   background-color: var(--color-canvas-inverted);
   color: var(--color-text-inverted);
-  padding: var(--padding-md);
+  padding: var(--padding-xs) var(--padding-md);
   width: 100%;
   z-index: 1000;
 

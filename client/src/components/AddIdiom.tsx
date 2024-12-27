@@ -13,7 +13,6 @@ const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
   border: 1px solid var(--color-ui-border);
   border-radius: var(--radius-sm);
-  margin: var(--margin-md) auto var(--margin-xxl);
   font-size: var(--font-md);
 
   .form-group {
