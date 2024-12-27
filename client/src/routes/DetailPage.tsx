@@ -10,6 +10,7 @@ import IdiomFinder from '@/apis/idiomFinder';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiom from '@/components/UpdateIdiom';
 import DetailCard from '@/components/DetailCard';
+import Modal from '@/components/Modal';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;
@@ -22,14 +23,13 @@ const SpinnerWrapper = styled.div`
   height: 100vh;
 `;
 
-//
 const DetailPage = () => {
   const { id } = useParams();
   const { idioms, setIdioms } = useContext(IdiomsContext);
   const [examples, setExamples] = useState<Example[]>([]);
-  const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>(undefined);
+  const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,15 +69,13 @@ const DetailPage = () => {
     }
   };
 
-  const handleToggleEdit = () => {
-    setIsEditing(!isEditing);
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Fetch idiom examples when the page loads
   useEffect(() => {
     const fetchExamples = async () => {
       try {
@@ -90,7 +88,6 @@ const DetailPage = () => {
       }
     };
 
-    // Find idiom from context by ID, avoid re-fetching
     const idiomFromContext = idioms.find((idiom) => idiom.id === Number(id));
     if (idiomFromContext) {
       setSelectedIdiom(idiomFromContext);
@@ -116,19 +113,15 @@ const DetailPage = () => {
 
   return (
     <PageContainer>
-      <DetailCard idiom={selectedIdiom} examples={examples} />
       <UpdateButtonWrapper>
-        <button className='btn btn-secondary' onClick={handleToggleEdit}>
-          {isEditing ? 'Cancel Edit' : 'Edit Idiom'}
+        <button className='btn btn-secondary' onClick={openModal}>
+          Edit
         </button>
       </UpdateButtonWrapper>
-      {isEditing && (
-        <UpdateIdiom
-          idiom={selectedIdiom}
-          onDelete={(e: React.MouseEvent<HTMLButtonElement>) => handleDelete(e)}
-          handleToggleEdit={handleToggleEdit}
-        />
-      )}
+      <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
+        <UpdateIdiom idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
+      </Modal>
+      <DetailCard idiom={selectedIdiom} examples={examples} />
     </PageContainer>
   );
 };

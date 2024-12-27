@@ -13,7 +13,6 @@ const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
   border: 1px solid var(--color-ui-border);
   border-radius: var(--radius-sm);
-  margin: var(--margin-md) auto var(--margin-xxl);
   font-size: var(--font-md);
 
   .form-group {
@@ -36,10 +35,10 @@ const FormControlsWrapper = styled.div`
 `;
 
 type AddIdiomProps = {
-  collapseForm: () => void;
+  onClose: () => void;
 };
 
-const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
+const AddIdiom = ({ onClose }: AddIdiomProps) => {
   const { addIdioms } = useContext(IdiomsContext);
 
   const [validated, setValidated] = useState(false);
@@ -98,7 +97,7 @@ const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
 
         if (!keepOpen) {
           setTimeout(() => {
-            collapseForm();
+            onClose();
           }, 200);
         }
       }

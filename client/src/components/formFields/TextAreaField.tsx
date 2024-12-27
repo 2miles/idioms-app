@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const StyledTextArea = styled.textarea`
   &::placeholder {
-    color: var(--dim-text-primary);
+    color: var(--dim-text-secondary);
   }
 `;
 type TextAreaFieldProps = {
