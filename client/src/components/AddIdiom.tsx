@@ -35,10 +35,10 @@ const FormControlsWrapper = styled.div`
 `;
 
 type AddIdiomProps = {
-  collapseForm: () => void;
+  onClose: () => void;
 };
 
-const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
+const AddIdiom = ({ onClose }: AddIdiomProps) => {
   const { addIdioms } = useContext(IdiomsContext);
 
   const [validated, setValidated] = useState(false);
@@ -97,7 +97,7 @@ const AddIdiom = ({ collapseForm }: AddIdiomProps) => {
 
         if (!keepOpen) {
           setTimeout(() => {
-            collapseForm();
+            onClose();
           }, 200);
         }
       }

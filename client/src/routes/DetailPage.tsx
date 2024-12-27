@@ -10,6 +10,7 @@ import IdiomFinder from '@/apis/idiomFinder';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiom from '@/components/UpdateIdiom';
 import DetailCard from '@/components/DetailCard';
+import Modal from '@/components/Modal';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;
@@ -22,66 +23,11 @@ const SpinnerWrapper = styled.div`
   height: 100vh;
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: center;
-  position: relative;
-`;
-
-const ModalTitle = styled.div`
-  color: var(--color-text-primary) !important;
-  padding-top: var(--padding-sm);
-  padding-left: var(--padding-sm);
-  font-weight: 600;
-  font-size: var(--font-xl);
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  background: var(--color-canvas);
-
-  padding: var(--padding-sm);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 600px;
-  position: relative;
-`;
-
-const CloseButton = styled.button`
-  padding: 0px 11px;
-  margin-left: auto;
-  margin-bottom: var(--margin-sm);
-  background: var(--color-ui-primary);
-  border: 1px solid var(--color-ui-border);
-  color: var(--color-ui-border);
-  border-radius: var(--radius-sm);
-  font-size: 24px;
-  cursor: pointer;
-  &:hover {
-    background: var(--hilite-ui-primary);
-  }
-`;
-
-//
 const DetailPage = () => {
   const { id } = useParams();
   const { idioms, setIdioms } = useContext(IdiomsContext);
   const [examples, setExamples] = useState<Example[]>([]);
-  const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>(undefined);
+  const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -100,7 +46,7 @@ const DetailPage = () => {
 
     if (confirmResult.isConfirmed) {
       try {
-        await IdiomFinder.delete(`/${id}`);
+        await IdiomFinder.delete(`/idioms/${id}`);
         setIdioms(idioms.filter((idiom: Idiom) => idiom.id !== Number(id)));
 
         Swal.fire({
@@ -123,23 +69,17 @@ const DetailPage = () => {
     }
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Fetch idiom examples when the page loads
   useEffect(() => {
     const fetchExamples = async () => {
       try {
-        const response = await IdiomFinder.get(`/${id}`);
+        const response = await IdiomFinder.get(`/idioms/${id}`);
         setExamples(response.data.data.examples);
       } catch (err) {
         console.error('Error fetching examples:', err);
@@ -148,7 +88,6 @@ const DetailPage = () => {
       }
     };
 
-    // Find idiom from context by ID, avoid re-fetching
     const idiomFromContext = idioms.find((idiom) => idiom.id === Number(id));
     if (idiomFromContext) {
       setSelectedIdiom(idiomFromContext);
@@ -179,21 +118,9 @@ const DetailPage = () => {
           Edit
         </button>
       </UpdateButtonWrapper>
-      {isModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <ModalTitle> Edit Idiom</ModalTitle>
-              <CloseButton onClick={closeModal}>&times;</CloseButton>
-            </ModalHeader>
-            <UpdateIdiom
-              idiom={selectedIdiom}
-              onDelete={(e: React.MouseEvent<HTMLButtonElement>) => handleDelete(e)}
-              onClose={closeModal}
-            />
-          </ModalContent>
-        </ModalOverlay>
-      )}
+      <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
+        <UpdateIdiom idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
+      </Modal>
       <DetailCard idiom={selectedIdiom} examples={examples} />
     </PageContainer>
   );
