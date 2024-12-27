@@ -41,7 +41,7 @@ const ButtonsWrapper = styled.div`
 type UpdateIdiomProps = {
   idiom: Idiom | null;
   onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  collapseForm: () => void;
+  onClose: () => void;
 };
 
 const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
