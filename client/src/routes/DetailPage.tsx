@@ -46,7 +46,7 @@ const DetailPage = () => {
 
     if (confirmResult.isConfirmed) {
       try {
-        await IdiomFinder.delete(`/idioms/${id}`);
+        await IdiomFinder.delete(`/${id}`);
         setIdioms(idioms.filter((idiom: Idiom) => idiom.id !== Number(id)));
 
         Swal.fire({
@@ -79,7 +79,7 @@ const DetailPage = () => {
   useEffect(() => {
     const fetchExamples = async () => {
       try {
-        const response = await IdiomFinder.get(`/idioms/${id}`);
+        const response = await IdiomFinder.get(`/${id}`);
         setExamples(response.data.data.examples);
       } catch (err) {
         console.error('Error fetching examples:', err);
