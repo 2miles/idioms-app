@@ -111,7 +111,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: Paginat
           </a>
         </PageItem>
         {pageNumbers}
-        <PageItem className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+        <PageItem className={`page-item ${currentPage >= totalPages ? 'disabled' : ''}`}>
           <a onClick={() => paginate(currentPage + 1)} href='#' className='page-link'>
             &gt;
           </a>
