@@ -37,7 +37,16 @@ const StyledTd = styled.td<StyleProps>`
   ${(props) =>
     props.$accessor === 'title' &&
     `
-      font-weight: 550;
+      font-weight: 420;
+      font-size: var(--font-md);
+  `}
+
+  ${(props) =>
+    props.$accessor === 'default' &&
+    `
+      text-align: center;
+      font-size: var(--font-lg);
+      color: var(--color-ui-border) !important;
   `}
 
   @media (max-width: 770px) {
@@ -89,7 +98,7 @@ const TableBody = ({ tableData, columns }: TableBodyProps) => {
       ) : (
         <tr>
           <StyledTd colSpan={columns.length} $accessor='default'>
-            No data available
+            No Idioms Found
           </StyledTd>
         </tr>
       )}

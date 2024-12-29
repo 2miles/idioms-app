@@ -23,11 +23,12 @@ const StyledTh = styled.th<StyledThProps>`
       : 'var(--color-ui-primary) !important'};
   border: 1px solid var(--color-ui-border) !important;
   color: var(--color-text-primary) !important;
-  font-weight: 800;
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: right;
   background-size: 25px 25px;
+  font-weight: normal;
+  font-size: var(--font-md);
 
   width: ${(props) => {
     const widths: Record<StyledThProps['$accessor'], string> = {

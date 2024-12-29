@@ -5,7 +5,6 @@ import TableBody from '@/components/TableBody';
 import TableHead from '@/components/TableHead';
 
 export const StyledTable = styled.table`
-  table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
