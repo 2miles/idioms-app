@@ -111,9 +111,12 @@ const TableSection = () => {
   const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
 
   const idiomCount = filteredIdioms.length; // Derived value
-  const showingText = `Showing ${indexOfFirstItem + 1} - ${
-    indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
-  } of ${idiomCount} idioms`;
+  const showingText =
+    idiomCount === 0
+      ? ''
+      : `Showing ${indexOfFirstItem + 1} - ${
+          indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
+        } of ${idiomCount} idioms`;
 
   return (
     <TableSectionWrapper>
