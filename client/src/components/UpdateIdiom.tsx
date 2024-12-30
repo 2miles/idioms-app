@@ -12,9 +12,16 @@ import TimestampField from '@/components/formFields/TimestampField';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
-  border: 1px solid var(--color-ui-border);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
+  padding-right: var(--padding-lg);
+  padding-left: var(--padding-lg);
+  padding-bottom: var(--padding-sm);
+
+  @media (max-width: 600px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
   .form-group {
     padding: var(--padding-md);
@@ -22,6 +29,10 @@ const FormContainer = styled.div`
 
   & button {
     margin-top: var(--margin-xxl) !important;
+  }
+  label {
+    font-weight: 600 !important;
+    padding-bottom: var(--padding-xs);
   }
 `;
 

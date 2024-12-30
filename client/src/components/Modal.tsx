@@ -15,9 +15,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: var(--color-canvas);
-  padding: var(--padding-md);
-  padding-top: var(--padding-sm);
+  background: var(--color-ui-primary);
   border-radius: var(--radius-sm);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
@@ -26,6 +24,11 @@ const ModalContent = styled.div`
 `;
 
 const ModalHeader = styled.div`
+  padding: var(--padding-md);
+  border-bottom: 1px solid var(--color-ui-border);
+  border-top-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-sm);
+  background-color: var(--color-canvas);
   display: flex;
   justify-content: center;
   margin-bottom: var(--margin-sm);
@@ -36,12 +39,12 @@ const ModalTitle = styled.div`
   padding: 0px var(--padding-sm);
   margin-right: auto;
   color: var(--color-text-primary);
-  font-weight: 600;
-  font-size: 1.2rem;
+  font-weight: 500;
+  font-size: var(--font-xl);
 `;
 
 const CloseButton = styled.button`
-  padding: 0 var(--padding-sm);
+  padding: 0 var(--padding-md);
   background: var(--color-ui-primary);
   color: var(--color-ui-border);
   border: 1px solid var(--color-ui-border);
