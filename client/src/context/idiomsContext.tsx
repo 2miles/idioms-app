@@ -1,5 +1,5 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
-import { Idiom } from '@/types';
+import { Example, Idiom } from '@/types';
 import IdiomFinder from '@/apis/idiomFinder';
 
 type IdiomsContextType = {
@@ -8,6 +8,7 @@ type IdiomsContextType = {
   addIdioms: (idiom: Idiom) => void;
   updateIdiom: (updatedIdiom: Idiom) => void;
   deleteIdiom: (id: number) => void;
+  updateExamples: (idiomId: number, updatedExamples: Example[]) => void;
 };
 
 // Default context values
@@ -17,6 +18,7 @@ const defaultContext: IdiomsContextType = {
   addIdioms: () => {},
   updateIdiom: () => {},
   deleteIdiom: () => {},
+  updateExamples: () => {},
 };
 
 type IdiomsContextProviderProps = {
@@ -72,6 +74,12 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     setIdioms(updatedIdioms);
   };
 
+  const updateExamples = (idiomId: number, updatedExamples: Example[]) => {
+    const updatedIdioms = idioms.map((idiom: Idiom) =>
+      idiom.id === idiomId ? { ...idiom, examples: updatedExamples } : idiom,
+    );
+    setIdioms(addPositionsToIdioms(updatedIdioms));
+  };
   return (
     <IdiomsContext.Provider
       value={{
@@ -80,6 +88,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
         addIdioms,
         updateIdiom,
         deleteIdiom,
+        updateExamples,
       }}
     >
       {children}
