@@ -9,6 +9,7 @@ import { Example, Idiom } from '@/types';
 import IdiomFinder from '@/apis/idiomFinder';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiom from '@/components/UpdateIdiom';
+import UpdateExamples from '@/components/UpdateExamples';
 import DetailCard from '@/components/DetailCard';
 import Modal from '@/components/Modal';
 
@@ -30,6 +31,7 @@ const DetailPage = () => {
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -71,6 +73,8 @@ const DetailPage = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openExampleModal = () => setIsExampleModalOpen(true);
+  const closeExampleModal = () => setIsExampleModalOpen(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -118,8 +122,18 @@ const DetailPage = () => {
           Edit
         </button>
       </UpdateButtonWrapper>
+      <UpdateButtonWrapper>
+        <button className='btn btn-secondary' onClick={openExampleModal}>
+          Edit Examples
+        </button>
+      </UpdateButtonWrapper>
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <UpdateIdiom idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
+      </Modal>
+      <Modal title='Edit Examples' isOpen={isExampleModalOpen} onClose={closeExampleModal}>
+        {typeof id !== 'undefined' && (
+          <UpdateExamples idiomId={Number(id)} examples={examples} onClose={closeExampleModal} />
+        )}
       </Modal>
       <DetailCard idiom={selectedIdiom} examples={examples} />
     </PageContainer>
