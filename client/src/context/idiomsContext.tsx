@@ -9,6 +9,7 @@ type IdiomsContextType = {
   updateIdiom: (updatedIdiom: Idiom) => void;
   deleteIdiom: (id: number) => void;
   updateExamples: (idiomId: number, updatedExamples: Example[]) => void;
+  addExampleToIdiom: (idiomId: number, newExample: Example) => void;
 };
 
 // Default context values
@@ -19,6 +20,7 @@ const defaultContext: IdiomsContextType = {
   updateIdiom: () => {},
   deleteIdiom: () => {},
   updateExamples: () => {},
+  addExampleToIdiom: () => {},
 };
 
 type IdiomsContextProviderProps = {
@@ -80,6 +82,15 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     );
     setIdioms(addPositionsToIdioms(updatedIdioms));
   };
+
+  const addExampleToIdiom = (idiomId: number, newExample: Example) => {
+    setIdioms((prevIdioms) =>
+      prevIdioms.map((idiom) =>
+        idiom.id === idiomId ? { ...idiom, examples: [...idiom.examples, newExample] } : idiom,
+      ),
+    );
+  };
+
   return (
     <IdiomsContext.Provider
       value={{
@@ -89,6 +100,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
         updateIdiom,
         deleteIdiom,
         updateExamples,
+        addExampleToIdiom,
       }}
     >
       {children}

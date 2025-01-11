@@ -12,6 +12,7 @@ import UpdateIdiom from '@/components/UpdateIdiom';
 import UpdateExamples from '@/components/UpdateExamples';
 import DetailCard from '@/components/DetailCard';
 import Modal from '@/components/Modal';
+import AddExample from '@/components/AddExample';
 
 const UpdateButtonWrapper = styled.div`
   margin-top: 20px !important;
@@ -32,6 +33,7 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
+  const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -75,6 +77,8 @@ const DetailPage = () => {
   const closeModal = () => setIsModalOpen(false);
   const openExampleModal = () => setIsExampleModalOpen(true);
   const closeExampleModal = () => setIsExampleModalOpen(false);
+  const openAddExampleModal = () => setIsAddExampleModalOpen(true);
+  const closeAddExampleModal = () => setIsAddExampleModalOpen(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -122,17 +126,31 @@ const DetailPage = () => {
           Edit
         </button>
       </UpdateButtonWrapper>
+
       <UpdateButtonWrapper>
         <button className='btn btn-secondary' onClick={openExampleModal}>
           Edit Examples
         </button>
       </UpdateButtonWrapper>
+
+      <UpdateButtonWrapper>
+        <button className='btn btn-secondary' onClick={openAddExampleModal}>
+          Add Example
+        </button>
+      </UpdateButtonWrapper>
+
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <UpdateIdiom idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
       </Modal>
+
       <Modal title='Edit Examples' isOpen={isExampleModalOpen} onClose={closeExampleModal}>
         {typeof id !== 'undefined' && (
           <UpdateExamples idiomId={Number(id)} examples={examples} onClose={closeExampleModal} />
+        )}
+      </Modal>
+      <Modal title='Add Example' isOpen={isAddExampleModalOpen} onClose={closeAddExampleModal}>
+        {typeof id !== 'undefined' && (
+          <AddExample idiomId={Number(id)} onClose={closeAddExampleModal} />
         )}
       </Modal>
       <DetailCard idiom={selectedIdiom} examples={examples} />
