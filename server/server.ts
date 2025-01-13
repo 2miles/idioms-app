@@ -16,20 +16,24 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Get all idioms
-// Returns the data itself and the number of items returned in the response
+// // Get all idioms and examples
+// // Returns the idioms, examples, and the number of idioms returned.
 app.get('/api/v1/idioms', async (_: Request, res: Response) => {
   try {
-    const selectQuery = `
-      SELECT * FROM idioms_test
-      ORDER BY timestamps
-    `;
-    const result = await pool.query(selectQuery);
+    const idiomsQuery = `SELECT * FROM idioms_test ORDER BY timestamps`;
+    const examplesQuery = `SELECT * FROM idioms_examples_test`;
+
+    const [idiomsResult, examplesResult] = await Promise.all([
+      pool.query(idiomsQuery),
+      pool.query(examplesQuery),
+    ]);
+
     res.status(200).json({
       status: 'success',
-      results: result.rows.length,
+      results: idiomsResult.rows.length,
       data: {
-        idioms: result.rows,
+        idioms: idiomsResult.rows,
+        examples: examplesResult.rows,
       },
     });
   } catch (error) {
@@ -39,7 +43,6 @@ app.get('/api/v1/idioms', async (_: Request, res: Response) => {
 });
 
 // Get single idiom, and get examples for that idiom
-// Route for handling HTTP GET requests to /api/v1/idioms/:id
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
     const idiomQuery = await pool.query(
@@ -140,10 +143,10 @@ app.delete('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   }
 });
 
-// Add examples for an idiom
+// Add examples to an idiom
 app.post('/api/v1/idioms/:id/examples', async (req: Request, res: Response) => {
-  const { id } = req.params; // Extract idiomId from the URL parameters
-  const { example } = req.body; // Extract examples array from the request body
+  const { id } = req.params;
+  const { example } = req.body;
 
   try {
     const insertQuery = `
@@ -165,8 +168,8 @@ app.post('/api/v1/idioms/:id/examples', async (req: Request, res: Response) => {
 });
 
 app.put('/api/v1/idioms/:id/examples', async (req, res) => {
-  const { id } = req.params; // Extract idiom ID from URL params
-  const { examples } = req.body; // Array of examples to update
+  const { id } = req.params;
+  const { examples } = req.body;
 
   try {
     const updateQuery = `
@@ -190,37 +193,33 @@ app.put('/api/v1/idioms/:id/examples', async (req, res) => {
   }
 });
 
-// // Delete an example
-// // Route for handling HTTP DELETE requests to /api/v1/examples/:id
-// app.delete('/api/v1/examples/:id', async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params; // Extract example_id from the URL parameters
-//     const result = await pool.query(
-//       `
-//       DELETE FROM idioms_examples_test
-//       WHERE example_id = $1
-//       RETURNING *
-//       `,
-//       [id],
-//     );
-//     // Log the full result object to inspect it
-//     console.log('Full result:', result);
-
-//     // Log only the rows array to see its structure
-//     console.log('Result rows:', result.rows);
-
-//     res.status(200).json({
-//       status: 'success',
-//       message: 'Example deleted successfully',
-//       data: {
-//         example: result.rows[0],
-//       },
-//     });
-//   } catch (error) {
-//     console.error('Error deleting example:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+// Delete an example
+app.delete(
+  '/api/v1/idioms/examples/:id',
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const result = await pool.query(
+        `
+      DELETE FROM idioms_examples_test
+      WHERE example_id = $1
+      RETURNING *
+      `,
+        [id],
+      );
+      res.status(200).json({
+        status: 'success',
+        message: 'Example deleted successfully',
+        data: {
+          example: result.rows[0],
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting example:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);
