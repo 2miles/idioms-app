@@ -1,8 +1,4 @@
-//   const handleDeleteExample = (index: number) => {
-//     setExampleData((prevData) => prevData.filter((_, i) => i !== index));
-//   };
-
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
@@ -52,24 +48,61 @@ type UpdateExamplesProps = {
   onClose: () => void;
 };
 
-const UpdateExamples = ({ idiomId, examples, onClose }: UpdateExamplesProps) => {
-  const [exampleData, setExampleData] = useState<Example[]>(examples);
-  const { updateExamples } = useContext(IdiomsContext);
+const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
+  const { idioms, updateExamples } = useContext(IdiomsContext);
+  const examples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
 
   const handleExampleChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const { value } = e.target;
-    setExampleData((prevData) =>
-      prevData.map((example, i) => (i === index ? { ...example, example: value } : example)),
+    // Update examples directly in the context
+    const updatedExamples = examples.map((example, i) =>
+      i === index ? { ...example, example: value } : example,
     );
+    updateExamples(idiomId, updatedExamples);
+  };
+
+  const handleDeleteExample = async (index: number, exampleId: number) => {
+    const confirmResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this example!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        await IdiomFinder.delete(`/examples/${exampleId}`);
+        // Update local state to remove the example
+        const updatedExamples = examples.filter((_, i) => i !== index);
+        updateExamples(idiomId, updatedExamples);
+
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'The example has been successfully deleted.',
+          icon: 'success',
+          timer: 1800,
+          showConfirmButton: false,
+        });
+      } catch (err) {
+        console.error('Error deleting example:', err);
+        Swal.fire({
+          title: 'Error',
+          text: 'There was a problem deleting the example.',
+          icon: 'error',
+        });
+      }
+    }
   };
 
   const validateExamples = () => {
-    return exampleData.every((example) => example.example && example.example.trim() !== '');
+    return examples.every((example) => example.example && example.example.trim() !== '');
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    console.log('Form submitted!');
     if (!validateExamples()) {
       Swal.fire({
         title: 'Error',
@@ -81,12 +114,19 @@ const UpdateExamples = ({ idiomId, examples, onClose }: UpdateExamplesProps) => 
 
     try {
       // Send the updated examples to your API
+      console.log('Submitting examples:', examples);
       const response = await IdiomFinder.put(`/${idiomId}/examples`, {
-        examples: exampleData,
+        examples,
       });
 
       if (response.data && response.data.status === 'success') {
-        updateExamples(idiomId, response.data);
+        console.log(response.data);
+
+        // updateExamples(idiomId, response.data);
+
+        const updatedExamples = response.data.examples || examples;
+        updateExamples(idiomId, updatedExamples);
+
         Swal.fire({
           title: 'Updated!',
           text: 'Examples have been successfully updated.',
@@ -109,7 +149,7 @@ const UpdateExamples = ({ idiomId, examples, onClose }: UpdateExamplesProps) => 
   return (
     <FormContainer>
       <form onSubmit={handleSubmit}>
-        {exampleData.map((example, index) => (
+        {examples.map((example, index) => (
           <div key={index}>
             <TextAreaField
               label={`Example ${index + 1}`}
@@ -118,6 +158,13 @@ const UpdateExamples = ({ idiomId, examples, onClose }: UpdateExamplesProps) => 
               onChange={(e) => handleExampleChange(e, index)}
               aria-label={`Edit example ${index + 1}`}
             />
+            <button
+              type='button'
+              className='btn btn-danger'
+              onClick={() => handleDeleteExample(index, example.example_id)}
+            >
+              Delete
+            </button>
           </div>
         ))}
         <ButtonsWrapper>

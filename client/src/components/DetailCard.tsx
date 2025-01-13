@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { Idiom, Example } from '@/types';
+import { Idiom } from '@/types';
 
 const Card = styled.div`
   &.card {
@@ -98,10 +98,11 @@ const ExampleList = styled.ul`
 
 type DetailCardProps = {
   idiom: Idiom;
-  examples: Example[];
 };
 
-const DetailCard = ({ idiom, examples }: DetailCardProps) => {
+const DetailCard = ({ idiom }: DetailCardProps) => {
+  if (!idiom) return <p>Loading...</p>;
+  const examples = Array.isArray(idiom.examples) ? idiom.examples : [];
   return (
     <Card className='card'>
       <CardHeader className='card-header'>
