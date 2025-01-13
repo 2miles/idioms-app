@@ -70,7 +70,6 @@ const AddExample = ({ idiomId, onClose }: AddExampleProps) => {
     if (formData.newExample.trim() === '') {
       return; // Prevent form submission if title is empty
     }
-    console.log('idiomId:', idiomId);
     try {
       const response = await IdiomFinder.post(`/${String(idiomId)}/examples`, {
         example: emptyStringToNull(formData.newExample),
