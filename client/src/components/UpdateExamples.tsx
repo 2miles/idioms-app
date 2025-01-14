@@ -24,9 +24,6 @@ const FormContainer = styled.div`
     padding: var(--padding-md);
   }
 
-  & button {
-    margin-top: var(--margin-xxl) !important;
-  }
   label {
     font-weight: 600 !important;
     padding-bottom: var(--padding-xs);
@@ -38,8 +35,35 @@ const ButtonsWrapper = styled.div`
   justify-content: flex-start;
 
   button {
-    margin: var(--margin-lg);
+    margin: 0 var(--margin-lg) var(--margin-lg);
   }
+`;
+
+const DeleteButton = styled.button`
+  float: right;
+  margin: 0 var(--margin-md);
+  background-color: var(--color-ui-primary);
+  color: var(--color-text-primary);
+  border-color: var(--color-ui-border);
+  max-height: 40px;
+  &:hover {
+    background-color: var(--hilite-ui-primary);
+    border-color: var(--color-ui-border);
+    color: var(--color-text-primary);
+  }
+`;
+
+const InputArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* align-items: flex-end; */
+`;
+const TitleArea = styled.div`
+  text-align: center;
+  font-size: var(--font-xl);
+  margin: 0;
+  font-style: italic;
+  font-weight: normal;
 `;
 
 type UpdateExamplesProps = {
@@ -51,6 +75,7 @@ type UpdateExamplesProps = {
 const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
   const { idioms, updateExamples } = useContext(IdiomsContext);
   const examples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
+  const idiomTitle = idioms.find((idiom) => idiom.id === idiomId)?.title;
 
   const handleExampleChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const { value } = e.target;
@@ -121,9 +146,6 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
 
       if (response.data && response.data.status === 'success') {
         console.log(response.data);
-
-        // updateExamples(idiomId, response.data);
-
         const updatedExamples = response.data.examples || examples;
         updateExamples(idiomId, updatedExamples);
 
@@ -148,27 +170,30 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
 
   return (
     <FormContainer>
+      <TitleArea>{idiomTitle}</TitleArea>
       <form onSubmit={handleSubmit}>
         {examples.map((example, index) => (
-          <div key={index}>
-            <TextAreaField
-              label={`Example ${index + 1}`}
-              id={`example-${index}`}
-              value={example.example || ''}
-              onChange={(e) => handleExampleChange(e, index)}
-              aria-label={`Edit example ${index + 1}`}
-            />
-            <button
-              type='button'
-              className='btn btn-danger'
-              onClick={() => handleDeleteExample(index, example.example_id)}
-            >
-              Delete
-            </button>
-          </div>
+          <InputArea>
+            <div key={index}>
+              <TextAreaField
+                label={`Example ${index + 1}`}
+                id={`example-${index}`}
+                value={example.example || ''}
+                onChange={(e) => handleExampleChange(e, index)}
+                aria-label={`Edit example ${index + 1}`}
+              />
+              <DeleteButton
+                type='button'
+                className='btn btn-danger'
+                onClick={() => handleDeleteExample(index, example.example_id)}
+              >
+                Delete
+              </DeleteButton>
+            </div>
+          </InputArea>
         ))}
         <ButtonsWrapper>
-          <button type='submit' className='btn btn-primary'>
+          <button type='submit' className='btn btn-success'>
             Save
           </button>
         </ButtonsWrapper>

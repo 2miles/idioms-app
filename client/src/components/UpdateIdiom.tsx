@@ -27,9 +27,6 @@ const FormContainer = styled.div`
     padding: var(--padding-md);
   }
 
-  & button {
-    margin-top: var(--margin-xxl) !important;
-  }
   label {
     font-weight: 600 !important;
     padding-bottom: var(--padding-xs);
@@ -38,14 +35,19 @@ const FormContainer = styled.div`
 
 const ButtonsWrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
+  margin: var(--margin-lg);
+`;
 
-  button {
-    margin: var(--margin-lg);
-  }
-
-  .btn-danger {
-    margin-left: auto;
+const DeleteButton = styled.button`
+  background-color: var(--color-ui-primary);
+  color: var(--color-text-primary);
+  border-color: var(--color-ui-border);
+  max-height: 40px;
+  &:hover {
+    background-color: var(--hilite-ui-primary);
+    border-color: var(--color-ui-border);
+    color: var(--color-text-primary);
   }
 `;
 
@@ -161,12 +163,12 @@ const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
           onChange={handleInputChange}
         />
         <ButtonsWrapper>
-          <button type='submit' className='btn btn-primary'>
-            Update
+          <button type='submit' className='btn btn-success'>
+            Save
           </button>
-          <button type='button' className='btn btn-danger' onClick={onDelete}>
+          <DeleteButton type='button' className='btn btn-danger' onClick={onDelete}>
             Delete
-          </button>
+          </DeleteButton>
         </ButtonsWrapper>
       </form>
     </FormContainer>

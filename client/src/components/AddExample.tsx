@@ -42,6 +42,14 @@ const FormControlsWrapper = styled.div`
   }
 `;
 
+const TitleArea = styled.div`
+  text-align: center;
+  font-size: var(--font-xl);
+  margin: 0;
+  font-style: italic;
+  font-weight: normal;
+`;
+
 type AddExampleProps = {
   idiomId: number;
   onClose: () => void;
@@ -108,6 +116,7 @@ const AddExample = ({ idiomId, onClose }: AddExampleProps) => {
 
   return (
     <FormContainer>
+      <TitleArea></TitleArea>
       <form
         className={`needs-validation ${validated ? 'was-validated' : ''}`}
         noValidate
@@ -122,7 +131,7 @@ const AddExample = ({ idiomId, onClose }: AddExampleProps) => {
           rows={3}
         />
         <FormControlsWrapper>
-          <button type='submit' className='btn btn-primary'>
+          <button type='submit' className='btn btn-success'>
             Add
           </button>
           <div className='form-check'>

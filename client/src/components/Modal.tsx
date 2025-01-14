@@ -20,7 +20,17 @@ const ModalContent = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalBody = styled.div`
+  padding: var(--padding-md);
+  overflow-y: auto;
+  flex: 1; /* Allow the body to grow and shrink within the modal */
 `;
 
 const ModalHeader = styled.div`
@@ -73,7 +83,7 @@ const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
           <ModalTitle>{title}</ModalTitle>
           <CloseButton onClick={onClose}>&times;</CloseButton>
         </ModalHeader>
-        {children}
+        <ModalBody>{children}</ModalBody>
       </ModalContent>
     </ModalOverlay>
   );
