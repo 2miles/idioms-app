@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import { Idiom } from '@/types';
+import { SecondaryButton } from '@/components/ButtonStyles';
 
 const Card = styled.div`
   &.card {
@@ -57,6 +58,10 @@ const CardBody = styled.div`
     padding-left: var(--padding-lg);
     padding-right: var(--padding-lg);
   }
+  /* Remove top margin from the first ExampleHeader */
+  > div:first-child {
+    margin-top: 0 !important;
+  }
 `;
 
 const IdiomInfo = styled.div`
@@ -89,36 +94,24 @@ const Contributor = styled.p`
 `;
 
 const ExampleItem = styled.li`
-  padding-left: 0px !important;
+  padding-left: var(--padding-sm) !important;
 `;
 
 const ExampleList = styled.ul`
   padding-left: var(--padding-lg) !important;
 `;
 
-const UpdateButtonWrapper = styled.div`
-  margin-top: 20px !important;
-  margin-left: var(--margin-lg);
+const UpdateExampleButtons = styled.div`
+  button {
+    margin-left: var(--margin-lg);
+  }
 `;
 
 const ExampleHeader = styled.div`
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
-`;
-
-const Button = styled.button`
-  background-color: var(--color-ui-primary);
-  border-color: var(--color-ui-border);
-  color: var(--color-text-primary);
-  margin: 0 var(--margin-sm);
-  max-height: 40px;
-
-  &:hover {
-    background-color: var(--hilite-ui-primary);
-    border-color: var(--color-ui-border);
-    color: var(--color-text-primary);
-  }
+  margin-top: 80px !important;
 `;
 
 type DetailCardProps = {
@@ -157,26 +150,23 @@ const DetailCard = ({
       <CardBody className='card-body'>
         <ExampleHeader>
           <h3>Meaning:</h3>
-          <Button className='btn btn-secondary' onClick={openModal}>
+          <SecondaryButton className='btn btn-secondary' onClick={openModal}>
             Edit Idiom
-          </Button>
+          </SecondaryButton>
         </ExampleHeader>
         <p>{idiom.definition}</p>
         <ExampleHeader>
           <h3>Examples:</h3>
-          <UpdateButtonWrapper>
-            <Button className='btn btn-secondary' onClick={openAddExampleModal}>
+          <UpdateExampleButtons>
+            <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
               Add Ex.
-            </Button>
+            </SecondaryButton>
             {idiom.examples && idiom.examples.length > 0 && (
-              <Button className='btn btn-secondary' onClick={openExampleModal}>
+              <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
                 Edit Ex.
-              </Button>
+              </SecondaryButton>
             )}
-            {/* <Button className='btn btn-secondary' onClick={openExampleModal}>
-              Edit Ex.
-            </Button> */}
-          </UpdateButtonWrapper>
+          </UpdateExampleButtons>
         </ExampleHeader>
         <ExampleList>
           {examples.map((example) => (

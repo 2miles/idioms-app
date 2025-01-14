@@ -120,7 +120,11 @@ const DetailPage = () => {
       </Modal>
       <Modal title='Add Example' isOpen={isAddExampleModalOpen} onClose={closeAddExampleModal}>
         {typeof id !== 'undefined' && (
-          <AddExample idiomId={Number(id)} onClose={closeAddExampleModal} />
+          <AddExample
+            idiomId={Number(id)}
+            idiomTitle={selectedIdiom.title}
+            onClose={closeAddExampleModal}
+          />
         )}
       </Modal>
       <DetailCard

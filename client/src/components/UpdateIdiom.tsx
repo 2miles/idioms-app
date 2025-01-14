@@ -9,6 +9,7 @@ import { Idiom } from '@/types';
 import TextAreaField from '@/components/formFields/TextAreaField';
 import TextField from '@/components/formFields/TextField';
 import TimestampField from '@/components/formFields/TimestampField';
+import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
@@ -36,19 +37,8 @@ const FormContainer = styled.div`
 const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: var(--margin-lg);
-`;
-
-const DeleteButton = styled.button`
-  background-color: var(--color-ui-primary);
-  color: var(--color-text-primary);
-  border-color: var(--color-ui-border);
-  max-height: 40px;
-  &:hover {
-    background-color: var(--hilite-ui-primary);
-    border-color: var(--color-ui-border);
-    color: var(--color-text-primary);
-  }
+  margin: 0 var(--margin-lg);
+  margin-top: var(--margin-lg);
 `;
 
 type UpdateIdiomProps = {
@@ -166,9 +156,9 @@ const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
           <button type='submit' className='btn btn-success'>
             Save
           </button>
-          <DeleteButton type='button' className='btn btn-danger' onClick={onDelete}>
+          <SecondaryButton type='button' className='btn btn-danger' onClick={onDelete}>
             Delete
-          </DeleteButton>
+          </SecondaryButton>
         </ButtonsWrapper>
       </form>
     </FormContainer>

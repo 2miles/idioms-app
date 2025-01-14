@@ -6,6 +6,7 @@ import { Example } from '@/types';
 import { IdiomsContext } from '@/context/idiomsContext';
 import TextAreaField from '@/components/formFields/TextAreaField';
 import IdiomFinder from '@/apis/idiomFinder';
+import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
@@ -30,33 +31,21 @@ const FormContainer = styled.div`
   }
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  justify-content: flex-start;
-
-  button {
-    margin: 0 var(--margin-lg) var(--margin-lg);
-  }
+const DeleteButtonArea = styled.div`
+  margin: 0 var(--margin-md);
 `;
 
-const DeleteButton = styled.button`
-  float: right;
-  margin: 0 var(--margin-md);
-  background-color: var(--color-ui-primary);
-  color: var(--color-text-primary);
-  border-color: var(--color-ui-border);
-  max-height: 40px;
-  &:hover {
-    background-color: var(--hilite-ui-primary);
-    border-color: var(--color-ui-border);
-    color: var(--color-text-primary);
-  }
+const ButtonWrapper = styled.button`
+  margin-top: var(--margin-lg);
+  margin-left: var(--margin-lg);
 `;
 
 const InputArea = styled.div`
   display: flex;
   flex-direction: column;
-  /* align-items: flex-end; */
+  button {
+    float: right;
+  }
 `;
 const TitleArea = styled.div`
   text-align: center;
@@ -93,6 +82,7 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: '#DC3545',
       cancelButtonText: 'No, keep it',
     });
 
@@ -182,21 +172,21 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
                 onChange={(e) => handleExampleChange(e, index)}
                 aria-label={`Edit example ${index + 1}`}
               />
-              <DeleteButton
-                type='button'
-                className='btn btn-danger'
-                onClick={() => handleDeleteExample(index, example.example_id)}
-              >
-                Delete
-              </DeleteButton>
+              <DeleteButtonArea>
+                <SecondaryButton
+                  type='button'
+                  className='btn btn-danger'
+                  onClick={() => handleDeleteExample(index, example.example_id)}
+                >
+                  Delete
+                </SecondaryButton>
+              </DeleteButtonArea>
             </div>
           </InputArea>
         ))}
-        <ButtonsWrapper>
-          <button type='submit' className='btn btn-success'>
-            Save
-          </button>
-        </ButtonsWrapper>
+        <ButtonWrapper type='submit' className='btn btn-success'>
+          Save
+        </ButtonWrapper>
       </form>
     </FormContainer>
   );
