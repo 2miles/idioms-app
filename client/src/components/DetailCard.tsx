@@ -14,7 +14,6 @@ const Card = styled.div`
 `;
 
 const CardHeader = styled.div`
-  text-align: center;
   background-color: var(--hilite-ui-primary);
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-ui-border);
@@ -62,7 +61,7 @@ const CardBody = styled.div`
 
 const IdiomInfo = styled.div`
   display: flex;
-  justify-content: space-between;
+  /* flex-direction: column; */
 
   padding-left: var(--padding-lg);
   padding-right: var(--padding-lg);
@@ -72,8 +71,9 @@ const IdiomInfo = styled.div`
   background-color: var(--color-ui-primary);
 `;
 
-const Position = styled.p`
+const Position = styled.span`
   margin: 0;
+  padding-right: var(--padding-lg);
   font-size: var(--font-lg);
   color: var(--color-text-primary);
   align-self: flex-start;
@@ -85,7 +85,7 @@ const Contributor = styled.p`
   margin: 0;
   font-size: var(--font-lg);
   color: var(--color-text-primary);
-  align-self: flex-end;
+  /* align-self: flex-end; */
 `;
 
 const ExampleItem = styled.li`
@@ -96,11 +96,44 @@ const ExampleList = styled.ul`
   padding-left: var(--padding-lg) !important;
 `;
 
+const UpdateButtonWrapper = styled.div`
+  margin-top: 20px !important;
+  margin-left: var(--margin-lg);
+`;
+
+const ExampleHeader = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+`;
+
+const Button = styled.button`
+  background-color: var(--color-ui-primary);
+  border-color: var(--color-ui-border);
+  color: var(--color-text-primary);
+  margin: 0 var(--margin-sm);
+  max-height: 40px;
+
+  &:hover {
+    background-color: var(--hilite-ui-primary);
+    border-color: var(--color-ui-border);
+    color: var(--color-text-primary);
+  }
+`;
+
 type DetailCardProps = {
   idiom: Idiom;
+  openModal: () => void;
+  openExampleModal: () => void;
+  openAddExampleModal: () => void;
 };
 
-const DetailCard = ({ idiom }: DetailCardProps) => {
+const DetailCard = ({
+  idiom,
+  openModal,
+  openExampleModal,
+  openAddExampleModal,
+}: DetailCardProps) => {
   if (!idiom) return <p>Loading...</p>;
   const examples = Array.isArray(idiom.examples) ? idiom.examples : [];
   return (
@@ -122,9 +155,29 @@ const DetailCard = ({ idiom }: DetailCardProps) => {
         </Contributor>
       </IdiomInfo>
       <CardBody className='card-body'>
-        <h3>Meaning:</h3>
+        <ExampleHeader>
+          <h3>Meaning:</h3>
+          <Button className='btn btn-secondary' onClick={openModal}>
+            Edit Idiom
+          </Button>
+        </ExampleHeader>
         <p>{idiom.definition}</p>
-        <h3>Examples:</h3>
+        <ExampleHeader>
+          <h3>Examples:</h3>
+          <UpdateButtonWrapper>
+            <Button className='btn btn-secondary' onClick={openAddExampleModal}>
+              Add Ex.
+            </Button>
+            {idiom.examples && idiom.examples.length > 0 && (
+              <Button className='btn btn-secondary' onClick={openExampleModal}>
+                Edit Ex.
+              </Button>
+            )}
+            {/* <Button className='btn btn-secondary' onClick={openExampleModal}>
+              Edit Ex.
+            </Button> */}
+          </UpdateButtonWrapper>
+        </ExampleHeader>
         <ExampleList>
           {examples.map((example) => (
             <ExampleItem key={example.example_id}>{example.example}</ExampleItem>

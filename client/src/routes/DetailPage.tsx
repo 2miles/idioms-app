@@ -14,14 +14,6 @@ import DetailCard from '@/components/DetailCard';
 import Modal from '@/components/Modal';
 import AddExample from '@/components/AddExample';
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-`;
-const UpdateButtonWrapper = styled.div`
-  margin-top: 20px !important;
-  margin-right: var(--margin-lg);
-`;
-
 const SpinnerWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -84,9 +76,6 @@ const DetailPage = () => {
   const closeAddExampleModal = () => setIsAddExampleModalOpen(false);
 
   useEffect(() => {
-    console.log('Selected Idiom:', selectedIdiom);
-  }, [selectedIdiom]); // This will log every time selectedIdiom changes
-  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
@@ -116,26 +105,6 @@ const DetailPage = () => {
 
   return (
     <PageContainer>
-      <ButtonsWrapper>
-        <UpdateButtonWrapper>
-          <button className='btn btn-secondary' onClick={openModal}>
-            Edit Idiom
-          </button>
-        </UpdateButtonWrapper>
-
-        <UpdateButtonWrapper>
-          <button className='btn btn-secondary' onClick={openExampleModal}>
-            Edit Examples
-          </button>
-        </UpdateButtonWrapper>
-
-        <UpdateButtonWrapper>
-          <button className='btn btn-secondary' onClick={openAddExampleModal}>
-            Add Example
-          </button>
-        </UpdateButtonWrapper>
-      </ButtonsWrapper>
-
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <UpdateIdiom idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
       </Modal>
@@ -154,7 +123,12 @@ const DetailPage = () => {
           <AddExample idiomId={Number(id)} onClose={closeAddExampleModal} />
         )}
       </Modal>
-      <DetailCard idiom={selectedIdiom} />
+      <DetailCard
+        idiom={selectedIdiom}
+        openAddExampleModal={openAddExampleModal}
+        openExampleModal={openExampleModal}
+        openModal={openModal}
+      />
     </PageContainer>
   );
 };
