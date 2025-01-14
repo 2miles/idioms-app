@@ -16,24 +16,24 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Get all idioms
-// This line defines a route for handling HTTP GET requests to the /api/v1/idioms endpoint.
-// Returns the data itself and the number of items returned in the response
+// // Get all idioms and examples
+// // Returns the idioms, examples, and the number of idioms returned.
 app.get('/api/v1/idioms', async (_: Request, res: Response) => {
-  // This is the route handler
   try {
-    const result = await pool.query(
-      `
-      SELECT * FROM idioms_test
-      ORDER BY timestamps
-      `,
-    ); // pool.query returns a promise
+    const idiomsQuery = `SELECT * FROM idioms_test ORDER BY timestamps`;
+    const examplesQuery = `SELECT * FROM idioms_examples_test`;
+
+    const [idiomsResult, examplesResult] = await Promise.all([
+      pool.query(idiomsQuery),
+      pool.query(examplesQuery),
+    ]);
+
     res.status(200).json({
-      // sends a JSON response back to the client containing the rows from db
       status: 'success',
-      results: result.rows.length,
+      results: idiomsResult.rows.length,
       data: {
-        idioms: result.rows,
+        idioms: idiomsResult.rows,
+        examples: examplesResult.rows,
       },
     });
   } catch (error) {
@@ -43,8 +43,6 @@ app.get('/api/v1/idioms', async (_: Request, res: Response) => {
 });
 
 // Get single idiom, and get examples for that idiom
-// Route for handling HTTP GET requests to /api/v1/idioms/:id
-// Return the added idiom, and its examples in the response
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
     const idiomQuery = await pool.query(
@@ -70,24 +68,20 @@ app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
 });
 
 // Create an idiom
-// Route for handling HTTP POST requests to /api/v1/idioms/
-// Return the added idiom in the response
 app.post('/api/v1/idioms/', async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(
-      `
+    const insertQuery = `
       INSERT INTO idioms_test (title, title_general, definition, timestamps, contributor)
       values ($1, $2, $3, $4, $5)
       returning *
-      `,
-      [
-        req.body.title,
-        req.body.title_general,
-        req.body.definition,
-        req.body.timestamps,
-        req.body.contributor,
-      ],
-    );
+    `;
+    const result = await pool.query(insertQuery, [
+      req.body.title,
+      req.body.title_general,
+      req.body.definition,
+      req.body.timestamps,
+      req.body.contributor,
+    ]);
     res.status(200).json({
       status: 'success',
       data: {
@@ -101,26 +95,22 @@ app.post('/api/v1/idioms/', async (req: Request, res: Response) => {
 });
 
 // Update an idiom
-// Route for handling HTTP PUT requests to /api/v1/idioms/:id endpoint
-// Return the updated idiom in the response
 app.put('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(
-      `
+    const updateQuery = `
       UPDATE idioms_test 
       SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5
       WHERE id = $6 
       returning *
-      `,
-      [
-        req.body.title,
-        req.body.title_general,
-        req.body.definition,
-        req.body.timestamps,
-        req.body.contributor,
-        req.params.id,
-      ],
-    );
+    `;
+    const result = await pool.query(updateQuery, [
+      req.body.title,
+      req.body.title_general,
+      req.body.definition,
+      req.body.timestamps,
+      req.body.contributor,
+      req.params.id,
+    ]);
     res.status(200).json({
       status: 'success',
       data: {
@@ -134,16 +124,13 @@ app.put('/api/v1/idioms/:id', async (req: Request, res: Response) => {
 });
 
 // Delete an idiom
-// Route for handling HTTP DELETE requests to /api/v1/idioms/:id
-// Return the deleted idiom in the response
 app.delete('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(
-      `
+    const deleteQuery = `
       DELETE FROM idioms_test 
-      WHERE id = $1`,
-      [req.params.id],
-    );
+      WHERE id = $1
+    `;
+    const result = await pool.query(deleteQuery, [req.params.id]);
     res.status(200).json({
       status: 'success',
       data: {
@@ -155,6 +142,84 @@ app.delete('/api/v1/idioms/:id', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// Add examples to an idiom
+app.post('/api/v1/idioms/:id/examples', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { example } = req.body;
+
+  try {
+    const insertQuery = `
+      INSERT INTO idioms_examples_test (idiom_id, example)
+      VALUES ($1, $2)
+      RETURNING example_id, idiom_id, example
+    `;
+    const result = await pool.query(insertQuery, [id, example]);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        example: result.rows[0],
+      },
+    });
+  } catch (error) {
+    console.error('Error adding examples:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/api/v1/idioms/:id/examples', async (req, res) => {
+  const { id } = req.params;
+  const { examples } = req.body;
+
+  try {
+    const updateQuery = `
+      UPDATE idioms_examples_test 
+      SET example = $1 
+      WHERE example_id = $2 AND idiom_id = $3
+    `;
+
+    // Loop through each example and update it
+    for (const { example_id, example } of examples) {
+      await pool.query(updateQuery, [example, example_id, id]);
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Examples updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating examples:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Delete an example
+app.delete(
+  '/api/v1/idioms/examples/:id',
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const result = await pool.query(
+        `
+      DELETE FROM idioms_examples_test
+      WHERE example_id = $1
+      RETURNING *
+      `,
+        [id],
+      );
+      res.status(200).json({
+        status: 'success',
+        message: 'Example deleted successfully',
+        data: {
+          example: result.rows[0],
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting example:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);

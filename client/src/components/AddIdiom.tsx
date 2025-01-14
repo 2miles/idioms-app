@@ -88,7 +88,7 @@ const AddIdiom = ({ onClose }: AddIdiomProps) => {
     try {
       // Format for the backend and remove milliseconds
       const formattedTimestamp: string = formData.timestamp.toISOString().split('.')[0] + 'Z';
-      const response = await IdiomFinder.post('/', {
+      const response = await IdiomFinder.post('/idioms/', {
         title: emptyStringToNull(formData.title),
         title_general: emptyStringToNull(formData.titleGeneral),
         definition: emptyStringToNull(formData.definition),

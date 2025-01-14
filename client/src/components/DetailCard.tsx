@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { Idiom, Example } from '@/types';
+import { Idiom } from '@/types';
+import { SecondaryButton } from '@/components/ButtonStyles';
 
 const Card = styled.div`
   &.card {
@@ -14,7 +15,6 @@ const Card = styled.div`
 `;
 
 const CardHeader = styled.div`
-  text-align: center;
   background-color: var(--hilite-ui-primary);
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-ui-border);
@@ -58,11 +58,15 @@ const CardBody = styled.div`
     padding-left: var(--padding-lg);
     padding-right: var(--padding-lg);
   }
+  /* Remove top margin from the first ExampleHeader */
+  > div:first-child {
+    margin-top: 0 !important;
+  }
 `;
 
 const IdiomInfo = styled.div`
   display: flex;
-  justify-content: space-between;
+  /* flex-direction: column; */
 
   padding-left: var(--padding-lg);
   padding-right: var(--padding-lg);
@@ -72,8 +76,9 @@ const IdiomInfo = styled.div`
   background-color: var(--color-ui-primary);
 `;
 
-const Position = styled.p`
+const Position = styled.span`
   margin: 0;
+  padding-right: var(--padding-lg);
   font-size: var(--font-lg);
   color: var(--color-text-primary);
   align-self: flex-start;
@@ -85,23 +90,45 @@ const Contributor = styled.p`
   margin: 0;
   font-size: var(--font-lg);
   color: var(--color-text-primary);
-  align-self: flex-end;
+  /* align-self: flex-end; */
 `;
 
 const ExampleItem = styled.li`
-  padding-left: 0px !important;
+  padding-left: var(--padding-sm) !important;
 `;
 
 const ExampleList = styled.ul`
   padding-left: var(--padding-lg) !important;
 `;
 
+const UpdateExampleButtons = styled.div`
+  button {
+    margin-left: var(--margin-lg);
+  }
+`;
+
+const ExampleHeader = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-top: 80px !important;
+`;
+
 type DetailCardProps = {
   idiom: Idiom;
-  examples: Example[];
+  openModal: () => void;
+  openExampleModal: () => void;
+  openAddExampleModal: () => void;
 };
 
-const DetailCard = ({ idiom, examples }: DetailCardProps) => {
+const DetailCard = ({
+  idiom,
+  openModal,
+  openExampleModal,
+  openAddExampleModal,
+}: DetailCardProps) => {
+  if (!idiom) return <p>Loading...</p>;
+  const examples = Array.isArray(idiom.examples) ? idiom.examples : [];
   return (
     <Card className='card'>
       <CardHeader className='card-header'>
@@ -121,9 +148,26 @@ const DetailCard = ({ idiom, examples }: DetailCardProps) => {
         </Contributor>
       </IdiomInfo>
       <CardBody className='card-body'>
-        <h3>Meaning:</h3>
+        <ExampleHeader>
+          <h3>Meaning:</h3>
+          <SecondaryButton className='btn btn-secondary' onClick={openModal}>
+            Edit Idiom
+          </SecondaryButton>
+        </ExampleHeader>
         <p>{idiom.definition}</p>
-        <h3>Examples:</h3>
+        <ExampleHeader>
+          <h3>Examples:</h3>
+          <UpdateExampleButtons>
+            <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
+              Add Ex.
+            </SecondaryButton>
+            {idiom.examples && idiom.examples.length > 0 && (
+              <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
+                Edit Ex.
+              </SecondaryButton>
+            )}
+          </UpdateExampleButtons>
+        </ExampleHeader>
         <ExampleList>
           {examples.map((example) => (
             <ExampleItem key={example.example_id}>{example.example}</ExampleItem>

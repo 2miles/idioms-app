@@ -6,10 +6,12 @@ export type Idiom = {
   definition: string | null;
   contributor: string | null;
   position: number | null;
+  examples: Example[];
 };
 
 export type Example = {
   example_id: number;
+  idiom_id: number;
   example: string;
 };
 

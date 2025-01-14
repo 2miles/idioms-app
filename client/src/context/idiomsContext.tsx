@@ -1,5 +1,5 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
-import { Idiom } from '@/types';
+import { Example, Idiom } from '@/types';
 import IdiomFinder from '@/apis/idiomFinder';
 
 type IdiomsContextType = {
@@ -8,6 +8,8 @@ type IdiomsContextType = {
   addIdioms: (idiom: Idiom) => void;
   updateIdiom: (updatedIdiom: Idiom) => void;
   deleteIdiom: (id: number) => void;
+  updateExamples: (idiomId: number, updatedExamples: Example[]) => void;
+  addExampleToIdiom: (idiomId: number, newExample: Example) => void;
 };
 
 // Default context values
@@ -17,6 +19,8 @@ const defaultContext: IdiomsContextType = {
   addIdioms: () => {},
   updateIdiom: () => {},
   deleteIdiom: () => {},
+  updateExamples: () => {},
+  addExampleToIdiom: () => {},
 };
 
 type IdiomsContextProviderProps = {
@@ -39,12 +43,21 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
       }));
   };
 
-  // Fetch idioms from the API and calculate positions
+  // Fetch idioms and examples from the API.
+  // Map examples into idioms.
+  // Calculate positions.
   const fetchData = async () => {
     try {
       const response = await IdiomFinder.get('/');
       const fetchedIdioms = response.data.data.idioms;
-      setIdioms(addPositionsToIdioms(fetchedIdioms));
+      const fetchedExamples = response.data.data.examples;
+      const idiomsWithExamples = fetchedIdioms.map((idiom: Idiom) => ({
+        ...idiom,
+        examples: fetchedExamples
+          ? fetchedExamples.filter((example: Example) => example.idiom_id === idiom.id)
+          : [],
+      }));
+      setIdioms(addPositionsToIdioms(idiomsWithExamples));
     } catch (err) {
       console.error(err);
     }
@@ -54,7 +67,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     fetchData();
   }, []);
 
-  // Functions to add, update, and delete idioms (recalculate positions after each operation)
+  // Add, update, and delete idioms (recalculate positions after each operation)
   const addIdioms = (idiom: Idiom) => {
     const updatedIdioms = addPositionsToIdioms([...idioms, idiom]);
     setIdioms(updatedIdioms);
@@ -72,6 +85,24 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     setIdioms(updatedIdioms);
   };
 
+  // Add, update, and delete examples
+  const updateExamples = (idiomId: number, updatedExamples: Example[]) => {
+    const updatedIdioms = idioms.map((idiom: Idiom) =>
+      idiom.id === idiomId ? { ...idiom, examples: updatedExamples } : idiom,
+    );
+    setIdioms(updatedIdioms);
+  };
+
+  const addExampleToIdiom = (idiomId: number, newExample: Example) => {
+    setIdioms((prevIdioms) =>
+      prevIdioms.map((idiom) =>
+        idiom.id === idiomId
+          ? { ...idiom, examples: [...(idiom.examples || []), newExample] }
+          : idiom,
+      ),
+    );
+  };
+
   return (
     <IdiomsContext.Provider
       value={{
@@ -80,6 +111,8 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
         addIdioms,
         updateIdiom,
         deleteIdiom,
+        updateExamples,
+        addExampleToIdiom,
       }}
     >
       {children}

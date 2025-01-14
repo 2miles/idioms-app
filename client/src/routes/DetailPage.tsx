@@ -5,16 +5,14 @@ import Swal from 'sweetalert2';
 import { ThreeDots } from 'react-loader-spinner';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import { Example, Idiom } from '@/types';
+import { Idiom } from '@/types';
 import IdiomFinder from '@/apis/idiomFinder';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiom from '@/components/UpdateIdiom';
+import UpdateExamples from '@/components/UpdateExamples';
 import DetailCard from '@/components/DetailCard';
 import Modal from '@/components/Modal';
-
-const UpdateButtonWrapper = styled.div`
-  margin-top: 20px !important;
-`;
+import AddExample from '@/components/AddExample';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -26,10 +24,11 @@ const SpinnerWrapper = styled.div`
 const DetailPage = () => {
   const { id } = useParams();
   const { idioms, setIdioms } = useContext(IdiomsContext);
-  const [examples, setExamples] = useState<Example[]>([]);
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
+  const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -71,27 +70,20 @@ const DetailPage = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openExampleModal = () => setIsExampleModalOpen(true);
+  const closeExampleModal = () => setIsExampleModalOpen(false);
+  const openAddExampleModal = () => setIsAddExampleModalOpen(true);
+  const closeAddExampleModal = () => setIsAddExampleModalOpen(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    const fetchExamples = async () => {
-      try {
-        const response = await IdiomFinder.get(`/${id}`);
-        setExamples(response.data.data.examples);
-      } catch (err) {
-        console.error('Error fetching examples:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     const idiomFromContext = idioms.find((idiom) => idiom.id === Number(id));
     if (idiomFromContext) {
       setSelectedIdiom(idiomFromContext);
-      fetchExamples();
+      setLoading(false);
     } else {
       setLoading(false);
     }
@@ -113,15 +105,34 @@ const DetailPage = () => {
 
   return (
     <PageContainer>
-      <UpdateButtonWrapper>
-        <button className='btn btn-secondary' onClick={openModal}>
-          Edit
-        </button>
-      </UpdateButtonWrapper>
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <UpdateIdiom idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
       </Modal>
-      <DetailCard idiom={selectedIdiom} examples={examples} />
+
+      <Modal title='Edit Examples' isOpen={isExampleModalOpen} onClose={closeExampleModal}>
+        {typeof id !== 'undefined' && (
+          <UpdateExamples
+            idiomId={Number(id)}
+            examples={selectedIdiom.examples}
+            onClose={closeExampleModal}
+          />
+        )}
+      </Modal>
+      <Modal title='Add Example' isOpen={isAddExampleModalOpen} onClose={closeAddExampleModal}>
+        {typeof id !== 'undefined' && (
+          <AddExample
+            idiomId={Number(id)}
+            idiomTitle={selectedIdiom.title}
+            onClose={closeAddExampleModal}
+          />
+        )}
+      </Modal>
+      <DetailCard
+        idiom={selectedIdiom}
+        openAddExampleModal={openAddExampleModal}
+        openExampleModal={openExampleModal}
+        openModal={openModal}
+      />
     </PageContainer>
   );
 };
