@@ -23,17 +23,17 @@
 - [ ] Add vocab_definition table in db too.
 - [ ] Add vocabulary table page
 - [ ] Create User authentication and user profiles
-- [ ] Add ability to add and remove example sentences
+- [x] Add ability to add and remove example sentences
 
-- [ ] Fix bug: When there is no data to display, and the screen is small, the table headers are all messed up.
+- [x] Fix bug: When there is no data to display, and the screen is small, the table headers are all messed up.
 
   - The order column is very squished, causing overflow and overlaping.
   - The idiom and order columns are not fulling up the width of the table.
 
-- [ ] Convert Add Idiom and Edit Idiom to pop-up windows.
-  - [ ] Move the edit button to the top of the detail page.
-  - [ ] Research a good design, or good design examples
-  - [ ] Decide whether or not to blur the background
+- [x] Convert Add Idiom and Edit Idiom to pop-up windows.
+  - [x] Move the edit button to the top of the detail page.
+  - [x] Research a good design, or good design examples
+  - [x] Decide whether or not to blur the background
 
 I think I'm going to scrap any plans of using dealing with the origins of idioms in the app for now. Its just too much to deal with the legality / copy write issues that it could cause down the road.
 
