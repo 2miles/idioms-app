@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import LoginButton from '@/components/LoginButton';
+import LogoutButton from '@/components/LogoutButton';
+import { useAuth0 } from '@auth0/auth0-react';
+import Avatar from './Avatar';
 
 const NavBarWrapper = styled.nav`
   background-color: var(--color-canvas-inverted);
@@ -62,19 +66,19 @@ const Hamburger = styled.div`
 
 const NavbarLogin = styled.div`
   margin-left: auto;
+`;
 
+const ProfileArea = styled.div`
+  display: flex;
   button {
-    color: var(--color-white);
-    border: none;
-    padding: var(--padding-sm) var(--padding-md);
-    cursor: pointer;
-    border-radius: var(--radius-sm);
+    margin-left: var(--margin-lg);
   }
 `;
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
+  const { isAuthenticated, user, loginWithRedirect, logout } = useAuth0();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -124,7 +128,27 @@ const NavBar = () => {
         </NavbarLinks>
       </div>
       <NavbarLogin>
-        <button className='btn btn-secondary'>Login</button>
+        <div>
+          {isAuthenticated ? (
+            <ProfileArea>
+              <Avatar email={user?.email || ''}></Avatar>
+              <LogoutButton
+                className='btn btn-secondary'
+                onClick={() =>
+                  logout({
+                    logoutParams: { returnTo: window.location.origin }, // Use 'logoutParams' for redirection
+                  })
+                }
+              >
+                Log Out
+              </LogoutButton>
+            </ProfileArea>
+          ) : (
+            <LoginButton className='btn btn-secondary' onClick={() => loginWithRedirect()}>
+              Log In
+            </LoginButton>
+          )}
+        </div>
       </NavbarLogin>
     </NavBarWrapper>
   );
