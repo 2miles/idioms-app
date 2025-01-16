@@ -146,3 +146,116 @@ Switch to Custom Keys Before Production:
 - [ ] Configure RBAC for your API
 - [ ] Use the API indentifier in your backend
 - [ ] Test the api
+
+Given your requirements and the fact that you’re using the free version of Auth0, using roles instead of permissions is simpler and perfectly suitable. Here’s why:
+
+Why Choose Roles Over Permissions? 1. Free Tier Limitation: Permissions are tied to RBAC (Role-Based Access Control), which is available on paid Auth0 plans. Roles, however, can be used for basic role assignments even on the free tier. 2. Simplicity: Your use case (admin, signed-in users, and public users) can be easily managed with roles.
+• Admin Role: Full access to CRUD operations (Add, Edit, Delete idioms).
+• User Role: Limited to commenting and requesting idioms.
+• Public Role: No need for a role—just allow anyone to view.
+
+## How to Implement Roles in Your App
+
+### 1. Define the Roles
+
+Create roles for your application:
+• Admin
+• User
+
+You can assign these roles to users via the Auth0 Management Dashboard: 1. Go to your Auth0 Dashboard. 2. Navigate to User Management > Roles. 3. Create two roles: Admin and User. 4. Assign the Admin role to specific users and User to all others.
+
+### 2. Add Roles to Tokens
+
+To access roles in your backend, you need to add them to the user’s token. Use an Auth0 Rule:
+
+Example Rule:
+
+```js
+function (user, context, callback) {
+  const namespace = 'https://your-app.com/';
+  context.accessToken[namespace + 'roles'] = user.app_metadata.roles || [];
+  callback(null, user, context);
+}
+```
+
+    •	This appends the roles claim to the token under a custom namespace.
+
+### 3. Secure Your Backend API
+
+Example Middleware:
+
+```js
+const checkAdminRole = (req, res, next) => {
+  const roles = req.user['https://your-app.com/roles'] || [];
+  if (!roles.includes('admin')) {
+    return res.status(403).json({ error: 'Forbidden: Admin access required' });
+  }
+  next();
+};
+
+const checkUserRole = (req, res, next) => {
+  const roles = req.user['https://your-app.com/roles'] || [];
+  if (!roles.includes('user') && !roles.includes('admin')) {
+    return res.status(403).json({ error: 'Forbidden: User access required' });
+  }
+  next();
+};
+```
+
+```js
+// Example Routes
+app.post('/api/add-idiom', checkJwt, checkAdminRole, (req, res) => {
+  res.json({ message: 'Idiom added successfully!' });
+});
+
+app.post('/api/comment', checkJwt, checkUserRole, (req, res) => {
+  res.json({ message: 'Comment submitted successfully!' });
+});
+```
+
+### 4. Handle Public Access
+
+Public users (not logged in) can view idioms without authentication. No middleware is required for these routes.
+
+Example:
+
+```js
+app.get('/api/idioms', (req, res) => {
+  // Fetch idioms from the database
+  res.json({ idioms: [] });
+});
+```
+
+### 5. Secure Your Frontend
+
+On the frontend, use Auth0’s React SDK to manage role-based rendering.
+
+Example:
+
+```js
+import { useAuth0 } from '@auth0/auth0-react';
+
+const IdiomPage = () => {
+  const { user, isAuthenticated } = useAuth0();
+
+  const isAdmin =
+    isAuthenticated && user?.['https://your-app.com/roles']?.includes('admin');
+  const isUser =
+    isAuthenticated && user?.['https://your-app.com/roles']?.includes('user');
+
+  return (
+    <div>
+      <h1>Idiom Vault</h1>
+      {/* Publicly visible information */}
+      <IdiomList />
+
+      {isUser && <button>Request an Idiom</button>}
+      {isAdmin && <button>Add Idiom</button>}
+    </div>
+  );
+};
+```
+
+Summary 1. Public Access: No need for roles—just expose public routes. 2. Logged-In Users: Use the User role for commenting and idiom requests. 3. Admins: Use the Admin role for full CRUD permissions. 4. Backend: Secure routes with role-checking middleware. 5. Frontend: Use the React SDK to display features conditionally based on roles.
+
+This setup is straightforward and works seamlessly within Auth0’s free plan limitations.
