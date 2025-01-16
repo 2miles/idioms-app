@@ -140,3 +140,9 @@ Switch to Custom Keys Before Production:
     Register your app with the social identity provider (e.g., Google).
     Replace the developer keys in the Auth0 dashboard with your custom keys.
     Test the app to ensure everything works with the custom keys.
+
+- [ ] Add API to Auth0
+- [ ] Define permissions for API
+- [ ] Configure RBAC for your API
+- [ ] Use the API indentifier in your backend
+- [ ] Test the api

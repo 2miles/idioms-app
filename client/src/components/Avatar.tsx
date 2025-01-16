@@ -24,7 +24,7 @@ const Avatar: React.FC<AvatarProps> = ({ email, size = 40, className }) => {
   const initials = email.substring(0, 2).toUpperCase();
 
   // Generate a background color based on the email for uniqueness
-  const backgroundColor = generateAvatarColor(email);
+  const backgroundColor = generateAvatarColor(email + '10');
 
   return (
     <div
