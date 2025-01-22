@@ -1,6 +1,7 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
 import { Example, Idiom } from '@/types';
 import IdiomFinder from '@/apis/idiomFinder';
+import useAuthToken from '@/hooks/useAuthToken';
 
 type IdiomsContextType = {
   idioms: Idiom[];
@@ -31,6 +32,7 @@ export const IdiomsContext = createContext<IdiomsContextType>(defaultContext);
 
 export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) => {
   const [idioms, setIdioms] = useState<Idiom[]>([]);
+  const token = useAuthToken();
 
   const addPositionsToIdioms = (idioms: Idiom[]): Idiom[] => {
     return idioms
@@ -43,12 +45,18 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
       }));
   };
 
-  // Fetch idioms and examples from the API.
-  // Map examples into idioms.
-  // Calculate positions.
   const fetchData = async () => {
+    if (!token) {
+      console.error('Access token is missing. Please log in.');
+      return;
+    }
+
     try {
-      const response = await IdiomFinder.get('/');
+      const response = await IdiomFinder.get('/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const fetchedIdioms = response.data.data.idioms;
       const fetchedExamples = response.data.data.examples;
       const idiomsWithExamples = fetchedIdioms.map((idiom: Idiom) => ({
@@ -64,8 +72,12 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
   };
 
   useEffect(() => {
+    if (!token) {
+      console.log('Token is not available yet.');
+      return; // Prevent fetching data if no token is available
+    }
     fetchData();
-  }, []);
+  }, [token]); // Fetch only when the token is available
 
   // Add, update, and delete idioms (recalculate positions after each operation)
   const addIdioms = (idiom: Idiom) => {
