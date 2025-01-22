@@ -1,46 +1,61 @@
-import express, { Request, Response } from 'express';
-import pool from './db/index.ts';
-import dotenv from 'dotenv';
-import morgan from 'morgan';
-import cors from 'cors';
+import express, { Request, Response } from 'express'; // Express import and type definitions
+import dotenv from 'dotenv'; // Environment variable configuration
+import morgan from 'morgan'; // HTTP request logger
+import cors from 'cors'; // Cross-Origin Resource Sharing
+import { jwtCheck } from './authMiddleware.ts'; // JWT authentication middleware
+import { checkRole } from './authMiddleware.ts'; // Role-checking middleware
+import pool from './db/index.ts'; // Database connection pool
 
+// Initialize environment variables
 dotenv.config();
 
+// Initialize Express app
 const app = express();
 
+// Configure CORS
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true, // Allow cookies and authentication headers
+};
+
+// Middleware setup
+app.use(cors(corsOptions)); // CORS middleware
+app.use(express.json()); // Parse JSON requests
+app.use(morgan('dev')); // Logging middleware
+app.use(jwtCheck); // JWT authentication middleware applied globally
+
+// Set server port
 const port = parseInt(process.env.PORT || '3001', 10);
 
-// Middleware
-// Functions to be invoked in between the request and the response
-app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
+// Get all idioms and examples
+// Returns the data and the number of idioms returned.
+app.get(
+  '/api/v1/idioms',
+  checkRole('Admin'),
+  async (_: Request, res: Response) => {
+    try {
+      const idiomsQuery = `SELECT * FROM idioms_test ORDER BY timestamps`;
+      const examplesQuery = `SELECT * FROM idioms_examples_test`;
 
-// // Get all idioms and examples
-// // Returns the idioms, examples, and the number of idioms returned.
-app.get('/api/v1/idioms', async (_: Request, res: Response) => {
-  try {
-    const idiomsQuery = `SELECT * FROM idioms_test ORDER BY timestamps`;
-    const examplesQuery = `SELECT * FROM idioms_examples_test`;
+      const [idiomsResult, examplesResult] = await Promise.all([
+        pool.query(idiomsQuery),
+        pool.query(examplesQuery),
+      ]);
 
-    const [idiomsResult, examplesResult] = await Promise.all([
-      pool.query(idiomsQuery),
-      pool.query(examplesQuery),
-    ]);
-
-    res.status(200).json({
-      status: 'success',
-      results: idiomsResult.rows.length,
-      data: {
-        idioms: idiomsResult.rows,
-        examples: examplesResult.rows,
-      },
-    });
-  } catch (error) {
-    console.error('Error executing query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      res.status(200).json({
+        status: 'success',
+        results: idiomsResult.rows.length,
+        data: {
+          idioms: idiomsResult.rows,
+          examples: examplesResult.rows,
+        },
+      });
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 // Get single idiom, and get examples for that idiom
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
