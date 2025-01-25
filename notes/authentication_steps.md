@@ -218,3 +218,18 @@ user?: Record<string, any>;
 ```
 
 ```
+
+# Notes
+
+JWTs should have an expiration time to prevent abuse if the token is compromised. Use refresh tokens to allow users to maintain their session without re-authenticating frequently.
+
+## Example (Setting Token in HttpOnly Cookie):
+
+```
+// On your backend after authentication
+res.cookie('access_token', token, {
+  httpOnly: true,  // Prevent access via JavaScript
+  secure: process.env.NODE_ENV === 'production',  // Ensure cookie is only sent over HTTPS in production
+  sameSite: 'Strict',  // Prevent CSRF attacks
+});
+```
