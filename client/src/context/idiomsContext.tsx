@@ -76,6 +76,10 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
       console.log('Token is not available yet.');
       return; // Prevent fetching data if no token is available
     }
+    if (idioms.length > 0) {
+      console.log('Data already fetched');
+      return;
+    }
     fetchData();
   }, [token]); // Fetch only when the token is available
 
