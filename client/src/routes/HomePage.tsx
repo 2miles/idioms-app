@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useUser } from '@/context/userContext';
 
 import PageContainer from '@/components/PageContainer';
 import TableSection from '@/components/TableSection';
@@ -14,17 +15,23 @@ const AddIdiomContainer = styled.div`
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { roles } = useUser(); // Access the roles from the hook
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  // Check if user has the 'Admin' role
+  const isAdmin = roles?.includes('Admin');
+
   return (
     <PageContainer>
-      <AddIdiomContainer>
-        <button onClick={openModal} className='btn btn-success'>
-          Add Idiom
-        </button>
-      </AddIdiomContainer>
+      {isAdmin && ( // Only render the button if the user is an Admin
+        <AddIdiomContainer>
+          <button onClick={openModal} className='btn btn-success'>
+            Add Idiom
+          </button>
+        </AddIdiomContainer>
+      )}
       <TableSection />
       <Modal title='Add Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <AddIdiom onClose={closeModal} />
