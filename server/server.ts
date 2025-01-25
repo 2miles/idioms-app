@@ -22,40 +22,35 @@ const corsOptions = {
 app.use(cors(corsOptions)); // CORS middleware
 app.use(express.json()); // Parse JSON requests
 app.use(morgan('dev')); // Logging middleware
-app.use(jwtCheck); // JWT authentication middleware applied globally
 
 // Set server port
 const port = parseInt(process.env.PORT || '3001', 10);
 
 // Get all idioms and examples
 // Returns the data and the number of idioms returned.
-app.get(
-  '/api/v1/idioms',
-  checkRole('Admin'),
-  async (_: Request, res: Response) => {
-    try {
-      const idiomsQuery = `SELECT * FROM idioms_test ORDER BY timestamps`;
-      const examplesQuery = `SELECT * FROM idioms_examples_test`;
+app.get('/api/v1/idioms', async (_: Request, res: Response) => {
+  try {
+    const idiomsQuery = `SELECT * FROM idioms_test ORDER BY timestamps`;
+    const examplesQuery = `SELECT * FROM idioms_examples_test`;
 
-      const [idiomsResult, examplesResult] = await Promise.all([
-        pool.query(idiomsQuery),
-        pool.query(examplesQuery),
-      ]);
+    const [idiomsResult, examplesResult] = await Promise.all([
+      pool.query(idiomsQuery),
+      pool.query(examplesQuery),
+    ]);
 
-      res.status(200).json({
-        status: 'success',
-        results: idiomsResult.rows.length,
-        data: {
-          idioms: idiomsResult.rows,
-          examples: examplesResult.rows,
-        },
-      });
-    } catch (error) {
-      console.error('Error executing query:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  },
-);
+    res.status(200).json({
+      status: 'success',
+      results: idiomsResult.rows.length,
+      data: {
+        idioms: idiomsResult.rows,
+        examples: examplesResult.rows,
+      },
+    });
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Get single idiom, and get examples for that idiom
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
@@ -83,134 +78,161 @@ app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
 });
 
 // Create an idiom
-app.post('/api/v1/idioms/', async (req: Request, res: Response) => {
-  try {
-    const insertQuery = `
+app.post(
+  '/api/v1/idioms/',
+  jwtCheck,
+  checkRole('Admin'),
+  async (req: Request, res: Response) => {
+    try {
+      const insertQuery = `
       INSERT INTO idioms_test (title, title_general, definition, timestamps, contributor)
       values ($1, $2, $3, $4, $5)
       returning *
     `;
-    const result = await pool.query(insertQuery, [
-      req.body.title,
-      req.body.title_general,
-      req.body.definition,
-      req.body.timestamps,
-      req.body.contributor,
-    ]);
-    res.status(200).json({
-      status: 'success',
-      data: {
-        idiom: result.rows[0],
-      },
-    });
-  } catch (error) {
-    console.error('Error executing query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      const result = await pool.query(insertQuery, [
+        req.body.title,
+        req.body.title_general,
+        req.body.definition,
+        req.body.timestamps,
+        req.body.contributor,
+      ]);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          idiom: result.rows[0],
+        },
+      });
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 // Update an idiom
-app.put('/api/v1/idioms/:id', async (req: Request, res: Response) => {
-  try {
-    const updateQuery = `
+app.put(
+  '/api/v1/idioms/:id',
+  jwtCheck,
+  checkRole('Admin'),
+  async (req: Request, res: Response) => {
+    try {
+      const updateQuery = `
       UPDATE idioms_test 
       SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5
       WHERE id = $6 
       returning *
     `;
-    const result = await pool.query(updateQuery, [
-      req.body.title,
-      req.body.title_general,
-      req.body.definition,
-      req.body.timestamps,
-      req.body.contributor,
-      req.params.id,
-    ]);
-    res.status(200).json({
-      status: 'success',
-      data: {
-        idiom: result.rows[0],
-      },
-    });
-  } catch (error) {
-    console.error('Error executing query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      const result = await pool.query(updateQuery, [
+        req.body.title,
+        req.body.title_general,
+        req.body.definition,
+        req.body.timestamps,
+        req.body.contributor,
+        req.params.id,
+      ]);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          idiom: result.rows[0],
+        },
+      });
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 // Delete an idiom
-app.delete('/api/v1/idioms/:id', async (req: Request, res: Response) => {
-  try {
-    const deleteQuery = `
+app.delete(
+  '/api/v1/idioms/:id',
+  jwtCheck,
+  checkRole('Admin'),
+  async (req: Request, res: Response) => {
+    try {
+      const deleteQuery = `
       DELETE FROM idioms_test 
       WHERE id = $1
     `;
-    const result = await pool.query(deleteQuery, [req.params.id]);
-    res.status(200).json({
-      status: 'success',
-      data: {
-        idiom: result.rows[0],
-      },
-    });
-  } catch (error) {
-    console.error('Error executing query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      const result = await pool.query(deleteQuery, [req.params.id]);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          idiom: result.rows[0],
+        },
+      });
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 // Add examples to an idiom
-app.post('/api/v1/idioms/:id/examples', async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { example } = req.body;
+app.post(
+  '/api/v1/idioms/:id/examples',
+  jwtCheck,
+  checkRole('Admin'),
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { example } = req.body;
 
-  try {
-    const insertQuery = `
+    try {
+      const insertQuery = `
       INSERT INTO idioms_examples_test (idiom_id, example)
       VALUES ($1, $2)
       RETURNING example_id, idiom_id, example
     `;
-    const result = await pool.query(insertQuery, [id, example]);
-    res.status(200).json({
-      status: 'success',
-      data: {
-        example: result.rows[0],
-      },
-    });
-  } catch (error) {
-    console.error('Error adding examples:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      const result = await pool.query(insertQuery, [id, example]);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          example: result.rows[0],
+        },
+      });
+    } catch (error) {
+      console.error('Error adding examples:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
-app.put('/api/v1/idioms/:id/examples', async (req, res) => {
-  const { id } = req.params;
-  const { examples } = req.body;
+app.put(
+  '/api/v1/idioms/:id/examples',
+  jwtCheck,
+  checkRole('Admin'),
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { examples } = req.body;
 
-  try {
-    const updateQuery = `
+    try {
+      const updateQuery = `
       UPDATE idioms_examples_test 
       SET example = $1 
       WHERE example_id = $2 AND idiom_id = $3
     `;
 
-    // Loop through each example and update it
-    for (const { example_id, example } of examples) {
-      await pool.query(updateQuery, [example, example_id, id]);
-    }
+      // Loop through each example and update it
+      for (const { example_id, example } of examples) {
+        await pool.query(updateQuery, [example, example_id, id]);
+      }
 
-    res.status(200).json({
-      status: 'success',
-      message: 'Examples updated successfully',
-    });
-  } catch (error) {
-    console.error('Error updating examples:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      res.status(200).json({
+        status: 'success',
+        message: 'Examples updated successfully',
+      });
+    } catch (error) {
+      console.error('Error updating examples:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 // Delete an example
 app.delete(
   '/api/v1/idioms/examples/:id',
+  jwtCheck,
+  checkRole('Admin'),
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
