@@ -15,17 +15,15 @@ const AddIdiomContainer = styled.div`
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { roles } = useUser(); // Access the roles from the hook
+  const { roles } = useUser();
+  const isAdmin = roles?.includes('Admin');
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Check if user has the 'Admin' role
-  const isAdmin = roles?.includes('Admin');
-
   return (
     <PageContainer>
-      {isAdmin && ( // Only render the button if the user is an Admin
+      {isAdmin && (
         <AddIdiomContainer>
           <button onClick={openModal} className='btn btn-success'>
             Add Idiom

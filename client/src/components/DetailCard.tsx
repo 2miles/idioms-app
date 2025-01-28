@@ -3,6 +3,7 @@ import moment from 'moment';
 
 import { Idiom } from '@/types';
 import { SecondaryButton } from '@/components/ButtonStyles';
+import { useUser } from '@/context/userContext';
 
 const Card = styled.div`
   &.card {
@@ -127,7 +128,8 @@ const DetailCard = ({
   openExampleModal,
   openAddExampleModal,
 }: DetailCardProps) => {
-  if (!idiom) return <p>Loading...</p>;
+  const { roles } = useUser();
+  const isAdmin = roles?.includes('Admin');
   const examples = Array.isArray(idiom.examples) ? idiom.examples : [];
   return (
     <Card className='card'>
@@ -150,23 +152,27 @@ const DetailCard = ({
       <CardBody className='card-body'>
         <ExampleHeader>
           <h3>Meaning:</h3>
-          <SecondaryButton className='btn btn-secondary' onClick={openModal}>
-            Edit Idiom
-          </SecondaryButton>
+          {isAdmin && (
+            <SecondaryButton className='btn btn-secondary' onClick={openModal}>
+              Edit Idiom
+            </SecondaryButton>
+          )}
         </ExampleHeader>
         <p>{idiom.definition}</p>
         <ExampleHeader>
           <h3>Examples:</h3>
-          <UpdateExampleButtons>
-            <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
-              Add Ex.
-            </SecondaryButton>
-            {idiom.examples && idiom.examples.length > 0 && (
-              <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
-                Edit Ex.
+          {isAdmin && (
+            <UpdateExampleButtons>
+              <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
+                Add Ex.
               </SecondaryButton>
-            )}
-          </UpdateExampleButtons>
+              {idiom.examples && idiom.examples.length > 0 && (
+                <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
+                  Edit Ex.
+                </SecondaryButton>
+              )}
+            </UpdateExampleButtons>
+          )}
         </ExampleHeader>
         <ExampleList>
           {examples.map((example) => (
