@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useUser } from '@/context/userContext';
 
 import PageContainer from '@/components/PageContainer';
 import TableSection from '@/components/TableSection';
@@ -14,17 +15,21 @@ const AddIdiomContainer = styled.div`
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { roles } = useUser();
+  const isAdmin = roles?.includes('Admin');
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   return (
     <PageContainer>
-      <AddIdiomContainer>
-        <button onClick={openModal} className='btn btn-success'>
-          Add Idiom
-        </button>
-      </AddIdiomContainer>
+      {isAdmin && (
+        <AddIdiomContainer>
+          <button onClick={openModal} className='btn btn-success'>
+            Add Idiom
+          </button>
+        </AddIdiomContainer>
+      )}
       <TableSection />
       <Modal title='Add Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <AddIdiom onClose={closeModal} />
