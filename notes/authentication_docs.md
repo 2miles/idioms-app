@@ -227,10 +227,6 @@ When setting up the `Auth0Provider` in your React app:
 
 ---
 
-```
-
-```
-
 - Use Auth0 for front end user authentication and authorization to certain features.
 - Use Auth0 to secure the API
 

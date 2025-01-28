@@ -16,7 +16,7 @@ The timestamp was the first thing I added as I needed a way to preserve the sort
 
 At this point I actually have 'data' and not just a list of phrases.
 
-Im storing list in a CSV file. I soon start to think of what else I could add to the table. Naturally, I decide to add a definition column. After adding a few by hand I quickly realize that this is going to be an insane grind of a task so I create a web-scraper to do at least most of the job for me. I bet grabbed definitions for 80 percent of them, so thats cool.
+Im storing list in a CSV file. I soon start to think of what else I could add to the table. I decide to add a definition column. After adding a few by hand I quickly realize that this is going to be an insane grind of a task so I create a web-scraper to do at least most of the job for me. I bet grabbed definitions for 80 percent of them, so thats cool.
 
 ### Front-end, back-end
 
