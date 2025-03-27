@@ -8,7 +8,7 @@ let pool: pkg.Pool;
 
 if (process.env.USE_SUPABASE === 'true') {
   pool = new Pool({
-    connectionString: process.env.DB_URL_SUPABASE as string,
+    connectionString: process.env.DB_URL_SUPABASE_DEV as string,
     ssl: {
       rejectUnauthorized: false,
     },
