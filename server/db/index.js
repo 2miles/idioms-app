@@ -32,7 +32,7 @@ let pool = null;
 export function getDB() {
   if (!pool) {
     pool = new Pool({
-      connectionString: process.env.DB_URL_SUPABASE,
+      connectionString: process.env.DB_URL_SUPABASE_DEV,
       ssl: { rejectUnauthorized: false },
     });
   }
