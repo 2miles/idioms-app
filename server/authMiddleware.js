@@ -1,11 +1,5 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
 import * as jwt from 'jsonwebtoken';
-import { JwtPayload } from 'jsonwebtoken';
 import { auth } from 'express-oauth2-jwt-bearer';
-
-interface CustomJwtPayload extends JwtPayload {
-  'https://api.idiomvault.com/roles'?: string[];
-}
 
 // ✅ Auth0 Middleware Setup (Still Required for Compatibility)
 export const jwtCheck = auth({
@@ -15,10 +9,7 @@ export const jwtCheck = auth({
 });
 
 // ✅ Check Authentication (JWT Verification)
-export async function checkAuth(
-  req: VercelRequest,
-  res: VercelResponse,
-): Promise<CustomJwtPayload | false> {
+export async function checkAuth(req, res) {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -40,7 +31,7 @@ export async function checkAuth(
     // ✅ Verify JWT with Auth0's public key
     const decoded = jwt.verify(token, secret, {
       algorithms: ['RS256'],
-    }) as CustomJwtPayload;
+    });
     return decoded;
   } catch (error) {
     res.status(401).json({ error: 'Unauthorized: Invalid token' });
@@ -49,11 +40,7 @@ export async function checkAuth(
 }
 
 // ✅ Check User Role (Authorization)
-export async function checkRole(
-  req: VercelRequest,
-  res: VercelResponse,
-  requiredRole: string,
-): Promise<boolean> {
+export async function checkRole(req, res, requiredRole) {
   const decoded = await checkAuth(req, res);
   if (!decoded) return false; // 🔹 Ensures checkAuth() succeeded before continuing
 

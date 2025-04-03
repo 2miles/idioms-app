@@ -26,11 +26,7 @@ export default async function handler(req, res) {
       console.error('Error executing query:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
-  } else {
-    res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
-  if (req.method === 'POST') {
+  } else if (req.method === 'POST') {
     const hasRole = await checkRole(req, res, 'Admin');
     if (!hasRole) return; // checkRole already sends error if unauthorized
 
