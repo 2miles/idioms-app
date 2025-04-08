@@ -18,4 +18,5 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["npm", "run", "start"]
+# Use the dev script to run with tsx
+CMD ["npm", "run", "dev"]
