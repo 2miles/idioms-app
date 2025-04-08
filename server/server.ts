@@ -2,9 +2,9 @@ import express, { Request, Response } from 'express'; // Express import and type
 import dotenv from 'dotenv'; // Environment variable configuration
 import morgan from 'morgan'; // HTTP request logger
 import cors from 'cors'; // Cross-Origin Resource Sharing
-import { jwtCheck } from './authMiddleware.ts'; // JWT authentication middleware
-import { checkRole } from './authMiddleware.ts'; // Role-checking middleware
-import pool from './db/index.ts'; // Database connection pool
+import { jwtCheck } from './authMiddleware'; // JWT authentication middleware
+import { checkRole } from './authMiddleware'; // Role-checking middleware
+import pool from './db/index'; // Database connection pool
 
 // Initialize environment variables
 dotenv.config();
@@ -14,8 +14,8 @@ const app = express();
 
 // Configure CORS
 const corsOptions = {
-  origin: 'http://localhost:5173',
-  credentials: true, // Allow cookies and authentication headers
+  origin: process.env.CORS_ORIGIN?.split(','),
+  credentials: true,
 };
 
 // Middleware setup
