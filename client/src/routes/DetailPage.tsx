@@ -6,7 +6,7 @@ import { ThreeDots } from 'react-loader-spinner';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom } from '@/types';
-import IdiomFinder from '@/apis/idiomFinder';
+import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiom from '@/components/UpdateIdiom';
 import UpdateExamples from '@/components/UpdateExamples';
@@ -30,6 +30,7 @@ const DetailPage = () => {
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
   const navigate = useNavigate();
+  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -45,7 +46,8 @@ const DetailPage = () => {
 
     if (confirmResult.isConfirmed) {
       try {
-        await IdiomFinder.delete(`/${id}`);
+        const api = await getAuthorizedIdiomFinder();
+        await api.delete(`/${id}`);
         setIdioms(idioms.filter((idiom: Idiom) => idiom.id !== Number(id)));
 
         Swal.fire({

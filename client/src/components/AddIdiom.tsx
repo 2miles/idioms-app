@@ -4,7 +4,7 @@ import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import IdiomFinder from '@/apis/idiomFinder';
+import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import TextAreaField from '@/components/formFields/TextAreaField';
 import TextField from '@/components/formFields/TextField';
 import TimestampField from '@/components/formFields/TimestampField';
@@ -51,6 +51,7 @@ type AddIdiomProps = {
 
 const AddIdiom = ({ onClose }: AddIdiomProps) => {
   const { addIdioms } = useContext(IdiomsContext);
+  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
@@ -88,7 +89,8 @@ const AddIdiom = ({ onClose }: AddIdiomProps) => {
     try {
       // Format for the backend and remove milliseconds
       const formattedTimestamp: string = formData.timestamp.toISOString().split('.')[0] + 'Z';
-      const response = await IdiomFinder.post('/idioms/', {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.post('/', {
         title: emptyStringToNull(formData.title),
         title_general: emptyStringToNull(formData.titleGeneral),
         definition: emptyStringToNull(formData.definition),

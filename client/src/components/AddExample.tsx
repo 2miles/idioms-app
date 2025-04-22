@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import IdiomFinder from '@/apis/idiomFinder';
+import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import TextAreaField from '@/components/formFields/TextAreaField';
 
 const FormContainer = styled.div`
@@ -66,6 +66,7 @@ type AddExampleProps = {
 
 const AddExample = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
   const { addExampleToIdiom } = useContext(IdiomsContext);
+  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
@@ -88,7 +89,8 @@ const AddExample = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
       return; // Prevent form submission if title is empty
     }
     try {
-      const response = await IdiomFinder.post(`/${String(idiomId)}/examples`, {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.post(`/${String(idiomId)}/examples`, {
         example: emptyStringToNull(formData.newExample),
       });
       if (response.data && response.data.data && response.data.data.example) {
