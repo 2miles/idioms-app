@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { Example } from '@/types';
 import { IdiomsContext } from '@/context/idiomsContext';
 import TextAreaField from '@/components/formFields/TextAreaField';
-import IdiomFinder from '@/apis/idiomFinder';
+import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
@@ -63,6 +63,7 @@ type UpdateExamplesProps = {
 
 const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
   const { idioms, updateExamples } = useContext(IdiomsContext);
+  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
   const examples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
   const idiomTitle = idioms.find((idiom) => idiom.id === idiomId)?.title;
 
@@ -88,7 +89,8 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
 
     if (confirmResult.isConfirmed) {
       try {
-        await IdiomFinder.delete(`/examples/${exampleId}`);
+        const api = await getAuthorizedIdiomFinder();
+        await api.delete(`/examples/${exampleId}`);
         // Update local state to remove the example
         const updatedExamples = examples.filter((_, i) => i !== index);
         updateExamples(idiomId, updatedExamples);
@@ -130,7 +132,8 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
     try {
       // Send the updated examples to your API
       console.log('Submitting examples:', examples);
-      const response = await IdiomFinder.put(`/${idiomId}/examples`, {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.put(`/${idiomId}/examples`, {
         examples,
       });
 

@@ -1,27 +1,26 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
 import { Example, Idiom } from '@/types';
-import IdiomFinder from '@/apis/idiomFinder';
-import useAuthToken from '@/hooks/useAuthToken';
+import { publicIdiomFinder } from '@/apis/idiomFinder';
+import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 
 type IdiomsContextType = {
   idioms: Idiom[];
   setIdioms: React.Dispatch<React.SetStateAction<Idiom[]>>;
-  addIdioms: (idiom: Idiom) => void;
-  updateIdiom: (updatedIdiom: Idiom) => void;
-  deleteIdiom: (id: number) => void;
-  updateExamples: (idiomId: number, updatedExamples: Example[]) => void;
-  addExampleToIdiom: (idiomId: number, newExample: Example) => void;
+  addIdioms: (idiom: Idiom) => Promise<void>;
+  updateIdiom: (updatedIdiom: Idiom) => Promise<void>;
+  deleteIdiom: (id: number) => Promise<void>;
+  updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<void>;
+  addExampleToIdiom: (idiomId: number, newExample: Example) => Promise<void>;
 };
 
-// Default context values
 const defaultContext: IdiomsContextType = {
   idioms: [],
   setIdioms: () => {},
-  addIdioms: () => {},
-  updateIdiom: () => {},
-  deleteIdiom: () => {},
-  updateExamples: () => {},
-  addExampleToIdiom: () => {},
+  addIdioms: async () => {},
+  updateIdiom: async () => {},
+  deleteIdiom: async () => {},
+  updateExamples: async () => {},
+  addExampleToIdiom: async () => {},
 };
 
 type IdiomsContextProviderProps = {
@@ -32,7 +31,7 @@ export const IdiomsContext = createContext<IdiomsContextType>(defaultContext);
 
 export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) => {
   const [idioms, setIdioms] = useState<Idiom[]>([]);
-  const token = useAuthToken();
+  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const addPositionsToIdioms = (idioms: Idiom[]): Idiom[] => {
     return idioms
@@ -46,17 +45,8 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
   };
 
   const fetchData = async () => {
-    if (!token) {
-      console.error('Access token is missing. Please log in.');
-      return;
-    }
-
     try {
-      const response = await IdiomFinder.get('/', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await publicIdiomFinder.get('/');
       const fetchedIdioms = response.data.data.idioms;
       const fetchedExamples = response.data.data.examples;
       const idiomsWithExamples = fetchedIdioms.map((idiom: Idiom) => ({
@@ -72,51 +62,84 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
   };
 
   useEffect(() => {
-    if (!token) {
-      console.log('Token is not available yet.');
-      return; // Prevent fetching data if no token is available
-    }
     if (idioms.length > 0) {
       console.log('Data already fetched');
       return;
     }
     fetchData();
-  }, [token]); // Fetch only when the token is available
+  }, []);
 
   // Add, update, and delete idioms (recalculate positions after each operation)
-  const addIdioms = (idiom: Idiom) => {
-    const updatedIdioms = addPositionsToIdioms([...idioms, idiom]);
-    setIdioms(updatedIdioms);
+
+  const addIdioms = async (idiom: Idiom) => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.post('/', idiom); // idiom may need preprocessing depending on form structure
+
+      const newIdiom = response.data.data.idiom;
+      const updatedIdioms = addPositionsToIdioms([...idioms, newIdiom]);
+      setIdioms(updatedIdioms);
+    } catch (err) {
+      console.error('Failed to add idiom:', err);
+    }
   };
 
-  const updateIdiom = (updatedIdiom: Idiom) => {
-    const updatedIdioms = addPositionsToIdioms(
-      idioms.map((idiom: Idiom) => (idiom.id === updatedIdiom.id ? updatedIdiom : idiom)),
-    );
-    setIdioms(updatedIdioms);
+  const updateIdiom = async (updatedIdiom: Idiom) => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.put(`/${updatedIdiom.id}`, updatedIdiom);
+
+      const updated = response.data.data.idiom;
+      const updatedIdioms = addPositionsToIdioms(
+        idioms.map((idiom) => (idiom.id === updated.id ? updated : idiom)),
+      );
+      setIdioms(updatedIdioms);
+    } catch (err) {
+      console.error('Failed to update idiom:', err);
+    }
   };
 
-  const deleteIdiom = (id: number) => {
-    const updatedIdioms = addPositionsToIdioms(idioms.filter((idiom: Idiom) => idiom.id !== id));
-    setIdioms(updatedIdioms);
+  const deleteIdiom = async (id: number) => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      await api.delete(`/${id}`);
+      const updatedIdioms = addPositionsToIdioms(idioms.filter((idiom) => idiom.id !== id));
+      setIdioms(updatedIdioms);
+    } catch (err) {
+      console.error('Failed to delete idiom:', err);
+    }
   };
 
-  // Add, update, and delete examples
-  const updateExamples = (idiomId: number, updatedExamples: Example[]) => {
-    const updatedIdioms = idioms.map((idiom: Idiom) =>
-      idiom.id === idiomId ? { ...idiom, examples: updatedExamples } : idiom,
-    );
-    setIdioms(updatedIdioms);
+  const updateExamples = async (idiomId: number, updatedExamples: Example[]) => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      await api.put(`/${idiomId}/examples`, { examples: updatedExamples });
+
+      const updatedIdioms = idioms.map((idiom) =>
+        idiom.id === idiomId ? { ...idiom, examples: updatedExamples } : idiom,
+      );
+      setIdioms(updatedIdioms);
+    } catch (err) {
+      console.error('Failed to update examples:', err);
+    }
   };
 
-  const addExampleToIdiom = (idiomId: number, newExample: Example) => {
-    setIdioms((prevIdioms) =>
-      prevIdioms.map((idiom) =>
-        idiom.id === idiomId
-          ? { ...idiom, examples: [...(idiom.examples || []), newExample] }
-          : idiom,
-      ),
-    );
+  const addExampleToIdiom = async (idiomId: number, newExample: Example) => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.post(`/${idiomId}/examples`, newExample);
+
+      const savedExample = response.data.data.example;
+      setIdioms((prevIdioms) =>
+        prevIdioms.map((idiom) =>
+          idiom.id === idiomId
+            ? { ...idiom, examples: [...(idiom.examples || []), savedExample] }
+            : idiom,
+        ),
+      );
+    } catch (err) {
+      console.error('Failed to add example:', err);
+    }
   };
 
   return (
