@@ -44,10 +44,10 @@
 
 # Vercel for front, Railway for back
 
-- [ ] Prep server/ for Railway
+- [x] Prep server/ for Railway
 
   - Dont use docker for deployment right now.
-  - [ ] start in package.json runs your backend
+  - [x] start in package.json runs your backend
   - [x] update server/package.json with at build, dev, and start scripts.
   - [x] update server/tsconfig
     - [x] noEmit: False
@@ -59,13 +59,12 @@
   - [x] Change DB env var name
     - [x] Use DATABASE_URL
   - [x] Update CORS
-    - [ ] Add vercel frontend url to env variable CORS_ORIGINS, allong with http://localhost:5173
+    - [x] Add vercel frontend url to env variable CORS_ORIGINS, allong with http://localhost:5173
   - [x] Put auth0 audience and iddueBaseURL in server/env
 
-- [ ] Host server on Railway
-  - [ ] Give Railway your server directory
-  - [ ] Add evironment variables:
-    - [ ] Auth0 stuff
-    - [ ] Cors stuff
-    - [ ] Database stuff
-  - [ ] Make sure to track vercel-railway-hosting branch
+- [x] Host server on Railway
+  - [x] Give Railway your server directory
+  - [x] Add evironment variables:
+    - [x] Auth0 stuff
+    - [x] Cors stuff
+    - [x] Database stuff
