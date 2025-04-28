@@ -9,7 +9,19 @@ echo ""
 cd client
 
 client_lines=$(find . -type f \
-  \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.html" -o -name "*.env*" -o -name "*Dockerfile*" -o -name "*ignore*" \) \
+  \( -name "*.ts" \
+     -o -name "*.tsx" \
+     -o -name "*.js" \
+     -o -name "*.jsx" \
+     -o -name "*.json" \
+     -o -name "*.yaml" \
+     -o -name "*.yml" \
+     -o -name "*.html" \
+     -o -name "*.css" \
+     -o -name "*.env*" \
+     -o -name "*Dockerfile*" \
+     -o -name "*ignore*" \
+  \) \
   ! -path "./node_modules/*" \
   ! -path "./coverage/*" \
   ! -path "./dist/*" \
@@ -17,20 +29,42 @@ client_lines=$(find . -type f \
   -exec cat {} + | wc -l)
 
 client_files=$(find . -type f \
-  \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.html" -o -name "*.env*" -o -name "*Dockerfile*" -o -name "*ignore*" \) \
+  \( -name "*.ts" \
+     -o -name "*.tsx" \
+     -o -name "*.js" \
+     -o -name "*.jsx" \
+     -o -name "*.json" \
+     -o -name "*.yaml" \
+     -o -name "*.yml" \
+     -o -name "*.html" \
+     -o -name "*.css" \
+     -o -name "*.env*" \
+     -o -name "*Dockerfile*" \
+     -o -name "*ignore*" \
+  \) \
   ! -path "./node_modules/*" \
   ! -path "./coverage/*" \
   ! -path "./dist/*" \
   ! -name "package-lock.json" \
   | wc -l)
 
-cd ..
-
 # --- Server ---
+cd ..
 cd server
 
 server_lines=$(find . -type f \
-  \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.html" -o -name "*.env*" -o -name "*Dockerfile*" -o -name "*ignore*" \) \
+  \( -name "*.ts" \
+     -o -name "*.tsx" \
+     -o -name "*.js" \
+     -o -name "*.jsx" \
+     -o -name "*.json" \
+     -o -name "*.yaml" \
+     -o -name "*.yml" \
+     -o -name "*.html" \
+     -o -name "*.env*" \
+     -o -name "*Dockerfile*" \
+     -o -name "*ignore*" \
+  \) \
   ! -path "./node_modules/*" \
   ! -path "./coverage/*" \
   ! -path "./dist/*" \
@@ -38,7 +72,18 @@ server_lines=$(find . -type f \
   -exec cat {} + | wc -l)
 
 server_files=$(find . -type f \
-  \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.html" -o -name "*.env*" -o -name "*Dockerfile*" -o -name "*ignore*" \) \
+  \( -name "*.ts" \
+     -o -name "*.tsx" \
+     -o -name "*.js" \
+     -o -name "*.jsx" \
+     -o -name "*.json" \
+     -o -name "*.yaml" \
+     -o -name "*.yml" \
+     -o -name "*.html" \
+     -o -name "*.env*" \
+     -o -name "*Dockerfile*" \
+     -o -name "*ignore*" \
+  \) \
   ! -path "./node_modules/*" \
   ! -path "./coverage/*" \
   ! -path "./dist/*" \
@@ -49,18 +94,42 @@ server_files=$(find . -type f \
 cd ..
 
 root_lines=$(find . -maxdepth 1 -type f \
-  \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.html" -o -name "*.env*" -o -name "*Dockerfile*" -o -name "*ignore*" -o -name "*.md" \) \
+  \( -name "*.ts" \
+     -o -name "*.tsx" \
+     -o -name "*.js" \
+     -o -name "*.jsx" \
+     -o -name "*.json" \
+     -o -name "*.yaml" \
+     -o -name "*.yml" \
+     -o -name "*.html" \
+     -o -name "*.env*" \
+     -o -name "*Dockerfile*" \
+     -o -name "*ignore*" \
+     -o -name "*.md" \
+  \) \
   ! -name "package-lock.json" \
   -exec cat {} + | wc -l)
 
 root_files=$(find . -maxdepth 1 -type f \
-  \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.html" -o -name "*.env*" -o -name "*Dockerfile*" -o -name "*ignore*" -o -name "*.md" \) \
+  \( -name "*.ts" \
+     -o -name "*.tsx" \
+     -o -name "*.js" \
+     -o -name "*.jsx" \
+     -o -name "*.json" \
+     -o -name "*.yaml" \
+     -o -name "*.yml" \
+     -o -name "*.html" \
+     -o -name "*.env*" \
+     -o -name "*Dockerfile*" \
+     -o -name "*ignore*" \
+     -o -name "*.md" \
+  \) \
   ! -name "package-lock.json" \
   | wc -l)
 
-# --- Totals ---
 total_lines=$((client_lines + server_lines + root_lines))
 total_files=$((client_files + server_files + root_files))
+
 
 printf "  %-8s | %8s | %8s\n" "Section" "Files" "Lines"
 echo "--------------------------------------"
