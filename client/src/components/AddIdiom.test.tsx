@@ -1,10 +1,14 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Swal from 'sweetalert2';
-import { beforeEach, expect, test, vi } from 'vitest';
-import AddIdiom from './AddIdiom';
-import { IdiomsContext } from '@/context/idiomsContext';
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'; // Simulate and interact with the React component like a user would
+import Swal from 'sweetalert2'; // So we can spy on Swal.fire calls
+import { beforeEach, expect, test, vi } from 'vitest'; // Core Vitest tools for running, organizing, and mocking tests
+import AddIdiom from './AddIdiom'; // The component your testing
+import { IdiomsContext } from '@/context/idiomsContext'; // AddIdiom uses it (via useContext) and needs it for testing
+import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder'; // Cusotm hook used inside AddIdiom to call the API. We need to control it
 
+// Mocks
+// We dont want real popups or API calls in tests, we want to spy on Swal.fire and API calls.
+// Replace Swal.fire with a vi.fn() spy
+// Replace API calls with a vi.fn() that returns a fake post() function
 vi.mock('sweetalert2', () => ({
   default: {
     fire: vi.fn(() => Promise.resolve({})),
@@ -15,25 +19,30 @@ vi.mock('@/apis/useAuthorizedIdiomFinder', () => ({
   default: vi.fn(),
 }));
 
-const mockAddIdioms = vi.fn();
-const mockClose = vi.fn();
+const mockAddIdioms = vi.fn(); // Fake function to simulate the context addIdioms()
+const mockClose = vi.fn(); // Fake onClose callback passed into AddIdiom props
 const mockPost = vi.fn(() =>
+  // Fake API call that succeeds by default (but we can override it to fail)
   Promise.resolve({
     data: {
       data: {
-        idiom: { id: 1, title: 'Test Idiom' },
+        idiom: { id: 1, title: 'Dummy Idiom Title' },
       },
     },
   }),
 );
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  vi.clearAllMocks(); // Reset spy call history between tests so tests dont affect each other
   (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
     post: mockPost,
-  }));
+  })); // Every time you render, make sure the fake API returns mockPost
 });
 
+// Render AddIdiom inside a fake IdiomsContext.Provider
+// Give it mock functions for everything it expects
+// This simulates what your real app would do — without needing the whole app running
+// The render() gives you a real DOM to interact with inside the test.
 const renderComponent = () =>
   render(
     <IdiomsContext.Provider
@@ -54,12 +63,12 @@ const renderComponent = () =>
 test('submits form with valid data', async () => {
   renderComponent();
 
-  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
+  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test idiom' } });
 
   fireEvent.click(screen.getByText(/add/i));
 
   await waitFor(() => {
-    expect(mockPost).toHaveBeenCalledWith('/', expect.objectContaining({ title: 'Test Idiom' }));
+    expect(mockPost).toHaveBeenCalledWith('/', expect.objectContaining({ title: 'Test idiom' }));
     expect(mockAddIdioms).toHaveBeenCalled();
     expect(Swal.fire).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -121,6 +130,7 @@ test('includes a timestamp string when user edits timestamp', async () => {
 });
 
 test('shows error alert when API request fails', async () => {
+  const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
     post: vi.fn(() => Promise.reject(new Error('API Failure'))), // Force error
   }));
@@ -140,4 +150,5 @@ test('shows error alert when API request fails', async () => {
       }),
     );
   });
+  consoleErrorSpy.mockRestore();
 });
