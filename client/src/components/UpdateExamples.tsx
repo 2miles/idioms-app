@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
@@ -64,16 +64,17 @@ type UpdateExamplesProps = {
 const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
   const { idioms, updateExamples } = useContext(IdiomsContext);
   const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
-  const examples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
+  const initialExamples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
+  const [examples, setExamples] = useState<Example[]>(initialExamples);
+
   const idiomTitle = idioms.find((idiom) => idiom.id === idiomId)?.title;
 
   const handleExampleChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const { value } = e.target;
-    // Update examples directly in the context
     const updatedExamples = examples.map((example, i) =>
       i === index ? { ...example, example: value } : example,
     );
-    updateExamples(idiomId, updatedExamples);
+    setExamples(updatedExamples);
   };
 
   const handleDeleteExample = async (index: number, exampleId: number) => {
@@ -93,6 +94,7 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
         await api.delete(`/examples/${exampleId}`);
         // Update local state to remove the example
         const updatedExamples = examples.filter((_, i) => i !== index);
+        setExamples(updatedExamples);
         updateExamples(idiomId, updatedExamples);
 
         Swal.fire({
