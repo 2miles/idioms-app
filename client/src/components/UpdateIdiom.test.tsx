@@ -4,6 +4,11 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import UpdateIdiom from './UpdateIdiom';
 import { IdiomsContext } from '@/context/idiomsContext';
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
+import { suppressConsoleOutput } from '../../testUtils';
+
+const DEBUG_ERRORS = false; // toggle this to `true` to see errors in this file
+
+suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
 vi.mock('sweetalert2', () => ({
   default: {
@@ -102,7 +107,6 @@ test('does not submit if title is empty', async () => {
 });
 
 test('shows error alert if API call fails', async () => {
-  const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
     put: vi.fn(() => Promise.reject(new Error('Update failed'))),
   }));
@@ -124,7 +128,6 @@ test('shows error alert if API call fails', async () => {
       }),
     );
   });
-  consoleErrorSpy.mockRestore();
 });
 
 test('pre-fills form fields with provided idiom data', () => {

@@ -4,6 +4,11 @@ import { beforeEach, expect, test, vi } from 'vitest'; // Core Vitest tools for 
 import AddIdiom from './AddIdiom'; // The component your testing
 import { IdiomsContext } from '@/context/idiomsContext'; // AddIdiom uses it (via useContext) and needs it for testing
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder'; // Cusotm hook used inside AddIdiom to call the API. We need to control it
+import { suppressConsoleOutput } from '../../testUtils';
+
+const DEBUG_ERRORS = false; // toggle this to `true` to see errors in this file
+
+suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
 // Mocks
 // We dont want real popups or API calls in tests, we want to spy on Swal.fire and API calls.
@@ -130,7 +135,6 @@ test('includes a timestamp string when user edits timestamp', async () => {
 });
 
 test('shows error alert when API request fails', async () => {
-  const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
     post: vi.fn(() => Promise.reject(new Error('API Failure'))), // Force error
   }));
@@ -150,5 +154,4 @@ test('shows error alert when API request fails', async () => {
       }),
     );
   });
-  consoleErrorSpy.mockRestore();
 });
