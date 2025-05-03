@@ -10,12 +10,10 @@ type TextFieldProps = {
   id: string;
   label: string;
   value: string;
-  placeholder?: string;
-  required?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
-const TextField = ({ id, label, value, placeholder, required, onChange }: TextFieldProps) => {
+const TextField = ({ id, label, value, onChange, required, ...props }: TextFieldProps) => {
   return (
     <div className='form-group'>
       <label htmlFor={id}>{label}</label>
@@ -25,8 +23,8 @@ const TextField = ({ id, label, value, placeholder, required, onChange }: TextFi
         id={id}
         value={value}
         onChange={onChange}
-        placeholder={placeholder}
         required={required}
+        {...props}
       />
       {required && <div className='invalid-feedback'>Please enter {label.toLowerCase()}.</div>}
     </div>

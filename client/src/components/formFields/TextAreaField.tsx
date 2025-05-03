@@ -10,28 +10,18 @@ type TextAreaFieldProps = {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  placeholder?: string;
-  rows?: number;
-  required?: boolean;
-};
-const TextAreaField = ({
-  id,
-  label,
-  value,
-  onChange,
-  placeholder,
-  rows = 4,
-}: TextAreaFieldProps) => {
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+const TextAreaField = ({ id, label, value, onChange, rows = 4, ...props }: TextAreaFieldProps) => {
   return (
     <div className='form-group'>
-      <label>{label}</label>
+      <label htmlFor={id}>{label}</label>
       <StyledTextArea
         id={id}
         className='form-control'
         value={value}
         onChange={onChange}
-        placeholder={placeholder}
         rows={rows}
+        {...props}
       />
     </div>
   );
