@@ -46,3 +46,6 @@ client/.env
 .env.production.local
 
 scripts
+
+# Test coverage
+coverage/
