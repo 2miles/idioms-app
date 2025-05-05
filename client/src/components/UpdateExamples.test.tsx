@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Swal from 'sweetalert2';
-import { vi, test, expect, beforeEach } from 'vitest';
+import { vi, test, expect, beforeEach, describe } from 'vitest';
 import UpdateExamples from './UpdateExamples';
 import { IdiomsContext } from '@/context/idiomsContext';
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
@@ -73,152 +73,136 @@ const renderComponent = () =>
       <UpdateExamples idiomId={dummyIdiomId} examples={dummyExamples} onClose={mockClose} />
     </IdiomsContext.Provider>,
   );
+describe('UpdateExamples', () => {
+  describe('Form behavior', () => {
+    test('user can type in example field but it does not trigger context update until submit', async () => {
+      renderComponent();
+      const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+      fireEvent.change(textarea, { target: { value: 'Updated example 1' } });
+      expect(mockUpdateExamples).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByText(/save/i));
 
-test('user can type in example field but it does not trigger context update until submit', async () => {
-  renderComponent();
-
-  const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
-  fireEvent.change(textarea, { target: { value: 'Updated example 1' } });
-
-  // Verify updateExamples was NOT called yet
-  expect(mockUpdateExamples).not.toHaveBeenCalled();
-
-  // Now click Save to commit it
-  fireEvent.click(screen.getByText(/save/i));
-
-  await waitFor(() => {
-    expect(mockUpdateExamples).toHaveBeenCalled();
-  });
-});
-
-test('submits examples and shows success alert', async () => {
-  renderComponent();
-
-  fireEvent.click(screen.getByText(/save/i));
-
-  await waitFor(() => {
-    expect(mockPut).toHaveBeenCalledWith(`/${dummyIdiomId}/examples`, {
-      examples: dummyExamples,
+      await waitFor(() => {
+        expect(mockUpdateExamples).toHaveBeenCalled();
+      });
     });
-    expect(mockUpdateExamples).toHaveBeenCalled();
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Updated!',
-        icon: 'success',
-      }),
-    );
-    expect(mockClose).toHaveBeenCalled();
+
+    test('does not persist example changes if modal is closed without saving', () => {
+      renderComponent();
+      const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+      fireEvent.change(textarea, { target: { value: 'Temporary edit' } });
+      mockClose();
+      expect(mockPut).not.toHaveBeenCalled();
+      expect(mockUpdateExamples).not.toHaveBeenCalled();
+    });
+
+    test('shows warning if any example is empty', async () => {
+      renderComponent();
+      const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+      fireEvent.change(textarea, { target: { value: '' } });
+      fireEvent.click(screen.getByText(/save/i));
+
+      await waitFor(() => {
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            text: 'All examples must have text.',
+            icon: 'warning',
+          }),
+        );
+        expect(mockPut).not.toHaveBeenCalled();
+      });
+    });
+
+    test('shows warning and does not save if example is empty', async () => {
+      renderComponent();
+      const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+      fireEvent.change(textarea, { target: { value: '' } });
+      fireEvent.click(screen.getByText(/save/i));
+
+      await waitFor(() => {
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            text: 'All examples must have text.',
+            icon: 'warning',
+          }),
+        );
+        expect(mockPut).not.toHaveBeenCalled();
+      });
+    });
   });
-});
+  describe('Submission', () => {
+    test('submits examples and shows success alert', async () => {
+      renderComponent();
+      fireEvent.click(screen.getByText(/save/i));
 
-test('shows warning if any example is empty', async () => {
-  renderComponent();
-
-  const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
-  fireEvent.change(textarea, { target: { value: '' } });
-
-  fireEvent.click(screen.getByText(/save/i));
-
-  await waitFor(() => {
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        text: 'All examples must have text.',
-        icon: 'warning',
-      }),
-    );
-    expect(mockPut).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockPut).toHaveBeenCalledWith(`/${dummyIdiomId}/examples`, {
+          examples: dummyExamples,
+        });
+        expect(mockUpdateExamples).toHaveBeenCalled();
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Updated!',
+            icon: 'success',
+          }),
+        );
+        expect(mockClose).toHaveBeenCalled();
+      });
+    });
   });
-});
 
-test('deletes example when confirmed', async () => {
-  renderComponent();
+  test('shows error alert on API failure', async () => {
+    mockPut.mockRejectedValueOnce(new Error('Update failed'));
+    renderComponent();
+    fireEvent.click(screen.getByText(/save/i));
 
-  fireEvent.click(screen.getAllByText(/delete/i)[0]);
-
-  await waitFor(() => {
-    expect(mockDelete).toHaveBeenCalledWith('/examples/1');
-    expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, [
-      { example_id: 2, idiom_id: dummyIdiomId, example: 'Original example 2' },
-    ]);
+    await waitFor(() => {
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Error',
+          text: 'There was a problem updating the examples.',
+          icon: 'error',
+        }),
+      );
+    });
   });
-});
+  describe('Deletion', () => {
+    test('deletes example when confirmed', async () => {
+      renderComponent();
+      fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
-test('shows error alert on API failure', async () => {
-  mockPut.mockRejectedValueOnce(new Error('Update failed'));
+      await waitFor(() => {
+        expect(mockDelete).toHaveBeenCalledWith('/examples/1');
+        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, [
+          { example_id: 2, idiom_id: dummyIdiomId, example: 'Original example 2' },
+        ]);
+      });
+    });
 
-  renderComponent();
+    test('shows error alert on delete failure', async () => {
+      mockDelete.mockRejectedValueOnce(new Error('Delete failed'));
+      renderComponent();
+      fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
-  fireEvent.click(screen.getByText(/save/i));
+      await waitFor(() => {
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Error',
+            text: 'There was a problem deleting the example.',
+            icon: 'error',
+          }),
+        );
+      });
+    });
 
-  await waitFor(() => {
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Error',
-        text: 'There was a problem updating the examples.',
-        icon: 'error',
-      }),
-    );
-  });
-});
+    test('deletes example immediately after confirming delete prompt', async () => {
+      renderComponent();
+      fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
-test('shows error alert on delete failure', async () => {
-  mockDelete.mockRejectedValueOnce(new Error('Delete failed'));
-
-  renderComponent();
-
-  fireEvent.click(screen.getAllByText(/delete/i)[0]);
-
-  await waitFor(() => {
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Error',
-        text: 'There was a problem deleting the example.',
-        icon: 'error',
-      }),
-    );
-  });
-});
-
-test('does not persist example changes if modal is closed without saving', () => {
-  renderComponent();
-
-  const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
-  fireEvent.change(textarea, { target: { value: 'Temporary edit' } });
-
-  // Simulate closing the modal without submitting
-  mockClose();
-
-  // Check that updateExamples was NOT called yet
-  expect(mockPut).not.toHaveBeenCalled();
-  expect(mockUpdateExamples).not.toHaveBeenCalled();
-});
-
-test('deletes example immediately after confirming delete prompt', async () => {
-  renderComponent();
-
-  fireEvent.click(screen.getAllByText(/delete/i)[0]);
-
-  await waitFor(() => {
-    expect(mockDelete).toHaveBeenCalledWith('/examples/1');
-    expect(mockUpdateExamples).toHaveBeenCalled();
-  });
-});
-
-test('shows warning and does not save if example is empty', async () => {
-  renderComponent();
-
-  const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
-  fireEvent.change(textarea, { target: { value: '' } });
-
-  fireEvent.click(screen.getByText(/save/i));
-
-  await waitFor(() => {
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        text: 'All examples must have text.',
-        icon: 'warning',
-      }),
-    );
-    expect(mockPut).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockDelete).toHaveBeenCalledWith('/examples/1');
+        expect(mockUpdateExamples).toHaveBeenCalled();
+      });
+    });
   });
 });

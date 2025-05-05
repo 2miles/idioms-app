@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'; // Simulate and interact with the React component like a user would
 import Swal from 'sweetalert2'; // So we can spy on Swal.fire calls
-import { beforeEach, expect, test, vi } from 'vitest'; // Core Vitest tools for running, organizing, and mocking tests
+import { beforeEach, describe, expect, test, vi } from 'vitest'; // Core Vitest tools for running, organizing, and mocking tests
 import AddIdiom from './AddIdiom'; // The component your testing
 import { IdiomsContext } from '@/context/idiomsContext'; // AddIdiom uses it (via useContext) and needs it for testing
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder'; // Cusotm hook used inside AddIdiom to call the API. We need to control it
@@ -65,93 +65,93 @@ const renderComponent = () =>
     </IdiomsContext.Provider>,
   );
 
-test('submits form with valid data', async () => {
-  renderComponent();
+describe('AddIdiom', () => {
+  describe('Form behavior', () => {
+    test('does not submit if title is empty', async () => {
+      renderComponent();
+      fireEvent.click(screen.getByText(/add/i));
 
-  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test idiom' } });
+      await waitFor(() => {
+        expect(mockPost).not.toHaveBeenCalled();
+      });
+    });
 
-  fireEvent.click(screen.getByText(/add/i));
+    test('includes a timestamp string when user edits timestamp', async () => {
+      renderComponent();
+      fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
+      const allTextboxes = screen.getAllByRole('textbox');
+      const datetimeInput = allTextboxes[3];
+      fireEvent.change(datetimeInput, { target: { value: '2025-01-01 12:00:00' } });
+      fireEvent.click(screen.getByText(/add/i));
 
-  await waitFor(() => {
-    expect(mockPost).toHaveBeenCalledWith('/', expect.objectContaining({ title: 'Test idiom' }));
-    expect(mockAddIdioms).toHaveBeenCalled();
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Idiom Added!',
-        text: 'The idiom has been successfully added.',
-        icon: 'success',
-      }),
-    );
+      await waitFor(() => {
+        expect(mockPost).toHaveBeenCalledWith(
+          '/',
+          expect.objectContaining({
+            timestamps: expect.any(String),
+          }),
+        );
+      });
+    });
+    test('includes a timestamp string when user does not edit timestamp', async () => {
+      renderComponent();
+      fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
+      fireEvent.click(screen.getByText(/add/i));
+
+      await waitFor(() => {
+        expect(mockPost).toHaveBeenCalledWith(
+          '/',
+          expect.objectContaining({
+            title: 'Test Idiom',
+            timestamps: expect.any(String),
+          }),
+        );
+      });
+    });
   });
-});
 
-test('does not submit if title is empty', async () => {
-  renderComponent();
+  describe('Submission', () => {
+    test('submits form with valid data', async () => {
+      renderComponent();
+      fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test idiom' } });
+      fireEvent.click(screen.getByText(/add/i));
 
-  fireEvent.click(screen.getByText(/add/i));
+      await waitFor(() => {
+        expect(mockPost).toHaveBeenCalledWith(
+          '/',
+          expect.objectContaining({ title: 'Test idiom' }),
+        );
+        expect(mockAddIdioms).toHaveBeenCalled();
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Idiom Added!',
+            text: 'The idiom has been successfully added.',
+            icon: 'success',
+          }),
+        );
+      });
+    });
 
-  await waitFor(() => {
-    expect(mockPost).not.toHaveBeenCalled();
-  });
-});
+    test('shows error alert when API request fails', async () => {
+      (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(
+        () => ({
+          post: vi.fn(() => Promise.reject(new Error('API Failure'))), // Force error
+        }),
+      );
+      renderComponent();
+      fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
+      fireEvent.click(screen.getByText(/add/i));
 
-test('includes a timestamp string when user does not edit timestamp', async () => {
-  renderComponent();
-
-  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
-  fireEvent.click(screen.getByText(/add/i));
-
-  await waitFor(() => {
-    expect(mockPost).toHaveBeenCalledWith(
-      '/',
-      expect.objectContaining({
-        title: 'Test Idiom',
-        timestamps: expect.any(String),
-      }),
-    );
-  });
-});
-
-test('includes a timestamp string when user edits timestamp', async () => {
-  renderComponent();
-
-  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
-
-  const allTextboxes = screen.getAllByRole('textbox');
-  const datetimeInput = allTextboxes[3];
-
-  fireEvent.change(datetimeInput, { target: { value: '2025-01-01 12:00:00' } });
-
-  fireEvent.click(screen.getByText(/add/i));
-
-  await waitFor(() => {
-    expect(mockPost).toHaveBeenCalledWith(
-      '/',
-      expect.objectContaining({
-        timestamps: expect.any(String),
-      }),
-    );
-  });
-});
-
-test('shows error alert when API request fails', async () => {
-  (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
-    post: vi.fn(() => Promise.reject(new Error('API Failure'))), // Force error
-  }));
-
-  renderComponent();
-
-  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
-  fireEvent.click(screen.getByText(/add/i));
-
-  await waitFor(() => {
-    // Check that SweetAlert2's fire method was called
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Error',
-        text: 'There was a problem adding the idiom.',
-        icon: 'error',
-      }),
-    );
+      await waitFor(() => {
+        // Check that SweetAlert2's fire method was called
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Error',
+            text: 'There was a problem adding the idiom.',
+            icon: 'error',
+          }),
+        );
+      });
+    });
   });
 });
