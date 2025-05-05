@@ -92,6 +92,9 @@ const Contributor = styled.p`
   font-size: var(--font-lg);
   color: var(--color-text-primary);
   /* align-self: flex-end; */
+  span {
+    padding-left: var(--padding-md);
+  }
 `;
 
 const ExampleItem = styled.li`
@@ -145,8 +148,12 @@ const DetailCard = ({
       <IdiomInfo>
         <Position>{`Idiom: ${idiom.position}`}</Position>
         <Contributor>
-          {`Added: ${moment(idiom.timestamps).format('MM-DD-YY')}`}
-          {idiom.contributor ? ` by ${idiom.contributor}` : ''}
+          <span data-testid='timestamp'>Added: {moment(idiom.timestamps).format('MM-DD-YY')}</span>
+          {idiom.contributor && (
+            <>
+              <span data-testid='contributor'>by {idiom.contributor}</span>
+            </>
+          )}
         </Contributor>
       </IdiomInfo>
       <CardBody className='card-body'>
