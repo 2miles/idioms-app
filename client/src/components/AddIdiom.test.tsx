@@ -108,6 +108,35 @@ describe('AddIdiom', () => {
         );
       });
     });
+    test('does not close modal if Keep Open is checked', async () => {
+      renderComponent();
+
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: 'This is a test idiom.' },
+      });
+
+      fireEvent.click(screen.getByLabelText(/keep open/i)); // Check the "Keep Open" box
+
+      fireEvent.click(screen.getByText(/add/i)); // Submit the form
+
+      await waitFor(() => {
+        expect(mockPost).toHaveBeenCalled();
+        expect(mockAddIdioms).toHaveBeenCalled();
+        expect(mockClose).not.toHaveBeenCalled(); // Should not close modal
+      });
+    });
+
+    test('does not submit if idiom title is only whitespace', async () => {
+      renderComponent();
+
+      fireEvent.change(screen.getByLabelText('Title'), { target: { value: '   ' } });
+
+      fireEvent.click(screen.getByText(/add/i));
+
+      await waitFor(() => {
+        expect(mockPost).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('Submission', () => {
@@ -151,6 +180,20 @@ describe('AddIdiom', () => {
             icon: 'error',
           }),
         );
+      });
+    });
+
+    test('closes modal if Keep Open is not checked', async () => {
+      renderComponent();
+
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: 'This is a test idiom.' },
+      });
+
+      fireEvent.click(screen.getByText(/add/i));
+
+      await waitFor(() => {
+        expect(mockClose).toHaveBeenCalled();
       });
     });
   });
