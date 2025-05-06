@@ -73,11 +73,13 @@ describe('UpdateIdiom', () => {
   describe('Form behavior', () => {
     test('pre-fills form fields with provided idiom data', () => {
       renderComponent();
+
       expect(screen.getByLabelText('Title')).toHaveValue('Old Title');
     });
 
     test('does not submit if title is empty', async () => {
       renderComponent();
+
       fireEvent.change(screen.getByLabelText('Title'), {
         target: { value: '' },
       });
@@ -90,11 +92,14 @@ describe('UpdateIdiom', () => {
 
     test('includes updated timestamp if user changes it', async () => {
       renderComponent();
+
       fireEvent.change(screen.getByLabelText('Title'), {
         target: { value: 'Updated Title' },
       });
+
       const allTextboxes = screen.getAllByRole('textbox');
       const datetimeInput = allTextboxes[3];
+
       fireEvent.change(datetimeInput, { target: { value: '2025-04-01 08:30:00' } });
       fireEvent.click(screen.getByText(/save/i));
 
@@ -112,6 +117,7 @@ describe('UpdateIdiom', () => {
   describe('Submission', () => {
     test('submits updated data correctly', async () => {
       renderComponent();
+
       fireEvent.change(screen.getByLabelText('Title'), {
         target: { value: 'Updated Title' },
       });
@@ -142,6 +148,7 @@ describe('UpdateIdiom', () => {
       );
 
       renderComponent();
+
       fireEvent.change(screen.getByLabelText('Title'), {
         target: { value: 'Updated Title' },
       });
@@ -162,7 +169,9 @@ describe('UpdateIdiom', () => {
   describe('Deletion', () => {
     test('calls onDelete when Delete button is clicked', () => {
       renderComponent();
+
       fireEvent.click(screen.getByText(/delete/i));
+
       expect(mockDelete).toHaveBeenCalled();
     });
   });

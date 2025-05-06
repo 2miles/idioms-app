@@ -77,9 +77,13 @@ describe('UpdateExamples', () => {
   describe('Form behavior', () => {
     test('user can type in example field but it does not trigger context update until submit', async () => {
       renderComponent();
+
       const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+
       fireEvent.change(textarea, { target: { value: 'Updated example 1' } });
+
       expect(mockUpdateExamples).not.toHaveBeenCalled();
+
       fireEvent.click(screen.getByText(/save/i));
 
       await waitFor(() => {
@@ -89,16 +93,21 @@ describe('UpdateExamples', () => {
 
     test('does not persist example changes if modal is closed without saving', () => {
       renderComponent();
+
       const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+
       fireEvent.change(textarea, { target: { value: 'Temporary edit' } });
       mockClose();
+
       expect(mockPut).not.toHaveBeenCalled();
       expect(mockUpdateExamples).not.toHaveBeenCalled();
     });
 
     test('shows warning if any example is empty', async () => {
       renderComponent();
+
       const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+
       fireEvent.change(textarea, { target: { value: '' } });
       fireEvent.click(screen.getByText(/save/i));
 
@@ -115,7 +124,9 @@ describe('UpdateExamples', () => {
 
     test('shows warning and does not save if example is empty', async () => {
       renderComponent();
+
       const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
+
       fireEvent.change(textarea, { target: { value: '' } });
       fireEvent.click(screen.getByText(/save/i));
 
@@ -133,6 +144,7 @@ describe('UpdateExamples', () => {
   describe('Submission', () => {
     test('submits examples and shows success alert', async () => {
       renderComponent();
+
       fireEvent.click(screen.getByText(/save/i));
 
       await waitFor(() => {
@@ -149,26 +161,27 @@ describe('UpdateExamples', () => {
         expect(mockClose).toHaveBeenCalled();
       });
     });
-  });
+    test('shows error alert on API failure', async () => {
+      mockPut.mockRejectedValueOnce(new Error('Update failed'));
+      renderComponent();
 
-  test('shows error alert on API failure', async () => {
-    mockPut.mockRejectedValueOnce(new Error('Update failed'));
-    renderComponent();
-    fireEvent.click(screen.getByText(/save/i));
+      fireEvent.click(screen.getByText(/save/i));
 
-    await waitFor(() => {
-      expect(Swal.fire).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: 'Error',
-          text: 'There was a problem updating the examples.',
-          icon: 'error',
-        }),
-      );
+      await waitFor(() => {
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Error',
+            text: 'There was a problem updating the examples.',
+            icon: 'error',
+          }),
+        );
+      });
     });
   });
   describe('Deletion', () => {
     test('deletes example when confirmed', async () => {
       renderComponent();
+
       fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
       await waitFor(() => {
@@ -182,6 +195,7 @@ describe('UpdateExamples', () => {
     test('shows error alert on delete failure', async () => {
       mockDelete.mockRejectedValueOnce(new Error('Delete failed'));
       renderComponent();
+
       fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
       await waitFor(() => {
@@ -197,6 +211,7 @@ describe('UpdateExamples', () => {
 
     test('deletes example immediately after confirming delete prompt', async () => {
       renderComponent();
+
       fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
       await waitFor(() => {
