@@ -171,11 +171,11 @@ const DetailCard = ({
           {isAdmin && (
             <UpdateExampleButtons>
               <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
-                Add Ex.
+                Add Example
               </SecondaryButton>
               {idiom.examples && idiom.examples.length > 0 && (
                 <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
-                  Edit Ex.
+                  Edit Example
                 </SecondaryButton>
               )}
             </UpdateExampleButtons>
