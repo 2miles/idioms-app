@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, ColumnVisibility, ColumnAccessors } from '@/types';
 import SearchBar from '@/components/SearchBar';
-import Table from '@/components/Table';
+import Table from '@/components/table/Table';
 import Pagination from '@/components/Pagination';
 import ItemsPerPageDropdown from '@/components/dropdowns/ItemsPerPageDropdown';
 import ColumnDropdown from '@/components/dropdowns/ColumnDropdown';
