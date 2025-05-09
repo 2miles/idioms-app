@@ -87,7 +87,7 @@ const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
   list-style: none;
 `;
 
-const Option = styled.li`
+const Option = styled.li.attrs({ role: 'option' })`
   padding: var(--padding-sm) var(--padding-md);
   cursor: pointer;
 
