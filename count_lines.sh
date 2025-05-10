@@ -130,6 +130,10 @@ root_files=$(find . -maxdepth 1 -type f \
 total_lines=$((client_lines + server_lines + root_lines))
 total_files=$((client_files + server_files + root_files))
 
+# --- Testing ---
+test_lines=$(find . -type f -name "*.test.tsx" -exec cat {} + | wc -l)
+test_files=$(find . -type f -name "*.test.tsx" | wc -l)
+
 
 printf "  %-8s | %8s | %8s\n" "Section" "Files" "Lines"
 echo "--------------------------------------"
@@ -137,4 +141,7 @@ printf "  %-8s | %8d | %8d\n" "Client" "$client_files" "$client_lines"
 printf "  %-8s | %8d | %8d\n" "Server" "$server_files" "$server_lines"
 printf "  %-8s | %8d | %8d\n" "Root" "$root_files" "$root_lines"
 echo "--------------------------------------"
+printf "  %-8s | %8d | %8d\n" "Test" "$test_files" "$test_lines"
+echo "--------------------------------------"
 printf "  %-8s | %8d | %8d\n" "Total" "$total_files" "$total_lines"
+
