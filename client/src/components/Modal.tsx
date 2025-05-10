@@ -77,7 +77,8 @@ const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <ModalOverlay>
+    <ModalOverlay data-testid='modal-overlay'>
+      {/* <ModalContent onClick={(e) => e.stopPropagation()}> */}
       <ModalContent>
         <ModalHeader>
           <ModalTitle>{title}</ModalTitle>

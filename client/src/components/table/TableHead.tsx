@@ -98,6 +98,7 @@ const TableHead = ({ columns, handleSorting }: TableHeadProps) => {
               $accessor={accessor}
               $sortOrder={currentSortOrder} // Pass sortOrder only for the sorted column
               $isSorted={isSorted}
+              data-testid={`table-header-${accessor}`}
             >
               {label}
             </StyledTh>

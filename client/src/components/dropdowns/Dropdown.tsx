@@ -47,7 +47,8 @@ const DropdownContainer = styled.div<StyleProps>`
   }
 `;
 
-const Anchor = styled.span<StyleProps>`
+const Anchor = styled.button<StyleProps>`
+  all: unset;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -73,7 +74,7 @@ const Anchor = styled.span<StyleProps>`
     `}
 `;
 
-const Options = styled.ul<StyleProps>`
+const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
   display: ${(props) => (props.$visible ? 'block' : 'none')};
   position: absolute;
   top: calc(100% + 5px);
@@ -86,7 +87,7 @@ const Options = styled.ul<StyleProps>`
   list-style: none;
 `;
 
-const Option = styled.li`
+const Option = styled.li.attrs({ role: 'option' })`
   padding: var(--padding-sm) var(--padding-md);
   cursor: pointer;
 
@@ -94,13 +95,14 @@ const Option = styled.li`
     background-color: var(--hilite-ui-primary);
   }
 `;
+
 type DropdownProps = {
   label: string;
   hideOnSmallScreen?: boolean;
   options: (string | JSX.Element)[];
-  closeOnSelect: boolean;
+  closeOnSelect?: boolean;
   onOptionClick?: (option: string | JSX.Element) => void;
-  variant?: 'searchColumn';
+  variant?: DropdownVariantType;
 };
 
 const Dropdown = ({
@@ -131,21 +133,20 @@ const Dropdown = ({
   }, [isOpen]);
 
   const handleOptionClick = (option: string | JSX.Element) => {
-    if (onOptionClick) {
-      onOptionClick(option);
-    }
-    if (closeOnSelect) {
-      setIsOpen(false);
-    }
+    if (onOptionClick) onOptionClick(option);
+    if (closeOnSelect) setIsOpen(false);
   };
 
-  const handleLabelClick = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const handleLabelClick = () => setIsOpen((prev) => !prev);
 
   return (
     <DropdownContainer $hideOnSmallScreen={hideOnSmallScreen} ref={dropdownRef} $variant={variant}>
-      <Anchor $visible={isOpen} onClick={handleLabelClick}>
+      <Anchor
+        $visible={isOpen}
+        onClick={handleLabelClick}
+        aria-expanded={isOpen}
+        aria-haspopup='listbox'
+      >
         {label}
       </Anchor>
       <Options $visible={isOpen}>

@@ -14,6 +14,7 @@ const defaultContext: UserContextType = {
 };
 
 const UserContext = createContext<UserContextType>(defaultContext);
+export { UserContext };
 
 // The provider component that will wrap the app and provide user data
 export const UserProvider = ({ children }: { children: ReactNode }) => {

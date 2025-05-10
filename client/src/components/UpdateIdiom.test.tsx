@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Swal from 'sweetalert2';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import UpdateIdiom from './UpdateIdiom';
 import { IdiomsContext } from '@/context/idiomsContext';
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
@@ -69,101 +69,110 @@ const renderComponent = () =>
     </IdiomsContext.Provider>,
   );
 
-test('submits updated data correctly', async () => {
-  renderComponent();
+describe('UpdateIdiom', () => {
+  describe('Form behavior', () => {
+    test('pre-fills form fields with provided idiom data', () => {
+      renderComponent();
 
-  fireEvent.change(screen.getByLabelText('Title'), {
-    target: { value: 'Updated Title' },
+      expect(screen.getByLabelText('Title')).toHaveValue('Old Title');
+    });
+
+    test('does not submit if title is empty', async () => {
+      renderComponent();
+
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: '' },
+      });
+      fireEvent.click(screen.getByText(/save/i));
+
+      await waitFor(() => {
+        expect(mockPut).not.toHaveBeenCalled();
+      });
+    });
+
+    test('includes updated timestamp if user changes it', async () => {
+      renderComponent();
+
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: 'Updated Title' },
+      });
+
+      const allTextboxes = screen.getAllByRole('textbox');
+      const datetimeInput = allTextboxes[3];
+
+      fireEvent.change(datetimeInput, { target: { value: '2025-04-01 08:30:00' } });
+      fireEvent.click(screen.getByText(/save/i));
+
+      await waitFor(() => {
+        expect(mockPut).toHaveBeenCalledWith(
+          '/1',
+          expect.objectContaining({
+            timestamps: expect.any(String),
+          }),
+        );
+      });
+    });
   });
 
-  fireEvent.click(screen.getByText(/save/i));
+  describe('Submission', () => {
+    test('submits updated data correctly', async () => {
+      renderComponent();
 
-  await waitFor(() => {
-    expect(mockPut).toHaveBeenCalledWith('/1', expect.objectContaining({ title: 'Updated Title' }));
-    expect(mockUpdateIdiom).toHaveBeenCalled();
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Updated!',
-        text: 'The idiom has been successfully updated.',
-        icon: 'success',
-      }),
-    );
-    expect(mockClose).toHaveBeenCalled();
-  });
-});
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: 'Updated Title' },
+      });
+      fireEvent.click(screen.getByText(/save/i));
 
-test('does not submit if title is empty', async () => {
-  renderComponent();
+      await waitFor(() => {
+        expect(mockPut).toHaveBeenCalledWith(
+          '/1',
+          expect.objectContaining({ title: 'Updated Title' }),
+        );
+        expect(mockUpdateIdiom).toHaveBeenCalled();
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Updated!',
+            text: 'The idiom has been successfully updated.',
+            icon: 'success',
+          }),
+        );
+        expect(mockClose).toHaveBeenCalled();
+      });
+    });
 
-  fireEvent.change(screen.getByLabelText('Title'), {
-    target: { value: '' },
-  });
+    test('shows error alert if API call fails', async () => {
+      (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(
+        () => ({
+          put: vi.fn(() => Promise.reject(new Error('Update failed'))),
+        }),
+      );
 
-  fireEvent.click(screen.getByText(/save/i));
+      renderComponent();
 
-  await waitFor(() => {
-    expect(mockPut).not.toHaveBeenCalled();
-  });
-});
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: 'Updated Title' },
+      });
+      fireEvent.click(screen.getByText(/save/i));
 
-test('shows error alert if API call fails', async () => {
-  (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
-    put: vi.fn(() => Promise.reject(new Error('Update failed'))),
-  }));
-
-  renderComponent();
-
-  fireEvent.change(screen.getByLabelText('Title'), {
-    target: { value: 'Updated Title' },
-  });
-
-  fireEvent.click(screen.getByText(/save/i));
-
-  await waitFor(() => {
-    expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Error',
-        text: 'There was a problem updating the idiom.',
-        icon: 'error',
-      }),
-    );
-  });
-});
-
-test('pre-fills form fields with provided idiom data', () => {
-  renderComponent();
-
-  expect(screen.getByLabelText('Title')).toHaveValue('Old Title');
-});
-
-test('calls onDelete when Delete button is clicked', () => {
-  renderComponent();
-
-  fireEvent.click(screen.getByText(/delete/i));
-
-  expect(mockDelete).toHaveBeenCalled();
-});
-
-test('includes updated timestamp if user changes it', async () => {
-  renderComponent();
-
-  fireEvent.change(screen.getByLabelText('Title'), {
-    target: { value: 'Updated Title' },
+      await waitFor(() => {
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Error',
+            text: 'There was a problem updating the idiom.',
+            icon: 'error',
+          }),
+        );
+      });
+    });
   });
 
-  const allTextboxes = screen.getAllByRole('textbox');
-  const datetimeInput = allTextboxes[3];
+  describe('Deletion', () => {
+    test('calls onDelete when Delete button is clicked', () => {
+      renderComponent();
 
-  fireEvent.change(datetimeInput, { target: { value: '2025-04-01 08:30:00' } });
+      fireEvent.click(screen.getByText(/delete/i));
 
-  fireEvent.click(screen.getByText(/save/i));
-
-  await waitFor(() => {
-    expect(mockPut).toHaveBeenCalledWith(
-      '/1',
-      expect.objectContaining({
-        timestamps: expect.any(String),
-      }),
-    );
+      expect(mockDelete).toHaveBeenCalled();
+    });
   });
 });

@@ -46,12 +46,14 @@ const NavbarLinks = styled.div<NavbarLinksProps>`
   }
 `;
 
-const Hamburger = styled.div`
+const Hamburger = styled.button`
   display: none;
   flex-direction: column;
   gap: 8px;
   cursor: pointer;
   margin-right: var(--space-xxl);
+  background: none;
+  border: none;
 
   .bar {
     width: 32px;
@@ -62,6 +64,11 @@ const Hamburger = styled.div`
   @media (max-width: 770px) {
     display: flex;
   }
+  /* Make always visible in test environment */
+  ${process.env.NODE_ENV === 'test' &&
+  `
+    display: flex !important;
+  `}
 `;
 
 const NavbarLogin = styled.div`
@@ -105,7 +112,11 @@ const NavBar = () => {
   return (
     <NavBarWrapper ref={navRef} className='navbar navbar-expand-lg'>
       <div className='d-flex align-items-center'>
-        <Hamburger onClick={toggleMenu} className='navbar-toggler'>
+        <Hamburger
+          onClick={toggleMenu}
+          aria-label='Toggle navigation'
+          data-testid='navbar-hamburger'
+        >
           <div className='bar'></div>
           <div className='bar'></div>
           <div className='bar'></div>
