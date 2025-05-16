@@ -14,8 +14,7 @@ export class AddIdiomModal {
   readonly submitButton: Locator;
   readonly closeButton: Locator;
 
-  readonly successToast: Locator;
-  readonly errorToast: Locator;
+  readonly toast: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -30,8 +29,7 @@ export class AddIdiomModal {
     this.submitButton = page.getByRole('button', { name: 'Add' });
     this.closeButton = page.getByRole('button', { name: /×/ });
 
-    this.successToast = page.locator('.swal2-popup');
-    this.errorToast = page.locator('.swal2-popup');
+    this.toast = page.locator('.swal2-popup');
   }
 
   async fillForm({ title, titleGeneral, definition, contributor, timestamp }: AddIdiomFormData) {
@@ -59,11 +57,11 @@ export class AddIdiomModal {
   }
 
   async expectSuccessToast() {
-    await expect(this.successToast).toContainText('Idiom Added');
+    await expect(this.toast).toContainText('Idiom Added');
   }
 
   async expectErrorToast() {
-    await expect(this.errorToast).toContainText('Error');
+    await expect(this.toast).toContainText('Error');
   }
 
   async close() {

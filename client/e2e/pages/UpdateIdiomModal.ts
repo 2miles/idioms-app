@@ -13,8 +13,7 @@ export class UpdateIdiomModal {
   readonly saveButton: Locator;
   readonly deleteButton: Locator;
 
-  readonly successToast: Locator;
-  readonly errorToast: Locator;
+  readonly toast: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -28,8 +27,7 @@ export class UpdateIdiomModal {
     this.saveButton = page.getByRole('button', { name: 'Save' });
     this.deleteButton = page.getByRole('button', { name: 'Delete' });
 
-    this.successToast = page.locator('.swal2-popup');
-    this.errorToast = page.locator('.swal2-popup');
+    this.toast = page.locator('.swal2-popup');
   }
 
   async fillForm({ title, titleGeneral, definition, contributor, timestamp }: AddIdiomFormData) {
@@ -51,11 +49,11 @@ export class UpdateIdiomModal {
   }
 
   async expectSuccessToast() {
-    await expect(this.successToast).toContainText('Updated');
+    await expect(this.toast).toContainText('Updated');
   }
 
   async expectErrorToast() {
-    await expect(this.errorToast).toContainText('Error');
+    await expect(this.toast).toContainText('Error');
   }
 
   async expectFormToBeVisible() {
