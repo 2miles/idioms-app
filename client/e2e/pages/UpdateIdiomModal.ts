@@ -1,7 +1,7 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { AddIdiomFormData } from '../test-data/idioms';
 
-export class AddIdiomModal {
+export class UpdateIdiomModal {
   readonly page: Page;
 
   readonly titleInput: Locator;
@@ -10,9 +10,8 @@ export class AddIdiomModal {
   readonly contributorInput: Locator;
   readonly timestampInput: Locator;
 
-  readonly keepOpenCheckbox: Locator;
-  readonly submitButton: Locator;
-  readonly closeButton: Locator;
+  readonly saveButton: Locator;
+  readonly deleteButton: Locator;
 
   readonly successToast: Locator;
   readonly errorToast: Locator;
@@ -26,9 +25,8 @@ export class AddIdiomModal {
     this.contributorInput = page.getByLabel('Contributor');
     this.timestampInput = page.locator('input[type="datetime-local"]');
 
-    this.keepOpenCheckbox = page.getByLabel('Keep Open');
-    this.submitButton = page.getByRole('button', { name: 'Add' });
-    this.closeButton = page.getByRole('button', { name: /×/ });
+    this.saveButton = page.getByRole('button', { name: 'Save' });
+    this.deleteButton = page.getByRole('button', { name: 'Delete' });
 
     this.successToast = page.locator('.swal2-popup');
     this.errorToast = page.locator('.swal2-popup');
@@ -42,32 +40,29 @@ export class AddIdiomModal {
     if (timestamp) await this.timestampInput.fill(timestamp);
   }
 
-  async toggleKeepOpen() {
-    await this.keepOpenCheckbox.click();
-  }
-
   async submit() {
-    await this.submitButton.click();
+    await this.saveButton.click();
   }
 
-  async expectModalToBeVisible() {
-    await expect(this.titleInput).toBeVisible();
-  }
-
-  async expectModalToClose() {
-    await expect(this.titleInput).toBeHidden();
+  async delete() {
+    await this.deleteButton.click();
+    // Confirm delete popup in SweetAlert
+    await this.page.getByRole('button', { name: /yes, delete it/i }).click();
   }
 
   async expectSuccessToast() {
-    await expect(this.successToast).toContainText('Idiom Added');
+    await expect(this.successToast).toContainText('Updated');
   }
 
   async expectErrorToast() {
     await expect(this.errorToast).toContainText('Error');
   }
 
-  async close() {
-    await this.closeButton.click();
-    await expect(this.titleInput).toBeHidden(); // or use modal title if more stable
+  async expectFormToBeVisible() {
+    await expect(this.titleInput).toBeVisible();
+  }
+
+  async expectFormToBeHidden() {
+    await expect(this.titleInput).toBeHidden();
   }
 }
