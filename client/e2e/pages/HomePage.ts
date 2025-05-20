@@ -57,8 +57,11 @@ export class HomePage {
     await this.page.goto('/');
   }
 
-  async waitForLoad() {
-    await this.tableRows.first().waitFor({ state: 'visible' });
+  async waitForLoad(minRows = 2) {
+    await this.page.waitForFunction(
+      (min) => document.querySelectorAll('table tbody tr').length >= min,
+      minRows,
+    );
   }
 
   // --- NavBar Actions ---
