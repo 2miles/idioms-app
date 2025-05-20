@@ -17,7 +17,8 @@ export function generateOffsetTimestamp(secondsOffset: number): string {
   return isoToDatetimeLocalForm(d.toISOString());
 }
 
-//Use it like this:
+//********* Usage example *********
+
 // import { isoToDatetimeLocal } from '../utils/format';
 
 // const formatted = isoToDatetimeLocal(testIdiom.timestamps);
