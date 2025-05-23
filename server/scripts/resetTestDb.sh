@@ -7,12 +7,12 @@ source ../server/.env.test
 SEED_FILE=./data/testDbSeed.sql
 
 if [ -z "$DATABASE_URL_TEST" ]; then
-  echo "❌ DATABASE_URL_TEST is not set!"
+  echo "DATABASE_URL_TEST is not set!"
   exit 1
 fi
 
 if [[ "$DATABASE_URL_TEST" == *"supabase"* || "$DATABASE_URL_TEST" == *"prod"* ]]; then
-  echo "❌ Refusing to run reset on production or supabase DB!"
+  echo "Refusing to run reset on production or supabase DB!"
   exit 1
 fi
 
