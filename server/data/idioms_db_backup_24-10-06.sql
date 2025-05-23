@@ -942,7 +942,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 782	179	Your company fired you two days after you had a heart attack? Well, it’s undoubtedly a dog-eat-dog
 783	179	It’s a dog eat dog world out there. You have to do whatever you can to survive.
 784	179	Many colleges are like dog-eat-dog. People will compete at any cost for higher grades and not care if others get hurt in the process.
-785	179	That school dog-eat-dog. The students cheat and even destroy each other’s work to get better grades."
+785	179	That school dog-eat-dog. The students cheat and even destroy each other’s work to get better grades.
 786	179	In the film, business dog eat dog, you’re a star one day, the next day you’ve been replaced by younger talent.
 787	179	There is intense competition and rivalry in a dog-eat-dog world, where everybody thinks only of himself or herself.
 788	179	In the dog eat dog world out there, it pays to know who one’s real friends are.
@@ -2964,7 +2964,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2806	640	The people who live in that house together are united but they are only as strong as their weakest link that is the youngest son. He will not be able to uphold the strong values that the others so smoothly take care of.
 2807	641	Yeah, he’s brilliant, but his violent temper has destroyed many business relationships—it’s a real chink in his armor.
 2808	641	The criminal’s tendency to use his own cell phone to conduct business was the chink in the armor the police needed to put him in jail.
-2809	641	A: "Why didn’t George get the promotion?" B: Probably because he’s such a hothead." A: "Good point. That really is a chink in his armor."
+2809	641	A: "Why didn’t George get the promotion?" B: "Probably because he’s such a hothead." A: "Good point. That really is a chink in his armor."
 2810	641	Jane’s insecurity is the chink in her armor.
 2811	641	The boss seems mean, but the chink in his armor is that he is easily flattered.
 2812	641	With their superior knowledge, they might find the chinks in his armour.
@@ -4961,7 +4961,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4803	1045	I need some help with this project. Can I pick your brains?
 4804	1046	It was a real slap in the face when she got promoted over me, especially after the amount of work I did on that last project.
 4805	1046	Losing the election was a slap in the face for the club president. Failing to get into a good college was a slap in the face to Tim after his years of study.
-4806	1046	The union leader described the payouts to both bosses as `a slap in the face for all the hard-working staff who now find themselves out of work’.
+4806	1046	The union leader described the payouts to both bosses as "a slap in the face for all the hard-working staff who now find themselves out of work".
 4807	1046	They promoted a colleague who had been with the company for less time than Paola and it was a real slap in the face for her.
 4808	1046	The move was seen as another slap in the face for the monarchy in Australia.
 4809	1046	The bank refused to lend her any more money, which was a real slap in the face for her.
