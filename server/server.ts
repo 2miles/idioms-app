@@ -26,6 +26,13 @@ app.use(morgan('dev')); // Logging middleware
 // Set server port
 const port = parseInt(process.env.PORT || '3001', 10);
 
+// Health check route for e2e testing
+if (process.env.NODE_ENV === 'test') {
+  app.get('/', (_req: Request, res: Response) => {
+    res.status(200).send('OK');
+  });
+}
+
 // Get all idioms and examples
 // Returns the data and the number of idioms returned.
 app.get('/api/v1/idioms', async (_: Request, res: Response) => {
