@@ -47,8 +47,9 @@
     "test:coverage": "vitest --coverage",
     "test:verbose": "vitest run --reporter=verbose",
     "test:ui": "vitest --ui",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
+    "dev:test": "vite --mode test --port 5174",
+    "test:e2e": "../scripts/run-e2e.sh",
+    "test:e2e:ui": "../scripts/run-e2e.sh --ui",
     "auth:refresh": "tsx e2e/auth/createStorageState.ts"
   },
   "browserslist": {
