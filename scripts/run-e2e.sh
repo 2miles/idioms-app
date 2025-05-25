@@ -41,5 +41,5 @@ echo "Running Playwright tests..."
 if [[ "$1" == "--ui" ]]; then
   npx playwright test --ui
 else
-  npx playwright test
+  npx playwright test --reporter=list
 fi

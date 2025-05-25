@@ -49,6 +49,13 @@ jobs:
           ../scripts/run-e2e.sh
         working-directory: client
 
+      - name: Output Playwright logs
+        if: always()
+        run: |
+          echo "==== Playwright test-results ===="
+          ls -R client/test-results || echo "No test-results directory found."
+          cat client/test-results/.last-run.json || echo "No .last-run.json found."
+
       - name: Upload Playwright Report
         if: always()
         uses: actions/upload-artifact@v4
