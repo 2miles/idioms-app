@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Create .env.test file from secrets
+      - name: Create server .env.test file from secrets
         run: |
           cat <<EOF > server/.env.test
           NODE_ENV=test
@@ -30,6 +30,10 @@ jobs:
           AUTH0_ISSUER_BASE_URL=${{ secrets.AUTH0_ISSUER_BASE_URL }}
           DATABASE_URL_TEST=${{ secrets.TEST_DATABASE_URL }}
           EOF
+
+      - name: Create client .env.test
+        run: |
+          echo "VITE_API_BASE_URL=http://localhost:3010" > client/.env.test
 
       - name: Install server dependencies
         run: npm ci
