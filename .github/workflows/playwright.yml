@@ -41,6 +41,7 @@ jobs:
 
       - name: Install Playwright (browsers + CLI)
         run: npx playwright install --with-deps
+        working-directory: client
 
       - name: Run E2E tests
         run: |
