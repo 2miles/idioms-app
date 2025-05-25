@@ -47,6 +47,11 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: client
 
+      - name: Check .env.test contents
+        run: |
+          echo "=== .env.test contents ==="
+          cat server/.env.test
+
       - name: Run E2E tests
         run: |
           chmod +x ../scripts/run-e2e.sh
