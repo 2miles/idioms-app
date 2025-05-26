@@ -49,7 +49,7 @@ jobs:
 
       - name: Check .env.test contents
         run: |
-          echo "=== .env.test contents ==="
+          echo "=== updated .env.test contents ==="
           cat server/.env.test
 
       - name: Run E2E tests
