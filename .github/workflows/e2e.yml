@@ -2,9 +2,11 @@ name: E2E Tests
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   e2e:
@@ -47,18 +49,13 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: client
 
-      - name: Check .env.test contents
-        run: |
-          echo "=== updated .env.test contents ==="
-          cat server/.env.test
-
       - name: Run E2E tests
         run: |
           chmod +x ../scripts/run-e2e.sh
           ../scripts/run-e2e.sh
         working-directory: client
 
-      - name: Output Playwright logs
+      - name: Output debug info from Playwright (last-run.json)
         if: always()
         run: |
           echo "==== Playwright test-results ===="
