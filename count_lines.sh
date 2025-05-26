@@ -23,9 +23,6 @@ client_lines=$(find . -type f \
      -o -name "*ignore*" \
   \) \
   ! -path "./node_modules/*" \
-  ! -path "./coverage/*" \
-  ! -path "./playwright-report/*" \
-  ! -path "./test-results/*" \
   ! -path "./dist/*" \
   ! -name "package-lock.json" \
   ! -name "demo-todo-app.spec.ts" ! -name "example.spec.ts" \
@@ -114,6 +111,9 @@ root_lines=$(find . -maxdepth 1 -type f \
      -o -name "*.md" \
   \) \
   ! -name "package-lock.json" \
+  ! -path "./coverage/*" \
+  ! -path "./playwright-report/*" \
+  ! -path "./test-results/*" \
   -exec cat {} + | wc -l)
 
 root_files=$(find . -maxdepth 1 -type f \
