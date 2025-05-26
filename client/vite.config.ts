@@ -18,5 +18,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
     exclude: [...configDefaults.exclude, '**/e2e/**'],
+    coverage: {
+      reportsDirectory: '../.test-output/coverage',
+    },
   },
 });

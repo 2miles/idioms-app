@@ -16,11 +16,11 @@ done
 
 echo "Port cleanup complete. Starting servers..."
 
-echo "🚀 Starting backend..."
+echo "Starting backend..."
 npm run dev:test --prefix ../server &
 SERVER_PID=$!
 
-echo "🚀 Starting frontend..."
+echo "Starting frontend..."
 npm run dev:test --prefix ../client &
 CLIENT_PID=$!
 
@@ -41,5 +41,5 @@ echo "Running Playwright tests..."
 if [[ "$1" == "--ui" ]]; then
   npx playwright test --ui
 else
-  npx playwright test
+  npx playwright test --reporter=list
 fi
