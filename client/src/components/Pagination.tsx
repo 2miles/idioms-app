@@ -34,6 +34,16 @@ const PageItem = styled.li`
   &.active .page-link:hover {
     background-color: var(--color-brand-secondary);
   }
+  /* 👇 First and last child selectors */
+  &:first-child .page-link {
+    border-top-left-radius: var(--radius-sm) !important;
+    border-bottom-left-radius: var(--radius-sm) !important;
+  }
+
+  &:last-child .page-link {
+    border-top-right-radius: var(--radius-sm) !important;
+    border-bottom-right-radius: var(--radius-sm) !important;
+  }
 `;
 
 type PaginationProps = {

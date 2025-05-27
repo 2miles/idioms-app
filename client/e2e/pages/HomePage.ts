@@ -43,8 +43,8 @@ export class HomePage {
     // Table Controls
     this.columnVisibilityButton = page.getByRole('button', { name: /columns/i });
     this.itemsPerPageDropdown = page.getByRole('button', { name: /items per page/i });
-    this.paginationNextButton = page.getByRole('button', { name: '>' });
-    this.paginationPreviousButton = page.getByRole('button', { name: '<' });
+    this.paginationNextButton = page.getByRole('link', { name: '>' }).first();
+    this.paginationPreviousButton = page.getByRole('link', { name: '<' }).first();
 
     // Table Content
     this.tableRows = page.locator('table tbody tr');

@@ -52,6 +52,7 @@ const Anchor = styled.button<StyleProps>`
   display: flex;
   align-items: center;
   cursor: pointer;
+  height: 32px;
 
   &::after {
     content: '';
