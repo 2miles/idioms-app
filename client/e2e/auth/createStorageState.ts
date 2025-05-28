@@ -20,25 +20,30 @@ const users = [
 ];
 
 (async () => {
-  for (const user of users) {
-    const browser = await chromium.launch();
-    const context = await browser.newContext();
-    const page = await context.newPage();
+  const browser = await chromium.launch({ headless: false, slowMo: 50 });
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-    const authDir = path.resolve('e2e/.auth');
-    if (!fs.existsSync(authDir)) {
-      fs.mkdirSync(authDir, { recursive: true });
-    }
-
-    await loginWithAuth0(page, user.email, user.password);
-
-    await context.storageState({ path: `e2e/.auth/${user.name}.json` });
-    await browser.close();
-
-    console.log(`Saved auth state for ${user.name}`);
+  const authDir = path.resolve('e2e/.auth');
+  if (!fs.existsSync(authDir)) {
+    fs.mkdirSync(authDir, { recursive: true });
   }
-})();
 
+  for (const user of users) {
+    try {
+      await loginWithAuth0(page, user.email, user.password);
+      await context.storageState({ path: `${authDir}/${user.name}.json` });
+      console.log(`✅ Saved auth state for ${user.name}`);
+
+      await page.getByRole('button', { name: /log out/i }).click();
+      await page.getByRole('button', { name: /log in/i }).waitFor();
+    } catch (err) {
+      console.error(`❌ Failed for ${user.name}`, err);
+    }
+  }
+
+  await browser.close();
+})();
 // ********** Usage example **********
 
 // import { test, expect } from '@playwright/test';

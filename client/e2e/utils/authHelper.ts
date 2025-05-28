@@ -1,28 +1,33 @@
 import { Page } from '@playwright/test';
 
 export async function loginWithAuth0(page: Page, email: string, password: string) {
-  await page.goto('http://localhost:5173');
+  // 🔁 Make sure the dev server URL matches your test port
+  const appUrl = 'http://localhost:5174';
+  const postLoginIndicator = 'button:has-text("Log Out")';
 
-  // Click your app's login button
+  // Go to app and click "Log In"
+  await page.goto(appUrl);
   await page.getByRole('button', { name: /log in/i }).click();
 
-  // Wait for Universal Login page
+  // Wait for Auth0 Universal Login redirect
   await page.waitForURL(/auth0\.com/);
 
-  // Fill Auth0 form
+  // Fill login form
   await page.getByLabel('Email address').fill(email);
   await page.getByLabel('Password').fill(password);
-  //await page.getByRole('button', { name: /continue/i }).click();
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
 
-  // Optional: handle post-login consent (if your app requires user consent)
+  // Optional: handle consent prompt (first login / tenant config)
   const acceptBtn = page.getByRole('button', { name: /accept/i });
   if (await acceptBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
     await acceptBtn.click();
   }
 
-  // Wait to be redirected back to your app
-  await page.waitForURL('http://localhost:5173/**');
+  // Wait until redirected back to the app
+  await page.waitForURL(`${appUrl}/**`, { waitUntil: 'load' });
+
+  // Optional: wait for an element that confirms login was successful
+  await page.waitForSelector(postLoginIndicator, { timeout: 10000 });
 }
 
 // Usage example -----------
