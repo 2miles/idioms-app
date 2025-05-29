@@ -7,7 +7,10 @@
     "lint": "eslint .",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "start:server": "cd server && npx tsx server.ts",
-    "start:client": "cd client && npm run dev"
+    "start:client": "cd client && npm run dev",
+    "test:stack": "concurrently \"npm run test:server\" \"npm run test:client\"",
+    "test:server": "npm run dev:test --prefix server",
+    "test:client": "npm run dev:test --prefix client"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
