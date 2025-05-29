@@ -71,7 +71,7 @@ const StyledTh = styled.th<StyledThProps>`
 
 const TableHead = ({ columns, handleSorting }: TableHeadProps) => {
   const [sortField, setSortField] = useState<ColumnAccessors>('position');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // Call handleSorting initially to apply the default sorting
   useEffect(() => {

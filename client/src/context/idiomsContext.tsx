@@ -34,14 +34,11 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
   const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const addPositionsToIdioms = (idioms: Idiom[]): Idiom[] => {
-    return idioms
-      .sort(
-        (a: Idiom, b: Idiom) => new Date(a.timestamps).getTime() - new Date(b.timestamps).getTime(),
-      )
-      .map((idiom: Idiom, index: number) => ({
-        ...idiom,
-        position: index + 1,
-      }));
+    const sorted = idioms.sort(
+      (a: Idiom, b: Idiom) => new Date(b.timestamps).getTime() - new Date(a.timestamps).getTime(),
+    );
+    const total = sorted.length;
+    return sorted.map((idiom, index) => ({ ...idiom, position: total - index }));
   };
 
   const fetchData = async () => {
