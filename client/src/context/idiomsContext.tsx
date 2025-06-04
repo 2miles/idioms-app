@@ -1,12 +1,13 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
-import { Example, Idiom } from '@/types';
+import { Example, Idiom, NewIdiomInput } from '@/types';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 
 type IdiomsContextType = {
   idioms: Idiom[];
   setIdioms: React.Dispatch<React.SetStateAction<Idiom[]>>;
-  addIdioms: (idiom: Idiom) => Promise<void>;
+  addIdioms: (idiom: NewIdiomInput) => Promise<Idiom | null>;
+  // addIdioms: (idiom: Idiom) => Promise<void>;
   updateIdiom: (updatedIdiom: Idiom) => Promise<void>;
   deleteIdiom: (id: number) => Promise<void>;
   updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<void>;
@@ -16,7 +17,7 @@ type IdiomsContextType = {
 const defaultContext: IdiomsContextType = {
   idioms: [],
   setIdioms: () => {},
-  addIdioms: async () => {},
+  addIdioms: async () => null,
   updateIdiom: async () => {},
   deleteIdiom: async () => {},
   updateExamples: async () => {},
@@ -67,17 +68,20 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
   }, []);
 
   // Add, update, and delete idioms (recalculate positions after each operation)
-
-  const addIdioms = async (idiom: Idiom) => {
+  const addIdioms = async (idiom: NewIdiomInput): Promise<Idiom | null> => {
+    console.trace('TRACE: addIdioms called');
     try {
       const api = await getAuthorizedIdiomFinder();
-      const response = await api.post('/', idiom); // idiom may need preprocessing depending on form structure
-
+      const response = await api.post('/', idiom);
       const newIdiom = response.data.data.idiom;
+
       const updatedIdioms = addPositionsToIdioms([...idioms, newIdiom]);
       setIdioms(updatedIdioms);
+
+      return newIdiom;
     } catch (err) {
       console.error('Failed to add idiom:', err);
+      return null;
     }
   };
 

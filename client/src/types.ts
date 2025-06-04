@@ -9,6 +9,14 @@ export type Idiom = {
   examples: Example[];
 };
 
+export type NewIdiomInput = {
+  title: string | null;
+  title_general: string | null;
+  definition: string | null;
+  timestamps: string | null;
+  contributor: string | null;
+};
+
 export type Example = {
   example_id: number;
   idiom_id: number;

@@ -26,6 +26,7 @@ const TimestampField = ({ label, id, value, onChange }: TimestampFieldProps) => 
         onChange={handleChange}
         dateFormat='YYYY-MM-DD'
         timeFormat='HH:mm:ss'
+        inputProps={{ id, className: 'form-control' }}
       />
     </div>
   );
