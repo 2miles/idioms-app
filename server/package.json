@@ -9,8 +9,7 @@
     "build": "tsc -p tsconfig.node.json",
     "dev": "tsx server.ts",
     "dev:test": "env-cmd -f .env.test tsx server.ts",
-    "test:reset": "./scripts/resetTestDb.sh",
-    "test:clean": "tsx scripts/truncateTestDb.ts"
+    "test:reset": "./scripts/resetTestDb.sh"
   },
   "keywords": [],
   "author": "",

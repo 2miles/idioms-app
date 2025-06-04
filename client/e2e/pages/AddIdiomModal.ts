@@ -19,14 +19,14 @@ export class AddIdiomModal {
   constructor(page: Page) {
     this.page = page;
 
-    this.titleInput = page.getByLabel('Title');
-    this.titleGeneralInput = page.getByLabel('Title General');
-    this.definitionInput = page.getByLabel('Definition');
-    this.contributorInput = page.getByLabel('Contributor');
-    this.timestampInput = page.locator('input[type="datetime-local"]');
+    this.titleInput = page.getByRole('textbox', { name: 'Title', exact: true });
+    this.titleGeneralInput = page.getByRole('textbox', { name: 'Title General', exact: true });
+    this.definitionInput = page.getByRole('textbox', { name: 'Definition', exact: true });
+    this.contributorInput = page.getByRole('textbox', { name: 'Contributor', exact: true });
+    // this.timestampInput = page.locator('input[type="datetime-local"]');
 
     this.keepOpenCheckbox = page.getByLabel('Keep Open');
-    this.submitButton = page.getByRole('button', { name: 'Add' });
+    this.submitButton = page.getByRole('button', { name: /^add$/i });
     this.closeButton = page.getByRole('button', { name: /×/ });
 
     this.toast = page.locator('.swal2-popup');
