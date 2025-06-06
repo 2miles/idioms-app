@@ -17,7 +17,7 @@ export const ADD_IDIOM_FORM_DATA_1: NewIdiomInput = {
   title_general: 'When one breaks the ice',
   definition: 'To initiate conversation in a social setting.',
   timestamps: null, // No date provided
-  contributor: 'Test User',
+  contributor: 'E2E Bot',
 };
 
 export const EXAMPLE_1: Example = {
