@@ -9,7 +9,7 @@ import { AddIdiomModal } from '../pages/AddIdiomModal.js';
 test.use({ storageState: './e2e/.auth/admin.json' });
 
 test.describe('Admin: Idiom management', () => {
-  test('can add and delete an idiom', async ({ page }) => {
+  test('can add idiom, view detail page, and delete an idiom', async ({ page }) => {
     const homePage = new HomePage(page);
     const detailPage = new DetailPage(page);
     const addIdiomModal = new AddIdiomModal(page);
