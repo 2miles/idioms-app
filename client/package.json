@@ -50,8 +50,7 @@
     "test:ui": "vitest --ui",
     "dev:test": "vite --mode test --port 5174",
     "test:e2e": "../scripts/run-e2e.sh",
-    "test:e2e:ui": "../scripts/run-e2e.sh --ui",
-    "auth:refresh": "tsx e2e/auth/createStorageState.ts"
+    "test:e2e:ui": "../scripts/run-e2e.sh --ui"
   },
   "browserslist": {
     "production": [

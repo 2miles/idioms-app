@@ -19,20 +19,21 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  // retries: process.env.CI ? 2 : 0,
-  retries: 0,
+  retries: process.env.CI ? 2 : 0,
+  // retries: 0,
   /* Opt out of parallel tests on CI. */
-  // workers: process.env.CI ? 1 : undefined,
-  workers: 1,
+  workers: process.env.CI ? 1 : undefined,
+  // workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html', { outputFolder: '../.test-output/playwright-report' }]],
   // reporter: isDeployed ? [['list']] : [['html', { outputFolder: './playwright' }]],
   outputDir: '../.test-output/test-results',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  globalSetup: './e2e/global.setup.ts',
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    //baseURL: 'http://127.0.0.1:3000',
     baseURL: 'http://localhost:5174',
+    storageState: './e2e/.auth/admin.json',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     ignoreHTTPSErrors: true,
