@@ -77,30 +77,36 @@ describe('AddIdiom', () => {
     });
 
     test('includes a timestamp string when user edits timestamp', async () => {
+      mockAddIdioms.mockResolvedValue({ id: 1, title: 'Test Idiom' });
       renderComponent();
+
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
+
       const allTextboxes = screen.getAllByRole('textbox');
-      const datetimeInput = allTextboxes[3];
+      const datetimeInput = allTextboxes[3]; // Index depends on your form layout
       fireEvent.change(datetimeInput, { target: { value: '2025-01-01 12:00:00' } });
+
       fireEvent.click(screen.getByText(/add/i));
 
+      const expectedTimestamp = new Date('2025-01-01T12:00:00').toISOString().split('.')[0] + 'Z';
       await waitFor(() => {
-        expect(mockPost).toHaveBeenCalledWith(
-          '/',
+        expect(mockAddIdioms).toHaveBeenCalledWith(
           expect.objectContaining({
-            timestamps: expect.any(String),
+            title: 'Test Idiom',
+            timestamps: expectedTimestamp,
           }),
         );
       });
     });
+
     test('includes a timestamp string when user does not edit timestamp', async () => {
+      mockAddIdioms.mockResolvedValue({ id: 1, title: 'Test Idiom' });
       renderComponent();
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
       fireEvent.click(screen.getByText(/add/i));
 
       await waitFor(() => {
-        expect(mockPost).toHaveBeenCalledWith(
-          '/',
+        expect(mockAddIdioms).toHaveBeenCalledWith(
           expect.objectContaining({
             title: 'Test Idiom',
             timestamps: expect.any(String),
@@ -108,7 +114,9 @@ describe('AddIdiom', () => {
         );
       });
     });
+
     test('does not close modal if Keep Open is checked', async () => {
+      mockAddIdioms.mockResolvedValue({ id: 1, title: 'This is a test idiom.' });
       renderComponent();
 
       fireEvent.change(screen.getByLabelText('Title'), {
@@ -116,11 +124,9 @@ describe('AddIdiom', () => {
       });
 
       fireEvent.click(screen.getByLabelText(/keep open/i)); // Check the "Keep Open" box
-
       fireEvent.click(screen.getByText(/add/i)); // Submit the form
 
       await waitFor(() => {
-        expect(mockPost).toHaveBeenCalled();
         expect(mockAddIdioms).toHaveBeenCalled();
         expect(mockClose).not.toHaveBeenCalled(); // Should not close modal
       });
@@ -141,16 +147,15 @@ describe('AddIdiom', () => {
 
   describe('Submission', () => {
     test('submits form with valid data', async () => {
+      mockAddIdioms.mockResolvedValue({ id: 1, title: 'Test idiom' });
       renderComponent();
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test idiom' } });
       fireEvent.click(screen.getByText(/add/i));
 
       await waitFor(() => {
-        expect(mockPost).toHaveBeenCalledWith(
-          '/',
+        expect(mockAddIdioms).toHaveBeenCalledWith(
           expect.objectContaining({ title: 'Test idiom' }),
         );
-        expect(mockAddIdioms).toHaveBeenCalled();
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
             title: 'Idiom Added!',
@@ -162,11 +167,7 @@ describe('AddIdiom', () => {
     });
 
     test('shows error alert when API request fails', async () => {
-      (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(
-        () => ({
-          post: vi.fn(() => Promise.reject(new Error('API Failure'))), // Force error
-        }),
-      );
+      mockAddIdioms.mockResolvedValue(null);
       renderComponent();
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
       fireEvent.click(screen.getByText(/add/i));
@@ -184,6 +185,7 @@ describe('AddIdiom', () => {
     });
 
     test('closes modal if Keep Open is not checked', async () => {
+      mockAddIdioms.mockResolvedValue({ id: 1, title: 'This is a test idiom.' });
       renderComponent();
 
       fireEvent.change(screen.getByLabelText('Title'), {

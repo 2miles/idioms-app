@@ -19,6 +19,8 @@ if (!container) {
           redirect_uri: window.location.origin,
           audience: 'https://api.idiomvault.com',
         }}
+        cacheLocation='localstorage'
+        useRefreshTokens={true}
       >
         <App />
       </Auth0Provider>

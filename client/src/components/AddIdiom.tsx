@@ -4,10 +4,10 @@ import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import TextAreaField from '@/components/formFields/TextAreaField';
 import TextField from '@/components/formFields/TextField';
 import TimestampField from '@/components/formFields/TimestampField';
+import { NewIdiomInput } from '@/types';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
@@ -50,8 +50,8 @@ type AddIdiomProps = {
 };
 
 const AddIdiom = ({ onClose }: AddIdiomProps) => {
+  console.log('AddIdiom rendered');
   const { addIdioms } = useContext(IdiomsContext);
-  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
@@ -82,40 +82,41 @@ const AddIdiom = ({ onClose }: AddIdiomProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.trace('🚨 handleSubmit called');
     setValidated(true);
     if (formData.title.trim() === '') {
       return; // Prevent form submission if title is empty
     }
-    try {
-      // Format for the backend and remove milliseconds
-      const formattedTimestamp: string = formData.timestamp.toISOString().split('.')[0] + 'Z';
-      const api = await getAuthorizedIdiomFinder();
-      const response = await api.post('/', {
-        title: emptyStringToNull(formData.title),
-        title_general: emptyStringToNull(formData.titleGeneral),
-        definition: emptyStringToNull(formData.definition),
-        timestamps: emptyStringToNull(formattedTimestamp),
-        contributor: emptyStringToNull(formData.contributor),
-      });
-      if (response.data && response.data.data && response.data.data.idiom) {
-        addIdioms(response.data.data.idiom);
-        clearFormFields();
-        Swal.fire({
-          title: 'Idiom Added!',
-          text: 'The idiom has been successfully added.',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false,
-        });
 
-        if (!keepOpen) {
-          setTimeout(() => {
-            onClose();
-          }, 200);
-        }
+    // Format for the backend and remove milliseconds
+    const formattedTimestamp: string = formData.timestamp.toISOString().split('.')[0] + 'Z';
+
+    const payload: NewIdiomInput = {
+      title: emptyStringToNull(formData.title),
+      title_general: emptyStringToNull(formData.titleGeneral),
+      definition: emptyStringToNull(formData.definition),
+      timestamps: emptyStringToNull(formattedTimestamp),
+      contributor: emptyStringToNull(formData.contributor),
+    };
+
+    const addedIdiom = await addIdioms(payload);
+
+    if (addedIdiom) {
+      clearFormFields();
+      Swal.fire({
+        title: 'Idiom Added!',
+        text: 'The idiom has been successfully added.',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      if (!keepOpen) {
+        setTimeout(() => {
+          onClose();
+        }, 200);
       }
-    } catch (err) {
-      console.error('Error adding idiom.', err);
+    } else {
       Swal.fire({
         title: 'Error',
         text: 'There was a problem adding the idiom.',

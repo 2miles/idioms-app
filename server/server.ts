@@ -2,9 +2,9 @@ import express, { Request, Response } from 'express'; // Express import and type
 import dotenv from 'dotenv'; // Environment variable configuration
 import morgan from 'morgan'; // HTTP request logger
 import cors from 'cors'; // Cross-Origin Resource Sharing
-import { jwtCheck } from './authMiddleware'; // JWT authentication middleware
-import { checkRole } from './authMiddleware'; // Role-checking middleware
-import pool from './db/index'; // Database connection pool
+import { jwtCheck } from './authMiddleware.js'; // JWT authentication middleware
+import { checkRole } from './authMiddleware.js'; // Role-checking middleware
+import pool from './db/index.js'; // Database connection pool
 
 // Initialize environment variables
 dotenv.config();
@@ -150,18 +150,25 @@ app.put(
   },
 );
 
-// Delete an idiom
 app.delete(
   '/api/v1/idioms/:id',
   jwtCheck,
   checkRole('Admin'),
   async (req: Request, res: Response) => {
+    const { id } = req.params;
     try {
       const deleteQuery = `
-      DELETE FROM idioms_test 
-      WHERE id = $1
-    `;
-      const result = await pool.query(deleteQuery, [req.params.id]);
+        DELETE FROM idioms_test 
+        WHERE id = $1
+        RETURNING *
+      `;
+
+      const result = await pool.query(deleteQuery, [id]);
+
+      if (result.rowCount === 0) {
+        res.status(404).json({ error: 'Idiom not found' });
+        return;
+      }
       res.status(200).json({
         status: 'success',
         data: {
@@ -169,7 +176,7 @@ app.delete(
         },
       });
     } catch (error) {
-      console.error('Error executing query:', error);
+      console.error('Error executing delete query:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   },

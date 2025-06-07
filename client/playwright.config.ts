@@ -27,10 +27,11 @@ export default defineConfig({
   // reporter: isDeployed ? [['list']] : [['html', { outputFolder: './playwright' }]],
   outputDir: '../.test-output/test-results',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  globalSetup: './e2e/global.setup.ts',
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    //baseURL: 'http://127.0.0.1:3000',
     baseURL: 'http://localhost:5174',
+    storageState: './e2e/.auth/admin.json',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     ignoreHTTPSErrors: true,

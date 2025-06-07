@@ -108,6 +108,14 @@ export class HomePage {
     await this.tableRows.nth(rowIndex).click();
   }
 
+  async clickTableRowWithText(text: string) {
+    const locator = this.page.getByRole('cell', { name: text, exact: true });
+
+    await locator.waitFor({ timeout: 10000 }); // ensures it's in DOM
+    await expect(locator).toBeVisible({ timeout: 10000 }); // ensures it's painted
+    await locator.click();
+  }
+
   async clickNextPage() {
     await this.paginationNextButton.click();
   }

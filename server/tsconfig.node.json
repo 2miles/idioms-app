@@ -4,8 +4,8 @@
     "lib": ["ES2023"],
 
     /* Module */
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "moduleDetection": "force",
 
     "skipLibCheck": true,

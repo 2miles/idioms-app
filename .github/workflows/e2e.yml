@@ -37,6 +37,15 @@ jobs:
         run: |
           echo "VITE_API_BASE_URL=http://localhost:3010" > client/.env.test
 
+      - name: Create client e2e .env
+        run: |
+          cat <<EOF > client/e2e/.env
+          TEST_ADMIN_EMAIL=${{ secrets.TEST_ADMIN_EMAIL }}
+          TEST_ADMIN_PASSWORD=${{ secrets.TEST_ADMIN_PASSWORD }}
+          TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}
+          EOF
+
       - name: Install server dependencies
         run: npm ci
         working-directory: server

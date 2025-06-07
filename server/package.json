@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.ts",
+  "type": "module",
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc -p tsconfig.node.json",
     "dev": "tsx server.ts",
     "dev:test": "env-cmd -f .env.test tsx server.ts",
-    "db:reset": "./scripts/resetTestDb.sh"
+    "test:reset": "./scripts/resetTestDb.sh"
   },
   "keywords": [],
   "author": "",
