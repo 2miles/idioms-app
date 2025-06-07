@@ -1,9 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Swal from 'sweetalert2';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import UpdateIdiom from './UpdateIdiom';
 import { IdiomsContext } from '@/context/idiomsContext';
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import { suppressConsoleOutput } from '../../testUtils';
 
 const DEBUG_ERRORS = false; // toggle this to `true` to see errors in this file
@@ -16,23 +15,9 @@ vi.mock('sweetalert2', () => ({
   },
 }));
 
-vi.mock('@/apis/useAuthorizedIdiomFinder', () => ({
-  default: vi.fn(),
-}));
-
-const mockUpdateIdiom = vi.fn();
+const mockUpdateIdiom = vi.fn().mockResolvedValue({ id: 1, title: 'Updated Title' });
 const mockClose = vi.fn();
 const mockDelete = vi.fn();
-
-const mockPut = vi.fn(() =>
-  Promise.resolve({
-    data: {
-      data: {
-        idiom: { id: 1, title: 'Dummy Idiom Title' },
-      },
-    },
-  }),
-);
 
 const dummyIdiom = {
   id: 1,
@@ -44,13 +29,6 @@ const dummyIdiom = {
   position: 0,
   examples: [],
 };
-
-beforeEach(() => {
-  vi.clearAllMocks();
-  (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
-    put: mockPut,
-  }));
-});
 
 const renderComponent = () =>
   render(
@@ -86,7 +64,7 @@ describe('UpdateIdiom', () => {
       fireEvent.click(screen.getByText(/save/i));
 
       await waitFor(() => {
-        expect(mockPut).not.toHaveBeenCalled();
+        expect(mockUpdateIdiom).not.toHaveBeenCalled();
       });
     });
 
@@ -104,8 +82,8 @@ describe('UpdateIdiom', () => {
       fireEvent.click(screen.getByText(/save/i));
 
       await waitFor(() => {
-        expect(mockPut).toHaveBeenCalledWith(
-          '/1',
+        expect(mockUpdateIdiom).toHaveBeenCalledWith(
+          1,
           expect.objectContaining({
             timestamps: expect.any(String),
           }),
@@ -113,56 +91,56 @@ describe('UpdateIdiom', () => {
       });
     });
   });
+});
 
-  describe('Submission', () => {
-    test('submits updated data correctly', async () => {
-      renderComponent();
+describe('Submission', () => {
+  test('submits updated data correctly', async () => {
+    renderComponent();
 
-      fireEvent.change(screen.getByLabelText('Title'), {
-        target: { value: 'Updated Title' },
-      });
-      fireEvent.click(screen.getByText(/save/i));
-
-      await waitFor(() => {
-        expect(mockPut).toHaveBeenCalledWith(
-          '/1',
-          expect.objectContaining({ title: 'Updated Title' }),
-        );
-        expect(mockUpdateIdiom).toHaveBeenCalled();
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Updated!',
-            text: 'The idiom has been successfully updated.',
-            icon: 'success',
-          }),
-        );
-        expect(mockClose).toHaveBeenCalled();
-      });
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Updated Title' },
     });
+    fireEvent.click(screen.getByText(/save/i));
 
-    test('shows error alert if API call fails', async () => {
-      (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(
-        () => ({
-          put: vi.fn(() => Promise.reject(new Error('Update failed'))),
+    await waitFor(() => {
+      expect(mockUpdateIdiom).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({ title: 'Updated Title' }),
+      );
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Updated!',
+          text: 'The idiom has been successfully updated.',
+          icon: 'success',
         }),
       );
+      expect(mockClose).toHaveBeenCalled();
+    });
+  });
 
-      renderComponent();
+  test('shows error alert if API call fails', async () => {
+    mockUpdateIdiom.mockRejectedValueOnce(new Error('Update failed'));
 
-      fireEvent.change(screen.getByLabelText('Title'), {
-        target: { value: 'Updated Title' },
-      });
-      fireEvent.click(screen.getByText(/save/i));
+    renderComponent();
 
-      await waitFor(() => {
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Error',
-            text: 'There was a problem updating the idiom.',
-            icon: 'error',
-          }),
-        );
-      });
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Updated Title' },
+    });
+    fireEvent.click(screen.getByText(/save/i));
+
+    await waitFor(() => {
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Error',
+          text: 'There was a problem updating the idiom.',
+          icon: 'error',
+        }),
+      );
+    });
+
+    // ✅ Ensure rejection doesn't bubble up
+    await waitFor(() => {
+      expect(mockUpdateIdiom).toHaveBeenCalled();
     });
   });
 
