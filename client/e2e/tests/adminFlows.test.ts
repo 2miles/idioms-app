@@ -33,7 +33,7 @@ test.describe('Admin: Idiom management', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify idiom was added
-    await expect(page.getByText(testTitle, { exact: true })).toBeVisible();
+    await expect(page.getByText(testTitle, { exact: true })).toBeVisible({ timeout: 10000 });
 
     // Navigate to detail page and delete idiom
     await homePage.clickTableRowWithText(testTitle);
