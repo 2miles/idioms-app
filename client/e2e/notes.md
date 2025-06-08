@@ -73,3 +73,64 @@
 - [ ] Date picker input works across devices/browsers
 - [ ] Validation errors are shown when submitting incomplete forms
 - [ ] Slow network conditions don’t break UI
+
+✅ Keep All These Tests as-is (pure UI logic):
+
+These don’t need context tests:
+• Pagination.test.tsx
+• ColumnDropdown.test.tsx
+• DetailCard.test.tsx
+• NavBar.test.tsx
+• Table.test.tsx
+• SearchBar.test.tsx
+• TableSection.test.tsx
+• SearchColumnDropdown.test.tsx
+• TableBody.test.tsx
+• TableHead.test.tsx
+• Dropdown.test.tsx
+• Modal.test.tsx
+• ItemsPerPageDropdown.test.tsx
+
+⸻
+
+🧹 Partially Migrate These:
+
+🔁 AddIdiom.test.tsx
+
+Move to context:
+• ✓ submits form with valid data
+• ✓ shows error alert when API request fails
+
+Keep in component:
+• All form validation (empty input, whitespace)
+• “Keep open” behavior
+• Timestamp inclusion logic
+
+⸻
+
+🔁 UpdateIdiom.test.tsx
+
+Move to context:
+• ✓ submits updated data correctly
+• ✓ shows error alert if API call fails
+
+Keep in component:
+• Prefilled form
+• Empty submission guard
+• Timestamp change behavior
+• Deletion UI logic (but maybe also test deleteIdiom logic in context)
+
+⸻
+
+🔁 UpdateExamples.test.tsx
+
+Move to context:
+• ✓ submits examples and shows success alert
+• ✓ shows error alert on API failure
+• ✓ deletes example when confirmed
+• ✓ shows error alert on delete failure
+
+Keep in component:
+• Input typing behavior
+• Modal “Keep Open”
+• Warning display
