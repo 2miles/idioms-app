@@ -10,7 +10,7 @@ type IdiomsContextType = {
   updateIdiom: (id: number, changes: UpdateIdiomInput) => Promise<Idiom | null>;
   deleteIdiom: (id: number) => Promise<void>;
   updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<void>;
-  addExampleToIdiom: (idiomId: number, newExample: Example) => Promise<void>;
+  addExampleToIdiom: (idiomId: number, exampleText: string) => Promise<Example | null>;
 };
 
 const defaultContext: IdiomsContextType = {
@@ -20,7 +20,7 @@ const defaultContext: IdiomsContextType = {
   updateIdiom: async () => null,
   deleteIdiom: async () => {},
   updateExamples: async () => {},
-  addExampleToIdiom: async () => {},
+  addExampleToIdiom: async () => null,
 };
 
 type IdiomsContextProviderProps = {
@@ -128,10 +128,15 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     }
   };
 
-  const addExampleToIdiom = async (idiomId: number, newExample: Example) => {
+  const addExampleToIdiom = async (
+    idiomId: number,
+    exampleText: string,
+  ): Promise<Example | null> => {
     try {
       const api = await getAuthorizedIdiomFinder();
-      const response = await api.post(`/${idiomId}/examples`, newExample);
+      const response = await api.post(`/${idiomId}/examples`, {
+        example: exampleText.trim() || null,
+      });
 
       const savedExample = response.data.data.example;
       setIdioms((prevIdioms) =>
@@ -141,8 +146,10 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
             : idiom,
         ),
       );
+      return savedExample;
     } catch (err) {
       console.error('Failed to add example:', err);
+      return null;
     }
   };
 

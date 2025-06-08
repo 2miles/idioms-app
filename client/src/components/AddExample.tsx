@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import TextAreaField from '@/components/formFields/TextAreaField';
 
 const FormContainer = styled.div`
@@ -66,13 +65,9 @@ type AddExampleProps = {
 
 const AddExample = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
   const { addExampleToIdiom } = useContext(IdiomsContext);
-  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
-
   const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
   const [formData, setFormData] = useState({ newExample: '' });
-
-  const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -85,16 +80,10 @@ const AddExample = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
-    if (formData.newExample.trim() === '') {
-      return; // Prevent form submission if title is empty
-    }
+    if (!formData.newExample.trim()) return; // Prevent form submission if title is empty
     try {
-      const api = await getAuthorizedIdiomFinder();
-      const response = await api.post(`/${String(idiomId)}/examples`, {
-        example: emptyStringToNull(formData.newExample),
-      });
-      if (response.data && response.data.data && response.data.data.example) {
-        addExampleToIdiom(idiomId, response.data.data.example);
+      const newExample = await addExampleToIdiom(idiomId, formData.newExample);
+      if (newExample) {
         clearFormFields();
         Swal.fire({
           title: 'Example Added!',
@@ -109,6 +98,8 @@ const AddExample = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
             onClose();
           }, 200);
         }
+      } else {
+        throw new Error('No example returned');
       }
     } catch (err) {
       console.error('Error adding idiom.', err);
