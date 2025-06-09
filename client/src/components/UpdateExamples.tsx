@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import { Example } from '@/types';
 import { IdiomsContext } from '@/context/idiomsContext';
 import TextAreaField from '@/components/formFields/TextAreaField';
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
@@ -62,8 +61,7 @@ type UpdateExamplesProps = {
 };
 
 const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
-  const { idioms, updateExamples } = useContext(IdiomsContext);
-  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
+  const { idioms, updateExamples, deleteExampleById } = useContext(IdiomsContext);
   const initialExamples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
   const [examples, setExamples] = useState<Example[]>(initialExamples);
 
@@ -71,32 +69,30 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
 
   const handleExampleChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const { value } = e.target;
-    const updatedExamples = examples.map((example, i) =>
-      i === index ? { ...example, example: value } : example,
+    setExamples((prev) =>
+      prev.map((example, i) => (i === index ? { ...example, example: value } : example)),
     );
-    setExamples(updatedExamples);
   };
 
   const handleDeleteExample = async (index: number, exampleId: number) => {
-    const confirmResult = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this example!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      confirmButtonColor: '#DC3545',
-      cancelButtonText: 'No, keep it',
-    });
+    try {
+      const confirmResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this example!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        confirmButtonColor: '#DC3545',
+        cancelButtonText: 'No, keep it',
+      });
 
-    if (confirmResult.isConfirmed) {
-      try {
-        const api = await getAuthorizedIdiomFinder();
-        await api.delete(`/examples/${exampleId}`);
-        // Update local state to remove the example
-        const updatedExamples = examples.filter((_, i) => i !== index);
-        setExamples(updatedExamples);
-        updateExamples(idiomId, updatedExamples);
+      if (!confirmResult.isConfirmed) return;
 
+      const deleted = await deleteExampleById(exampleId);
+      if (deleted) {
+        const updated = examples.filter((_, i) => i !== index);
+        setExamples(updated);
+        updateExamples(idiomId, updated);
         Swal.fire({
           title: 'Deleted!',
           text: 'The example has been successfully deleted.',
@@ -104,14 +100,16 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
           timer: 1800,
           showConfirmButton: false,
         });
-      } catch (err) {
-        console.error('Error deleting example:', err);
-        Swal.fire({
-          title: 'Error',
-          text: 'There was a problem deleting the example.',
-          icon: 'error',
-        });
+      } else {
+        throw new Error('Failed to delete example');
       }
+    } catch (err) {
+      console.error('Error deleting example:', err);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was a problem deleting the example.',
+        icon: 'error',
+      });
     }
   };
 
@@ -121,7 +119,7 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form submitted!');
+
     if (!validateExamples()) {
       Swal.fire({
         title: 'Error',
@@ -132,18 +130,8 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
     }
 
     try {
-      // Send the updated examples to your API
-      console.log('Submitting examples:', examples);
-      const api = await getAuthorizedIdiomFinder();
-      const response = await api.put(`/${idiomId}/examples`, {
-        examples,
-      });
-
-      if (response.data && response.data.status === 'success') {
-        console.log(response.data);
-        const updatedExamples = response.data.examples || examples;
-        updateExamples(idiomId, updatedExamples);
-
+      const savedExamples = await updateExamples(idiomId, examples);
+      if (savedExamples) {
         Swal.fire({
           title: 'Updated!',
           text: 'Examples have been successfully updated.',
@@ -152,6 +140,8 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
           showConfirmButton: false,
         });
         onClose();
+      } else {
+        throw new Error('Context updateExamples returned false');
       }
     } catch (err) {
       console.error('Error updating examples:', err);

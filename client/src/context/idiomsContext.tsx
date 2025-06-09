@@ -9,7 +9,8 @@ type IdiomsContextType = {
   addIdioms: (idiom: NewIdiomInput) => Promise<Idiom | null>;
   updateIdiom: (id: number, changes: UpdateIdiomInput) => Promise<Idiom | null>;
   deleteIdiom: (id: number) => Promise<void>;
-  updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<void>;
+  updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<Example[] | null>;
+  deleteExampleById: (exampleId: number) => Promise<Example | null>;
   addExampleToIdiom: (idiomId: number, exampleText: string) => Promise<Example | null>;
 };
 
@@ -19,7 +20,8 @@ const defaultContext: IdiomsContextType = {
   addIdioms: async () => null,
   updateIdiom: async () => null,
   deleteIdiom: async () => {},
-  updateExamples: async () => {},
+  updateExamples: async () => null,
+  deleteExampleById: async () => null,
   addExampleToIdiom: async () => null,
 };
 
@@ -114,17 +116,36 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     }
   };
 
-  const updateExamples = async (idiomId: number, updatedExamples: Example[]) => {
+  const updateExamples = async (
+    idiomId: number,
+    updatedExamples: Example[],
+  ): Promise<Example[] | null> => {
     try {
       const api = await getAuthorizedIdiomFinder();
-      await api.put(`/${idiomId}/examples`, { examples: updatedExamples });
+      const response = await api.put(`/${idiomId}/examples`, { examples: updatedExamples });
+
+      const savedExamples = response.data?.examples ?? updatedExamples;
 
       const updatedIdioms = idioms.map((idiom) =>
-        idiom.id === idiomId ? { ...idiom, examples: updatedExamples } : idiom,
+        idiom.id === idiomId ? { ...idiom, examples: savedExamples } : idiom,
       );
       setIdioms(updatedIdioms);
+
+      return savedExamples;
     } catch (err) {
       console.error('Failed to update examples:', err);
+      return null;
+    }
+  };
+
+  const deleteExampleById = async (exampleId: number): Promise<Example | null> => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.delete(`/examples/${exampleId}`);
+      return response.data?.data?.example ?? null;
+    } catch (err) {
+      console.error('Failed to delete example:', err);
+      return null;
     }
   };
 
@@ -162,6 +183,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
         updateIdiom,
         deleteIdiom,
         updateExamples,
+        deleteExampleById,
         addExampleToIdiom,
       }}
     >
