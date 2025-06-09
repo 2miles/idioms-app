@@ -3,11 +3,11 @@ import Swal from 'sweetalert2';
 import { vi, test, expect, beforeEach, describe } from 'vitest';
 import UpdateExamples from './UpdateExamples';
 import { IdiomsContext } from '@/context/idiomsContext';
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import { suppressConsoleOutput } from '../../testUtils';
+import { Idiom } from '@/types';
 
-const DEBUG_ERRORS = false; // toggle this to `true` to see errors in this file
-
+// --- Config ---
+const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
 vi.mock('sweetalert2', () => ({
@@ -16,29 +16,11 @@ vi.mock('sweetalert2', () => ({
   },
 }));
 
-vi.mock('@/apis/useAuthorizedIdiomFinder', () => ({
-  default: vi.fn(),
-}));
-
-const mockUpdateExamples = vi.fn();
-const mockClose = vi.fn();
-const mockPut = vi.fn();
-const mockDelete = vi.fn();
-
 beforeEach(() => {
   vi.clearAllMocks();
-
-  (useAuthorizedIdiomFinder as unknown as { mockReturnValue: Function }).mockReturnValue(() => ({
-    put: mockPut.mockResolvedValue({
-      data: {
-        status: 'success',
-        examples: dummyExamples,
-      },
-    }),
-    delete: mockDelete.mockResolvedValue({}),
-  }));
 });
 
+// --- Test Data ---
 const dummyIdiomId = 123;
 
 const dummyExamples = [
@@ -50,13 +32,14 @@ const dummyIdiom = {
   id: dummyIdiomId,
   title: 'Test Idiom',
   examples: dummyExamples,
-  timestamps: '',
-  title_general: null,
-  definition: null,
-  contributor: null,
-  position: null,
-};
+} as Idiom;
 
+// --- Mocks ---
+const mockUpdateExamples = vi.fn();
+const mockClose = vi.fn();
+const mockDeleteExampleById = vi.fn().mockResolvedValue(dummyExamples[0]);
+
+// --- Render Helper ---
 const renderComponent = () =>
   render(
     <IdiomsContext.Provider
@@ -68,24 +51,24 @@ const renderComponent = () =>
         deleteIdiom: vi.fn(),
         updateExamples: mockUpdateExamples,
         addExampleToIdiom: vi.fn(),
+        deleteExampleById: mockDeleteExampleById,
       }}
     >
       <UpdateExamples idiomId={dummyIdiomId} examples={dummyExamples} onClose={mockClose} />
     </IdiomsContext.Provider>,
   );
+
+// --- Tests ---
 describe('UpdateExamples', () => {
   describe('Form behavior', () => {
     test('user can type in example field but it does not trigger context update until submit', async () => {
       renderComponent();
-
       const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
 
       fireEvent.change(textarea, { target: { value: 'Updated example 1' } });
-
       expect(mockUpdateExamples).not.toHaveBeenCalled();
 
       fireEvent.click(screen.getByText(/save/i));
-
       await waitFor(() => {
         expect(mockUpdateExamples).toHaveBeenCalled();
       });
@@ -93,43 +76,19 @@ describe('UpdateExamples', () => {
 
     test('does not persist example changes if modal is closed without saving', () => {
       renderComponent();
-
       const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
-
       fireEvent.change(textarea, { target: { value: 'Temporary edit' } });
+
       mockClose();
-
-      expect(mockPut).not.toHaveBeenCalled();
       expect(mockUpdateExamples).not.toHaveBeenCalled();
-    });
-
-    test('shows warning if any example is empty', async () => {
-      renderComponent();
-
-      const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
-
-      fireEvent.change(textarea, { target: { value: '' } });
-      fireEvent.click(screen.getByText(/save/i));
-
-      await waitFor(() => {
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            text: 'All examples must have text.',
-            icon: 'warning',
-          }),
-        );
-        expect(mockPut).not.toHaveBeenCalled();
-      });
     });
 
     test('shows warning and does not save if example is empty', async () => {
       renderComponent();
-
       const textarea = screen.getByRole('textbox', { name: /edit example 1/i });
-
       fireEvent.change(textarea, { target: { value: '' } });
-      fireEvent.click(screen.getByText(/save/i));
 
+      fireEvent.click(screen.getByText(/save/i));
       await waitFor(() => {
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -137,21 +96,19 @@ describe('UpdateExamples', () => {
             icon: 'warning',
           }),
         );
-        expect(mockPut).not.toHaveBeenCalled();
+        expect(mockUpdateExamples).not.toHaveBeenCalled();
       });
     });
   });
+
   describe('Submission', () => {
     test('submits examples and shows success alert', async () => {
+      mockUpdateExamples.mockResolvedValueOnce({});
       renderComponent();
 
       fireEvent.click(screen.getByText(/save/i));
-
       await waitFor(() => {
-        expect(mockPut).toHaveBeenCalledWith(`/${dummyIdiomId}/examples`, {
-          examples: dummyExamples,
-        });
-        expect(mockUpdateExamples).toHaveBeenCalled();
+        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, dummyExamples);
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
             title: 'Updated!',
@@ -161,12 +118,12 @@ describe('UpdateExamples', () => {
         expect(mockClose).toHaveBeenCalled();
       });
     });
-    test('shows error alert on API failure', async () => {
-      mockPut.mockRejectedValueOnce(new Error('Update failed'));
+
+    test('shows error alert on updateExamples failure', async () => {
+      mockUpdateExamples.mockRejectedValueOnce(new Error('Update failed'));
       renderComponent();
 
       fireEvent.click(screen.getByText(/save/i));
-
       await waitFor(() => {
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -176,28 +133,26 @@ describe('UpdateExamples', () => {
           }),
         );
       });
+      expect(mockUpdateExamples).toHaveBeenCalled();
     });
   });
+
   describe('Deletion', () => {
     test('deletes example when confirmed', async () => {
       renderComponent();
-
       fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
       await waitFor(() => {
-        expect(mockDelete).toHaveBeenCalledWith('/examples/1');
-        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, [
-          { example_id: 2, idiom_id: dummyIdiomId, example: 'Original example 2' },
-        ]);
+        expect(mockDeleteExampleById).toHaveBeenCalledWith(dummyIdiom.examples[0].example_id);
+        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiom.id, [dummyIdiom.examples[1]]);
       });
     });
 
     test('shows error alert on delete failure', async () => {
-      mockDelete.mockRejectedValueOnce(new Error('Delete failed'));
+      mockDeleteExampleById.mockRejectedValueOnce(new Error('Delete failed'));
       renderComponent();
 
       fireEvent.click(screen.getAllByText(/delete/i)[0]);
-
       await waitFor(() => {
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -211,12 +166,11 @@ describe('UpdateExamples', () => {
 
     test('deletes example immediately after confirming delete prompt', async () => {
       renderComponent();
-
       fireEvent.click(screen.getAllByText(/delete/i)[0]);
 
       await waitFor(() => {
-        expect(mockDelete).toHaveBeenCalledWith('/examples/1');
-        expect(mockUpdateExamples).toHaveBeenCalled();
+        expect(mockDeleteExampleById).toHaveBeenCalledWith(1);
+        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, [dummyExamples[1]]);
       });
     });
   });
