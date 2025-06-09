@@ -5,8 +5,8 @@ import UpdateIdiom from './UpdateIdiom';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { suppressConsoleOutput } from '../../testUtils';
 
-const DEBUG_ERRORS = false; // toggle this to `true` to see errors in this file
-
+// --- Config ---
+const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
 vi.mock('sweetalert2', () => ({
@@ -15,10 +15,12 @@ vi.mock('sweetalert2', () => ({
   },
 }));
 
+// --- Mocks ---
 const mockUpdateIdiom = vi.fn().mockResolvedValue({ id: 1, title: 'Updated Title' });
 const mockClose = vi.fn();
 const mockDelete = vi.fn();
 
+// --- Dummy Data ---
 const dummyIdiom = {
   id: 1,
   title: 'Old Title',
@@ -30,6 +32,7 @@ const dummyIdiom = {
   examples: [],
 };
 
+// --- Render Helper ---
 const renderComponent = () =>
   render(
     <IdiomsContext.Provider
@@ -41,26 +44,27 @@ const renderComponent = () =>
         deleteIdiom: vi.fn(),
         updateExamples: vi.fn(),
         addExampleToIdiom: vi.fn(),
+        deleteExampleById: vi.fn(),
       }}
     >
       <UpdateIdiom idiom={dummyIdiom} onClose={mockClose} onDelete={mockDelete} />
     </IdiomsContext.Provider>,
   );
 
+// --- Tests ---
 describe('UpdateIdiom', () => {
   describe('Form behavior', () => {
     test('pre-fills form fields with provided idiom data', () => {
       renderComponent();
-
       expect(screen.getByLabelText('Title')).toHaveValue('Old Title');
     });
 
     test('does not submit if title is empty', async () => {
       renderComponent();
-
       fireEvent.change(screen.getByLabelText('Title'), {
         target: { value: '' },
       });
+
       fireEvent.click(screen.getByText(/save/i));
 
       await waitFor(() => {
@@ -70,7 +74,6 @@ describe('UpdateIdiom', () => {
 
     test('includes updated timestamp if user changes it', async () => {
       renderComponent();
-
       fireEvent.change(screen.getByLabelText('Title'), {
         target: { value: 'Updated Title' },
       });
@@ -78,7 +81,10 @@ describe('UpdateIdiom', () => {
       const allTextboxes = screen.getAllByRole('textbox');
       const datetimeInput = allTextboxes[3];
 
-      fireEvent.change(datetimeInput, { target: { value: '2025-04-01 08:30:00' } });
+      fireEvent.change(datetimeInput, {
+        target: { value: '2025-04-01 08:30:00' },
+      });
+
       fireEvent.click(screen.getByText(/save/i));
 
       await waitFor(() => {
@@ -91,65 +97,63 @@ describe('UpdateIdiom', () => {
       });
     });
   });
-});
 
-describe('Submission', () => {
-  test('submits updated data correctly', async () => {
-    renderComponent();
+  describe('Submission', () => {
+    test('submits updated data correctly', async () => {
+      renderComponent();
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: 'Updated Title' },
+      });
 
-    fireEvent.change(screen.getByLabelText('Title'), {
-      target: { value: 'Updated Title' },
-    });
-    fireEvent.click(screen.getByText(/save/i));
+      fireEvent.click(screen.getByText(/save/i));
 
-    await waitFor(() => {
-      expect(mockUpdateIdiom).toHaveBeenCalledWith(
-        1,
-        expect.objectContaining({ title: 'Updated Title' }),
-      );
-      expect(Swal.fire).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: 'Updated!',
-          text: 'The idiom has been successfully updated.',
-          icon: 'success',
-        }),
-      );
-      expect(mockClose).toHaveBeenCalled();
-    });
-  });
+      await waitFor(() => {
+        expect(mockUpdateIdiom).toHaveBeenCalledWith(
+          1,
+          expect.objectContaining({ title: 'Updated Title' }),
+        );
 
-  test('shows error alert if API call fails', async () => {
-    mockUpdateIdiom.mockRejectedValueOnce(new Error('Update failed'));
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Updated!',
+            text: 'The idiom has been successfully updated.',
+            icon: 'success',
+          }),
+        );
 
-    renderComponent();
-
-    fireEvent.change(screen.getByLabelText('Title'), {
-      target: { value: 'Updated Title' },
-    });
-    fireEvent.click(screen.getByText(/save/i));
-
-    await waitFor(() => {
-      expect(Swal.fire).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: 'Error',
-          text: 'There was a problem updating the idiom.',
-          icon: 'error',
-        }),
-      );
+        expect(mockClose).toHaveBeenCalled();
+      });
     });
 
-    // ✅ Ensure rejection doesn't bubble up
-    await waitFor(() => {
-      expect(mockUpdateIdiom).toHaveBeenCalled();
+    test('shows error alert if API call fails', async () => {
+      mockUpdateIdiom.mockRejectedValueOnce(new Error('Update failed'));
+      renderComponent();
+      fireEvent.change(screen.getByLabelText('Title'), {
+        target: { value: 'Updated Title' },
+      });
+
+      fireEvent.click(screen.getByText(/save/i));
+
+      await waitFor(() => {
+        expect(Swal.fire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Error',
+            text: 'There was a problem updating the idiom.',
+            icon: 'error',
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(mockUpdateIdiom).toHaveBeenCalled();
+      });
     });
   });
 
   describe('Deletion', () => {
     test('calls onDelete when Delete button is clicked', () => {
       renderComponent();
-
       fireEvent.click(screen.getByText(/delete/i));
-
       expect(mockDelete).toHaveBeenCalled();
     });
   });

@@ -37,6 +37,7 @@ const renderComponent = () =>
         deleteIdiom: vi.fn(),
         updateExamples: vi.fn(),
         addExampleToIdiom: mockAddExampleToIdiom,
+        deleteExampleById: vi.fn(),
       }}
     >
       <AddExample idiomId={1} idiomTitle='Break the ice' onClose={mockClose} />
