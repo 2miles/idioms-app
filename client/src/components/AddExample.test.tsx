@@ -14,6 +14,9 @@ vi.mock('sweetalert2', () => ({
   },
 }));
 
+const mockAddExampleToIdiom = vi.fn();
+const mockClose = vi.fn();
+
 beforeEach(() => {
   vi.clearAllMocks();
   mockAddExampleToIdiom.mockResolvedValue({
@@ -23,10 +26,7 @@ beforeEach(() => {
   });
 });
 
-const mockAddExampleToIdiom = vi.fn();
-const mockClose = vi.fn();
-
-const renderComponent = () =>
+function setup() {
   render(
     <IdiomsContext.Provider
       value={{
@@ -44,12 +44,19 @@ const renderComponent = () =>
     </IdiomsContext.Provider>,
   );
 
+  return {
+    exampleInput: screen.getByLabelText(/new example/i),
+    addButton: screen.getByText(/add/i),
+    keepOpenCheckbox: screen.getByLabelText(/keep open/i),
+  };
+}
+
 describe('AddExample', () => {
   describe('Form behavior', () => {
     test('does not submit if example is empty', async () => {
-      renderComponent();
+      const { addButton } = setup();
 
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.click(addButton);
 
       await waitFor(() => {
         expect(mockAddExampleToIdiom).not.toHaveBeenCalled();
@@ -57,27 +64,22 @@ describe('AddExample', () => {
     });
 
     test('clears input after successful submission', async () => {
-      renderComponent();
+      const { addButton, exampleInput } = setup();
 
-      const input = screen.getByLabelText(/new example/i);
-
-      fireEvent.change(input, { target: { value: 'This is a test example.' } });
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.change(exampleInput, { target: { value: 'This is a test example.' } });
+      fireEvent.click(addButton);
 
       await waitFor(() => {
-        expect(input).toHaveValue('');
+        expect(exampleInput).toHaveValue('');
       });
     });
 
     test('does not close modal if Keep Open is checked', async () => {
-      renderComponent();
+      const { addButton, exampleInput, keepOpenCheckbox } = setup();
 
-      fireEvent.change(screen.getByLabelText(/new example/i), {
-        target: { value: 'This is an example.' },
-      });
-
-      fireEvent.click(screen.getByLabelText(/keep open/i));
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.change(exampleInput, { target: { value: 'This is an example.' } });
+      fireEvent.click(keepOpenCheckbox);
+      fireEvent.click(addButton);
 
       await waitFor(() => {
         expect(mockAddExampleToIdiom).toHaveBeenCalledWith(1, 'This is an example.');
@@ -86,13 +88,10 @@ describe('AddExample', () => {
     });
 
     test('does not submit if example is only whitespace', async () => {
-      renderComponent();
+      const { addButton, exampleInput } = setup();
 
-      fireEvent.change(screen.getByLabelText(/new example/i), {
-        target: { value: '   ' },
-      });
-
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.change(exampleInput, { target: { value: '   ' } });
+      fireEvent.click(addButton);
 
       await waitFor(() => {
         expect(mockAddExampleToIdiom).not.toHaveBeenCalled();
@@ -103,19 +102,13 @@ describe('AddExample', () => {
 
   describe('Submission', () => {
     test('submits form with valid data', async () => {
-      renderComponent();
+      const { addButton, exampleInput } = setup();
 
-      const input = screen.getByLabelText(/new example/i);
-
-      fireEvent.change(input, {
-        target: { value: 'This is a test example.' },
-      });
-
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.change(exampleInput, { target: { value: 'This is a test example.' } });
+      fireEvent.click(addButton);
 
       await waitFor(() => {
         expect(mockAddExampleToIdiom).toHaveBeenCalledWith(1, 'This is a test example.');
-
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
             title: 'Example Added!',
@@ -123,8 +116,7 @@ describe('AddExample', () => {
             icon: 'success',
           }),
         );
-
-        expect(input).toHaveValue(''); // Optional: input should be cleared
+        expect(exampleInput).toHaveValue('');
       });
     });
   });
@@ -133,13 +125,10 @@ describe('AddExample', () => {
     test('shows error alert when addExampleToIdiom fails', async () => {
       mockAddExampleToIdiom.mockImplementation(() => Promise.resolve(null)); // Simulate failure
 
-      renderComponent();
+      const { addButton, exampleInput } = setup();
 
-      fireEvent.change(screen.getByLabelText(/new example/i), {
-        target: { value: 'This is an example.' },
-      });
-
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.change(exampleInput, { target: { value: 'This is an example.' } });
+      fireEvent.click(addButton);
 
       await waitFor(() => {
         expect(Swal.fire).toHaveBeenCalledWith(
@@ -155,13 +144,10 @@ describe('AddExample', () => {
     test('closes modal if Keep Open is not checked', async () => {
       vi.useFakeTimers();
 
-      renderComponent();
+      const { addButton, exampleInput } = setup();
 
-      fireEvent.change(screen.getByLabelText(/new example/i), {
-        target: { value: 'Another example' },
-      });
-
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.change(exampleInput, { target: { value: 'Another example' } });
+      fireEvent.click(addButton);
 
       await vi.runAllTimersAsync();
 

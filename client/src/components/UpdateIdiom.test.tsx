@@ -5,7 +5,6 @@ import UpdateIdiom from './UpdateIdiom';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { suppressConsoleOutput } from '../../testUtils';
 
-// --- Config ---
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
@@ -15,12 +14,10 @@ vi.mock('sweetalert2', () => ({
   },
 }));
 
-// --- Mocks ---
 const mockUpdateIdiom = vi.fn().mockResolvedValue({ id: 1, title: 'Updated Title' });
 const mockClose = vi.fn();
 const mockDelete = vi.fn();
 
-// --- Dummy Data ---
 const dummyIdiom = {
   id: 1,
   title: 'Old Title',
@@ -32,8 +29,7 @@ const dummyIdiom = {
   examples: [],
 };
 
-// --- Render Helper ---
-const renderComponent = () =>
+function setup() {
   render(
     <IdiomsContext.Provider
       value={{
@@ -51,21 +47,28 @@ const renderComponent = () =>
     </IdiomsContext.Provider>,
   );
 
-// --- Tests ---
+  return {
+    mockUpdateIdiom,
+    mockClose,
+    mockDelete,
+    titleInput: screen.getByLabelText('Title'),
+    saveButton: screen.getByText(/save/i),
+    deleteButton: screen.getByText(/delete/i),
+  };
+}
+
 describe('UpdateIdiom', () => {
   describe('Form behavior', () => {
     test('pre-fills form fields with provided idiom data', () => {
-      renderComponent();
-      expect(screen.getByLabelText('Title')).toHaveValue('Old Title');
+      const { titleInput } = setup();
+      expect(titleInput).toHaveValue('Old Title');
     });
 
     test('does not submit if title is empty', async () => {
-      renderComponent();
-      fireEvent.change(screen.getByLabelText('Title'), {
-        target: { value: '' },
-      });
+      const { titleInput, saveButton } = setup();
+      fireEvent.change(titleInput, { target: { value: '' } });
 
-      fireEvent.click(screen.getByText(/save/i));
+      fireEvent.click(saveButton);
 
       await waitFor(() => {
         expect(mockUpdateIdiom).not.toHaveBeenCalled();
@@ -73,19 +76,15 @@ describe('UpdateIdiom', () => {
     });
 
     test('includes updated timestamp if user changes it', async () => {
-      renderComponent();
-      fireEvent.change(screen.getByLabelText('Title'), {
-        target: { value: 'Updated Title' },
-      });
+      const { titleInput, saveButton } = setup();
+      fireEvent.change(titleInput, { target: { value: 'Updated Title' } });
 
       const allTextboxes = screen.getAllByRole('textbox');
       const datetimeInput = allTextboxes[3];
 
-      fireEvent.change(datetimeInput, {
-        target: { value: '2025-04-01 08:30:00' },
-      });
+      fireEvent.change(datetimeInput, { target: { value: '2025-04-01 08:30:00' } });
 
-      fireEvent.click(screen.getByText(/save/i));
+      fireEvent.click(saveButton);
 
       await waitFor(() => {
         expect(mockUpdateIdiom).toHaveBeenCalledWith(
@@ -100,12 +99,10 @@ describe('UpdateIdiom', () => {
 
   describe('Submission', () => {
     test('submits updated data correctly', async () => {
-      renderComponent();
-      fireEvent.change(screen.getByLabelText('Title'), {
-        target: { value: 'Updated Title' },
-      });
+      const { titleInput, saveButton } = setup();
+      fireEvent.change(titleInput, { target: { value: 'Updated Title' } });
 
-      fireEvent.click(screen.getByText(/save/i));
+      fireEvent.click(saveButton);
 
       await waitFor(() => {
         expect(mockUpdateIdiom).toHaveBeenCalledWith(
@@ -127,12 +124,10 @@ describe('UpdateIdiom', () => {
 
     test('shows error alert if API call fails', async () => {
       mockUpdateIdiom.mockRejectedValueOnce(new Error('Update failed'));
-      renderComponent();
-      fireEvent.change(screen.getByLabelText('Title'), {
-        target: { value: 'Updated Title' },
-      });
+      const { titleInput, saveButton } = setup();
+      fireEvent.change(titleInput, { target: { value: 'Updated Title' } });
 
-      fireEvent.click(screen.getByText(/save/i));
+      fireEvent.click(saveButton);
 
       await waitFor(() => {
         expect(Swal.fire).toHaveBeenCalledWith(
@@ -152,8 +147,8 @@ describe('UpdateIdiom', () => {
 
   describe('Deletion', () => {
     test('calls onDelete when Delete button is clicked', () => {
-      renderComponent();
-      fireEvent.click(screen.getByText(/delete/i));
+      const { deleteButton } = setup();
+      fireEvent.click(deleteButton);
       expect(mockDelete).toHaveBeenCalled();
     });
   });

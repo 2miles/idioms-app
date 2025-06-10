@@ -61,11 +61,14 @@ function setup(overrideIdioms = mockIdioms) {
       </IdiomsContext.Provider>
     </MemoryRouter>,
   );
+  const expectShowingText = (range: string) =>
+    expect(screen.getByText(new RegExp(`showing ${range} idioms`, 'i'))).toBeInTheDocument();
 
   return {
     contextValue,
     user: userEvent.setup(),
-    searchBar: () => screen.getByPlaceholderText('Search...'),
+    searchBar: screen.getByPlaceholderText('Search...'),
+    expectShowingText,
   };
 }
 
@@ -85,7 +88,7 @@ describe('TableSection', () => {
   describe('Search Functionality', () => {
     test('filters results based on search input', () => {
       const { searchBar } = setup();
-      fireEvent.change(searchBar(), { target: { value: 'Break' } });
+      fireEvent.change(searchBar, { target: { value: 'Break' } });
 
       expect(screen.getByText('Break the ice')).toBeInTheDocument();
       expect(screen.queryByText('Hit the sack')).not.toBeInTheDocument();
@@ -103,7 +106,7 @@ describe('TableSection', () => {
       expect(screen.queryByText(/To initiate conversation/i)).not.toBeInTheDocument();
 
       await user.click(checkbox);
-      expect(screen.getByText(/To initiate conversation/i)).toBeInTheDocument();
+      expect(screen.queryByText(/To initiate conversation/i)).toBeInTheDocument();
     });
   });
 
@@ -149,36 +152,38 @@ describe('TableSection', () => {
   describe('Showing Text', () => {
     test('updates showing text when items per page changes', async () => {
       const idioms = Array.from({ length: 30 }, (_, i) => createIdiom(i));
-      const { user } = setup(idioms);
-      expect(screen.getByText(/showing 1 - 20 of 30 idioms/i)).toBeInTheDocument();
+      const { user, expectShowingText } = setup(idioms);
+
+      expectShowingText('1 - 20 of 30');
 
       await user.click(screen.getByRole('button', { name: /20/i }));
       await user.click(screen.getByRole('option', { name: '10' }));
 
-      expect(screen.getByText(/showing 1 - 10 of 30 idioms/i)).toBeInTheDocument();
+      expectShowingText('1 - 10 of 30');
     });
 
     test('updates showing text when navigating to next page', async () => {
       const idioms = Array.from({ length: 30 }, (_, i) => createIdiom(i));
-      const { user } = setup(idioms);
-      expect(screen.getByText(/showing 1 - 20 of 30 idioms/i)).toBeInTheDocument();
+      const { user, expectShowingText } = setup(idioms);
+
+      expectShowingText('1 - 20 of 30');
 
       await user.click(screen.getAllByText('>')[0]);
-      expect(screen.getByText(/showing 21 - 30 of 30 idioms/i)).toBeInTheDocument();
+      expectShowingText('21 - 30 of 30');
     });
 
     test('hides showing text when no idioms match the search', async () => {
       const { user, searchBar } = setup();
-      await user.type(searchBar(), 'No Match');
+      await user.type(searchBar, 'No Match');
       expect(screen.queryByText(/showing/i)).not.toBeInTheDocument();
     });
 
     test('updates showing text when search filters results', async () => {
-      const { user, searchBar } = setup();
-      expect(screen.getByText(/showing 1 - 2 of 2 idioms/i)).toBeInTheDocument();
+      const { user, searchBar, expectShowingText } = setup();
+      expectShowingText('1 - 2 of 2');
 
-      await user.type(searchBar(), 'Break the ice');
-      expect(screen.getByText(/showing 1 - 1 of 1 idioms/i)).toBeInTheDocument();
+      await user.type(searchBar, 'Break the ice');
+      expectShowingText('1 - 1 of 1');
     });
   });
 });
