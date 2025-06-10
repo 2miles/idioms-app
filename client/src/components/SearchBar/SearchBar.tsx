@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Idiom, ColumnAccessors } from '@/types';
 import searchIcon from '@/images/search-icon-png-24.png';
-import SearchColumnDropdown from '@/components/dropdowns/SearchColumnDropdown';
+import SearchColumnDropdown from '@/components/Dropdown/SearchColumnDropdown/SearchColumnDropdown';
 
 const Container = styled.div`
   position: relative;

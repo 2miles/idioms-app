@@ -5,9 +5,9 @@ import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, UpdateIdiomInput } from '@/types';
-import TextAreaField from '@/components/formFields/TextAreaField';
-import TextField from '@/components/formFields/TextField';
-import TimestampField from '@/components/formFields/TimestampField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
+import TextField from '@/components/FormFields/TextField';
+import TimestampField from '@/components/FormFields/TimestampField';
 import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
@@ -46,7 +46,7 @@ type UpdateIdiomProps = {
   onClose: () => void;
 };
 
-const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
+const UpdateIdiomForm = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
   const [formData, setFormData] = useState({
     title: idiom?.title || '',
@@ -165,4 +165,4 @@ const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
   );
 };
 
-export default UpdateIdiom;
+export default UpdateIdiomForm;

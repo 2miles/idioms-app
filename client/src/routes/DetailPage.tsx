@@ -7,11 +7,11 @@ import { ThreeDots } from 'react-loader-spinner';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom } from '@/types';
 import PageContainer from '@/components/PageContainer';
-import UpdateIdiom from '@/components/UpdateIdiom';
-import UpdateExamples from '@/components/UpdateExamples';
-import DetailCard from '@/components/DetailCard';
-import Modal from '@/components/Modal';
-import AddExample from '@/components/AddExample';
+import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
+import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
+import DetailCard from '@/components/DetailCard/DetailCard';
+import Modal from '@/components/Modal/Modal';
+import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -104,12 +104,12 @@ const DetailPage = () => {
   return (
     <PageContainer>
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
-        <UpdateIdiom idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
+        <UpdateIdiomForm idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
       </Modal>
 
       <Modal title='Edit Examples' isOpen={isExampleModalOpen} onClose={closeExampleModal}>
         {typeof id !== 'undefined' && (
-          <UpdateExamples
+          <UpdateExamplesForm
             idiomId={Number(id)}
             examples={selectedIdiom.examples}
             onClose={closeExampleModal}
@@ -118,7 +118,7 @@ const DetailPage = () => {
       </Modal>
       <Modal title='Add Example' isOpen={isAddExampleModalOpen} onClose={closeAddExampleModal}>
         {typeof id !== 'undefined' && (
-          <AddExample
+          <AddExampleForm
             idiomId={Number(id)}
             idiomTitle={selectedIdiom.title}
             onClose={closeAddExampleModal}

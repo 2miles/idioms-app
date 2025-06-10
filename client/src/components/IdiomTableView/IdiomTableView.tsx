@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, ColumnVisibility, ColumnAccessors } from '@/types';
-import SearchBar from '@/components/SearchBar';
-import Table from '@/components/table/Table';
-import Pagination from '@/components/Pagination';
-import ItemsPerPageDropdown from '@/components/dropdowns/ItemsPerPageDropdown';
-import ColumnDropdown from '@/components/dropdowns/ColumnDropdown';
+import SearchBar from '@/components/SearchBar/SearchBar';
+import Table from '@/components/Table/Table/Table';
+import Pagination from '@/components/Pagination/Pagination';
+import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
+import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
@@ -48,7 +48,7 @@ const SearchBarWrapper = styled.div`
   margin-bottom: var(--margin-sm);
 `;
 
-const TableSection = () => {
+const IdiomTableView = () => {
   const { idioms } = useContext(IdiomsContext);
 
   const [filteredIdioms, setFilteredIdioms] = useState(idioms);
@@ -156,4 +156,4 @@ const TableSection = () => {
   );
 };
 
-export default TableSection;
+export default IdiomTableView;

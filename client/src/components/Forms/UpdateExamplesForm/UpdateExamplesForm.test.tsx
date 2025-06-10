@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Swal from 'sweetalert2';
 import { vi, test, expect, beforeEach, describe } from 'vitest';
-import UpdateExamples from './UpdateExamples';
+import UpdateExamplesForm from './UpdateExamplesForm';
 import { IdiomsContext } from '@/context/idiomsContext';
-import { suppressConsoleOutput } from '../../testUtils';
+import { suppressConsoleOutput } from '../../../../testUtils';
 import { Idiom } from '@/types';
 
 const DEBUG_ERRORS = false;
@@ -50,7 +50,7 @@ function setup() {
         deleteExampleById: mockDeleteExampleById,
       }}
     >
-      <UpdateExamples idiomId={dummyIdiomId} examples={dummyExamples} onClose={mockClose} />
+      <UpdateExamplesForm idiomId={dummyIdiomId} examples={dummyExamples} onClose={mockClose} />
     </IdiomsContext.Provider>,
   );
 

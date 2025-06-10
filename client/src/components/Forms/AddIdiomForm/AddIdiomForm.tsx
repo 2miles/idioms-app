@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import TextAreaField from '@/components/formFields/TextAreaField';
-import TextField from '@/components/formFields/TextField';
-import TimestampField from '@/components/formFields/TimestampField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
+import TextField from '@/components/FormFields/TextField';
+import TimestampField from '@/components/FormFields/TimestampField';
 import { NewIdiomInput } from '@/types';
 
 const FormContainer = styled.div`
@@ -49,8 +49,7 @@ type AddIdiomProps = {
   onClose: () => void;
 };
 
-const AddIdiom = ({ onClose }: AddIdiomProps) => {
-  console.log('AddIdiom rendered');
+const AddIdiomForm = ({ onClose }: AddIdiomProps) => {
   const { addIdioms } = useContext(IdiomsContext);
 
   const [validated, setValidated] = useState(false);
@@ -202,4 +201,4 @@ const AddIdiom = ({ onClose }: AddIdiomProps) => {
   );
 };
 
-export default AddIdiom;
+export default AddIdiomForm;
