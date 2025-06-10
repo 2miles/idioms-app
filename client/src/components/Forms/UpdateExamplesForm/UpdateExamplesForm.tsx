@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 import { Example } from '@/types';
 import { IdiomsContext } from '@/context/idiomsContext';
-import TextAreaField from '@/components/formFields/TextAreaField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
 import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
@@ -60,7 +60,7 @@ type UpdateExamplesProps = {
   onClose: () => void;
 };
 
-const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
+const UpdateExamplesForm = ({ idiomId, onClose }: UpdateExamplesProps) => {
   const { idioms, updateExamples, deleteExampleById } = useContext(IdiomsContext);
   const initialExamples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
   const [examples, setExamples] = useState<Example[]>(initialExamples);
@@ -187,4 +187,4 @@ const UpdateExamples = ({ idiomId, onClose }: UpdateExamplesProps) => {
   );
 };
 
-export default UpdateExamples;
+export default UpdateExamplesForm;

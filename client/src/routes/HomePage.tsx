@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useUser } from '@/context/userContext';
 
 import PageContainer from '@/components/PageContainer';
-import TableSection from '@/components/TableSection';
-import AddIdiom from '@/components/AddIdiom';
-import Modal from '@/components/Modal';
+import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
+import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
+import Modal from '@/components/Modal/Modal';
 
 import styled from 'styled-components';
 
@@ -30,9 +30,9 @@ const HomePage = () => {
           </button>
         </AddIdiomContainer>
       )}
-      <TableSection />
+      <IdiomTableView />
       <Modal title='Add Idiom' isOpen={isModalOpen} onClose={closeModal}>
-        <AddIdiom onClose={closeModal} />
+        <AddIdiomForm onClose={closeModal} />
       </Modal>
     </PageContainer>
   );

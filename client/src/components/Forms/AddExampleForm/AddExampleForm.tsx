@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import TextAreaField from '@/components/formFields/TextAreaField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);
@@ -63,7 +63,7 @@ type AddExampleProps = {
   onClose: () => void;
 };
 
-const AddExample = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
+const AddExampleForm = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
   const { addExampleToIdiom } = useContext(IdiomsContext);
   const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
@@ -157,4 +157,4 @@ const AddExample = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
   );
 };
 
-export default AddExample;
+export default AddExampleForm;

@@ -1,5 +1,5 @@
 import { ColumnAccessors, Columns } from '@/types';
-import Dropdown from '@/components/dropdowns/Dropdown';
+import Dropdown from '@/components/Dropdown/Dropdown/Dropdown';
 
 type SearchColumnDropdownProps = {
   activeColumn: string;

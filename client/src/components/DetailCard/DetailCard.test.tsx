@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, test, expect, beforeEach, describe } from 'vitest';
-import DetailCard from '@/components/DetailCard';
+import DetailCard from '@/components/DetailCard/DetailCard';
 import { Idiom } from '@/types';
 import { UserContext } from '@/context/userContext';
-import { suppressConsoleOutput } from '../../testUtils';
+import { suppressConsoleOutput } from '../../../testUtils';
 
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });

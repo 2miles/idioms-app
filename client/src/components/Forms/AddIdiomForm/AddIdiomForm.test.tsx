@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'; // Simulate and interact with the React component like a user would
 import Swal from 'sweetalert2'; // So we can spy on Swal.fire calls
 import { beforeEach, describe, expect, test, vi } from 'vitest'; // Core Vitest tools for running, organizing, and mocking tests
-import AddIdiom from './AddIdiom'; // The component your testing
+import AddIdiomForm from './AddIdiomForm'; // The component your testing
 import { IdiomsContext } from '@/context/idiomsContext'; // AddIdiom uses it (via useContext) and needs it for testing
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder'; // Cusotm hook used inside AddIdiom to call the API. We need to control it
-import { suppressConsoleOutput } from '../../testUtils';
+import { suppressConsoleOutput } from '../../../../testUtils';
 
 const DEBUG_ERRORS = false; // toggle this to `true` to see errors in this file
 
@@ -62,7 +62,7 @@ const renderComponent = () =>
         deleteExampleById: vi.fn(),
       }}
     >
-      <AddIdiom onClose={mockClose} />
+      <AddIdiomForm onClose={mockClose} />
     </IdiomsContext.Provider>,
   );
 

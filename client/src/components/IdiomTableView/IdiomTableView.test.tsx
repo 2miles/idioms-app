@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import TableSection from './TableSection';
+import TableSection from './IdiomTableView';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom } from '@/types';
 import { MemoryRouter } from 'react-router-dom';

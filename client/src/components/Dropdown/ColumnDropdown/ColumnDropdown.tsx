@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { ColumnAccessors, ColumnVisibility, Columns } from '@/types';
-import Dropdown from '@/components/dropdowns/Dropdown';
+import Dropdown from '@/components/Dropdown/Dropdown/Dropdown';
 
 const ToggleSwitch = styled.label`
   display: flex;

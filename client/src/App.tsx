@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from '@/routes/HomePage';
 import DetailPage from '@/routes/DetailPage';
-import NavBar from '@/components/NavBar';
+import NavBar from '@/components/NavBar/NavBar';
 import { IdiomsContextProvider } from '@/context/idiomsContext';
 import { UserProvider } from '@/context/userContext';
 import TestBanner from './components/TestBanner';

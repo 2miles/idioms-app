@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import LoginButton from '@/components/LoginButton';
 import LogoutButton from '@/components/LogoutButton';
 import { useAuth0 } from '@auth0/auth0-react';
-import Avatar from './Avatar';
+import Avatar from '../Avatar';
 
 const NavBarWrapper = styled.nav`
   background-color: var(--color-canvas-inverted);

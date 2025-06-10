@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Dropdown from '@/components/dropdowns/Dropdown';
+import Dropdown from '@/components/Dropdown/Dropdown/Dropdown';
 
 type ItemsPerPageDropdownProps = {
   handleItemsPerPageChange: (itemsPerPage: number) => void;

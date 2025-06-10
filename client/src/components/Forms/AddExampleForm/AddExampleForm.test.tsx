@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Swal from 'sweetalert2';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import AddExample from './AddExample';
+import AddExampleForm from './AddExampleForm';
 import { IdiomsContext } from '@/context/idiomsContext';
-import { suppressConsoleOutput } from '../../testUtils';
+import { suppressConsoleOutput } from '../../../../testUtils';
 
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
@@ -40,7 +40,7 @@ function setup() {
         deleteExampleById: vi.fn(),
       }}
     >
-      <AddExample idiomId={1} idiomTitle='Break the ice' onClose={mockClose} />
+      <AddExampleForm idiomId={1} idiomTitle='Break the ice' onClose={mockClose} />
     </IdiomsContext.Provider>,
   );
 
