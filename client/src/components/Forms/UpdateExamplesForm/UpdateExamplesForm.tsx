@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 import { Example } from '@/types';
 import { IdiomsContext } from '@/context/idiomsContext';
-import TextAreaField from '@/components/_temp/TextAreaField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
 import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`

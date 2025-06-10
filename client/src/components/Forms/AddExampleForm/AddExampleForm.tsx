@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
-import TextAreaField from '@/components/_temp/TextAreaField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
 
 const FormContainer = styled.div`
   background-color: var(--color-ui-primary);

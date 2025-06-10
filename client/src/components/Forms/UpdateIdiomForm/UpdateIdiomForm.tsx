@@ -5,9 +5,9 @@ import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, UpdateIdiomInput } from '@/types';
-import TextAreaField from '@/components/_temp/TextAreaField';
-import TextField from '@/components/_temp/TextField';
-import TimestampField from '@/components/_temp/TimestampField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
+import TextField from '@/components/FormFields/TextField';
+import TimestampField from '@/components/FormFields/TimestampField';
 import { SecondaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
