@@ -6,7 +6,6 @@ import { ThreeDots } from 'react-loader-spinner';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom } from '@/types';
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiom from '@/components/UpdateIdiom';
 import UpdateExamples from '@/components/UpdateExamples';
@@ -23,14 +22,13 @@ const SpinnerWrapper = styled.div`
 
 const DetailPage = () => {
   const { id } = useParams();
-  const { idioms, setIdioms } = useContext(IdiomsContext);
+  const { idioms, deleteIdiom } = useContext(IdiomsContext);
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
   const navigate = useNavigate();
-  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -44,29 +42,27 @@ const DetailPage = () => {
       cancelButtonText: 'No, keep it',
     });
 
-    if (confirmResult.isConfirmed) {
-      try {
-        const api = await getAuthorizedIdiomFinder();
-        await api.delete(`/${id}`);
-        setIdioms(idioms.filter((idiom: Idiom) => idiom.id !== Number(id)));
+    if (!confirmResult.isConfirmed) return;
 
-        Swal.fire({
-          title: 'Deleted!',
-          text: 'The idiom has been successfully deleted.',
-          icon: 'success',
-          timer: 1800,
-          showConfirmButton: false,
-        });
+    try {
+      await deleteIdiom(Number(id));
 
-        navigate('/');
-      } catch (err) {
-        console.error('Error deleting idiom:', err);
-        Swal.fire({
-          title: 'Error',
-          text: 'There was a problem deleting the idiom.',
-          icon: 'error',
-        });
-      }
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'The idiom has been successfully deleted.',
+        icon: 'success',
+        timer: 1800,
+        showConfirmButton: false,
+      });
+
+      navigate('/');
+    } catch (err) {
+      console.error('Error deleting idiom:', err);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was a problem deleting the idiom.',
+        icon: 'error',
+      });
     }
   };
 

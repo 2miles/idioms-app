@@ -28,7 +28,7 @@ describe('Modal', () => {
     const onCloseMock = vi.fn();
     renderModal(true, onCloseMock);
 
-    const closeButton = screen.getByRole('button', { name: /×/ });
+    const closeButton = screen.getByRole('button', { name: /close/i });
     await user.click(closeButton);
     expect(onCloseMock).toHaveBeenCalled();
   });

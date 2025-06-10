@@ -17,6 +17,14 @@ export type NewIdiomInput = {
   contributor: string | null;
 };
 
+export type UpdateIdiomInput = {
+  title?: string | null;
+  title_general?: string | null;
+  definition?: string | null;
+  contributor?: string | null;
+  timestamps?: string | null;
+};
+
 export type Example = {
   example_id: number;
   idiom_id: number;

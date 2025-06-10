@@ -1,5 +1,4 @@
-import { Idiom, Example, NewIdiomInput } from '../../src/types'; // adjust path if needed
-import { generateOffsetTimestamp } from '../utils/format';
+import { Idiom, Example, NewIdiomInput } from '../../src/types';
 
 export type AddIdiomFormData = {
   title: string;

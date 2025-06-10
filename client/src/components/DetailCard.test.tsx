@@ -12,7 +12,7 @@ const mockOpenModal = vi.fn();
 const mockOpenExampleModal = vi.fn();
 const mockOpenAddExampleModal = vi.fn();
 
-const getDummyIdiom = (overrides: Partial<Idiom> = {}): Idiom => ({
+const dummyIdiom: Idiom = {
   id: 1,
   title: 'Break the ice',
   title_general: null,
@@ -20,19 +20,10 @@ const getDummyIdiom = (overrides: Partial<Idiom> = {}): Idiom => ({
   contributor: 'John Doe',
   timestamps: '2024-05-01T08:00:00Z',
   position: 42,
-  examples: [
-    {
-      example_id: 1,
-      idiom_id: 1,
-      example: 'He told a joke to break the ice.',
-    },
-  ],
-  ...overrides,
-});
+  examples: [{ example_id: 1, idiom_id: 1, example: 'He told a joke to break the ice.' }],
+};
 
-console.log('UserContext:', UserContext);
-
-const renderComponent = (idiom = getDummyIdiom(), roles: string[] = []) =>
+function setup(idiom: Idiom = dummyIdiom, roles: string[] = []) {
   render(
     <UserContext.Provider value={{ roles, isAuthenticated: true }}>
       <DetailCard
@@ -43,6 +34,19 @@ const renderComponent = (idiom = getDummyIdiom(), roles: string[] = []) =>
       />
     </UserContext.Provider>,
   );
+  return {
+    idiom,
+    mockOpenModal,
+    mockOpenAddExampleModal,
+    mockOpenExampleModal,
+    editIdiomButton: screen.queryByRole('button', { name: /edit idiom/i }),
+    addExampleButton: screen.queryByRole('button', { name: /add example/i }),
+    editExampleButton: screen.queryByRole('button', { name: /edit example/i }),
+    timestamp: screen.getByTestId('timestamp'),
+    contributor: screen.getByTestId('contributor'),
+    exampleList: screen.queryAllByRole('listitem'),
+  };
+}
 
 describe('DetailCard', () => {
   beforeEach(() => {
@@ -51,115 +55,94 @@ describe('DetailCard', () => {
 
   describe('Idiom content', () => {
     test('renders idiom.title when title_general is null or empty', () => {
-      renderComponent(getDummyIdiom({ title_general: null }));
-
+      setup({ ...dummyIdiom, title_general: null });
       expect(screen.getByText(/"Break the ice"/)).toBeInTheDocument();
     });
 
     test('renders title_general if present and non-empty', () => {
-      renderComponent(getDummyIdiom({ title_general: 'General Title' }));
-
+      setup({ ...dummyIdiom, title_general: 'General Title' });
       expect(screen.getByText(/General Title/)).toBeInTheDocument();
     });
 
     test('renders formatted timestamp', () => {
-      renderComponent();
-
-      expect(screen.getByTestId('timestamp')).toHaveTextContent('Added: 05-01-24');
+      const { timestamp } = setup();
+      expect(timestamp).toHaveTextContent('Added: 05-01-24');
     });
 
     test('renders contributor if available', () => {
-      renderComponent();
-
-      expect(screen.getByTestId('contributor')).toHaveTextContent('by John Doe');
+      const { contributor } = setup();
+      expect(contributor).toHaveTextContent('by John Doe');
     });
 
     test('renders definition if available', () => {
-      renderComponent();
-
+      setup();
       expect(screen.getByText(/To initiate social interactions./)).toBeInTheDocument();
     });
 
     test('renders all example sentences in a list', () => {
-      const idiomWithExamples = getDummyIdiom({
+      const { exampleList } = setup({
+        ...dummyIdiom,
         examples: [
           { example_id: 1, idiom_id: 1, example: 'The first example.' },
           { example_id: 2, idiom_id: 1, example: 'Another illustrative sentence.' },
         ],
       });
-      renderComponent(idiomWithExamples);
 
-      const listItems = screen.getAllByRole('listitem');
-
-      expect(listItems).toHaveLength(2);
-      expect(listItems[0]).toHaveTextContent('The first example.');
-      expect(listItems[1]).toHaveTextContent('Another illustrative sentence.');
+      expect(exampleList).toHaveLength(2);
+      expect(exampleList[0]).toHaveTextContent('The first example.');
+      expect(exampleList[1]).toHaveTextContent('Another illustrative sentence.');
     });
+
     test('handles non-array examples gracefully', () => {
-      const idiomWithBadExamples = getDummyIdiom({
+      const { exampleList } = setup({
+        ...dummyIdiom,
         examples: null as unknown as Idiom['examples'],
       });
-
-      renderComponent(idiomWithBadExamples);
-
-      expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+      expect(exampleList).toHaveLength(0);
     });
   });
 
   describe('Buttons for admins', () => {
     test('renders "Edit Idiom" button if roles includes "Admin"', () => {
-      renderComponent(getDummyIdiom(), ['Admin']);
-
-      expect(screen.getByRole('button', { name: /edit idiom/i })).toBeInTheDocument();
+      const { editIdiomButton } = setup(dummyIdiom, ['Admin']);
+      expect(editIdiomButton).toBeInTheDocument();
     });
 
-    test('renders "Add Example" and "Edit Example" buttons if user is admin and examples exist', () => {
-      renderComponent(getDummyIdiom(), ['Admin']);
-
-      expect(screen.getByRole('button', { name: /add example/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /edit example/i })).toBeInTheDocument();
+    test('renders "Add Example" and "Edit Example" buttons for admin users', () => {
+      const { addExampleButton, editExampleButton } = setup(dummyIdiom, ['Admin']);
+      expect(addExampleButton).toBeInTheDocument();
+      expect(editExampleButton).toBeInTheDocument();
     });
 
-    test('hides edit buttons if user is not an admin', () => {
-      renderComponent(getDummyIdiom());
-
-      expect(screen.queryByRole('button', { name: /edit idiom/i })).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: /add example/i })).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: /edit example/i })).not.toBeInTheDocument();
+    test('hides admin buttons for non-admins', () => {
+      const { editExampleButton, addExampleButton, editIdiomButton } = setup();
+      expect(editIdiomButton).not.toBeInTheDocument();
+      expect(addExampleButton).not.toBeInTheDocument();
+      expect(editExampleButton).not.toBeInTheDocument();
     });
 
     test('hides "Edit Example" button if no examples exist', () => {
-      const idiomWithNoExamples = getDummyIdiom({
-        examples: [],
-      });
-      renderComponent(idiomWithNoExamples);
-
-      expect(screen.queryByRole('button', { name: /edit example/i })).not.toBeInTheDocument();
+      const { editExampleButton } = setup({ ...dummyIdiom, examples: [] }, ['Admin']);
+      expect(editExampleButton).not.toBeInTheDocument();
     });
   });
 
   describe('Buttons interaction', () => {
     test('clicking "Edit Idiom" calls openModal', () => {
-      renderComponent(getDummyIdiom(), ['Admin']);
-
-      fireEvent.click(screen.getByRole('button', { name: /edit idiom/i }));
-
+      const { editIdiomButton } = setup(dummyIdiom, ['Admin']);
+      fireEvent.click(editIdiomButton!);
       expect(mockOpenModal).toHaveBeenCalled();
     });
 
     test('clicking "Add Example" calls openAddExampleModal', () => {
-      renderComponent(getDummyIdiom(), ['Admin']);
-
-      fireEvent.click(screen.getByRole('button', { name: /add example/i }));
-
+      const { addExampleButton } = setup(dummyIdiom, ['Admin']);
+      fireEvent.click(addExampleButton!);
       expect(mockOpenAddExampleModal).toHaveBeenCalled();
     });
 
     test('clicking "Edit Example" calls openExampleModal', () => {
-      renderComponent(getDummyIdiom(), ['Admin']);
-
-      fireEvent.click(screen.getByRole('button', { name: /edit example/i }));
-
+      const { editExampleButton } = setup(dummyIdiom, ['Admin']);
+      fireEvent.click(editExampleButton!);
       expect(mockOpenExampleModal).toHaveBeenCalled();
     });
   });

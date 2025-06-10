@@ -82,7 +82,9 @@ const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
       <ModalContent>
         <ModalHeader>
           <ModalTitle>{title}</ModalTitle>
-          <CloseButton onClick={onClose}>&times;</CloseButton>
+          <CloseButton onClick={onClose} role='button' aria-label='Close'>
+            &times;
+          </CloseButton>
         </ModalHeader>
         <ModalBody>{children}</ModalBody>
       </ModalContent>

@@ -3,9 +3,8 @@ import moment from 'moment';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 import { IdiomsContext } from '@/context/idiomsContext';
-import { Idiom } from '@/types';
+import { Idiom, UpdateIdiomInput } from '@/types';
 import TextAreaField from '@/components/formFields/TextAreaField';
 import TextField from '@/components/formFields/TextField';
 import TimestampField from '@/components/formFields/TimestampField';
@@ -49,7 +48,6 @@ type UpdateIdiomProps = {
 
 const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
-  const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
   const [formData, setFormData] = useState({
     title: idiom?.title || '',
     titleGeneral: idiom?.title_general || '',
@@ -79,22 +77,21 @@ const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
-    if (formData.title.trim() === '') {
-      return; // Prevent form submission if title is empty
-    }
-    try {
+    if (!formData.title.trim()) return; // Prevent form submission if title is empty
+
+    const payload: UpdateIdiomInput = {
+      title: emptyStringToNull(formData.title),
+      title_general: emptyStringToNull(formData.titleGeneral),
+      definition: emptyStringToNull(formData.definition),
+      contributor: emptyStringToNull(formData.contributor),
       // Format for the backend and remove milliseconds
-      const api = await getAuthorizedIdiomFinder();
-      const formattedTimestamp = formData.timestamp.toISOString().split('.')[0] + 'Z';
-      const response = await api.put(`/${idiom?.id}`, {
-        title: emptyStringToNull(formData.title),
-        title_general: emptyStringToNull(formData.titleGeneral),
-        definition: emptyStringToNull(formData.definition),
-        contributor: emptyStringToNull(formData.contributor),
-        timestamps: emptyStringToNull(formattedTimestamp),
-      });
-      if (response.data && response.data.data && response.data.data.idiom) {
-        updateIdiom(response.data.data.idiom);
+      timestamps: emptyStringToNull(formData.timestamp.toISOString().split('.')[0] + 'Z'),
+    };
+
+    try {
+      const updated = await updateIdiom(idiom!.id, payload);
+
+      if (updated) {
         Swal.fire({
           title: 'Updated!',
           text: 'The idiom has been successfully updated.',
@@ -102,11 +99,12 @@ const UpdateIdiom = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
           timer: 1500,
           showConfirmButton: false,
         });
-        // Call onSuccess to hide the form
         onClose();
+      } else {
+        throw new Error('No idiom returned');
       }
-    } catch (err) {
-      console.error('Error updating idiom:', err);
+    } catch (error) {
+      console.error('Update failed:', error);
       Swal.fire({
         title: 'Error',
         text: 'There was a problem updating the idiom.',

@@ -59,6 +59,7 @@ const renderComponent = () =>
         deleteIdiom: vi.fn(),
         updateExamples: vi.fn(),
         addExampleToIdiom: vi.fn(),
+        deleteExampleById: vi.fn(),
       }}
     >
       <AddIdiom onClose={mockClose} />

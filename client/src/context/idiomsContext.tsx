@@ -1,5 +1,5 @@
 import React, { useState, createContext, useEffect, ReactNode } from 'react';
-import { Example, Idiom, NewIdiomInput } from '@/types';
+import { Example, Idiom, NewIdiomInput, UpdateIdiomInput } from '@/types';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 
@@ -7,21 +7,22 @@ type IdiomsContextType = {
   idioms: Idiom[];
   setIdioms: React.Dispatch<React.SetStateAction<Idiom[]>>;
   addIdioms: (idiom: NewIdiomInput) => Promise<Idiom | null>;
-  // addIdioms: (idiom: Idiom) => Promise<void>;
-  updateIdiom: (updatedIdiom: Idiom) => Promise<void>;
+  updateIdiom: (id: number, changes: UpdateIdiomInput) => Promise<Idiom | null>;
   deleteIdiom: (id: number) => Promise<void>;
-  updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<void>;
-  addExampleToIdiom: (idiomId: number, newExample: Example) => Promise<void>;
+  updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<Example[] | null>;
+  deleteExampleById: (exampleId: number) => Promise<Example | null>;
+  addExampleToIdiom: (idiomId: number, exampleText: string) => Promise<Example | null>;
 };
 
 const defaultContext: IdiomsContextType = {
   idioms: [],
   setIdioms: () => {},
   addIdioms: async () => null,
-  updateIdiom: async () => {},
+  updateIdiom: async () => null,
   deleteIdiom: async () => {},
-  updateExamples: async () => {},
-  addExampleToIdiom: async () => {},
+  updateExamples: async () => null,
+  deleteExampleById: async () => null,
+  addExampleToIdiom: async () => null,
 };
 
 type IdiomsContextProviderProps = {
@@ -69,15 +70,12 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
 
   // Add, update, and delete idioms (recalculate positions after each operation)
   const addIdioms = async (idiom: NewIdiomInput): Promise<Idiom | null> => {
-    console.trace('TRACE: addIdioms called');
     try {
       const api = await getAuthorizedIdiomFinder();
       const response = await api.post('/', idiom);
       const newIdiom = response.data.data.idiom;
-
       const updatedIdioms = addPositionsToIdioms([...idioms, newIdiom]);
       setIdioms(updatedIdioms);
-
       return newIdiom;
     } catch (err) {
       console.error('Failed to add idiom:', err);
@@ -85,18 +83,25 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     }
   };
 
-  const updateIdiom = async (updatedIdiom: Idiom) => {
+  const updateIdiom = async (id: number, changes: UpdateIdiomInput) => {
     try {
       const api = await getAuthorizedIdiomFinder();
-      const response = await api.put(`/${updatedIdiom.id}`, updatedIdiom);
+      const response = await api.put(`/${id}`, changes);
 
       const updated = response.data.data.idiom;
+      const existing = idioms.find((i) => i.id === id);
+      const preservedExamples = existing?.examples ?? [];
+
       const updatedIdioms = addPositionsToIdioms(
-        idioms.map((idiom) => (idiom.id === updated.id ? updated : idiom)),
+        idioms.map((idiom) =>
+          idiom.id === id ? { ...updated, examples: preservedExamples } : idiom,
+        ),
       );
       setIdioms(updatedIdioms);
+      return updated;
     } catch (err) {
       console.error('Failed to update idiom:', err);
+      return null;
     }
   };
 
@@ -111,24 +116,48 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     }
   };
 
-  const updateExamples = async (idiomId: number, updatedExamples: Example[]) => {
+  const updateExamples = async (
+    idiomId: number,
+    updatedExamples: Example[],
+  ): Promise<Example[] | null> => {
     try {
       const api = await getAuthorizedIdiomFinder();
-      await api.put(`/${idiomId}/examples`, { examples: updatedExamples });
+      const response = await api.put(`/${idiomId}/examples`, { examples: updatedExamples });
+
+      const savedExamples = response.data?.examples ?? updatedExamples;
 
       const updatedIdioms = idioms.map((idiom) =>
-        idiom.id === idiomId ? { ...idiom, examples: updatedExamples } : idiom,
+        idiom.id === idiomId ? { ...idiom, examples: savedExamples } : idiom,
       );
       setIdioms(updatedIdioms);
+
+      return savedExamples;
     } catch (err) {
       console.error('Failed to update examples:', err);
+      return null;
     }
   };
 
-  const addExampleToIdiom = async (idiomId: number, newExample: Example) => {
+  const deleteExampleById = async (exampleId: number): Promise<Example | null> => {
     try {
       const api = await getAuthorizedIdiomFinder();
-      const response = await api.post(`/${idiomId}/examples`, newExample);
+      const response = await api.delete(`/examples/${exampleId}`);
+      return response.data?.data?.example ?? null;
+    } catch (err) {
+      console.error('Failed to delete example:', err);
+      return null;
+    }
+  };
+
+  const addExampleToIdiom = async (
+    idiomId: number,
+    exampleText: string,
+  ): Promise<Example | null> => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.post(`/${idiomId}/examples`, {
+        example: exampleText.trim() || null,
+      });
 
       const savedExample = response.data.data.example;
       setIdioms((prevIdioms) =>
@@ -138,8 +167,10 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
             : idiom,
         ),
       );
+      return savedExample;
     } catch (err) {
       console.error('Failed to add example:', err);
+      return null;
     }
   };
 
@@ -152,6 +183,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
         updateIdiom,
         deleteIdiom,
         updateExamples,
+        deleteExampleById,
         addExampleToIdiom,
       }}
     >

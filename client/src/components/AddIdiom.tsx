@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
-import styled from 'styled-components';
+import { useState, useContext } from 'react';
 import moment from 'moment';
+import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
