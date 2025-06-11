@@ -11,10 +11,18 @@ export type AddIdiomFormData = {
 // export type AddExampleFormData = {}
 // export type EditExampleFormData = {}
 
-export const ADD_IDIOM_FORM_DATA_1: NewIdiomInput = {
+export const ADD_IDIOM_INPUT: NewIdiomInput = {
   title: 'Break the ice',
   title_general: 'When one breaks the ice',
   definition: 'To initiate conversation in a social setting.',
+  timestamps: null, // No date provided
+  contributor: 'E2E Bot',
+};
+
+export const EDIT_IDIOM_INPUT: NewIdiomInput = {
+  title: 'Break the ice. EDIT',
+  title_general: '',
+  definition: 'To initiate conversation in a social setting. This is a test edit.',
   timestamps: null, // No date provided
   contributor: 'E2E Bot',
 };

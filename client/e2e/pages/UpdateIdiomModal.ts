@@ -18,10 +18,10 @@ export class UpdateIdiomModal {
   constructor(page: Page) {
     this.page = page;
 
-    this.titleInput = page.getByLabel('Title');
-    this.titleGeneralInput = page.getByLabel('Title General');
-    this.definitionInput = page.getByLabel('Definition');
-    this.contributorInput = page.getByLabel('Contributor');
+    this.titleInput = page.getByRole('textbox', { name: 'Title', exact: true });
+    this.titleGeneralInput = page.getByRole('textbox', { name: 'Title General', exact: true });
+    this.definitionInput = page.getByRole('textbox', { name: 'Definition', exact: true });
+    this.contributorInput = page.getByRole('textbox', { name: 'Contributor', exact: true });
     this.timestampInput = page.locator('input[type="datetime-local"]');
 
     this.saveButton = page.getByRole('button', { name: 'Save' });
@@ -32,7 +32,15 @@ export class UpdateIdiomModal {
 
   async fillForm({ title, titleGeneral, definition, contributor, timestamp }: AddIdiomFormData) {
     await this.titleInput.fill(title);
-    if (titleGeneral) await this.titleGeneralInput.fill(titleGeneral);
+    // Clear titleGeneral if it's empty to avoid issues with Playwright
+    if (titleGeneral !== undefined && titleGeneral !== null) {
+      if (titleGeneral === '') {
+        await this.titleGeneralInput.click({ clickCount: 3 });
+        await this.titleGeneralInput.press('Backspace');
+      } else {
+        await this.titleGeneralInput.fill(titleGeneral);
+      }
+    }
     if (definition) await this.definitionInput.fill(definition);
     if (contributor) await this.contributorInput.fill(contributor);
     if (timestamp) await this.timestampInput.fill(timestamp);
@@ -44,8 +52,7 @@ export class UpdateIdiomModal {
 
   async delete() {
     await this.deleteButton.click();
-    // Confirm delete popup in SweetAlert
-    await this.page.getByRole('button', { name: /yes, delete it/i }).click();
+    await this.page.getByRole('button', { name: 'Yes, delete it!' }).click();
   }
 
   async expectSuccessToast() {
