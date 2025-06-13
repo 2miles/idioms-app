@@ -1071,7 +1071,10 @@ ALTER TABLE ONLY public.idioms_test
 --
 
 ALTER TABLE ONLY public.idioms_examples_test
-    ADD CONSTRAINT idioms_examples_test_idiom_id_fkey FOREIGN KEY (idiom_id) REFERENCES public.idioms_test(id);
+    ADD CONSTRAINT idioms_examples_test_idiom_id_fkey
+    FOREIGN KEY (idiom_id)
+    REFERENCES public.idioms_test(id)
+    ON DELETE CASCADE;
 
 
 --
