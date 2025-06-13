@@ -1,19 +1,16 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { AddIdiomFormData } from '../test-data/idioms';
 
-export class UpdateIdiomModal {
+export class UpdateIdiomForm {
   readonly page: Page;
 
   readonly titleInput: Locator;
   readonly titleGeneralInput: Locator;
   readonly definitionInput: Locator;
   readonly contributorInput: Locator;
-  readonly timestampInput: Locator;
 
   readonly saveButton: Locator;
   readonly deleteButton: Locator;
-
-  readonly toast: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,12 +19,9 @@ export class UpdateIdiomModal {
     this.titleGeneralInput = page.getByRole('textbox', { name: 'Title General', exact: true });
     this.definitionInput = page.getByRole('textbox', { name: 'Definition', exact: true });
     this.contributorInput = page.getByRole('textbox', { name: 'Contributor', exact: true });
-    this.timestampInput = page.locator('input[type="datetime-local"]');
 
     this.saveButton = page.getByRole('button', { name: 'Save' });
     this.deleteButton = page.getByRole('button', { name: 'Delete' });
-
-    this.toast = page.locator('.swal2-popup');
   }
 
   async fillForm({ title, titleGeneral, definition, contributor, timestamp }: AddIdiomFormData) {
@@ -43,7 +37,6 @@ export class UpdateIdiomModal {
     }
     if (definition) await this.definitionInput.fill(definition);
     if (contributor) await this.contributorInput.fill(contributor);
-    if (timestamp) await this.timestampInput.fill(timestamp);
   }
 
   async submit() {
@@ -53,21 +46,5 @@ export class UpdateIdiomModal {
   async delete() {
     await this.deleteButton.click();
     await this.page.getByRole('button', { name: 'Yes, delete it!' }).click();
-  }
-
-  async expectSuccessToast() {
-    await expect(this.toast).toContainText('Updated');
-  }
-
-  async expectErrorToast() {
-    await expect(this.toast).toContainText('Error');
-  }
-
-  async expectFormToBeVisible() {
-    await expect(this.titleInput).toBeVisible();
-  }
-
-  async expectFormToBeHidden() {
-    await expect(this.titleInput).toBeHidden();
   }
 }
