@@ -1,4 +1,4 @@
-import { Idiom, Example, NewIdiomInput } from '../../src/types';
+import { NewIdiomInput } from '../../src/types';
 
 export type AddIdiomFormData = {
   title: string;
@@ -8,10 +8,7 @@ export type AddIdiomFormData = {
   timestamp?: string;
 };
 
-// export type AddExampleFormData = {}
-// export type EditExampleFormData = {}
-
-export const ADD_IDIOM_INPUT: NewIdiomInput = {
+export const TEST_IDIOM: NewIdiomInput = {
   title: 'Break the ice',
   title_general: 'When one breaks the ice',
   definition: 'To initiate conversation in a social setting.',
@@ -19,7 +16,7 @@ export const ADD_IDIOM_INPUT: NewIdiomInput = {
   contributor: 'E2E Bot',
 };
 
-export const EDIT_IDIOM_INPUT: NewIdiomInput = {
+export const EDITED_IDIOM: NewIdiomInput = {
   title: 'Break the ice. EDIT',
   title_general: '',
   definition: 'To initiate conversation in a social setting. This is a test edit.',
@@ -27,30 +24,12 @@ export const EDIT_IDIOM_INPUT: NewIdiomInput = {
   contributor: 'E2E Bot',
 };
 
-export const EXAMPLE_1: Example = {
-  example_id: 101,
-  idiom_id: 1,
-  example: 'He tried to break the ice by telling a joke.',
-};
+export const TEST_EXAMPLES: string[] = [
+  'This is the first example.',
+  'This is the second example.',
+];
 
-export const EXAMPLE_2: Example = {
-  example_id: 102,
-  idiom_id: 2,
-  example: 'She spilled the beans about the surprise party.',
-};
-
-export const TEST_IDIOM_1: Idiom = {
-  id: 1,
-  title: 'Break the ice',
-  timestamps: new Date().toISOString(),
-  title_general: 'social interaction',
-  definition: 'To initiate conversation in a social setting.',
-  contributor: 'TestUser',
-  position: 1,
-  examples: [],
-};
-
-export const IDIOM_WITH_EXAMPLES_1: Idiom = {
-  ...TEST_IDIOM_1,
-  examples: [EXAMPLE_1, EXAMPLE_2],
-};
+export const EDITED_EXAMPLES: string[] = [
+  'This is the first example. EDITED',
+  'This is the second example. EDITED',
+];
