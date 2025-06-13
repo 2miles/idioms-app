@@ -137,7 +137,7 @@ const DetailCard = ({
   return (
     <Card className='card'>
       <CardHeader className='card-header'>
-        <h1>
+        <h1 data-testid='displaytitle'>
           &quot;
           {idiom.title_general && idiom.title_general.trim() !== ''
             ? idiom.title_general
@@ -165,7 +165,7 @@ const DetailCard = ({
             </SecondaryButton>
           )}
         </ExampleHeader>
-        <p>{idiom.definition}</p>
+        <p data-testid='definition'>{idiom.definition}</p>
         <ExampleHeader>
           <h3>Examples:</h3>
           {isAdmin && (
@@ -181,7 +181,7 @@ const DetailCard = ({
             </UpdateExampleButtons>
           )}
         </ExampleHeader>
-        <ExampleList>
+        <ExampleList data-testid='examples'>
           {examples.map((example) => (
             <ExampleItem key={example.example_id}>{example.example}</ExampleItem>
           ))}

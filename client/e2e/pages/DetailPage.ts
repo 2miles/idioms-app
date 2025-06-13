@@ -3,18 +3,12 @@ import { expect, Locator, Page } from '@playwright/test';
 export class DetailPage {
   readonly page: Page;
 
-  // Headings
-  readonly idiomHeading: Locator;
-  readonly meaningHeading: Locator;
-  readonly examplesHeading: Locator;
-
-  // Static data
+  readonly displaytitle: Locator;
   readonly timestamp: Locator;
   readonly contributor: Locator;
   readonly definition: Locator;
   readonly examples: Locator;
 
-  // Admin buttons
   readonly editIdiomButton: Locator;
   readonly addExampleButton: Locator;
   readonly editExampleButton: Locator;
@@ -22,20 +16,11 @@ export class DetailPage {
   constructor(page: Page) {
     this.page = page;
 
-    // Top-level headings
-    this.idiomHeading = page.locator('h1');
-    this.meaningHeading = page.getByRole('heading', { name: 'Meaning:' });
-    this.examplesHeading = page.getByRole('heading', { name: 'Examples:' });
-
-    // Metadata
-    this.timestamp = page.getByTestId('timestamp');
+    this.displaytitle = page.getByTestId('displaytitle');
     this.contributor = page.getByTestId('contributor');
+    this.definition = page.getByTestId('definition');
+    this.examples = page.getByTestId('examples');
 
-    // Body content
-    this.definition = page.locator('p'); // Adjust if multiple <p> elements exist
-    this.examples = page.locator('ul li');
-
-    // Admin buttons
     this.editIdiomButton = page.getByRole('button', { name: /edit idiom/i });
     this.addExampleButton = page.getByRole('button', { name: /add example/i });
     this.editExampleButton = page.getByRole('button', { name: /edit example/i });
@@ -43,11 +28,11 @@ export class DetailPage {
 
   async goto(id: number | string) {
     await this.page.goto(`/idioms/${id}`);
-    await this.idiomHeading.waitFor({ state: 'visible' });
+    await this.displaytitle.waitFor({ state: 'visible' });
   }
 
   async expectIdiomTitleToBe(title: string) {
-    await expect(this.idiomHeading).toContainText(title);
+    await expect(this.displaytitle).toContainText(title);
   }
 
   async expectDefinitionToBe(text: string) {
@@ -56,26 +41,23 @@ export class DetailPage {
     }
   }
 
-  async expectTimestampToBe(date: string) {
-    await expect(this.timestamp).toContainText(date);
-  }
-
   async expectExamplesToInclude(text: string) {
-    const exampleCount = await this.examples.count();
-    if (exampleCount > 0) {
-      await expect(this.examples).toContainText(text);
-    }
+    await expect(this.page.getByText(text)).toBeVisible();
   }
 
-  async openEditIdiomModal() {
+  async expectExamplesToNotInclude(text: string) {
+    await expect(this.page.getByText(text)).toHaveCount(0);
+  }
+
+  async openUpdateIdiomForm() {
     await this.editIdiomButton.click();
   }
 
-  async openAddExampleModal() {
+  async openAddExampleForm() {
     await this.addExampleButton.click();
   }
 
-  async openEditExampleModal() {
+  async openUpdateExamplesForm() {
     await this.editExampleButton.click();
   }
 }
