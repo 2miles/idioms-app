@@ -64,23 +64,23 @@ test.describe('Admin: Idiom management', () => {
     await addExampleForm.toggleKeepOpen();
     await addExampleForm.submit();
 
+    await detailPage.expectExamplesToInclude(TEST_EXAMPLES[0]);
     await detailPage.expectExamplesToInclude(TEST_EXAMPLES[1]);
-    await detailPage.expectExamplesToInclude(TEST_EXAMPLES[2]);
 
     // Edit example sentences and verify changes
     await detailPage.openUpdateExamplesForm();
-    await updateExamplesForm.fillExample(0, EDITED_EXAMPLES[1]);
-    await updateExamplesForm.fillExample(1, EDITED_EXAMPLES[2]);
+    await updateExamplesForm.fillExample(0, EDITED_EXAMPLES[0]);
+    await updateExamplesForm.fillExample(1, EDITED_EXAMPLES[1]);
     await updateExamplesForm.submit();
 
+    await detailPage.expectExamplesToInclude(EDITED_EXAMPLES[0]);
     await detailPage.expectExamplesToInclude(EDITED_EXAMPLES[1]);
-    await detailPage.expectExamplesToInclude(EDITED_EXAMPLES[2]);
 
     // Delete the first example and verify it was removed
     await detailPage.openUpdateExamplesForm();
     await updateExamplesForm.deleteExample(0);
     await updateExamplesForm.submit();
-    await detailPage.expectExamplesToNotInclude(EDITED_EXAMPLES[1]);
+    await detailPage.expectExamplesToNotInclude(EDITED_EXAMPLES[0]);
 
     // Delete the idiom
     await detailPage.openUpdateIdiomForm();
