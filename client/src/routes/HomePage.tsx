@@ -5,6 +5,7 @@ import PageContainer from '@/components/PageContainer';
 import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
 import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
 import Modal from '@/components/Modal/Modal';
+import { SuccessButton } from '@/components/ButtonStyles';
 
 import styled from 'styled-components';
 
@@ -25,9 +26,9 @@ const HomePage = () => {
     <PageContainer>
       {isAdmin && (
         <AddIdiomContainer>
-          <button onClick={openModal} className='btn btn-success'>
-            Add Idiom
-          </button>
+          <SuccessButton onClick={openModal} className='btn btn-success'>
+            + Add Idiom
+          </SuccessButton>
         </AddIdiomContainer>
       )}
       <IdiomTableView />

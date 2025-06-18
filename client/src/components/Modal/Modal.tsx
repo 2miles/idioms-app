@@ -28,12 +28,12 @@ const ModalContent = styled.div`
 `;
 
 const ModalBody = styled.div`
-  padding: var(--padding-md);
   overflow-y: auto;
   flex: 1; /* Allow the body to grow and shrink within the modal */
 `;
 
 const ModalHeader = styled.div`
+  background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
   padding: var(--padding-md);
   border-bottom: 1px solid var(--color-ui-border);
   border-top-left-radius: var(--radius-sm);
@@ -41,7 +41,6 @@ const ModalHeader = styled.div`
   background-color: var(--color-canvas);
   display: flex;
   justify-content: center;
-  margin-bottom: var(--margin-sm);
   position: relative;
 `;
 

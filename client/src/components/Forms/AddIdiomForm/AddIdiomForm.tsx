@@ -8,9 +8,10 @@ import TextAreaField from '@/components/FormFields/TextAreaField';
 import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
 import { NewIdiomInput } from '@/types';
+import { SuccessButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
-  background-color: var(--color-ui-primary);
+  background-color: var(--color-canvas);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
   padding-left: var(--padding-lg);
@@ -179,9 +180,9 @@ const AddIdiomForm = ({ onClose }: AddIdiomProps) => {
           onChange={handleInputChange}
         />
         <FormControlsWrapper>
-          <button type='submit' className='btn btn-primary'>
+          <SuccessButton type='submit' className='btn btn-success'>
             Add
-          </button>
+          </SuccessButton>
           <div className='form-check'>
             <input
               id='flexCheckDefault'
