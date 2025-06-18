@@ -16,7 +16,7 @@ const Card = styled.div`
 `;
 
 const CardHeader = styled.div`
-  background-color: var(--hilite-ui-primary);
+  background-color: var(--color-ui-primary);
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-ui-border);
 

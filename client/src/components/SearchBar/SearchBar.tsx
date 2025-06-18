@@ -7,7 +7,7 @@ import SearchColumnDropdown from '@/components/Dropdown/SearchColumnDropdown/Sea
 
 const Container = styled.div`
   position: relative;
-  margin: var(--margin-xxl);
+  margin: var(--margin-md);
   width: 60%;
   @media (max-width: 660px) {
     width: 100%;
