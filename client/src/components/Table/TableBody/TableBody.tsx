@@ -16,10 +16,19 @@ type StyleProps = {
   $accessor: string;
 };
 
+// const StyledTr = styled.tr`
+//   cursor: pointer;
+//   &:hover > td {
+//     background-color: var(--hilite-ui-primary);
+//   }
+// `;
 const StyledTr = styled.tr`
   cursor: pointer;
-  &:hover > td {
-    background-color: var(--hilite-ui-primary);
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover > td {
+      background-color: var(--hilite-ui-primary);
+    }
   }
 `;
 
