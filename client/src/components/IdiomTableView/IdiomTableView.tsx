@@ -11,7 +11,8 @@ import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown'
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
-  background-color: var(--color-canvas);
+  background-color: transparent;
+
   border-radius: var(--radius-sm);
 `;
 
@@ -20,7 +21,6 @@ const TableControls = styled.div`
   justify-content: right;
   align-items: end;
   flex-wrap: wrap;
-  padding-bottom: var(--padding-sm);
 
   @media (max-width: 660px) {
     flex-direction: column;

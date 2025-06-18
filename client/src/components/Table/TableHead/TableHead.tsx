@@ -17,18 +17,23 @@ type StyledThProps = {
 };
 
 const StyledTh = styled.th<StyledThProps>`
-  background-color: ${(props) =>
-    props.$isSorted
-      ? 'var(--color-brand-secondary) !important'
-      : 'var(--color-ui-primary) !important'};
-  border: 1px solid var(--color-ui-border) !important;
+  background-color: var(--color-ui-primary);
+  border: 1px solid var(--color-ui-border);
+  border-left: none !important;
+  border-right: none !important;
   color: var(--color-text-primary) !important;
   cursor: pointer;
   background-repeat: no-repeat;
-  background-position: right;
+  /* background-position: right; */
+  background-position: left center;
+  padding-left: 27px !important; /* prevent text from overlapping the icon */
   background-size: 25px 25px;
-  font-weight: normal;
+  font-weight: 600;
   font-size: var(--font-md);
+
+  &:hover {
+    background-color: var(--hilite-ui-primary);
+  }
 
   width: ${(props) => {
     const widths: Record<StyledThProps['$accessor'], string> = {
@@ -52,13 +57,6 @@ const StyledTh = styled.th<StyledThProps>`
     css`
       background-image: url(${arrowDown});
     `}
-
-  &:hover {
-    background-color: ${(props) =>
-      props.$isSorted
-        ? 'var(--color-brand-secondary) !important'
-        : 'var(--hilite-ui-primary) !important'};
-  }
 
   @media (max-width: 770px) {
     ${(props) =>

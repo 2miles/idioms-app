@@ -7,7 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Avatar from '../Avatar';
 
 const NavBarWrapper = styled.nav`
-  background-color: var(--color-canvas-inverted);
+  background-color: var(--color-black);
   color: var(--color-text-inverted);
   padding: var(--padding-xs) var(--padding-md);
   width: 100%;
@@ -17,7 +17,6 @@ const NavBarWrapper = styled.nav`
     text-decoration: none;
     font-size: var(--font-xxl);
     color: var(--color-brand-primary);
-    padding-right: var(--padding-xxl);
   }
 `;
 
@@ -27,6 +26,7 @@ type NavbarLinksProps = {
 
 const NavbarLinks = styled.div<NavbarLinksProps>`
   display: flex;
+  padding-left: var(--padding-lg);
   gap: var(--space-xxl);
 
   a {
@@ -37,12 +37,17 @@ const NavbarLinks = styled.div<NavbarLinksProps>`
 
   @media (max-width: 770px) {
     position: absolute;
-    top: 80px;
-    right: 0;
-    background-color: var(--color-canvas-inverted);
+    top: 100%;
+    left: 0;
+    background-color: var(--color-black);
     flex-direction: column;
     width: 100%;
     display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
+    gap: 0;
+    a {
+      padding: 1rem;
+      border-bottom: 1px solid var(--color-ui-border);
+    }
   }
 `;
 

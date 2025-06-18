@@ -8,15 +8,15 @@ import { Idiom, UpdateIdiomInput } from '@/types';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
-import { SecondaryButton } from '@/components/ButtonStyles';
+import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
-  background-color: var(--color-ui-primary);
+  background-color: var(--color-canvas);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
   padding-right: var(--padding-lg);
   padding-left: var(--padding-lg);
-  padding-bottom: var(--padding-sm);
+  padding-bottom: var(--padding-lg);
 
   @media (max-width: 600px) {
     padding-left: 0;
@@ -153,12 +153,12 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
           onChange={handleInputChange}
         />
         <ButtonsWrapper>
-          <button type='submit' className='btn btn-success'>
+          <PrimaryButton type='submit' className='btn btn-primary'>
             Save
-          </button>
-          <SecondaryButton type='button' className='btn btn-danger' onClick={onDelete}>
+          </PrimaryButton>
+          <DangerButton type='button' className='btn btn-danger' onClick={onDelete}>
             Delete
-          </SecondaryButton>
+          </DangerButton>
         </ButtonsWrapper>
       </form>
     </FormContainer>

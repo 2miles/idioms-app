@@ -17,27 +17,24 @@ type StyleProps = {
 };
 
 const StyledTr = styled.tr`
-  border-left: 1px solid var(--color-ui-border) !important;
-  border-right: 1px solid var(--color-ui-border) !important;
   cursor: pointer;
-
-  &:hover {
-    td {
-      background-color: var(--hilite-ui-primary) !important;
-    }
+  &:hover > td {
+    background-color: var(--hilite-ui-primary);
   }
 `;
 
 const StyledTd = styled.td<StyleProps>`
   padding: var(--padding-lg) var(--padding-lg) !important;
   border-bottom: 1px solid var(--color-ui-border) !important;
-  background: var(--color-ui-primary) !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: var(--color-ui-primary);
   color: var(--color-text-primary) !important;
 
   ${(props) =>
     props.$accessor === 'title' &&
     `
-      font-weight: 420;
+      font-weight: 550;
       font-size: var(--font-md);
   `}
 
@@ -81,7 +78,7 @@ const TableBody = ({ tableData, columns }: TableBodyProps) => {
                 if (accessor === 'timestamps') {
                   cellData = moment(row[accessor]).format('MM-DD-YY');
                 } else {
-                  cellData = String(row[accessor] ? row[accessor] : '——');
+                  cellData = String(row[accessor] ? row[accessor] : ' ');
                 }
                 if (accessor === 'definition') {
                   cellData = truncateText(cellData, truncateLength);

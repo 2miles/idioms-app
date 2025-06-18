@@ -7,7 +7,15 @@ import TableHead from '@/components/Table/TableHead/TableHead';
 export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-left: none !important;
+  border-right: none !important;
+
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-right: 1px solid var(--color-ui-border) !important;
+  border-left: 1px solid var(--color-ui-border) !important;
 `;
 
 type TableProps = {

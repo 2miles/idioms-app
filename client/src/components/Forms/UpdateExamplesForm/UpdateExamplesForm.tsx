@@ -5,15 +5,15 @@ import Swal from 'sweetalert2';
 import { Example } from '@/types';
 import { IdiomsContext } from '@/context/idiomsContext';
 import TextAreaField from '@/components/FormFields/TextAreaField';
-import { SecondaryButton } from '@/components/ButtonStyles';
+import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
-  background-color: var(--color-ui-primary);
+  background-color: var(--color-canvas);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
   padding-right: var(--padding-lg);
   padding-left: var(--padding-lg);
-  padding-bottom: var(--padding-sm);
+  padding-bottom: var(--padding-lg);
 
   @media (max-width: 600px) {
     padding-left: 0;
@@ -34,7 +34,7 @@ const DeleteButtonArea = styled.div`
   margin: 0 var(--margin-md);
 `;
 
-const ButtonWrapper = styled.button`
+const ButtonWrapper = styled.div`
   margin-top: var(--margin-lg);
   margin-left: var(--margin-lg);
 `;
@@ -168,19 +168,21 @@ const UpdateExamplesForm = ({ idiomId, onClose }: UpdateExamplesProps) => {
                 aria-label={`Edit example ${index + 1}`}
               />
               <DeleteButtonArea>
-                <SecondaryButton
+                <DangerButton
                   type='button'
                   className='btn btn-danger'
                   onClick={() => handleDeleteExample(index, example.example_id)}
                 >
                   Delete
-                </SecondaryButton>
+                </DangerButton>
               </DeleteButtonArea>
             </div>
           </InputArea>
         ))}
-        <ButtonWrapper type='submit' className='btn btn-success'>
-          Save
+        <ButtonWrapper>
+          <PrimaryButton type='submit' className='btn btn-primary'>
+            save
+          </PrimaryButton>
         </ButtonWrapper>
       </form>
     </FormContainer>

@@ -4,14 +4,15 @@ import Swal from 'sweetalert2';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import TextAreaField from '@/components/FormFields/TextAreaField';
+import { SuccessButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
-  background-color: var(--color-ui-primary);
+  background-color: var(--color-canvas);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
   padding-left: var(--padding-lg);
   padding-right: var(--padding-lg);
-  padding-bottom: var(--padding-sm);
+  padding-bottom: var(--padding-lg);
   @media (max-width: 600px) {
     padding-left: 0;
     padding-right: 0;
@@ -134,9 +135,9 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
         />
         <FormControlsWrapper>
           <ButtonsWrapper>
-            <button type='submit' className='btn btn-success'>
+            <SuccessButton type='submit' className='btn btn-success'>
               Add
-            </button>
+            </SuccessButton>
             <div className='form-check'>
               <input
                 id='flexCheckDefault'
