@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+
+import Avatar from '@/components/Avatar';
 import LoginButton from '@/components/LoginButton';
 import LogoutButton from '@/components/LogoutButton';
-import { useAuth0 } from '@auth0/auth0-react';
-import Avatar from '../Avatar';
+import { useUser } from '@/context/userContext';
 
 const NavBarWrapper = styled.nav`
   background-color: var(--color-black);
@@ -90,7 +92,8 @@ const ProfileArea = styled.div`
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
-  const { isAuthenticated, user, loginWithRedirect, logout } = useAuth0();
+  const { loginWithRedirect, logout, user } = useAuth0();
+  const { isAuthenticated } = useUser();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
