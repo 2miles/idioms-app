@@ -9,15 +9,24 @@ vi.mock('@auth0/auth0-react', () => ({
 }));
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { UserContext } from '@/context/userContext';
 
 // @ts-expect-error Suppress vi.MockedFunction type issue
 const mockUseAuth0 = useAuth0 as vi.MockedFunction<typeof useAuth0>;
 
 describe('NavBar', () => {
-  const setup = () => {
+  const setup = (contextOverrides = {}) => {
+    const defaultContext = {
+      isAuthenticated: true,
+      isAdmin: false,
+      roles: [],
+      ...contextOverrides,
+    };
     render(
       <MemoryRouter>
-        <NavBar />
+        <UserContext.Provider value={defaultContext}>
+          <NavBar />
+        </UserContext.Provider>
       </MemoryRouter>,
     );
   };
@@ -77,7 +86,7 @@ describe('NavBar', () => {
 
   test('renders Login button if not authenticated', () => {
     mockUseAuth0.mockReturnValue({ isAuthenticated: false, user: null } as any);
-    setup();
+    setup({ isAuthenticated: false });
     expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
   });
 
@@ -86,7 +95,7 @@ describe('NavBar', () => {
       isAuthenticated: true,
       user: { email: 'test@example.com' },
     } as any);
-    setup();
+    setup({ isAuthenticated: true });
     expect(screen.getByText(/te/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument();
   });
