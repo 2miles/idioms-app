@@ -24,8 +24,9 @@ const dummyIdiom: Idiom = {
 };
 
 function setup(idiom: Idiom = dummyIdiom, roles: string[] = []) {
+  const isAdmin = roles.includes('Admin');
   render(
-    <UserContext.Provider value={{ roles, isAuthenticated: true }}>
+    <UserContext.Provider value={{ roles, isAuthenticated: true, isAdmin }}>
       <DetailCard
         idiom={idiom}
         openModal={mockOpenModal}

@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { useUser } from '@/context/userContext';
-
-import PageContainer from '@/components/PageContainer';
-import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
-import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
-import Modal from '@/components/Modal/Modal';
-import { SuccessButton } from '@/components/ButtonStyles';
-
 import styled from 'styled-components';
+
+import { SuccessButton } from '@/components/ButtonStyles';
+import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
+import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
+import Modal from '@/components/Modal/Modal';
+import PageContainer from '@/components/PageContainer';
+import { useUser } from '@/context/userContext';
 
 const AddIdiomContainer = styled.div`
   margin-top: var(--margin-lg);
@@ -16,8 +15,7 @@ const AddIdiomContainer = styled.div`
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { roles } = useUser();
-  const isAdmin = roles?.includes('Admin');
+  const { isAdmin } = useUser();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);

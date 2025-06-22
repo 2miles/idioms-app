@@ -131,8 +131,7 @@ const DetailCard = ({
   openExampleModal,
   openAddExampleModal,
 }: DetailCardProps) => {
-  const { roles } = useUser();
-  const isAdmin = roles?.includes('Admin');
+  const { isAdmin } = useUser();
   const examples = Array.isArray(idiom.examples) ? idiom.examples : [];
   return (
     <Card className='card'>
