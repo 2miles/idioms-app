@@ -35,9 +35,11 @@ dist-ssr/
 # Environment Variables
 # ------------------------------------------------------------------------------
 .env
-.env.test
 server/.env
+server/.env.test
 client/.env
+client/.env.test
+client/.env.vercel
 
 # ------------------------------------------------------------------------------
 # Test and Coverage Output
