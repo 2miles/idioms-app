@@ -1,11 +1,6 @@
---
 -- PostgreSQL database dump
---
-
 -- Dumped from database version 14.2
 -- Dumped by pg_dump version 14.3
-
--- Started on 2024-10-06 19:50:54 PDT
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -22,24 +17,13 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
---
--- TOC entry 212 (class 1259 OID 147505)
--- Name: idioms_examples_test; Type: TABLE; Schema: public; Owner: postgres
---
-
 CREATE TABLE public.idioms_examples_test (
     example_id integer NOT NULL,
     idiom_id integer NOT NULL,
     example text
 );
 
-
 ALTER TABLE public.idioms_examples_test OWNER TO postgres;
-
---
--- TOC entry 211 (class 1259 OID 147504)
--- Name: idioms_examples_test_example_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE public.idioms_examples_test_example_id_seq
     AS integer
@@ -49,22 +33,9 @@ CREATE SEQUENCE public.idioms_examples_test_example_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
 ALTER TABLE public.idioms_examples_test_example_id_seq OWNER TO postgres;
 
---
--- TOC entry 3604 (class 0 OID 0)
--- Dependencies: 211
--- Name: idioms_examples_test_example_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
 ALTER SEQUENCE public.idioms_examples_test_example_id_seq OWNED BY public.idioms_examples_test.example_id;
-
-
---
--- TOC entry 214 (class 1259 OID 147521)
--- Name: idioms_origin_test; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.idioms_origin_test (
     origin_id integer NOT NULL,
@@ -72,13 +43,7 @@ CREATE TABLE public.idioms_origin_test (
     example text
 );
 
-
 ALTER TABLE public.idioms_origin_test OWNER TO postgres;
-
---
--- TOC entry 213 (class 1259 OID 147520)
--- Name: idioms_origin_test_origin_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE public.idioms_origin_test_origin_id_seq
     AS integer
@@ -88,22 +53,9 @@ CREATE SEQUENCE public.idioms_origin_test_origin_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
 ALTER TABLE public.idioms_origin_test_origin_id_seq OWNER TO postgres;
 
---
--- TOC entry 3605 (class 0 OID 0)
--- Dependencies: 213
--- Name: idioms_origin_test_origin_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
 ALTER SEQUENCE public.idioms_origin_test_origin_id_seq OWNED BY public.idioms_origin_test.origin_id;
-
-
---
--- TOC entry 209 (class 1259 OID 147475)
--- Name: idioms_test_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE public.idioms_test_id_seq
     AS integer
@@ -113,13 +65,7 @@ CREATE SEQUENCE public.idioms_test_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
 ALTER TABLE public.idioms_test_id_seq OWNER TO postgres;
-
---
--- TOC entry 210 (class 1259 OID 147476)
--- Name: idioms_test; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.idioms_test (
     id integer DEFAULT nextval('public.idioms_test_id_seq'::regclass) NOT NULL,
@@ -130,30 +76,25 @@ CREATE TABLE public.idioms_test (
     timestamps timestamp with time zone
 );
 
-
 ALTER TABLE public.idioms_test OWNER TO postgres;
 
---
--- TOC entry 3442 (class 2604 OID 147508)
--- Name: idioms_examples_test example_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+-- Tracks whether E2E tests are currently running (used for local locking)
+CREATE TABLE public.e2e_lock (
+    id INT PRIMARY KEY,
+    running BOOLEAN NOT NULL,
+    updated_at TIMESTAMP DEFAULT now()
+);
+
+ALTER TABLE public.e2e_lock OWNER TO postgres;
+
+-- Seed row for e2e_lock to initialize it in the "not running" state
+COPY public.e2e_lock (id, running, updated_at) FROM stdin;
+1	false	2025-01-01 00:00:00
+\.
 
 ALTER TABLE ONLY public.idioms_examples_test ALTER COLUMN example_id SET DEFAULT nextval('public.idioms_examples_test_example_id_seq'::regclass);
 
-
---
--- TOC entry 3443 (class 2604 OID 147524)
--- Name: idioms_origin_test origin_id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.idioms_origin_test ALTER COLUMN origin_id SET DEFAULT nextval('public.idioms_origin_test_origin_id_seq'::regclass);
-
-
---
--- TOC entry 3596 (class 0 OID 147505)
--- Dependencies: 212
--- Data for Name: idioms_examples_test; Type: TABLE DATA; Schema: public; Owner: postgres
---
 
 COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1	1	I didn’t want the after effects of involving myself in their drama at the time. Later, when things had calmed down, I told the chef that it was not my circus, not my monkeys. He laughed, and we went back to work.
@@ -831,22 +772,8 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 673	150	OK, if I did everything right, the engine should work right, but the proof will be in the pudding.
 \.
 
-
---
--- TOC entry 3598 (class 0 OID 147521)
--- Dependencies: 214
--- Data for Name: idioms_origin_test; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
 COPY public.idioms_origin_test (origin_id, idiom_id, example) FROM stdin;
 \.
-
-
---
--- TOC entry 3594 (class 0 OID 147476)
--- Dependencies: 210
--- Data for Name: idioms_test; Type: TABLE DATA; Schema: public; Owner: postgres
---
 
 COPY public.idioms_test (id, title, title_general, definition, contributor, timestamps) FROM stdin;
 1	Not my circus, not my monkeys	Not my circus, not my monkeys	This troublesome, burdensome, or volatile situation is none of my concern, and thus I refuse to get involved in it. A loan translation of the Polish idio.	Eve	2023-07-13 00:00:01-07
@@ -1001,74 +928,23 @@ COPY public.idioms_test (id, title, title_general, definition, contributor, time
 150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 00:23:00-07
 \.
 
-
---
--- TOC entry 3606 (class 0 OID 0)
--- Dependencies: 211
--- Name: idioms_examples_test_example_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
 SELECT pg_catalog.setval('public.idioms_examples_test_example_id_seq', 674, true);
-
-
---
--- TOC entry 3607 (class 0 OID 0)
--- Dependencies: 213
--- Name: idioms_origin_test_origin_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
 
 SELECT pg_catalog.setval('public.idioms_origin_test_origin_id_seq', 1, false);
 
-
---
--- TOC entry 3608 (class 0 OID 0)
--- Dependencies: 209
--- Name: idioms_test_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
 SELECT pg_catalog.setval('public.idioms_test_id_seq', 151, true);
-
-
---
--- TOC entry 3447 (class 2606 OID 147512)
--- Name: idioms_examples_test idioms_examples_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.idioms_examples_test
     ADD CONSTRAINT idioms_examples_test_pkey PRIMARY KEY (example_id);
 
-
---
--- TOC entry 3449 (class 2606 OID 147530)
--- Name: idioms_origin_test idioms_origin_test_idiom_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.idioms_origin_test
     ADD CONSTRAINT idioms_origin_test_idiom_id_key UNIQUE (idiom_id);
-
-
---
--- TOC entry 3451 (class 2606 OID 147528)
--- Name: idioms_origin_test idioms_origin_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.idioms_origin_test
     ADD CONSTRAINT idioms_origin_test_pkey PRIMARY KEY (origin_id);
 
-
---
--- TOC entry 3445 (class 2606 OID 147484)
--- Name: idioms_test idioms_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.idioms_test
     ADD CONSTRAINT idioms_test_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3452 (class 2606 OID 147513)
--- Name: idioms_examples_test idioms_examples_test_idiom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
 
 ALTER TABLE ONLY public.idioms_examples_test
     ADD CONSTRAINT idioms_examples_test_idiom_id_fkey
@@ -1076,19 +952,5 @@ ALTER TABLE ONLY public.idioms_examples_test
     REFERENCES public.idioms_test(id)
     ON DELETE CASCADE;
 
-
---
--- TOC entry 3453 (class 2606 OID 147531)
--- Name: idioms_origin_test idioms_origin_test_idiom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public.idioms_origin_test
     ADD CONSTRAINT idioms_origin_test_idiom_id_fkey FOREIGN KEY (idiom_id) REFERENCES public.idioms_test(id);
-
-
--- Completed on 2024-10-06 19:50:54 PDT
-
---
--- PostgreSQL database dump complete
---
-
