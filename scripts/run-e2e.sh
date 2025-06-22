@@ -1,8 +1,28 @@
 #!/bin/bash
 set -e
 
-# Kill any process using port 3010 (backend) or 5173 (frontend)
-echo "Checking for processes on ports 3010 and 5173..."
+LOCKFILE="/tmp/e2e.lock"
+
+# Check if the lock file exists
+if [ -e "$LOCKFILE" ]; then
+  echo "Another E2E test run is in progress. Exiting..."
+  exit 1
+fi
+
+# Create a lock file and ensure it is removed on exit
+touch "$LOCKFILE"
+
+# Cleanup function to run on exit
+cleanup() {
+  echo "Cleaning up..."
+  kill $SERVER_PID 2>/dev/null || true
+  kill $CLIENT_PID 2>/dev/null || true
+  rm -f "$LOCKFILE"
+}
+trap cleanup EXIT
+
+# Kill any process using port 3010 (backend) or 5174 (frontend)
+echo "Checking for processes on ports 3010 and 5174..."
 
 for port in 3010 5174; do
   PID=$(lsof -ti :$port || true)  #Don't exit if no process is found
@@ -23,14 +43,6 @@ SERVER_PID=$!
 echo "Starting frontend..."
 npm run dev:test --prefix ../client &
 CLIENT_PID=$!
-
-# Cleanup function to run on exit
-cleanup() {
-  echo "Cleaning up..."
-  kill $SERVER_PID 2>/dev/null || true
-  kill $CLIENT_PID 2>/dev/null || true
-}
-trap cleanup EXIT
 
 # Wait for backend to be ready
 echo "Waiting for backend to be ready..."
