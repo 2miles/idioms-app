@@ -42,12 +42,14 @@ function setup() {
       value={{
         idioms: [dummyIdiom],
         setIdioms: vi.fn(),
-        addIdioms: vi.fn(),
+        addIdiom: vi.fn(),
         updateIdiom: vi.fn(),
         deleteIdiom: vi.fn(),
         updateExamples: mockUpdateExamples,
         addExampleToIdiom: vi.fn(),
         deleteExampleById: mockDeleteExampleById,
+        isLoading: false,
+        hasFetched: true,
       }}
     >
       <UpdateExamplesForm idiomId={dummyIdiomId} examples={dummyExamples} onClose={mockClose} />

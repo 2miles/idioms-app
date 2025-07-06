@@ -32,12 +32,14 @@ function setup() {
       value={{
         idioms: [],
         setIdioms: vi.fn(),
-        addIdioms: vi.fn(),
+        addIdiom: vi.fn(),
         updateIdiom: vi.fn(),
         deleteIdiom: vi.fn(),
         updateExamples: vi.fn(),
         addExampleToIdiom: mockAddExampleToIdiom,
         deleteExampleById: vi.fn(),
+        isLoading: false,
+        hasFetched: true, // Set hasFetched to true so the form renders
       }}
     >
       <AddExampleForm idiomId={1} idiomTitle='Break the ice' onClose={mockClose} />

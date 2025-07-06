@@ -35,12 +35,14 @@ function setup() {
       value={{
         idioms: [],
         setIdioms: vi.fn(),
-        addIdioms: vi.fn(),
+        addIdiom: vi.fn(),
         updateIdiom: mockUpdateIdiom,
         deleteIdiom: vi.fn(),
         updateExamples: vi.fn(),
         addExampleToIdiom: vi.fn(),
         deleteExampleById: vi.fn(),
+        isLoading: false,
+        hasFetched: true,
       }}
     >
       <UpdateIdiom idiom={dummyIdiom} onClose={mockClose} onDelete={mockDelete} />

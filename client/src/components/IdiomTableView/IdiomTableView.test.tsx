@@ -46,12 +46,14 @@ function setup(overrideIdioms = mockIdioms) {
   const contextValue = {
     idioms: overrideIdioms,
     setIdioms: vi.fn(),
-    addIdioms: vi.fn(),
+    addIdiom: vi.fn(),
     updateIdiom: vi.fn(),
     deleteIdiom: vi.fn(),
     addExampleToIdiom: vi.fn(),
     updateExamples: vi.fn(),
     deleteExampleById: vi.fn(),
+    isLoading: false,
+    hasFetched: true,
   };
 
   render(
