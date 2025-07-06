@@ -51,7 +51,7 @@ type AddIdiomProps = {
 };
 
 const AddIdiomForm = ({ onClose }: AddIdiomProps) => {
-  const { addIdioms } = useContext(IdiomsContext);
+  const { addIdiom } = useContext(IdiomsContext);
 
   const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
@@ -99,7 +99,7 @@ const AddIdiomForm = ({ onClose }: AddIdiomProps) => {
       contributor: emptyStringToNull(formData.contributor),
     };
 
-    const addedIdiom = await addIdioms(payload);
+    const addedIdiom = await addIdiom(payload);
 
     if (addedIdiom) {
       clearFormFields();

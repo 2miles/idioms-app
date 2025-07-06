@@ -6,7 +6,7 @@ import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 type IdiomsContextType = {
   idioms: Idiom[];
   setIdioms: React.Dispatch<React.SetStateAction<Idiom[]>>;
-  addIdioms: (idiom: NewIdiomInput) => Promise<Idiom | null>;
+  addIdiom: (idiom: NewIdiomInput) => Promise<Idiom | null>;
   updateIdiom: (id: number, changes: UpdateIdiomInput) => Promise<Idiom | null>;
   deleteIdiom: (id: number) => Promise<void>;
   updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<Example[] | null>;
@@ -19,7 +19,7 @@ type IdiomsContextType = {
 const defaultContext: IdiomsContextType = {
   idioms: [],
   setIdioms: () => {},
-  addIdioms: async () => null,
+  addIdiom: async () => null,
   updateIdiom: async () => null,
   deleteIdiom: async () => {},
   updateExamples: async () => null,
@@ -73,7 +73,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
   }, []);
 
   // Add, update, and delete idioms (recalculate positions after each operation)
-  const addIdioms = async (idiom: NewIdiomInput): Promise<Idiom | null> => {
+  const addIdiom = async (idiom: NewIdiomInput): Promise<Idiom | null> => {
     try {
       const api = await getAuthorizedIdiomFinder();
       const response = await api.post('/', idiom);
@@ -178,7 +178,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
       value={{
         idioms,
         setIdioms,
-        addIdioms,
+        addIdiom,
         updateIdiom,
         deleteIdiom,
         updateExamples,
