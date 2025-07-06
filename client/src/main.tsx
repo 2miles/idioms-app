@@ -1,8 +1,11 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
 import { Auth0Provider } from '@auth0/auth0-react';
+import { BrowserRouter } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
+import { StrictMode } from 'react';
 
 import App from '@/App';
+import { IdiomsContextProvider } from '@/context/idiomsContext';
+import { UserProvider } from '@/context/userContext';
 import '@/index.css';
 
 const container = document.getElementById('root');
@@ -22,7 +25,13 @@ if (!container) {
         cacheLocation='localstorage'
         useRefreshTokens={true}
       >
-        <App />
+        <UserProvider>
+          <IdiomsContextProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </IdiomsContextProvider>
+        </UserProvider>
       </Auth0Provider>
     </StrictMode>,
   );
