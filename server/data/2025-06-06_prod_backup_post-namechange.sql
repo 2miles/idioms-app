@@ -2,10 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.2
--- Dumped by pg_dump version 14.3
-
--- Started on 2024-10-06 19:50:54 PDT
+-- Dumped from database version 15.8
+-- Dumped by pg_dump version 15.13 (Homebrew)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -18,30 +16,2286 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: auth; Type: SCHEMA; Schema: -; Owner: supabase_admin
+--
+
+CREATE SCHEMA auth;
+
+
+ALTER SCHEMA auth OWNER TO supabase_admin;
+
+--
+-- Name: extensions; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA extensions;
+
+
+ALTER SCHEMA extensions OWNER TO postgres;
+
+--
+-- Name: graphql; Type: SCHEMA; Schema: -; Owner: supabase_admin
+--
+
+CREATE SCHEMA graphql;
+
+
+ALTER SCHEMA graphql OWNER TO supabase_admin;
+
+--
+-- Name: graphql_public; Type: SCHEMA; Schema: -; Owner: supabase_admin
+--
+
+CREATE SCHEMA graphql_public;
+
+
+ALTER SCHEMA graphql_public OWNER TO supabase_admin;
+
+--
+-- Name: pgbouncer; Type: SCHEMA; Schema: -; Owner: pgbouncer
+--
+
+CREATE SCHEMA pgbouncer;
+
+
+ALTER SCHEMA pgbouncer OWNER TO pgbouncer;
+
+--
+-- Name: pgsodium; Type: SCHEMA; Schema: -; Owner: supabase_admin
+--
+
+CREATE SCHEMA pgsodium;
+
+
+ALTER SCHEMA pgsodium OWNER TO supabase_admin;
+
+--
+-- Name: pgsodium; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgsodium WITH SCHEMA pgsodium;
+
+
+--
+-- Name: EXTENSION pgsodium; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgsodium IS 'Pgsodium is a modern cryptography library for Postgres.';
+
+
+--
+-- Name: realtime; Type: SCHEMA; Schema: -; Owner: supabase_admin
+--
+
+CREATE SCHEMA realtime;
+
+
+ALTER SCHEMA realtime OWNER TO supabase_admin;
+
+--
+-- Name: storage; Type: SCHEMA; Schema: -; Owner: supabase_admin
+--
+
+CREATE SCHEMA storage;
+
+
+ALTER SCHEMA storage OWNER TO supabase_admin;
+
+--
+-- Name: supabase_migrations; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA supabase_migrations;
+
+
+ALTER SCHEMA supabase_migrations OWNER TO postgres;
+
+--
+-- Name: vault; Type: SCHEMA; Schema: -; Owner: supabase_admin
+--
+
+CREATE SCHEMA vault;
+
+
+ALTER SCHEMA vault OWNER TO supabase_admin;
+
+--
+-- Name: pg_graphql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_graphql WITH SCHEMA graphql;
+
+
+--
+-- Name: EXTENSION pg_graphql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pg_graphql IS 'pg_graphql: GraphQL support';
+
+
+--
+-- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA extensions;
+
+
+--
+-- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pg_stat_statements IS 'track planning and execution statistics of all SQL statements executed';
+
+
+--
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
+-- Name: pgjwt; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgjwt WITH SCHEMA extensions;
+
+
+--
+-- Name: EXTENSION pgjwt; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgjwt IS 'JSON Web Token API for Postgresql';
+
+
+--
+-- Name: supabase_vault; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS supabase_vault WITH SCHEMA vault;
+
+
+--
+-- Name: EXTENSION supabase_vault; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION supabase_vault IS 'Supabase Vault Extension';
+
+
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
+--
+-- Name: aal_level; Type: TYPE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TYPE auth.aal_level AS ENUM (
+    'aal1',
+    'aal2',
+    'aal3'
+);
+
+
+ALTER TYPE auth.aal_level OWNER TO supabase_auth_admin;
+
+--
+-- Name: code_challenge_method; Type: TYPE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TYPE auth.code_challenge_method AS ENUM (
+    's256',
+    'plain'
+);
+
+
+ALTER TYPE auth.code_challenge_method OWNER TO supabase_auth_admin;
+
+--
+-- Name: factor_status; Type: TYPE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TYPE auth.factor_status AS ENUM (
+    'unverified',
+    'verified'
+);
+
+
+ALTER TYPE auth.factor_status OWNER TO supabase_auth_admin;
+
+--
+-- Name: factor_type; Type: TYPE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TYPE auth.factor_type AS ENUM (
+    'totp',
+    'webauthn',
+    'phone'
+);
+
+
+ALTER TYPE auth.factor_type OWNER TO supabase_auth_admin;
+
+--
+-- Name: one_time_token_type; Type: TYPE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TYPE auth.one_time_token_type AS ENUM (
+    'confirmation_token',
+    'reauthentication_token',
+    'recovery_token',
+    'email_change_token_new',
+    'email_change_token_current',
+    'phone_change_token'
+);
+
+
+ALTER TYPE auth.one_time_token_type OWNER TO supabase_auth_admin;
+
+--
+-- Name: action; Type: TYPE; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TYPE realtime.action AS ENUM (
+    'INSERT',
+    'UPDATE',
+    'DELETE',
+    'TRUNCATE',
+    'ERROR'
+);
+
+
+ALTER TYPE realtime.action OWNER TO supabase_admin;
+
+--
+-- Name: equality_op; Type: TYPE; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TYPE realtime.equality_op AS ENUM (
+    'eq',
+    'neq',
+    'lt',
+    'lte',
+    'gt',
+    'gte',
+    'in'
+);
+
+
+ALTER TYPE realtime.equality_op OWNER TO supabase_admin;
+
+--
+-- Name: user_defined_filter; Type: TYPE; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TYPE realtime.user_defined_filter AS (
+	column_name text,
+	op realtime.equality_op,
+	value text
+);
+
+
+ALTER TYPE realtime.user_defined_filter OWNER TO supabase_admin;
+
+--
+-- Name: wal_column; Type: TYPE; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TYPE realtime.wal_column AS (
+	name text,
+	type_name text,
+	type_oid oid,
+	value jsonb,
+	is_pkey boolean,
+	is_selectable boolean
+);
+
+
+ALTER TYPE realtime.wal_column OWNER TO supabase_admin;
+
+--
+-- Name: wal_rls; Type: TYPE; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TYPE realtime.wal_rls AS (
+	wal jsonb,
+	is_rls_enabled boolean,
+	subscription_ids uuid[],
+	errors text[]
+);
+
+
+ALTER TYPE realtime.wal_rls OWNER TO supabase_admin;
+
+--
+-- Name: email(); Type: FUNCTION; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE FUNCTION auth.email() RETURNS text
+    LANGUAGE sql STABLE
+    AS $$
+  select 
+  coalesce(
+    nullif(current_setting('request.jwt.claim.email', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'email')
+  )::text
+$$;
+
+
+ALTER FUNCTION auth.email() OWNER TO supabase_auth_admin;
+
+--
+-- Name: FUNCTION email(); Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON FUNCTION auth.email() IS 'Deprecated. Use auth.jwt() -> ''email'' instead.';
+
+
+--
+-- Name: jwt(); Type: FUNCTION; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE FUNCTION auth.jwt() RETURNS jsonb
+    LANGUAGE sql STABLE
+    AS $$
+  select 
+    coalesce(
+        nullif(current_setting('request.jwt.claim', true), ''),
+        nullif(current_setting('request.jwt.claims', true), '')
+    )::jsonb
+$$;
+
+
+ALTER FUNCTION auth.jwt() OWNER TO supabase_auth_admin;
+
+--
+-- Name: role(); Type: FUNCTION; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE FUNCTION auth.role() RETURNS text
+    LANGUAGE sql STABLE
+    AS $$
+  select 
+  coalesce(
+    nullif(current_setting('request.jwt.claim.role', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role')
+  )::text
+$$;
+
+
+ALTER FUNCTION auth.role() OWNER TO supabase_auth_admin;
+
+--
+-- Name: FUNCTION role(); Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON FUNCTION auth.role() IS 'Deprecated. Use auth.jwt() -> ''role'' instead.';
+
+
+--
+-- Name: uid(); Type: FUNCTION; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE FUNCTION auth.uid() RETURNS uuid
+    LANGUAGE sql STABLE
+    AS $$
+  select 
+  coalesce(
+    nullif(current_setting('request.jwt.claim.sub', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+  )::uuid
+$$;
+
+
+ALTER FUNCTION auth.uid() OWNER TO supabase_auth_admin;
+
+--
+-- Name: FUNCTION uid(); Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON FUNCTION auth.uid() IS 'Deprecated. Use auth.jwt() -> ''sub'' instead.';
+
+
+--
+-- Name: grant_pg_cron_access(); Type: FUNCTION; Schema: extensions; Owner: supabase_admin
+--
+
+CREATE FUNCTION extensions.grant_pg_cron_access() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF EXISTS (
+    SELECT
+    FROM pg_event_trigger_ddl_commands() AS ev
+    JOIN pg_extension AS ext
+    ON ev.objid = ext.oid
+    WHERE ext.extname = 'pg_cron'
+  )
+  THEN
+    grant usage on schema cron to postgres with grant option;
+
+    alter default privileges in schema cron grant all on tables to postgres with grant option;
+    alter default privileges in schema cron grant all on functions to postgres with grant option;
+    alter default privileges in schema cron grant all on sequences to postgres with grant option;
+
+    alter default privileges for user supabase_admin in schema cron grant all
+        on sequences to postgres with grant option;
+    alter default privileges for user supabase_admin in schema cron grant all
+        on tables to postgres with grant option;
+    alter default privileges for user supabase_admin in schema cron grant all
+        on functions to postgres with grant option;
+
+    grant all privileges on all tables in schema cron to postgres with grant option;
+    revoke all on table cron.job from postgres;
+    grant select on table cron.job to postgres with grant option;
+  END IF;
+END;
+$$;
+
+
+ALTER FUNCTION extensions.grant_pg_cron_access() OWNER TO supabase_admin;
+
+--
+-- Name: FUNCTION grant_pg_cron_access(); Type: COMMENT; Schema: extensions; Owner: supabase_admin
+--
+
+COMMENT ON FUNCTION extensions.grant_pg_cron_access() IS 'Grants access to pg_cron';
+
+
+--
+-- Name: grant_pg_graphql_access(); Type: FUNCTION; Schema: extensions; Owner: supabase_admin
+--
+
+CREATE FUNCTION extensions.grant_pg_graphql_access() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    func_is_graphql_resolve bool;
+BEGIN
+    func_is_graphql_resolve = (
+        SELECT n.proname = 'resolve'
+        FROM pg_event_trigger_ddl_commands() AS ev
+        LEFT JOIN pg_catalog.pg_proc AS n
+        ON ev.objid = n.oid
+    );
+
+    IF func_is_graphql_resolve
+    THEN
+        -- Update public wrapper to pass all arguments through to the pg_graphql resolve func
+        DROP FUNCTION IF EXISTS graphql_public.graphql;
+        create or replace function graphql_public.graphql(
+            "operationName" text default null,
+            query text default null,
+            variables jsonb default null,
+            extensions jsonb default null
+        )
+            returns jsonb
+            language sql
+        as $$
+            select graphql.resolve(
+                query := query,
+                variables := coalesce(variables, '{}'),
+                "operationName" := "operationName",
+                extensions := extensions
+            );
+        $$;
+
+        -- This hook executes when `graphql.resolve` is created. That is not necessarily the last
+        -- function in the extension so we need to grant permissions on existing entities AND
+        -- update default permissions to any others that are created after `graphql.resolve`
+        grant usage on schema graphql to postgres, anon, authenticated, service_role;
+        grant select on all tables in schema graphql to postgres, anon, authenticated, service_role;
+        grant execute on all functions in schema graphql to postgres, anon, authenticated, service_role;
+        grant all on all sequences in schema graphql to postgres, anon, authenticated, service_role;
+        alter default privileges in schema graphql grant all on tables to postgres, anon, authenticated, service_role;
+        alter default privileges in schema graphql grant all on functions to postgres, anon, authenticated, service_role;
+        alter default privileges in schema graphql grant all on sequences to postgres, anon, authenticated, service_role;
+
+        -- Allow postgres role to allow granting usage on graphql and graphql_public schemas to custom roles
+        grant usage on schema graphql_public to postgres with grant option;
+        grant usage on schema graphql to postgres with grant option;
+    END IF;
+
+END;
+$_$;
+
+
+ALTER FUNCTION extensions.grant_pg_graphql_access() OWNER TO supabase_admin;
+
+--
+-- Name: FUNCTION grant_pg_graphql_access(); Type: COMMENT; Schema: extensions; Owner: supabase_admin
+--
+
+COMMENT ON FUNCTION extensions.grant_pg_graphql_access() IS 'Grants access to pg_graphql';
+
+
+--
+-- Name: grant_pg_net_access(); Type: FUNCTION; Schema: extensions; Owner: supabase_admin
+--
+
+CREATE FUNCTION extensions.grant_pg_net_access() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM pg_event_trigger_ddl_commands() AS ev
+    JOIN pg_extension AS ext
+    ON ev.objid = ext.oid
+    WHERE ext.extname = 'pg_net'
+  )
+  THEN
+    IF NOT EXISTS (
+      SELECT 1
+      FROM pg_roles
+      WHERE rolname = 'supabase_functions_admin'
+    )
+    THEN
+      CREATE USER supabase_functions_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
+    END IF;
+
+    GRANT USAGE ON SCHEMA net TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+
+    IF EXISTS (
+      SELECT FROM pg_extension
+      WHERE extname = 'pg_net'
+      -- all versions in use on existing projects as of 2025-02-20
+      -- version 0.12.0 onwards don't need these applied
+      AND extversion IN ('0.2', '0.6', '0.7', '0.7.1', '0.8', '0.10.0', '0.11.0')
+    ) THEN
+      ALTER function net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
+      ALTER function net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
+
+      ALTER function net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) SET search_path = net;
+      ALTER function net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) SET search_path = net;
+
+      REVOKE ALL ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
+      REVOKE ALL ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
+
+      GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+      GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+    END IF;
+  END IF;
+END;
+$$;
+
+
+ALTER FUNCTION extensions.grant_pg_net_access() OWNER TO supabase_admin;
+
+--
+-- Name: FUNCTION grant_pg_net_access(); Type: COMMENT; Schema: extensions; Owner: supabase_admin
+--
+
+COMMENT ON FUNCTION extensions.grant_pg_net_access() IS 'Grants access to pg_net';
+
+
+--
+-- Name: pgrst_ddl_watch(); Type: FUNCTION; Schema: extensions; Owner: supabase_admin
+--
+
+CREATE FUNCTION extensions.pgrst_ddl_watch() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  cmd record;
+BEGIN
+  FOR cmd IN SELECT * FROM pg_event_trigger_ddl_commands()
+  LOOP
+    IF cmd.command_tag IN (
+      'CREATE SCHEMA', 'ALTER SCHEMA'
+    , 'CREATE TABLE', 'CREATE TABLE AS', 'SELECT INTO', 'ALTER TABLE'
+    , 'CREATE FOREIGN TABLE', 'ALTER FOREIGN TABLE'
+    , 'CREATE VIEW', 'ALTER VIEW'
+    , 'CREATE MATERIALIZED VIEW', 'ALTER MATERIALIZED VIEW'
+    , 'CREATE FUNCTION', 'ALTER FUNCTION'
+    , 'CREATE TRIGGER'
+    , 'CREATE TYPE', 'ALTER TYPE'
+    , 'CREATE RULE'
+    , 'COMMENT'
+    )
+    -- don't notify in case of CREATE TEMP table or other objects created on pg_temp
+    AND cmd.schema_name is distinct from 'pg_temp'
+    THEN
+      NOTIFY pgrst, 'reload schema';
+    END IF;
+  END LOOP;
+END; $$;
+
+
+ALTER FUNCTION extensions.pgrst_ddl_watch() OWNER TO supabase_admin;
+
+--
+-- Name: pgrst_drop_watch(); Type: FUNCTION; Schema: extensions; Owner: supabase_admin
+--
+
+CREATE FUNCTION extensions.pgrst_drop_watch() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  obj record;
+BEGIN
+  FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects()
+  LOOP
+    IF obj.object_type IN (
+      'schema'
+    , 'table'
+    , 'foreign table'
+    , 'view'
+    , 'materialized view'
+    , 'function'
+    , 'trigger'
+    , 'type'
+    , 'rule'
+    )
+    AND obj.is_temporary IS false -- no pg_temp objects
+    THEN
+      NOTIFY pgrst, 'reload schema';
+    END IF;
+  END LOOP;
+END; $$;
+
+
+ALTER FUNCTION extensions.pgrst_drop_watch() OWNER TO supabase_admin;
+
+--
+-- Name: set_graphql_placeholder(); Type: FUNCTION; Schema: extensions; Owner: supabase_admin
+--
+
+CREATE FUNCTION extensions.set_graphql_placeholder() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $_$
+    DECLARE
+    graphql_is_dropped bool;
+    BEGIN
+    graphql_is_dropped = (
+        SELECT ev.schema_name = 'graphql_public'
+        FROM pg_event_trigger_dropped_objects() AS ev
+        WHERE ev.schema_name = 'graphql_public'
+    );
+
+    IF graphql_is_dropped
+    THEN
+        create or replace function graphql_public.graphql(
+            "operationName" text default null,
+            query text default null,
+            variables jsonb default null,
+            extensions jsonb default null
+        )
+            returns jsonb
+            language plpgsql
+        as $$
+            DECLARE
+                server_version float;
+            BEGIN
+                server_version = (SELECT (SPLIT_PART((select version()), ' ', 2))::float);
+
+                IF server_version >= 14 THEN
+                    RETURN jsonb_build_object(
+                        'errors', jsonb_build_array(
+                            jsonb_build_object(
+                                'message', 'pg_graphql extension is not enabled.'
+                            )
+                        )
+                    );
+                ELSE
+                    RETURN jsonb_build_object(
+                        'errors', jsonb_build_array(
+                            jsonb_build_object(
+                                'message', 'pg_graphql is only available on projects running Postgres 14 onwards.'
+                            )
+                        )
+                    );
+                END IF;
+            END;
+        $$;
+    END IF;
+
+    END;
+$_$;
+
+
+ALTER FUNCTION extensions.set_graphql_placeholder() OWNER TO supabase_admin;
+
+--
+-- Name: FUNCTION set_graphql_placeholder(); Type: COMMENT; Schema: extensions; Owner: supabase_admin
+--
+
+COMMENT ON FUNCTION extensions.set_graphql_placeholder() IS 'Reintroduces placeholder function for graphql_public.graphql';
+
+
+--
+-- Name: get_auth(text); Type: FUNCTION; Schema: pgbouncer; Owner: supabase_admin
+--
+
+CREATE FUNCTION pgbouncer.get_auth(p_usename text) RETURNS TABLE(username text, password text)
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+begin
+    raise debug 'PgBouncer auth request: %', p_usename;
+
+    return query
+    select 
+        rolname::text, 
+        case when rolvaliduntil < now() 
+            then null 
+            else rolpassword::text 
+        end 
+    from pg_authid 
+    where rolname=$1 and rolcanlogin;
+end;
+$_$;
+
+
+ALTER FUNCTION pgbouncer.get_auth(p_usename text) OWNER TO supabase_admin;
+
+--
+-- Name: apply_rls(jsonb, integer); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer DEFAULT (1024 * 1024)) RETURNS SETOF realtime.wal_rls
+    LANGUAGE plpgsql
+    AS $$
+declare
+-- Regclass of the table e.g. public.notes
+entity_ regclass = (quote_ident(wal ->> 'schema') || '.' || quote_ident(wal ->> 'table'))::regclass;
+
+-- I, U, D, T: insert, update ...
+action realtime.action = (
+    case wal ->> 'action'
+        when 'I' then 'INSERT'
+        when 'U' then 'UPDATE'
+        when 'D' then 'DELETE'
+        else 'ERROR'
+    end
+);
+
+-- Is row level security enabled for the table
+is_rls_enabled bool = relrowsecurity from pg_class where oid = entity_;
+
+subscriptions realtime.subscription[] = array_agg(subs)
+    from
+        realtime.subscription subs
+    where
+        subs.entity = entity_;
+
+-- Subscription vars
+roles regrole[] = array_agg(distinct us.claims_role::text)
+    from
+        unnest(subscriptions) us;
+
+working_role regrole;
+claimed_role regrole;
+claims jsonb;
+
+subscription_id uuid;
+subscription_has_access bool;
+visible_to_subscription_ids uuid[] = '{}';
+
+-- structured info for wal's columns
+columns realtime.wal_column[];
+-- previous identity values for update/delete
+old_columns realtime.wal_column[];
+
+error_record_exceeds_max_size boolean = octet_length(wal::text) > max_record_bytes;
+
+-- Primary jsonb output for record
+output jsonb;
+
+begin
+perform set_config('role', null, true);
+
+columns =
+    array_agg(
+        (
+            x->>'name',
+            x->>'type',
+            x->>'typeoid',
+            realtime.cast(
+                (x->'value') #>> '{}',
+                coalesce(
+                    (x->>'typeoid')::regtype, -- null when wal2json version <= 2.4
+                    (x->>'type')::regtype
+                )
+            ),
+            (pks ->> 'name') is not null,
+            true
+        )::realtime.wal_column
+    )
+    from
+        jsonb_array_elements(wal -> 'columns') x
+        left join jsonb_array_elements(wal -> 'pk') pks
+            on (x ->> 'name') = (pks ->> 'name');
+
+old_columns =
+    array_agg(
+        (
+            x->>'name',
+            x->>'type',
+            x->>'typeoid',
+            realtime.cast(
+                (x->'value') #>> '{}',
+                coalesce(
+                    (x->>'typeoid')::regtype, -- null when wal2json version <= 2.4
+                    (x->>'type')::regtype
+                )
+            ),
+            (pks ->> 'name') is not null,
+            true
+        )::realtime.wal_column
+    )
+    from
+        jsonb_array_elements(wal -> 'identity') x
+        left join jsonb_array_elements(wal -> 'pk') pks
+            on (x ->> 'name') = (pks ->> 'name');
+
+for working_role in select * from unnest(roles) loop
+
+    -- Update `is_selectable` for columns and old_columns
+    columns =
+        array_agg(
+            (
+                c.name,
+                c.type_name,
+                c.type_oid,
+                c.value,
+                c.is_pkey,
+                pg_catalog.has_column_privilege(working_role, entity_, c.name, 'SELECT')
+            )::realtime.wal_column
+        )
+        from
+            unnest(columns) c;
+
+    old_columns =
+            array_agg(
+                (
+                    c.name,
+                    c.type_name,
+                    c.type_oid,
+                    c.value,
+                    c.is_pkey,
+                    pg_catalog.has_column_privilege(working_role, entity_, c.name, 'SELECT')
+                )::realtime.wal_column
+            )
+            from
+                unnest(old_columns) c;
+
+    if action <> 'DELETE' and count(1) = 0 from unnest(columns) c where c.is_pkey then
+        return next (
+            jsonb_build_object(
+                'schema', wal ->> 'schema',
+                'table', wal ->> 'table',
+                'type', action
+            ),
+            is_rls_enabled,
+            -- subscriptions is already filtered by entity
+            (select array_agg(s.subscription_id) from unnest(subscriptions) as s where claims_role = working_role),
+            array['Error 400: Bad Request, no primary key']
+        )::realtime.wal_rls;
+
+    -- The claims role does not have SELECT permission to the primary key of entity
+    elsif action <> 'DELETE' and sum(c.is_selectable::int) <> count(1) from unnest(columns) c where c.is_pkey then
+        return next (
+            jsonb_build_object(
+                'schema', wal ->> 'schema',
+                'table', wal ->> 'table',
+                'type', action
+            ),
+            is_rls_enabled,
+            (select array_agg(s.subscription_id) from unnest(subscriptions) as s where claims_role = working_role),
+            array['Error 401: Unauthorized']
+        )::realtime.wal_rls;
+
+    else
+        output = jsonb_build_object(
+            'schema', wal ->> 'schema',
+            'table', wal ->> 'table',
+            'type', action,
+            'commit_timestamp', to_char(
+                ((wal ->> 'timestamp')::timestamptz at time zone 'utc'),
+                'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'
+            ),
+            'columns', (
+                select
+                    jsonb_agg(
+                        jsonb_build_object(
+                            'name', pa.attname,
+                            'type', pt.typname
+                        )
+                        order by pa.attnum asc
+                    )
+                from
+                    pg_attribute pa
+                    join pg_type pt
+                        on pa.atttypid = pt.oid
+                where
+                    attrelid = entity_
+                    and attnum > 0
+                    and pg_catalog.has_column_privilege(working_role, entity_, pa.attname, 'SELECT')
+            )
+        )
+        -- Add "record" key for insert and update
+        || case
+            when action in ('INSERT', 'UPDATE') then
+                jsonb_build_object(
+                    'record',
+                    (
+                        select
+                            jsonb_object_agg(
+                                -- if unchanged toast, get column name and value from old record
+                                coalesce((c).name, (oc).name),
+                                case
+                                    when (c).name is null then (oc).value
+                                    else (c).value
+                                end
+                            )
+                        from
+                            unnest(columns) c
+                            full outer join unnest(old_columns) oc
+                                on (c).name = (oc).name
+                        where
+                            coalesce((c).is_selectable, (oc).is_selectable)
+                            and ( not error_record_exceeds_max_size or (octet_length((c).value::text) <= 64))
+                    )
+                )
+            else '{}'::jsonb
+        end
+        -- Add "old_record" key for update and delete
+        || case
+            when action = 'UPDATE' then
+                jsonb_build_object(
+                        'old_record',
+                        (
+                            select jsonb_object_agg((c).name, (c).value)
+                            from unnest(old_columns) c
+                            where
+                                (c).is_selectable
+                                and ( not error_record_exceeds_max_size or (octet_length((c).value::text) <= 64))
+                        )
+                    )
+            when action = 'DELETE' then
+                jsonb_build_object(
+                    'old_record',
+                    (
+                        select jsonb_object_agg((c).name, (c).value)
+                        from unnest(old_columns) c
+                        where
+                            (c).is_selectable
+                            and ( not error_record_exceeds_max_size or (octet_length((c).value::text) <= 64))
+                            and ( not is_rls_enabled or (c).is_pkey ) -- if RLS enabled, we can't secure deletes so filter to pkey
+                    )
+                )
+            else '{}'::jsonb
+        end;
+
+        -- Create the prepared statement
+        if is_rls_enabled and action <> 'DELETE' then
+            if (select 1 from pg_prepared_statements where name = 'walrus_rls_stmt' limit 1) > 0 then
+                deallocate walrus_rls_stmt;
+            end if;
+            execute realtime.build_prepared_statement_sql('walrus_rls_stmt', entity_, columns);
+        end if;
+
+        visible_to_subscription_ids = '{}';
+
+        for subscription_id, claims in (
+                select
+                    subs.subscription_id,
+                    subs.claims
+                from
+                    unnest(subscriptions) subs
+                where
+                    subs.entity = entity_
+                    and subs.claims_role = working_role
+                    and (
+                        realtime.is_visible_through_filters(columns, subs.filters)
+                        or (
+                          action = 'DELETE'
+                          and realtime.is_visible_through_filters(old_columns, subs.filters)
+                        )
+                    )
+        ) loop
+
+            if not is_rls_enabled or action = 'DELETE' then
+                visible_to_subscription_ids = visible_to_subscription_ids || subscription_id;
+            else
+                -- Check if RLS allows the role to see the record
+                perform
+                    -- Trim leading and trailing quotes from working_role because set_config
+                    -- doesn't recognize the role as valid if they are included
+                    set_config('role', trim(both '"' from working_role::text), true),
+                    set_config('request.jwt.claims', claims::text, true);
+
+                execute 'execute walrus_rls_stmt' into subscription_has_access;
+
+                if subscription_has_access then
+                    visible_to_subscription_ids = visible_to_subscription_ids || subscription_id;
+                end if;
+            end if;
+        end loop;
+
+        perform set_config('role', null, true);
+
+        return next (
+            output,
+            is_rls_enabled,
+            visible_to_subscription_ids,
+            case
+                when error_record_exceeds_max_size then array['Error 413: Payload Too Large']
+                else '{}'
+            end
+        )::realtime.wal_rls;
+
+    end if;
+end loop;
+
+perform set_config('role', null, true);
+end;
+$$;
+
+
+ALTER FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer) OWNER TO supabase_admin;
+
+--
+-- Name: broadcast_changes(text, text, text, text, text, record, record, text); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.broadcast_changes(topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text DEFAULT 'ROW'::text) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    -- Declare a variable to hold the JSONB representation of the row
+    row_data jsonb := '{}'::jsonb;
+BEGIN
+    IF level = 'STATEMENT' THEN
+        RAISE EXCEPTION 'function can only be triggered for each row, not for each statement';
+    END IF;
+    -- Check the operation type and handle accordingly
+    IF operation = 'INSERT' OR operation = 'UPDATE' OR operation = 'DELETE' THEN
+        row_data := jsonb_build_object('old_record', OLD, 'record', NEW, 'operation', operation, 'table', table_name, 'schema', table_schema);
+        PERFORM realtime.send (row_data, event_name, topic_name);
+    ELSE
+        RAISE EXCEPTION 'Unexpected operation type: %', operation;
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Failed to process the row: %', SQLERRM;
+END;
+
+$$;
+
+
+ALTER FUNCTION realtime.broadcast_changes(topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text) OWNER TO supabase_admin;
+
+--
+-- Name: build_prepared_statement_sql(text, regclass, realtime.wal_column[]); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) RETURNS text
+    LANGUAGE sql
+    AS $$
+      /*
+      Builds a sql string that, if executed, creates a prepared statement to
+      tests retrive a row from *entity* by its primary key columns.
+      Example
+          select realtime.build_prepared_statement_sql('public.notes', '{"id"}'::text[], '{"bigint"}'::text[])
+      */
+          select
+      'prepare ' || prepared_statement_name || ' as
+          select
+              exists(
+                  select
+                      1
+                  from
+                      ' || entity || '
+                  where
+                      ' || string_agg(quote_ident(pkc.name) || '=' || quote_nullable(pkc.value #>> '{}') , ' and ') || '
+              )'
+          from
+              unnest(columns) pkc
+          where
+              pkc.is_pkey
+          group by
+              entity
+      $$;
+
+
+ALTER FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) OWNER TO supabase_admin;
+
+--
+-- Name: cast(text, regtype); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime."cast"(val text, type_ regtype) RETURNS jsonb
+    LANGUAGE plpgsql IMMUTABLE
+    AS $$
+    declare
+      res jsonb;
+    begin
+      execute format('select to_jsonb(%L::'|| type_::text || ')', val)  into res;
+      return res;
+    end
+    $$;
+
+
+ALTER FUNCTION realtime."cast"(val text, type_ regtype) OWNER TO supabase_admin;
+
+--
+-- Name: check_equality_op(realtime.equality_op, regtype, text, text); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) RETURNS boolean
+    LANGUAGE plpgsql IMMUTABLE
+    AS $$
+      /*
+      Casts *val_1* and *val_2* as type *type_* and check the *op* condition for truthiness
+      */
+      declare
+          op_symbol text = (
+              case
+                  when op = 'eq' then '='
+                  when op = 'neq' then '!='
+                  when op = 'lt' then '<'
+                  when op = 'lte' then '<='
+                  when op = 'gt' then '>'
+                  when op = 'gte' then '>='
+                  when op = 'in' then '= any'
+                  else 'UNKNOWN OP'
+              end
+          );
+          res boolean;
+      begin
+          execute format(
+              'select %L::'|| type_::text || ' ' || op_symbol
+              || ' ( %L::'
+              || (
+                  case
+                      when op = 'in' then type_::text || '[]'
+                      else type_::text end
+              )
+              || ')', val_1, val_2) into res;
+          return res;
+      end;
+      $$;
+
+
+ALTER FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) OWNER TO supabase_admin;
+
+--
+-- Name: is_visible_through_filters(realtime.wal_column[], realtime.user_defined_filter[]); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) RETURNS boolean
+    LANGUAGE sql IMMUTABLE
+    AS $_$
+    /*
+    Should the record be visible (true) or filtered out (false) after *filters* are applied
+    */
+        select
+            -- Default to allowed when no filters present
+            $2 is null -- no filters. this should not happen because subscriptions has a default
+            or array_length($2, 1) is null -- array length of an empty array is null
+            or bool_and(
+                coalesce(
+                    realtime.check_equality_op(
+                        op:=f.op,
+                        type_:=coalesce(
+                            col.type_oid::regtype, -- null when wal2json version <= 2.4
+                            col.type_name::regtype
+                        ),
+                        -- cast jsonb to text
+                        val_1:=col.value #>> '{}',
+                        val_2:=f.value
+                    ),
+                    false -- if null, filter does not match
+                )
+            )
+        from
+            unnest(filters) f
+            join unnest(columns) col
+                on f.column_name = col.name;
+    $_$;
+
+
+ALTER FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) OWNER TO supabase_admin;
+
+--
+-- Name: list_changes(name, name, integer, integer); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) RETURNS SETOF realtime.wal_rls
+    LANGUAGE sql
+    SET log_min_messages TO 'fatal'
+    AS $$
+      with pub as (
+        select
+          concat_ws(
+            ',',
+            case when bool_or(pubinsert) then 'insert' else null end,
+            case when bool_or(pubupdate) then 'update' else null end,
+            case when bool_or(pubdelete) then 'delete' else null end
+          ) as w2j_actions,
+          coalesce(
+            string_agg(
+              realtime.quote_wal2json(format('%I.%I', schemaname, tablename)::regclass),
+              ','
+            ) filter (where ppt.tablename is not null and ppt.tablename not like '% %'),
+            ''
+          ) w2j_add_tables
+        from
+          pg_publication pp
+          left join pg_publication_tables ppt
+            on pp.pubname = ppt.pubname
+        where
+          pp.pubname = publication
+        group by
+          pp.pubname
+        limit 1
+      ),
+      w2j as (
+        select
+          x.*, pub.w2j_add_tables
+        from
+          pub,
+          pg_logical_slot_get_changes(
+            slot_name, null, max_changes,
+            'include-pk', 'true',
+            'include-transaction', 'false',
+            'include-timestamp', 'true',
+            'include-type-oids', 'true',
+            'format-version', '2',
+            'actions', pub.w2j_actions,
+            'add-tables', pub.w2j_add_tables
+          ) x
+      )
+      select
+        xyz.wal,
+        xyz.is_rls_enabled,
+        xyz.subscription_ids,
+        xyz.errors
+      from
+        w2j,
+        realtime.apply_rls(
+          wal := w2j.data::jsonb,
+          max_record_bytes := max_record_bytes
+        ) xyz(wal, is_rls_enabled, subscription_ids, errors)
+      where
+        w2j.w2j_add_tables <> ''
+        and xyz.subscription_ids[1] is not null
+    $$;
+
+
+ALTER FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) OWNER TO supabase_admin;
+
+--
+-- Name: quote_wal2json(regclass); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.quote_wal2json(entity regclass) RETURNS text
+    LANGUAGE sql IMMUTABLE STRICT
+    AS $$
+      select
+        (
+          select string_agg('' || ch,'')
+          from unnest(string_to_array(nsp.nspname::text, null)) with ordinality x(ch, idx)
+          where
+            not (x.idx = 1 and x.ch = '"')
+            and not (
+              x.idx = array_length(string_to_array(nsp.nspname::text, null), 1)
+              and x.ch = '"'
+            )
+        )
+        || '.'
+        || (
+          select string_agg('' || ch,'')
+          from unnest(string_to_array(pc.relname::text, null)) with ordinality x(ch, idx)
+          where
+            not (x.idx = 1 and x.ch = '"')
+            and not (
+              x.idx = array_length(string_to_array(nsp.nspname::text, null), 1)
+              and x.ch = '"'
+            )
+          )
+      from
+        pg_class pc
+        join pg_namespace nsp
+          on pc.relnamespace = nsp.oid
+      where
+        pc.oid = entity
+    $$;
+
+
+ALTER FUNCTION realtime.quote_wal2json(entity regclass) OWNER TO supabase_admin;
+
+--
+-- Name: send(jsonb, text, text, boolean); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.send(payload jsonb, event text, topic text, private boolean DEFAULT true) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  BEGIN
+    -- Set the topic configuration
+    EXECUTE format('SET LOCAL realtime.topic TO %L', topic);
+
+    -- Attempt to insert the message
+    INSERT INTO realtime.messages (payload, event, topic, private, extension)
+    VALUES (payload, event, topic, private, 'broadcast');
+  EXCEPTION
+    WHEN OTHERS THEN
+      -- Capture and notify the error
+      PERFORM pg_notify(
+          'realtime:system',
+          jsonb_build_object(
+              'error', SQLERRM,
+              'function', 'realtime.send',
+              'event', event,
+              'topic', topic,
+              'private', private
+          )::text
+      );
+  END;
+END;
+$$;
+
+
+ALTER FUNCTION realtime.send(payload jsonb, event text, topic text, private boolean) OWNER TO supabase_admin;
+
+--
+-- Name: subscription_check_filters(); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.subscription_check_filters() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    /*
+    Validates that the user defined filters for a subscription:
+    - refer to valid columns that the claimed role may access
+    - values are coercable to the correct column type
+    */
+    declare
+        col_names text[] = coalesce(
+                array_agg(c.column_name order by c.ordinal_position),
+                '{}'::text[]
+            )
+            from
+                information_schema.columns c
+            where
+                format('%I.%I', c.table_schema, c.table_name)::regclass = new.entity
+                and pg_catalog.has_column_privilege(
+                    (new.claims ->> 'role'),
+                    format('%I.%I', c.table_schema, c.table_name)::regclass,
+                    c.column_name,
+                    'SELECT'
+                );
+        filter realtime.user_defined_filter;
+        col_type regtype;
+
+        in_val jsonb;
+    begin
+        for filter in select * from unnest(new.filters) loop
+            -- Filtered column is valid
+            if not filter.column_name = any(col_names) then
+                raise exception 'invalid column for filter %', filter.column_name;
+            end if;
+
+            -- Type is sanitized and safe for string interpolation
+            col_type = (
+                select atttypid::regtype
+                from pg_catalog.pg_attribute
+                where attrelid = new.entity
+                      and attname = filter.column_name
+            );
+            if col_type is null then
+                raise exception 'failed to lookup type for column %', filter.column_name;
+            end if;
+
+            -- Set maximum number of entries for in filter
+            if filter.op = 'in'::realtime.equality_op then
+                in_val = realtime.cast(filter.value, (col_type::text || '[]')::regtype);
+                if coalesce(jsonb_array_length(in_val), 0) > 100 then
+                    raise exception 'too many values for `in` filter. Maximum 100';
+                end if;
+            else
+                -- raises an exception if value is not coercable to type
+                perform realtime.cast(filter.value, col_type);
+            end if;
+
+        end loop;
+
+        -- Apply consistent order to filters so the unique constraint on
+        -- (subscription_id, entity, filters) can't be tricked by a different filter order
+        new.filters = coalesce(
+            array_agg(f order by f.column_name, f.op, f.value),
+            '{}'
+        ) from unnest(new.filters) f;
+
+        return new;
+    end;
+    $$;
+
+
+ALTER FUNCTION realtime.subscription_check_filters() OWNER TO supabase_admin;
+
+--
+-- Name: to_regrole(text); Type: FUNCTION; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE FUNCTION realtime.to_regrole(role_name text) RETURNS regrole
+    LANGUAGE sql IMMUTABLE
+    AS $$ select role_name::regrole $$;
+
+
+ALTER FUNCTION realtime.to_regrole(role_name text) OWNER TO supabase_admin;
+
+--
+-- Name: topic(); Type: FUNCTION; Schema: realtime; Owner: supabase_realtime_admin
+--
+
+CREATE FUNCTION realtime.topic() RETURNS text
+    LANGUAGE sql STABLE
+    AS $$
+select nullif(current_setting('realtime.topic', true), '')::text;
+$$;
+
+
+ALTER FUNCTION realtime.topic() OWNER TO supabase_realtime_admin;
+
+--
+-- Name: can_insert_object(text, text, uuid, jsonb); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.can_insert_object(bucketid text, name text, owner uuid, metadata jsonb) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  INSERT INTO "storage"."objects" ("bucket_id", "name", "owner", "metadata") VALUES (bucketid, name, owner, metadata);
+  -- hack to rollback the successful insert
+  RAISE sqlstate 'PT200' using
+  message = 'ROLLBACK',
+  detail = 'rollback successful insert';
+END
+$$;
+
+
+ALTER FUNCTION storage.can_insert_object(bucketid text, name text, owner uuid, metadata jsonb) OWNER TO supabase_storage_admin;
+
+--
+-- Name: extension(text); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.extension(name text) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+_parts text[];
+_filename text;
+BEGIN
+	select string_to_array(name, '/') into _parts;
+	select _parts[array_length(_parts,1)] into _filename;
+	-- @todo return the last part instead of 2
+	return reverse(split_part(reverse(_filename), '.', 1));
+END
+$$;
+
+
+ALTER FUNCTION storage.extension(name text) OWNER TO supabase_storage_admin;
+
+--
+-- Name: filename(text); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.filename(name text) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+_parts text[];
+BEGIN
+	select string_to_array(name, '/') into _parts;
+	return _parts[array_length(_parts,1)];
+END
+$$;
+
+
+ALTER FUNCTION storage.filename(name text) OWNER TO supabase_storage_admin;
+
+--
+-- Name: foldername(text); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.foldername(name text) RETURNS text[]
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+_parts text[];
+BEGIN
+	select string_to_array(name, '/') into _parts;
+	return _parts[1:array_length(_parts,1)-1];
+END
+$$;
+
+
+ALTER FUNCTION storage.foldername(name text) OWNER TO supabase_storage_admin;
+
+--
+-- Name: get_size_by_bucket(); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.get_size_by_bucket() RETURNS TABLE(size bigint, bucket_id text)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    return query
+        select sum((metadata->>'size')::int) as size, obj.bucket_id
+        from "storage".objects as obj
+        group by obj.bucket_id;
+END
+$$;
+
+
+ALTER FUNCTION storage.get_size_by_bucket() OWNER TO supabase_storage_admin;
+
+--
+-- Name: list_multipart_uploads_with_delimiter(text, text, text, integer, text, text); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.list_multipart_uploads_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer DEFAULT 100, next_key_token text DEFAULT ''::text, next_upload_token text DEFAULT ''::text) RETURNS TABLE(key text, id text, created_at timestamp with time zone)
+    LANGUAGE plpgsql
+    AS $_$
+BEGIN
+    RETURN QUERY EXECUTE
+        'SELECT DISTINCT ON(key COLLATE "C") * from (
+            SELECT
+                CASE
+                    WHEN position($2 IN substring(key from length($1) + 1)) > 0 THEN
+                        substring(key from 1 for length($1) + position($2 IN substring(key from length($1) + 1)))
+                    ELSE
+                        key
+                END AS key, id, created_at
+            FROM
+                storage.s3_multipart_uploads
+            WHERE
+                bucket_id = $5 AND
+                key ILIKE $1 || ''%'' AND
+                CASE
+                    WHEN $4 != '''' AND $6 = '''' THEN
+                        CASE
+                            WHEN position($2 IN substring(key from length($1) + 1)) > 0 THEN
+                                substring(key from 1 for length($1) + position($2 IN substring(key from length($1) + 1))) COLLATE "C" > $4
+                            ELSE
+                                key COLLATE "C" > $4
+                            END
+                    ELSE
+                        true
+                END AND
+                CASE
+                    WHEN $6 != '''' THEN
+                        id COLLATE "C" > $6
+                    ELSE
+                        true
+                    END
+            ORDER BY
+                key COLLATE "C" ASC, created_at ASC) as e order by key COLLATE "C" LIMIT $3'
+        USING prefix_param, delimiter_param, max_keys, next_key_token, bucket_id, next_upload_token;
+END;
+$_$;
+
+
+ALTER FUNCTION storage.list_multipart_uploads_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer, next_key_token text, next_upload_token text) OWNER TO supabase_storage_admin;
+
+--
+-- Name: list_objects_with_delimiter(text, text, text, integer, text, text); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.list_objects_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer DEFAULT 100, start_after text DEFAULT ''::text, next_token text DEFAULT ''::text) RETURNS TABLE(name text, id uuid, metadata jsonb, updated_at timestamp with time zone)
+    LANGUAGE plpgsql
+    AS $_$
+BEGIN
+    RETURN QUERY EXECUTE
+        'SELECT DISTINCT ON(name COLLATE "C") * from (
+            SELECT
+                CASE
+                    WHEN position($2 IN substring(name from length($1) + 1)) > 0 THEN
+                        substring(name from 1 for length($1) + position($2 IN substring(name from length($1) + 1)))
+                    ELSE
+                        name
+                END AS name, id, metadata, updated_at
+            FROM
+                storage.objects
+            WHERE
+                bucket_id = $5 AND
+                name ILIKE $1 || ''%'' AND
+                CASE
+                    WHEN $6 != '''' THEN
+                    name COLLATE "C" > $6
+                ELSE true END
+                AND CASE
+                    WHEN $4 != '''' THEN
+                        CASE
+                            WHEN position($2 IN substring(name from length($1) + 1)) > 0 THEN
+                                substring(name from 1 for length($1) + position($2 IN substring(name from length($1) + 1))) COLLATE "C" > $4
+                            ELSE
+                                name COLLATE "C" > $4
+                            END
+                    ELSE
+                        true
+                END
+            ORDER BY
+                name COLLATE "C" ASC) as e order by name COLLATE "C" LIMIT $3'
+        USING prefix_param, delimiter_param, max_keys, next_token, bucket_id, start_after;
+END;
+$_$;
+
+
+ALTER FUNCTION storage.list_objects_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer, start_after text, next_token text) OWNER TO supabase_storage_admin;
+
+--
+-- Name: operation(); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.operation() RETURNS text
+    LANGUAGE plpgsql STABLE
+    AS $$
+BEGIN
+    RETURN current_setting('storage.operation', true);
+END;
+$$;
+
+
+ALTER FUNCTION storage.operation() OWNER TO supabase_storage_admin;
+
+--
+-- Name: search(text, text, integer, integer, integer, text, text, text); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.search(prefix text, bucketname text, limits integer DEFAULT 100, levels integer DEFAULT 1, offsets integer DEFAULT 0, search text DEFAULT ''::text, sortcolumn text DEFAULT 'name'::text, sortorder text DEFAULT 'asc'::text) RETURNS TABLE(name text, id uuid, updated_at timestamp with time zone, created_at timestamp with time zone, last_accessed_at timestamp with time zone, metadata jsonb)
+    LANGUAGE plpgsql STABLE
+    AS $_$
+declare
+  v_order_by text;
+  v_sort_order text;
+begin
+  case
+    when sortcolumn = 'name' then
+      v_order_by = 'name';
+    when sortcolumn = 'updated_at' then
+      v_order_by = 'updated_at';
+    when sortcolumn = 'created_at' then
+      v_order_by = 'created_at';
+    when sortcolumn = 'last_accessed_at' then
+      v_order_by = 'last_accessed_at';
+    else
+      v_order_by = 'name';
+  end case;
+
+  case
+    when sortorder = 'asc' then
+      v_sort_order = 'asc';
+    when sortorder = 'desc' then
+      v_sort_order = 'desc';
+    else
+      v_sort_order = 'asc';
+  end case;
+
+  v_order_by = v_order_by || ' ' || v_sort_order;
+
+  return query execute
+    'with folders as (
+       select path_tokens[$1] as folder
+       from storage.objects
+         where objects.name ilike $2 || $3 || ''%''
+           and bucket_id = $4
+           and array_length(objects.path_tokens, 1) <> $1
+       group by folder
+       order by folder ' || v_sort_order || '
+     )
+     (select folder as "name",
+            null as id,
+            null as updated_at,
+            null as created_at,
+            null as last_accessed_at,
+            null as metadata from folders)
+     union all
+     (select path_tokens[$1] as "name",
+            id,
+            updated_at,
+            created_at,
+            last_accessed_at,
+            metadata
+     from storage.objects
+     where objects.name ilike $2 || $3 || ''%''
+       and bucket_id = $4
+       and array_length(objects.path_tokens, 1) = $1
+     order by ' || v_order_by || ')
+     limit $5
+     offset $6' using levels, prefix, search, bucketname, limits, offsets;
+end;
+$_$;
+
+
+ALTER FUNCTION storage.search(prefix text, bucketname text, limits integer, levels integer, offsets integer, search text, sortcolumn text, sortorder text) OWNER TO supabase_storage_admin;
+
+--
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE FUNCTION storage.update_updated_at_column() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    NEW.updated_at = now();
+    RETURN NEW; 
+END;
+$$;
+
+
+ALTER FUNCTION storage.update_updated_at_column() OWNER TO supabase_storage_admin;
+
+--
+-- Name: secrets_encrypt_secret_secret(); Type: FUNCTION; Schema: vault; Owner: supabase_admin
+--
+
+CREATE FUNCTION vault.secrets_encrypt_secret_secret() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+		BEGIN
+		        new.secret = CASE WHEN new.secret IS NULL THEN NULL ELSE
+			CASE WHEN new.key_id IS NULL THEN NULL ELSE pg_catalog.encode(
+			  pgsodium.crypto_aead_det_encrypt(
+				pg_catalog.convert_to(new.secret, 'utf8'),
+				pg_catalog.convert_to((new.id::text || new.description::text || new.created_at::text || new.updated_at::text)::text, 'utf8'),
+				new.key_id::uuid,
+				new.nonce
+			  ),
+				'base64') END END;
+		RETURN new;
+		END;
+		$$;
+
+
+ALTER FUNCTION vault.secrets_encrypt_secret_secret() OWNER TO supabase_admin;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- TOC entry 212 (class 1259 OID 147505)
--- Name: idioms_examples_test; Type: TABLE; Schema: public; Owner: postgres
+-- Name: audit_log_entries; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
 --
 
-CREATE TABLE public.idioms_examples_test (
-    example_id integer NOT NULL,
+CREATE TABLE auth.audit_log_entries (
+    instance_id uuid,
+    id uuid NOT NULL,
+    payload json,
+    created_at timestamp with time zone,
+    ip_address character varying(64) DEFAULT ''::character varying NOT NULL
+);
+
+
+ALTER TABLE auth.audit_log_entries OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE audit_log_entries; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.audit_log_entries IS 'Auth: Audit trail for user actions.';
+
+
+--
+-- Name: flow_state; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.flow_state (
+    id uuid NOT NULL,
+    user_id uuid,
+    auth_code text NOT NULL,
+    code_challenge_method auth.code_challenge_method NOT NULL,
+    code_challenge text NOT NULL,
+    provider_type text NOT NULL,
+    provider_access_token text,
+    provider_refresh_token text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    authentication_method text NOT NULL,
+    auth_code_issued_at timestamp with time zone
+);
+
+
+ALTER TABLE auth.flow_state OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE flow_state; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.flow_state IS 'stores metadata for pkce logins';
+
+
+--
+-- Name: identities; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.identities (
+    provider_id text NOT NULL,
+    user_id uuid NOT NULL,
+    identity_data jsonb NOT NULL,
+    provider text NOT NULL,
+    last_sign_in_at timestamp with time zone,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    email text GENERATED ALWAYS AS (lower((identity_data ->> 'email'::text))) STORED,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
+);
+
+
+ALTER TABLE auth.identities OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE identities; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.identities IS 'Auth: Stores identities associated to a user.';
+
+
+--
+-- Name: COLUMN identities.email; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON COLUMN auth.identities.email IS 'Auth: Email is a generated column that references the optional email property in the identity_data';
+
+
+--
+-- Name: instances; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.instances (
+    id uuid NOT NULL,
+    uuid uuid,
+    raw_base_config text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone
+);
+
+
+ALTER TABLE auth.instances OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE instances; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.instances IS 'Auth: Manages users across multiple sites.';
+
+
+--
+-- Name: mfa_amr_claims; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.mfa_amr_claims (
+    session_id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    authentication_method text NOT NULL,
+    id uuid NOT NULL
+);
+
+
+ALTER TABLE auth.mfa_amr_claims OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE mfa_amr_claims; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.mfa_amr_claims IS 'auth: stores authenticator method reference claims for multi factor authentication';
+
+
+--
+-- Name: mfa_challenges; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.mfa_challenges (
+    id uuid NOT NULL,
+    factor_id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    verified_at timestamp with time zone,
+    ip_address inet NOT NULL,
+    otp_code text,
+    web_authn_session_data jsonb
+);
+
+
+ALTER TABLE auth.mfa_challenges OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE mfa_challenges; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.mfa_challenges IS 'auth: stores metadata about challenge requests made';
+
+
+--
+-- Name: mfa_factors; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.mfa_factors (
+    id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    friendly_name text,
+    factor_type auth.factor_type NOT NULL,
+    status auth.factor_status NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    secret text,
+    phone text,
+    last_challenged_at timestamp with time zone,
+    web_authn_credential jsonb,
+    web_authn_aaguid uuid
+);
+
+
+ALTER TABLE auth.mfa_factors OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE mfa_factors; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.mfa_factors IS 'auth: stores metadata about factors';
+
+
+--
+-- Name: one_time_tokens; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.one_time_tokens (
+    id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    token_type auth.one_time_token_type NOT NULL,
+    token_hash text NOT NULL,
+    relates_to text NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT one_time_tokens_token_hash_check CHECK ((char_length(token_hash) > 0))
+);
+
+
+ALTER TABLE auth.one_time_tokens OWNER TO supabase_auth_admin;
+
+--
+-- Name: refresh_tokens; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.refresh_tokens (
+    instance_id uuid,
+    id bigint NOT NULL,
+    token character varying(255),
+    user_id character varying(255),
+    revoked boolean,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    parent character varying(255),
+    session_id uuid
+);
+
+
+ALTER TABLE auth.refresh_tokens OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE refresh_tokens; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.refresh_tokens IS 'Auth: Store of tokens used to refresh JWT tokens once they expire.';
+
+
+--
+-- Name: refresh_tokens_id_seq; Type: SEQUENCE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE SEQUENCE auth.refresh_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth.refresh_tokens_id_seq OWNER TO supabase_auth_admin;
+
+--
+-- Name: refresh_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER SEQUENCE auth.refresh_tokens_id_seq OWNED BY auth.refresh_tokens.id;
+
+
+--
+-- Name: saml_providers; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.saml_providers (
+    id uuid NOT NULL,
+    sso_provider_id uuid NOT NULL,
+    entity_id text NOT NULL,
+    metadata_xml text NOT NULL,
+    metadata_url text,
+    attribute_mapping jsonb,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    name_id_format text,
+    CONSTRAINT "entity_id not empty" CHECK ((char_length(entity_id) > 0)),
+    CONSTRAINT "metadata_url not empty" CHECK (((metadata_url = NULL::text) OR (char_length(metadata_url) > 0))),
+    CONSTRAINT "metadata_xml not empty" CHECK ((char_length(metadata_xml) > 0))
+);
+
+
+ALTER TABLE auth.saml_providers OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE saml_providers; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.saml_providers IS 'Auth: Manages SAML Identity Provider connections.';
+
+
+--
+-- Name: saml_relay_states; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.saml_relay_states (
+    id uuid NOT NULL,
+    sso_provider_id uuid NOT NULL,
+    request_id text NOT NULL,
+    for_email text,
+    redirect_to text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    flow_state_id uuid,
+    CONSTRAINT "request_id not empty" CHECK ((char_length(request_id) > 0))
+);
+
+
+ALTER TABLE auth.saml_relay_states OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE saml_relay_states; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.saml_relay_states IS 'Auth: Contains SAML Relay State information for each Service Provider initiated login.';
+
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.schema_migrations (
+    version character varying(255) NOT NULL
+);
+
+
+ALTER TABLE auth.schema_migrations OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE schema_migrations; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.schema_migrations IS 'Auth: Manages updates to the auth system.';
+
+
+--
+-- Name: sessions; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.sessions (
+    id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    factor_id uuid,
+    aal auth.aal_level,
+    not_after timestamp with time zone,
+    refreshed_at timestamp without time zone,
+    user_agent text,
+    ip inet,
+    tag text
+);
+
+
+ALTER TABLE auth.sessions OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE sessions; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.sessions IS 'Auth: Stores session data associated to a user.';
+
+
+--
+-- Name: COLUMN sessions.not_after; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON COLUMN auth.sessions.not_after IS 'Auth: Not after is a nullable column that contains a timestamp after which the session should be regarded as expired.';
+
+
+--
+-- Name: sso_domains; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.sso_domains (
+    id uuid NOT NULL,
+    sso_provider_id uuid NOT NULL,
+    domain text NOT NULL,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    CONSTRAINT "domain not empty" CHECK ((char_length(domain) > 0))
+);
+
+
+ALTER TABLE auth.sso_domains OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE sso_domains; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.sso_domains IS 'Auth: Manages SSO email address domain mapping to an SSO Identity Provider.';
+
+
+--
+-- Name: sso_providers; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.sso_providers (
+    id uuid NOT NULL,
+    resource_id text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    CONSTRAINT "resource_id not empty" CHECK (((resource_id = NULL::text) OR (char_length(resource_id) > 0)))
+);
+
+
+ALTER TABLE auth.sso_providers OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE sso_providers; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.sso_providers IS 'Auth: Manages SSO identity provider information; see saml_providers for SAML.';
+
+
+--
+-- Name: COLUMN sso_providers.resource_id; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON COLUMN auth.sso_providers.resource_id IS 'Auth: Uniquely identifies a SSO provider according to a user-chosen resource ID (case insensitive), useful in infrastructure as code.';
+
+
+--
+-- Name: users; Type: TABLE; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE TABLE auth.users (
+    instance_id uuid,
+    id uuid NOT NULL,
+    aud character varying(255),
+    role character varying(255),
+    email character varying(255),
+    encrypted_password character varying(255),
+    email_confirmed_at timestamp with time zone,
+    invited_at timestamp with time zone,
+    confirmation_token character varying(255),
+    confirmation_sent_at timestamp with time zone,
+    recovery_token character varying(255),
+    recovery_sent_at timestamp with time zone,
+    email_change_token_new character varying(255),
+    email_change character varying(255),
+    email_change_sent_at timestamp with time zone,
+    last_sign_in_at timestamp with time zone,
+    raw_app_meta_data jsonb,
+    raw_user_meta_data jsonb,
+    is_super_admin boolean,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    phone text DEFAULT NULL::character varying,
+    phone_confirmed_at timestamp with time zone,
+    phone_change text DEFAULT ''::character varying,
+    phone_change_token character varying(255) DEFAULT ''::character varying,
+    phone_change_sent_at timestamp with time zone,
+    confirmed_at timestamp with time zone GENERATED ALWAYS AS (LEAST(email_confirmed_at, phone_confirmed_at)) STORED,
+    email_change_token_current character varying(255) DEFAULT ''::character varying,
+    email_change_confirm_status smallint DEFAULT 0,
+    banned_until timestamp with time zone,
+    reauthentication_token character varying(255) DEFAULT ''::character varying,
+    reauthentication_sent_at timestamp with time zone,
+    is_sso_user boolean DEFAULT false NOT NULL,
+    deleted_at timestamp with time zone,
+    is_anonymous boolean DEFAULT false NOT NULL,
+    CONSTRAINT users_email_change_confirm_status_check CHECK (((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2)))
+);
+
+
+ALTER TABLE auth.users OWNER TO supabase_auth_admin;
+
+--
+-- Name: TABLE users; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON TABLE auth.users IS 'Auth: Stores user login data within a secure schema.';
+
+
+--
+-- Name: COLUMN users.is_sso_user; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON COLUMN auth.users.is_sso_user IS 'Auth: Set this column to true when the account comes from SSO. These accounts can have duplicate emails.';
+
+
+--
+-- Name: idiom_examples_example_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.idiom_examples_example_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.idiom_examples_example_id_seq OWNER TO postgres;
+
+--
+-- Name: idiom_examples; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.idiom_examples (
+    example_id integer DEFAULT nextval('public.idiom_examples_example_id_seq'::regclass) NOT NULL,
     idiom_id integer NOT NULL,
     example text
 );
 
 
-ALTER TABLE public.idioms_examples_test OWNER TO postgres;
+ALTER TABLE public.idiom_examples OWNER TO postgres;
 
 --
--- TOC entry 211 (class 1259 OID 147504)
--- Name: idioms_examples_test_example_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: idioms_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.idioms_examples_test_example_id_seq
+CREATE SEQUENCE public.idioms_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -50,79 +2304,14 @@ CREATE SEQUENCE public.idioms_examples_test_example_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.idioms_examples_test_example_id_seq OWNER TO postgres;
+ALTER TABLE public.idioms_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3604 (class 0 OID 0)
--- Dependencies: 211
--- Name: idioms_examples_test_example_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: idioms; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.idioms_examples_test_example_id_seq OWNED BY public.idioms_examples_test.example_id;
-
-
---
--- TOC entry 214 (class 1259 OID 147521)
--- Name: idioms_origin_test; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.idioms_origin_test (
-    origin_id integer NOT NULL,
-    idiom_id integer NOT NULL,
-    example text
-);
-
-
-ALTER TABLE public.idioms_origin_test OWNER TO postgres;
-
---
--- TOC entry 213 (class 1259 OID 147520)
--- Name: idioms_origin_test_origin_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.idioms_origin_test_origin_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.idioms_origin_test_origin_id_seq OWNER TO postgres;
-
---
--- TOC entry 3605 (class 0 OID 0)
--- Dependencies: 213
--- Name: idioms_origin_test_origin_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.idioms_origin_test_origin_id_seq OWNED BY public.idioms_origin_test.origin_id;
-
-
---
--- TOC entry 209 (class 1259 OID 147475)
--- Name: idioms_test_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.idioms_test_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.idioms_test_id_seq OWNER TO postgres;
-
---
--- TOC entry 210 (class 1259 OID 147476)
--- Name: idioms_test; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.idioms_test (
-    id integer DEFAULT nextval('public.idioms_test_id_seq'::regclass) NOT NULL,
+CREATE TABLE public.idioms (
+    id integer DEFAULT nextval('public.idioms_id_seq'::regclass) NOT NULL,
     title character varying(255),
     title_general character varying(255),
     definition text,
@@ -131,33 +2320,401 @@ CREATE TABLE public.idioms_test (
 );
 
 
-ALTER TABLE public.idioms_test OWNER TO postgres;
+ALTER TABLE public.idioms OWNER TO postgres;
 
 --
--- TOC entry 3442 (class 2604 OID 147508)
--- Name: idioms_examples_test example_id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: messages; Type: TABLE; Schema: realtime; Owner: supabase_realtime_admin
 --
 
-ALTER TABLE ONLY public.idioms_examples_test ALTER COLUMN example_id SET DEFAULT nextval('public.idioms_examples_test_example_id_seq'::regclass);
+CREATE TABLE realtime.messages (
+    topic text NOT NULL,
+    extension text NOT NULL,
+    payload jsonb,
+    event text,
+    private boolean DEFAULT false,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    inserted_at timestamp without time zone DEFAULT now() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
+)
+PARTITION BY RANGE (inserted_at);
+
+
+ALTER TABLE realtime.messages OWNER TO supabase_realtime_admin;
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TABLE realtime.schema_migrations (
+    version bigint NOT NULL,
+    inserted_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE realtime.schema_migrations OWNER TO supabase_admin;
+
+--
+-- Name: subscription; Type: TABLE; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TABLE realtime.subscription (
+    id bigint NOT NULL,
+    subscription_id uuid NOT NULL,
+    entity regclass NOT NULL,
+    filters realtime.user_defined_filter[] DEFAULT '{}'::realtime.user_defined_filter[] NOT NULL,
+    claims jsonb NOT NULL,
+    claims_role regrole GENERATED ALWAYS AS (realtime.to_regrole((claims ->> 'role'::text))) STORED NOT NULL,
+    created_at timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+
+ALTER TABLE realtime.subscription OWNER TO supabase_admin;
+
+--
+-- Name: subscription_id_seq; Type: SEQUENCE; Schema: realtime; Owner: supabase_admin
+--
+
+ALTER TABLE realtime.subscription ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME realtime.subscription_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
 
 
 --
--- TOC entry 3443 (class 2604 OID 147524)
--- Name: idioms_origin_test origin_id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: buckets; Type: TABLE; Schema: storage; Owner: supabase_storage_admin
 --
 
-ALTER TABLE ONLY public.idioms_origin_test ALTER COLUMN origin_id SET DEFAULT nextval('public.idioms_origin_test_origin_id_seq'::regclass);
+CREATE TABLE storage.buckets (
+    id text NOT NULL,
+    name text NOT NULL,
+    owner uuid,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    public boolean DEFAULT false,
+    avif_autodetection boolean DEFAULT false,
+    file_size_limit bigint,
+    allowed_mime_types text[],
+    owner_id text
+);
+
+
+ALTER TABLE storage.buckets OWNER TO supabase_storage_admin;
+
+--
+-- Name: COLUMN buckets.owner; Type: COMMENT; Schema: storage; Owner: supabase_storage_admin
+--
+
+COMMENT ON COLUMN storage.buckets.owner IS 'Field is deprecated, use owner_id instead';
 
 
 --
--- TOC entry 3596 (class 0 OID 147505)
--- Dependencies: 212
--- Data for Name: idioms_examples_test; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Name: migrations; Type: TABLE; Schema: storage; Owner: supabase_storage_admin
 --
 
-COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
-1	1	I didn’t want the after effects of involving myself in their drama at the time. Later, when things had calmed down, I told the chef that it was not my circus, not my monkeys. He laughed, and we went back to work.
-2	1	All this fuss going on at the moment about the lack of government funding for preschool childcare so mothers can work? Sorry, not my circus, not my monkeys
+CREATE TABLE storage.migrations (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    hash character varying(40) NOT NULL,
+    executed_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE storage.migrations OWNER TO supabase_storage_admin;
+
+--
+-- Name: objects; Type: TABLE; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE TABLE storage.objects (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    bucket_id text,
+    name text,
+    owner uuid,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    last_accessed_at timestamp with time zone DEFAULT now(),
+    metadata jsonb,
+    path_tokens text[] GENERATED ALWAYS AS (string_to_array(name, '/'::text)) STORED,
+    version text,
+    owner_id text,
+    user_metadata jsonb
+);
+
+
+ALTER TABLE storage.objects OWNER TO supabase_storage_admin;
+
+--
+-- Name: COLUMN objects.owner; Type: COMMENT; Schema: storage; Owner: supabase_storage_admin
+--
+
+COMMENT ON COLUMN storage.objects.owner IS 'Field is deprecated, use owner_id instead';
+
+
+--
+-- Name: s3_multipart_uploads; Type: TABLE; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE TABLE storage.s3_multipart_uploads (
+    id text NOT NULL,
+    in_progress_size bigint DEFAULT 0 NOT NULL,
+    upload_signature text NOT NULL,
+    bucket_id text NOT NULL,
+    key text NOT NULL COLLATE pg_catalog."C",
+    version text NOT NULL,
+    owner_id text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    user_metadata jsonb
+);
+
+
+ALTER TABLE storage.s3_multipart_uploads OWNER TO supabase_storage_admin;
+
+--
+-- Name: s3_multipart_uploads_parts; Type: TABLE; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE TABLE storage.s3_multipart_uploads_parts (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    upload_id text NOT NULL,
+    size bigint DEFAULT 0 NOT NULL,
+    part_number integer NOT NULL,
+    bucket_id text NOT NULL,
+    key text NOT NULL COLLATE pg_catalog."C",
+    etag text NOT NULL,
+    owner_id text,
+    version text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE storage.s3_multipart_uploads_parts OWNER TO supabase_storage_admin;
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: supabase_migrations; Owner: postgres
+--
+
+CREATE TABLE supabase_migrations.schema_migrations (
+    version text NOT NULL,
+    statements text[],
+    name text
+);
+
+
+ALTER TABLE supabase_migrations.schema_migrations OWNER TO postgres;
+
+--
+-- Name: refresh_tokens id; Type: DEFAULT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.refresh_tokens ALTER COLUMN id SET DEFAULT nextval('auth.refresh_tokens_id_seq'::regclass);
+
+
+--
+-- Data for Name: audit_log_entries; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.audit_log_entries (instance_id, id, payload, created_at, ip_address) FROM stdin;
+\.
+
+
+--
+-- Data for Name: flow_state; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.flow_state (id, user_id, auth_code, code_challenge_method, code_challenge, provider_type, provider_access_token, provider_refresh_token, created_at, updated_at, authentication_method, auth_code_issued_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: identities; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at, id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: instances; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.instances (id, uuid, raw_base_config, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: mfa_amr_claims; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.mfa_amr_claims (session_id, created_at, updated_at, authentication_method, id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: mfa_challenges; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.mfa_challenges (id, factor_id, created_at, verified_at, ip_address, otp_code, web_authn_session_data) FROM stdin;
+\.
+
+
+--
+-- Data for Name: mfa_factors; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.mfa_factors (id, user_id, friendly_name, factor_type, status, created_at, updated_at, secret, phone, last_challenged_at, web_authn_credential, web_authn_aaguid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: one_time_tokens; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.one_time_tokens (id, user_id, token_type, token_hash, relates_to, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: refresh_tokens; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.refresh_tokens (instance_id, id, token, user_id, revoked, created_at, updated_at, parent, session_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: saml_providers; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.saml_providers (id, sso_provider_id, entity_id, metadata_xml, metadata_url, attribute_mapping, created_at, updated_at, name_id_format) FROM stdin;
+\.
+
+
+--
+-- Data for Name: saml_relay_states; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.saml_relay_states (id, sso_provider_id, request_id, for_email, redirect_to, created_at, updated_at, flow_state_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.schema_migrations (version) FROM stdin;
+20171026211738
+20171026211808
+20171026211834
+20180103212743
+20180108183307
+20180119214651
+20180125194653
+00
+20210710035447
+20210722035447
+20210730183235
+20210909172000
+20210927181326
+20211122151130
+20211124214934
+20211202183645
+20220114185221
+20220114185340
+20220224000811
+20220323170000
+20220429102000
+20220531120530
+20220614074223
+20220811173540
+20221003041349
+20221003041400
+20221011041400
+20221020193600
+20221021073300
+20221021082433
+20221027105023
+20221114143122
+20221114143410
+20221125140132
+20221208132122
+20221215195500
+20221215195800
+20221215195900
+20230116124310
+20230116124412
+20230131181311
+20230322519590
+20230402418590
+20230411005111
+20230508135423
+20230523124323
+20230818113222
+20230914180801
+20231027141322
+20231114161723
+20231117164230
+20240115144230
+20240214120130
+20240306115329
+20240314092811
+20240427152123
+20240612123726
+20240729123726
+20240802193726
+20240806073726
+20241009103726
+\.
+
+
+--
+-- Data for Name: sessions; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.sessions (id, user_id, created_at, updated_at, factor_id, aal, not_after, refreshed_at, user_agent, ip, tag) FROM stdin;
+\.
+
+
+--
+-- Data for Name: sso_domains; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.sso_domains (id, sso_provider_id, domain, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: sso_providers; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.sso_providers (id, resource_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: auth; Owner: supabase_auth_admin
+--
+
+COPY auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, invited_at, confirmation_token, confirmation_sent_at, recovery_token, recovery_sent_at, email_change_token_new, email_change, email_change_sent_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data, is_super_admin, created_at, updated_at, phone, phone_confirmed_at, phone_change, phone_change_token, phone_change_sent_at, email_change_token_current, email_change_confirm_status, banned_until, reauthentication_token, reauthentication_sent_at, is_sso_user, deleted_at, is_anonymous) FROM stdin;
+\.
+
+
+--
+-- Data for Name: key; Type: TABLE DATA; Schema: pgsodium; Owner: supabase_admin
+--
+
+COPY pgsodium.key (id, status, created, expires, key_type, key_id, key_context, name, associated_data, raw_key, raw_key_nonce, parent_key, comment, user_data) FROM stdin;
+\.
+
+
+--
+-- Data for Name: idiom_examples; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.idiom_examples (example_id, idiom_id, example) FROM stdin;
 3	2	The audience watched with bated breath as the magician performed his final trick.
 4	2	She waited with bated breath for the results of her medical test.
 5	2	With bated breath, the crowd awaited the announcement of the winner.
@@ -211,6 +2768,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 53	11	Maurice opened a can of worms when she spoke more about her career choices.
 54	11	No one wanted to be the part of that project, realizing that it was a can of worms.
 208	52	Why do you get so aggressive at the slightest hint of criticism? You seem to have a chip on your shoulder.
+2	1	All this fuss going on at the moment about the lack of government funding for preschool childcare so mothers can work? Sorry, not my circus, not my monkeys.
 55	12	The president has been attacking foreign ministers and even the people in his own party like a bull in a china shop. This has not only led to a lot of criticism but people have started alienating from him.
 56	12	I behaved like a bull in a china shop last night. I’m so sorry.
 57	12	You are like a bull in a china shop, a complete misfit in a museum.
@@ -535,6 +3093,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 376	86	He said he will be going for the trip, come hell or high water.
 377	86	His boss said he wanted the project completed by the end of the week, come hell or high water.
 378	86	She said she had planned her vacation since a year and she would be going for it, come hell or high water.
+484	111	Oh, your goose is cooked if Mom finds out you skipped school, bro.
 379	86	He said he would leave by evening, come hell or high water, since he had an appointment with his dentist and he did not want to miss it.
 380	86	My friend has started up a new company and he wants it to be successful, come hell or high water.
 381	86	He said he wanted to shift into his new home by the end of the year, come hell or high water.
@@ -640,7 +3199,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 481	110	“I’ve learned many times to never say, ’Stick a fork in it! Winter is done!’” meteorologist Bri Eggers said.
 482	110	For its fourth trip into the Toy Story sandbox, Disney has decided to stick a fork in it.
 483	110	CityBike is done, too done to bother with the vacuous “stick a fork in me” idiot-oms that pass for “writing” in an alarming number of so-called publications in this modern age of empty-headed echo-chamberism.
-484	111	Oh, your goose is cooked if Mom finds out you skipped school, bro.
 485	111	Jane’s goose was cooked when she missed the project deadline and failed to submit her manuscript on time.
 486	111	If we don’t finish this assignment by Friday, our goose is cooked.
 487	111	The moment the boss saw the massive error in the report, Tom knew his goose was cooked.
@@ -691,6 +3249,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 532	120	If politicians can spend on lavish travel, then surely what’s good for the goose is good for the gander — citizens should be entitled to basic amenities.
 533	120	The last straw was when he realized that what’s good for the goose is good for the gander wasn’t applicable at his workplace.
 534	120	You can rest assured that I firmly believe in the notion that what’s good for the goose is good for the gander.
+639	142	It was remarkable bike ride as the crow flies on Alaska-Canadian Highway.
 535	121	The admissions in this college get filled in very early. If you really want to enroll your son here then you should remember that the early bird catches the worm.
 536	121	I am usually among the first people to bid for such construction contracts since all my documentation is complete and I firmly believe that the early bird catches the worm.
 537	121	I had told you that only the early bird catches the worm in this organization. Why did you wait for the last minute to send your application out? The seat is already taken now.
@@ -795,7 +3354,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 636	142	It’s only three miles to Square Tower as the crow flies, but it’s all of ten miles if the Glasgow Hamilton Road is closed and one has to drive round the Johnston Road.
 637	142	Just go on this route as the crow flies, and you may save about 40 minutes.
 638	142	I am driving for 4 hours on this trail as the crow flies and we reached nowhere yet – I think we are lost.
-639	142	It was remarkable bike ride as the crow flies on Alaska-Canadian Highway.
 640	143	No matter how hard I try to understand what Jim is talking about, it is apparent that his lights are on but nobody is home.
 641	143	Because her lights are on but nobody is home, she has no idea what the group has decided.
 642	143	The team is trying to get Mark to provide his input, but he is unable to do so because his lights are on but nobody’s home.
@@ -909,6 +3467,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 750	172	I know Bob’s story sounds ridiculous, but I believe him because he’s straight as an arrow.
 751	172	I’ve always known Amanda to be straight as an arrow, so I can’t believe she got caught shoplifting.
 814	185	With no experience in cooking, my husband was a babe in the woods in the kitchen.
+874	198	Her education qualification and street smart attitude never let her get caught in the rat race.
 752	173	Despite the temptations and distractions around him, John managed to stay on the straight and narrow, always making the right choices.
 753	173	Growing up in a tough neighborhood, Maria had to navigate through many challenges to stay on the straight and narrow path.
 754	173	After his troubled past, Mark turned his life around and committed himself to walking the straight and narrow, determined to leave his mistakes behind.
@@ -942,7 +3501,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 782	179	Your company fired you two days after you had a heart attack? Well, it’s undoubtedly a dog-eat-dog
 783	179	It’s a dog eat dog world out there. You have to do whatever you can to survive.
 784	179	Many colleges are like dog-eat-dog. People will compete at any cost for higher grades and not care if others get hurt in the process.
-785	179	That school dog-eat-dog. The students cheat and even destroy each other’s work to get better grades.
+785	179	That school dog-eat-dog. The students cheat and even destroy each other’s work to get better grades."
 786	179	In the film, business dog eat dog, you’re a star one day, the next day you’ve been replaced by younger talent.
 787	179	There is intense competition and rivalry in a dog-eat-dog world, where everybody thinks only of himself or herself.
 788	179	In the dog eat dog world out there, it pays to know who one’s real friends are.
@@ -1030,7 +3589,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 871	198	This school prepares its students for the rat race from the very beginning.
 872	198	She is still so young, it is sad to see her being so caught in the rat race.
 873	198	Marie has struggled for a long time to come out of the rat race for a very long time.
-874	198	Her education qualification and street smart attitude never let her get caught in the rat race.
 875	199	The deal isn’t yet written in stone, but we’re confident it will go ahead as hoped. 
 876	200	If we can just get the application approved, then we should have smooth sailing from there. 
 877	200	Organizing the event was really stressful, but it actually turned out to be pretty smooth sailing on the day.]
@@ -1091,6 +3649,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 932	211	He’s usually a nice guy, but his temper can turn on a dime sometimes.
 933	211	Politicians have no loyalty to their causes—they’ll turn on a dime if it means they’ll get more votes.
 934	211	This car can turn on a dime. I need a vehicle that can turn on a dime.
+1284	286	Time to go home and hit the hay!
 935	211	Employers need to be flexible and to turn on a dime in order to stay competitive.
 936	211	Outdoors I heard the rain stop on a dime.
 937	211	A car that will turn on a dime at high speed without turning turtle is what I want.
@@ -1145,6 +3704,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 986	220	People are prepared to see the glass half full at the moment rather than half empty.
 987	220	He’s a glass-half-full type of guy (= he always expects good things to happen).
 1042	231	These surveys are only the tip of an iceberg of continuing study.
+1044	232	Trying to find my contact lens on the floor was like looking for a needle in a haystack.
 988	221	A: "I’ll take another beer, please." B: "Sorry, Bob, the well’s run dry. We’re waiting on our next delivery before we’ll get anymore."
 989	221	The first book was wildly imaginative, full of interesting characters and plot twists. By the sixth book in the series, however, it was clear that the author’s well of ideas had run dry.
 990	221	A: "Tommy’s got plenty of money in his trust fund, so he’ll be able to pay for it." B: "Nope, the well’s run dry—my parents have cut me off from accessing the account."
@@ -1199,7 +3759,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1039	231	The problems that you see here now are just the tip of the iceberg. There are numerous disasters waiting to happen.
 1040	231	We get about 2,000 complaints every year and that’s just the tip of the iceberg.
 1041	231	Figures show that there have been 700 official burglaries throughout the area, but police believe this is the tip of the iceberg.
-1044	232	Trying to find my contact lens on the floor was like looking for a needle in a haystack.
 1045	232	Terrorists don’t fit a consistent profile: you’re looking for a needle in a haystack, but the color and shape of the needle keep changing.
 1046	233	No, Sarah is actually one of the smartest people in the company. She may not talk or socialize much, but still waters run deep.
 1047	233	Jill: I get the impression that Nathan is not very smart. He never says anything. Jane: Don’t be so sure. still waters run deep, you know.
@@ -1376,6 +3935,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1218	271	I’m a square peg in a round hole. Maybe I am meant to be eccentric.
 1219	272	How much sugar did you give the kids? They’re bouncing off the walls!
 1220	272	A: "Why are you bouncing off the walls?" B: "I just got great news!"
+1283	286	I think it’s time to hit the sack.
 1221	272	The kids have been bouncing off the walls ever since we told them we’re going to Disney World over Christmas break.
 1222	272	After another cup of coffee Holly was bouncing off the walls.
 1223	272	He was bouncing off the walls so I told him to go out for a walk.
@@ -1438,8 +3998,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1280	286	I have to get up early for work tomorrow, so I think I’d better hit the hay.
 1281	286	I have to go home and hit the hay pretty soon.
 1282	286	Let’s hit the sack. We have to get an early start in the morning.
-1283	286	I think it’s time to hit the sack.
-1284	286	Time to go home and hit the hay!
 1285	287	The young men of this city getting caught up in gang violence have the shortest lifespans of anyone in the state. You live by the sword, you die by the sword.
 1286	287	For years the senator took bribes and skimmed profits from kickbacks all over his state, until finally the FBI put together a sting against him that ended up putting him away for life. Live by the sword, die by the sword.
 1287	287	The gang leader who organized so many murders was eventually murdered himself. Live by the sword, die by the sword.
@@ -1495,6 +4053,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1337	302	married a thirty-year-old woman. That is really robbing the cradle.
 1338	302	She robbed the cradle when she married me.
 1339	302	Tim, you’re such a cradle snatcher. She’s like ten years younger than you!
+1395	317	I earn a lot, but the lion’s share goes for taxes.
 1340	304	Tom’s been nothing but a shell of his former self ever since the accident. His bubbly, outgoing personality is gone, replaced by constant gloom and cynicism.
 1341	304	The mass emigration of workers from the town during the recession has left it a mere shell of its former self.
 1342	304	The company used to be at the top of the industry, but after years of bad decisions and poor management, it’s little more than a shell of its former self now.
@@ -1550,7 +4109,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1392	316	The new website will be firing on all cylinders once we get the comments section up and running!
 1393	317	The lion’s share of the credit must go to our development team, who have worked tirelessly to bring this product to market before the holiday season.
 1394	317	Even though we’re all talented, it’s always our youngest brother who gets the lion’s share of our parents’ praise and attention.
-1395	317	I earn a lot, but the lion’s share goes for taxes.
 1396	317	The lion’s share of the surplus cheese goes to school cafeterias.
 1397	317	Their athletes won the lion’s share of the medals.
 1398	317	While Gladys was given the lion’s share of their mother’s attention, Mary and her two younger brothers enjoyed their freedom.
@@ -1607,6 +4165,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1449	330	I studied graphic design in college, but I’ve been dipping my toe into writing fiction lately.
 1450	330	I’ve always wanted to travel the world, but I’ve never left the US. I’ll dip my toe in it this summer, though, with a short trip to Toronto.
 1451	330	My daughter is pretty nervous, so I’m glad she gets to dip her toe into kindergarten with a classroom visit next week.
+1509	343	I so wish I could be a fly on the wall at a glamorous event like the Oscars!
 1452	331	I want to test the water before I make the proposal at the general meeting. Do you think you can float the idea to the boss and gauge his reaction?
 1453	331	You better test the waters before you fully commit to that plan.
 1454	331	I was a bit sceptical and decided to test the water before committing the complete management team.
@@ -1664,7 +4223,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1506	342	I’ll be sad to sell this house. We’ve lived here ever since we got married, and we raised all our kids here. Boy, if these walls could talk.
 1507	342	Over the course of two hundred years, this manor has served as the home of a wealthy aristocrat, the office of a seditious printing press, the headquarters for the women’s suffrage movement, and a speakeasy. Let me tell you, folks, if these walls could talk!
 1508	343	I would love to be a fly on the wall in John’s house when he finds out his wife bought a new car without telling him.
-1509	343	I so wish I could be a fly on the wall at a glamorous event like the Oscars!
 1510	343	Man, I wish I could be a fly on the wall in that meeting. I can’t hear much of anything just eavesdropping out here!
 1511	343	I’d love to be a fly on the wall at their team meetings.
 1512	343	What I’d give to be a fly on the wall when Draper finds out what’s happened to his precious cargo!
@@ -2129,6 +4687,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 1969	437	I don’t like to think about favorites but I knew a lot of people had me as the favorite so there was a target on my back
 1970	437	Councilor Steven Camara is out, having had a target on his back ever since he was the lone vote against the measure to remove Correia from office and then was heard pouring his heart out to defend the mayor.
 2034	453	Many people are struggling to make ends meet because wages are failing to keep pace with rising prices.
+2035	453	He has trouble making ends meet because he can’t find work and his government check is barely enough to cover the rent.
 1971	438	I’m sorry, but we can’t travel with your brother any longer. The sheriff has put a price on his head and it’s too dangerous for the rest of us!
 1972	438	I’ll never be able to live peacefully in this town as long as I have a price on my head.
 1973	438	Of course I’ve gone into hiding—the authorities put a price on my head! What else can I do?
@@ -2190,7 +4749,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2029	452	I don’t like this kind of life. It’s for the birds.
 2030	453	To make ends meet, Phil picked up a second job delivering pizzas.
 2031	453	After the large income tax hike, many people suddenly found it difficult to make both ends meet.
-2035	453	He has trouble making ends meet because he can’t find work and his government check is barely enough to cover the rent.
 2036	453	Actually I think she’s having trouble making ends meet, now that she’s retired.
 2037	453	Since I lost my job, I’m finding it harder to make ends meet.
 2038	454	My father was always very closed off regarding his feelings, so when I had kids, I made a point of wearing my heart on my sleeve with them.
@@ -2348,6 +4906,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2189	500	In fashion what goes around comes around, and men are now wearing 1920’s style trousers.
 2190	500	These ideas are similar to those being suggested forty years ago. What goes around comes around.
 2191	500	I feel a little sorry for her but I guess she never helped anyone and what goes around comes round.
+2249	521	The company was losing money, so they had to bite the bullet and lay off several employees.
 2192	502	While it’s sad that the results have not been as good as you expected, you should now focus on moving ahead and achieving better results next time; there is no use crying over spilt milk.
 2193	502	Valarie’s car was badly damaged in the accident, and he was angry about what had happened, but he soon realized that there was no use crying over spilled milk.
 2194	502	It’s no use crying over spilt milk; it was a bad investment, the money has been lost, and there’s nothing we can do.
@@ -2406,7 +4965,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2247	520	Not getting into my top choice college was a hard pill to swallow, that’s for sure.
 2248	521	Despite his fear of the dentist, John decided to bite the bullet and make an appointment.
 2307	530	Do you really think he can cut the mustard?
-2249	521	The company was losing money, so they had to bite the bullet and lay off several employees.
 2250	521	Knowing it would be a difficult conversation, she bit the bullet and talked to her boss about the problem.
 2251	521	Realizing the surgery was necessary, he bit the bullet and scheduled the procedure.
 2252	521	After years of neglecting their health, they finally bit the bullet and started a rigorous exercise program.
@@ -2573,6 +5131,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2415	559	You rookies better not be worn out already—we’ve got another two periods to go if we want to win the Stanley Cup. Keep your eyes on the prize!
 2416	559	I studied hard for midterms, keeping my eye on the prize of being named valedictorian.
 2417	560	A: "Have you heard this band’s latest album?" B: "I didn’t even know it was out, it must have flown under my radar."
+2475	571	Their possessions had not been searched so they were not officially in the clear.
 2418	560	Every year, the government promises to do something about the homelessness problem, yet every year it seems to slip under the radar again.
 2419	560	With so many different amendments to the bill being made, some appropriations slipped under the radar.
 2420	560	I plan to stay under the radar until this controversy blows over.
@@ -2630,7 +5189,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2472	571	Don’t worry, Tom. I’m sure you’re in the clear.
 2473	571	I’ll feel better when I get into the clear.
 2474	571	Then Rickmore spoke: "If your chief clerk confesses to the police what really happened, I’ll be in the clear."
-2475	571	Their possessions had not been searched so they were not officially in the clear.
 2476	571	That’s when the hospital called with the results of the tests, and I found out I was in the clear.
 2477	571	There was more gloomy news for the Prime Minister in an opinion poll yesterday which showed the opposition five points in the clear.
 2478	571	She told the police that Jim was with her when the burglary happened, so that put him in the clear.
@@ -2808,6 +5366,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2650	604	With the market booming, many companies are doubling down their development in mobile apps and games.
 2651	604	If you double down this divisive rhetoric, sir, I just worry that you’ll alienate more voters.
 2652	604	The dealer dealt me a good hand, so I doubled down.
+3800	860	Those two are joined at the hip. They are always together.
 2653	605	The other team’s offense was incredibly aggressive, but our defense stood their ground.
 2654	605	Despite the guy’s size, I managed to stand my ground during the fight.
 2655	605	The boss scoffed at her idea initially, but she stood her ground and explained it in greater detail.
@@ -2865,6 +5424,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2707	616	We’ll have to pull out all the stops to get this order ready by the end of the week.
 2708	616	Don’t pull out all the stops in the first round. Wait till he’s tired in the third and clobber him good.
 2709	616	The Inaugural Committee pulled out all the stops when arranging the ceremonies.
+2764	628	You’re banging your head against a brick wall trying to get that dog to behave properly.
 2710	617	My brother is the star athlete of our high school, so no matter what I succeed in, he’s constantly stealing my thunder.
 2711	617	We were about to announce our engagement when Jeff and Tina stole our thunder and revealed that they were going to have a baby.
 2712	617	We had the idea for "digital paper" years ago, but I see they’ve stolen our thunder and have their own version of it on the market.
@@ -2919,7 +5479,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2761	628	I feel like I’ve been beating my head against the wall trying to understand this math equation.
 2762	628	I’m beating my head against the wall trying to get funding for my project. So far, I’ve made only $20.
 2763	628	You’re wasting your time trying to figure this puzzle out. You’re just beating your head against the wall.
-2764	628	You’re banging your head against a brick wall trying to get that dog to behave properly.
 2765	629	It was a very sensitive case and yet for over one year the investigators kept barking up the wrong tree.
 2766	629	If you think you will solve the problem by following those steps, you are barking up the wrong tree.
 2767	629	I am not the person who spread those rumours about you, you are barking up the wrong tree.
@@ -2964,7 +5523,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2806	640	The people who live in that house together are united but they are only as strong as their weakest link that is the youngest son. He will not be able to uphold the strong values that the others so smoothly take care of.
 2807	641	Yeah, he’s brilliant, but his violent temper has destroyed many business relationships—it’s a real chink in his armor.
 2808	641	The criminal’s tendency to use his own cell phone to conduct business was the chink in the armor the police needed to put him in jail.
-2809	641	A: "Why didn’t George get the promotion?" B: "Probably because he’s such a hothead." A: "Good point. That really is a chink in his armor."
+2809	641	A: "Why didn’t George get the promotion?" B: Probably because he’s such a hothead." A: "Good point. That really is a chink in his armor."
 2810	641	Jane’s insecurity is the chink in her armor.
 2811	641	The boss seems mean, but the chink in his armor is that he is easily flattered.
 2812	641	With their superior knowledge, they might find the chinks in his armour.
@@ -3033,6 +5592,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2875	655	Here I sit high and dry—no food, no money, no nothing.
 2876	655	went off and left me high and dry.
 2877	656	I don’t usually have time to read news articles all the way to the end, so it really annoys me when they bury the lead.
+2939	669	When we took the test, Tom jumped the gun and started early.
 2878	656	Come on, you’ve got to get to the point. You’ll never make it as a reporter if you always bury the lede like this.
 2879	656	Thank you for laying out your argument right from the beginning, rather than burying the lead.
 2880	657	The sky’s the limit for our talented graduates!
@@ -3094,7 +5654,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 2936	669	Henry jumped the gun and sent the proofs to the printer before the boss approved them, and she was not happy.
 2937	669	I probably jumped the gun with announcing our engagement before everyone was there, but I was just too excited.
 2938	669	We all had to start the race again because Jane jumped the gun.
-2939	669	When we took the test, Tom jumped the gun and started early.
 2940	669	"How about going out to celebrate?" — "I haven’t definitely got the job yet so let’s not jump the gun."
 2941	669	The book wasn’t due to be released until September 10 but some booksellers have jumped the gun and decided to sell it early.
 2942	669	They jumped the gun by building the garage before they got permission from the town council.
@@ -3158,6 +5717,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 3000	680	He’s tried every medicine under the sun, but nothing works.
 3001	680	I’ve got stamps from every country under the sun.
 3002	681	I’ll be on the gravy train once I get paid from the settlement of the lawsuit!
+3503	783	A record £4.4 billion worth of chocolate and sweets went down the hatch last year.
 3003	681	My brother ended up on the gravy train when he married his wife, whose family owns one of the largest oil companies in the world.
 3004	681	Financial services produce very high earnings, and a lot of people are trying to get onto the gravy train.
 3005	681	This kind of job is a real gravy train.
@@ -3658,7 +6218,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 3498	783	"Well, down the hatch!" Ellen said before taking her cough medicine.
 3499	783	Shots are on me. Down the hatch, girls!
 3500	783	Mr. Thompson, you’ve got to take your medication. Come on, now, down the hatch!
-3503	783	A record £4.4 billion worth of chocolate and sweets went down the hatch last year.
 3504	783	She raised the shell to her lips, closed her eyes and down the hatch went the oyster.
 3505	783	Here’s a glass for you. Down the hatch!
 3506	783	He raised his glass, said "Down the hatch", and then drank it all at once!
@@ -3712,6 +6271,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 3554	795	With my mother planning to visit, my husband and I had to talk about the elephant in the room; she’s extremely rude, and everyone lets her get away with it.
 3555	795	Despite the tension between my two best friends, the elephant in the room remained unaddressed, and now our group trip to Mexico is going to be awkward.
 3610	812	Well, I was about to give the same explanation, but you’ve taken the words right out of my mouth.
+3612	813	I was blown away by how good that movie was!
 3556	795	Listen, we need to talk about the elephant in the room before it becomes an even bigger problem. I think we should see a couple’s therapist.
 3557	796	It seems like we’ve opened Pandora’s box with this topic today. We’ve been getting hundreds of messages from listeners from around the country who have been affected by it.
 3558	796	Trying to fix the bug opened a Pandora’s box of other issues with the computer.
@@ -3767,7 +6327,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 3608	811	It must be a shock for them having to count their pennies like this—they’re used to eating high on the hog, after all.
 3609	812	You took the words out of my mouth—I think she looks gorgeous, too!
 3611	813	I am blown away by the show of support from everyone.
-3612	813	I was blown away by how good that movie was!
 3613	813	We had no idea Molly had such a beautiful singing voice, so we were blown away by her performance at the talent show.
 3614	814	A: "At this point, I’m willing to go out with just about any guy, so long as he isn’t living in his parents’ basement." B: "Don’t you think you’re setting the bar a little low?"
 3615	814	While you shouldn’t take just any job you can get after college, be sure not to set the bar too high for an entry level job, or you may have trouble landing one at all.
@@ -3956,7 +6515,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 3798	859	Jane loves to quilt, so she was in hog heaven when they opened that new store for quilters.
 4477	994	He has been buying property at rock-bottom prices.
 3799	860	Every time I see Jenna, Kelli is right there with her. Those two are really joined at the hip these days.
-3800	860	Those two are joined at the hip. They are always together.
 3801	860	Sam and Martha are joined at the hip.
 3802	860	The couple who are almost joined at the hip in their 20s may have become quite distant in their 40s.
 3803	860	Though we often work together, we’re not joined at the hip.
@@ -4150,6 +6708,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 3991	900	Sellers have upped the ante in this area so much that first-time buyers can no longer afford it.
 3992	900	Pete upped the ante on that the poker game to $100 per hand.
 3993	900	Don’t up the ante any more. You’re betting far too much money already.
+4608	1009	"May I look at this book?" "Be my guest."
 3994	900	Sensing how keen the people looking at the house were, Jerry upped the ante another $5,000.
 3995	900	"Don’t try to up the ante on us," said the man, "We know what the asking price is."
 3996	900	The secretary of state last night upped the ante by refusing to accept the election results.
@@ -4211,6 +6770,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4052	912	The doctors tried everything to keep him alive but to no avail.
 4053	913	Kate is willing to pay full price for an expensive handbag, but I just can’t wrap my head around that.
 4239	951	As it turned out, he’s not just a loose cannon. He makes sense.
+4240	951	Some loose cannon in the State Department has been leaking stories to the press.
 4054	913	Sam tries to wrap her head around snow and freezing temperatures, but she’s always lived in Florida, so real winter is not something she has experienced.
 4055	914	There’s a fork in the road up ahead—which way should I go?
 4056	914	OK, keep going straight until you reach the fork in the road, then turn right.
@@ -4396,7 +6956,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4236	950	It looks like I might be considered for the job, but I’m waiting to see which way the wind blows.
 4237	951	You really have to be mindful of what you say to Jake. He’s a loose cannon, and the smallest things will send him into a fit of rage.
 4238	951	The star quarterback’s reputation as a loose cannon hurt his chances of being signed by a new team.
-4240	951	Some loose cannon in the State Department has been leaking stories to the press.
 4241	951	He was also getting a reputation for being a loose cannon; an accident waiting to happen.
 4242	951	Thomson can be a loose cannon—he’s not easy to control.
 4243	951	He has a reputation as a loose cannon whose comments sometimes upset Wall Street.
@@ -4453,6 +7012,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4294	964	Give Sarah a try at the equation. I bet she can solve it!
 4295	964	Watching him smile that smug, self-important smile, I thought to myself how much I’d love to have a try at him—one on one, with nothing but our fists!
 4416	981	I’ve stayed in touch with some of my university friends.
+4356	970	This proposal will reduce funding across the board for community development grants, student loans and summer schools.
 4296	964	A: "This doesn’t seem like any ordinary thief. He’s always one step ahead of us." B: "Give me a try at him, Chief. I think I can bring him in."
 4297	964	She made a name for herself as one of the best racers in the world in the span of just one year. Now, every professional worth their salt wants a try at her.
 4298	964	Let me have a crack at him. I can make him talk. Let the new teacher have a try at Billy. She can do marvels with unwilling learners. Give me a crack at him. I know how to make these bums talk.
@@ -4513,7 +7073,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4353	970	What exactly am I supposed to be doing? The instructions I’ve gotten have been all over the board.
 4354	970	The school board raised the pay of all the teachers across the board.
 4355	970	It seems that across the board all shops have cut back on staff.
-4356	970	This proposal will reduce funding across the board for community development grants, student loans and summer schools.
 4357	970	There is an across-the-board increase in the amount of meat eaten by children.
 4358	970	The decline for the euro across the board was mainly attributed to the further erosion of global investors’ confidence toward the euro-zone economy.
 4359	970	The government claims that standards in education have fallen right across the board.
@@ -4696,6 +7255,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4538	1000	I’ve been sticking my neck out for you for the past year and you won’t do this one favor for me?
 4539	1001	The silent treatment isn’t helping the situation between you two, so just clear the air already.
 4540	1001	Once we cleared the air, we found that it had just been a simple misunderstanding.
+4607	1009	I’ll hurt myself, Mannie screams. Be my guest, says Rebecca.
 4541	1001	I know my parents are still mad at me for missing curfew, so I’m going to try to clear the air this morning by apologizing profusely.
 4542	1001	They were able to clear the air by producing the document in question, so that we could all see it for ourselves.
 4543	1001	The senator really needs to clear the air on this matter by finally answering reporters’ questions.
@@ -4762,8 +7322,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4604	1009	Jane: Here’s the door. Who should go in first? Bill: Be my guest. I’ll wait out here. Jane: You’re so polite!
 4605	1009	"Do you mind if I use the phone?" — "Be my guest."
 4606	1009	If you want to tell her the bad news, Maria, be my guest.
-4607	1009	I’ll hurt myself, Mannie screams. Be my guest, says Rebecca.
-4608	1009	"May I look at this book?" "Be my guest."
 4609	1010	The final score was 17-1? Wow, we really blew that team out of the water!
 4610	1010	I planned to be productive today, but a sudden emergency blew that idea out of the water.
 4611	1010	As predicted, that candidate won in a landslide—she really blew her opponent out of the water.
@@ -4884,6 +7442,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4726	1035	I find your writing quite boring. It’s too cut and dried.
 4727	1035	The lecture was, as usual, cut and dried.
 4728	1035	Now, this situation is not as cut and dried as it may seem.
+4854	1056	I know you’re disappointed, but you need to roll up your sleeves and redouble your efforts.
 4729	1035	The link between stress and heart attacks is by no means cut and dried, although most people feel intuitively that it exists.
 4730	1035	There are no cut-and-dried answers to the problem.
 4731	1035	What appeared to be a cut-and-dried issue, may in fact be a little more complex.
@@ -4961,7 +7520,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4803	1045	I need some help with this project. Can I pick your brains?
 4804	1046	It was a real slap in the face when she got promoted over me, especially after the amount of work I did on that last project.
 4805	1046	Losing the election was a slap in the face for the club president. Failing to get into a good college was a slap in the face to Tim after his years of study.
-4806	1046	The union leader described the payouts to both bosses as "a slap in the face for all the hard-working staff who now find themselves out of work".
+4806	1046	The union leader described the payouts to both bosses as `a slap in the face for all the hard-working staff who now find themselves out of work’.
 4807	1046	They promoted a colleague who had been with the company for less time than Paola and it was a real slap in the face for her.
 4808	1046	The move was seen as another slap in the face for the monarchy in Australia.
 4809	1046	The bank refused to lend her any more money, which was a real slap in the face for her.
@@ -5009,7 +7568,6 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4851	1055	Employee absenteeism has gotten out of hand.
 4852	1055	dismissed my complaint out of hand.
 4853	1056	Well, we have a long day ahead, so let’s roll up our sleeves and start!
-4854	1056	I know you’re disappointed, but you need to roll up your sleeves and redouble your efforts.
 4855	1056	He was very much a team player, rolling up his sleeves and getting down to work.
 4856	1056	When others refused to act, Jamie was the first to roll up his sleeves and get to work.
 4857	1056	We’ve just moved into a bigger house and there’s a lot to do. I guess we’ll just have to roll up our sleeves and get on with it.
@@ -5095,1192 +7653,3666 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 4937	1079	The deputy manager was cock of the walk until the new manager arrived.
 4938	1079	He loved acting cock of the walk and ordering everyone about.
 4939	1079	Back then I had fame and fortune and I thought I was cock of the walk.
+1	1	I didn’t want the after effects of involving myself in their drama at the time. Later, when things had calmed down, I told the chef that it was not my circus, not my monkeys. He laughed, and we went back to work.
 4940	1080	Calhoun: "Sheriff, those bandits could come back to town any day now. We’re all terrified that they’re going to rob us again!" Sheriff: "Not on my watch, Calhoun. I’ll have those bandits locked up for life if they ever show their faces around here again!"
+4967	1065	Despite his tireless efforts, his ideas were spit on by the committee.
+4968	1065	The artist felt his work was being spit on by the critics’ harsh reviews.
+4969	1065	She couldn’t help but feel spit on when her suggestions were constantly ignored in the team meetings.
 \.
 
 
 --
--- TOC entry 3598 (class 0 OID 147521)
--- Dependencies: 214
--- Data for Name: idioms_origin_test; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: idioms; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.idioms_origin_test (origin_id, idiom_id, example) FROM stdin;
+COPY public.idioms (id, title, title_general, definition, contributor, timestamps) FROM stdin;
+14	Don’t piss on my leg and tell me it’s raining	Piss on someone’s leg and tell them it’s raining	To tell someone an obvious lie.	Miles	2023-07-13 07:00:14+00
+15	Too many chefs in the kitchen	Too many chefs in the kitchen	Too many people are trying to control, influence, or work on something, with the quality of the final product suffering as a result.	Miles	2023-07-13 07:00:15+00
+16	If you can’t handle the heat get out of the kitchen	If you can’t stand the heat, get out of the kitchen	Used as a way to tell someone that they should either stop complaining about a difficult or unpleasant activity, or stop doing it	Miles	2023-07-13 07:00:16+00
+17	Running on fumes	Running on fumes	Continuing to operate with no or very little enthusiasm, energy, or resources left. A reference to a car that has nearly run out of fuel.	\N	2023-07-13 07:00:17+00
+18	One bad apple spoils the bunch	One bad apple spoils the (whole) bunch	It only takes one person, thing, element, etc., to ruin the entire group, situation, project, etc. Refers to the fact that a rotting apple can cause other apples in close proximity to begin to rot as well.	Eve	2023-07-13 07:00:18+00
+20	Cut from same cloth	\N	Very similar in characteristics or behaviors.	\N	2023-07-13 07:00:20+00
+21	Stick in the mud	Stick-in-the-mud	Someone who is considered boring, often due to unpopular or outdated beliefs.	Miles	2023-07-13 07:00:21+00
+22	Don’t rain on my parade	Don’t rain on (one’s) parade	Don’t ruin one’s plans or temper one’s excitement.	Eve	2023-07-13 07:00:22+00
+23	Even the darkest storm cloud has a silver lining	\N	The potential for something positive or beneficial to result from a negative situation. Often used in the phrase "every cloud has a silver lining." (A silver lining on a cloud is an indication that the sun is behind it.)	Eve	2023-07-13 07:00:23+00
+24	Mess with a bull you get the horn	If you mess with the bull, you get the horns	If you anger, irritate, or provoke someone enough, you will induce some hostile retaliation or emotional reaction.	Miles	2023-07-13 07:00:24+00
+25	It’s always darkest before dawn	it’s (always) darkest (just) before the dawn	The worst part of an experience, situation, period of time, etc., usually happens just before things get better.	Eve	2023-07-13 07:00:25+00
+26	When it rains it pours	When it rains, it pours	When something good or bad happens, similarly good or bad things tend to follow.	\N	2023-07-13 07:00:26+00
+27	Time and tide wait for no man	time and tide wait for no one	The opportunities of life will pass you by if you delay or procrastinate in taking advantage of them.	\N	2023-07-13 07:00:27+00
+28	Even a broken clock is right twice a day	a broken clock is right twice a day	Even people who are usually wrong can be right sometimes, even if just by accident. From the idea that the stationary hands of a broken clock will still display the correct time at two points during the 24-hour cycle.	Miles	2023-07-13 07:00:28+00
+29	For whom the bell tolls	Background	Ernest Hemingway wrot.	Miles	2023-07-13 07:00:29+00
+30	Make hay while the sun is shining	Make hay while the sun is shining	To take advantage of favorable conditions; to make the most of an opportunity when it is available.	Eve	2023-07-13 07:00:30+00
+31	Mellow is the man who knows what he’s missing	\N	\N	Eve	2023-07-13 07:00:31+00
+32	Can’t teach an old dog new tricks	It’s hard to teach an old dog new tricks	It is exceptionally difficult to teach some new skill or behavior to someone, especially an older person, who is already firmly set in their ways.	\N	2023-07-13 07:00:32+00
+33	Hindsight’s 20/20	Hindsight is (always) 20/20	It is easier to clearly reevaluate past actions or decisions than when they are being made or done; things are clearer or more obvious when they are reflected upon. A reference to the visual acuity of normal eyesight (20/20 vision).	\N	2023-07-13 07:00:33+00
+34	Give a mouse a cookie and he’ll ask for a glass of milk	\N	\N	Eve	2023-07-13 07:00:34+00
+320	Waking up on the wrong side of the bed	Wake up on the wrong side of (the) bed	To be in a particularly and persistently irritable, unhappy, or grouchy mood or state, especially when it is not in line with one’s normal disposition.	\N	2023-07-16 07:00:20+00
+668	Fair weather friend	Fair-weather friend	Someone who remains a friend only when things are going well but abandons others during times of trouble or difficulty.	\N	2023-08-08 07:00:10+00
+75	Everything but the kitchen sink	Everything but the kitchen sink	Nearly everything one can reasonably imagine; many different things, often to the point of excess or redundancy.	\N	2023-07-13 07:01:15+00
+35	Give an inch and they take a mile	give an inch and they’ll take a mile	Make a small concession and they’ll take advantage of you.	Miles	2023-07-13 07:00:35+00
+36	The more the merrier	The more the merrier	More people will make something more enjoyable. Often used to welcome one to join a group or activity.	\N	2023-07-13 07:00:36+00
+37	Measure twice cut once	Measure twice, cut once	An axiom that encourages careful first steps in order to avoid extra work later on.	Miles	2023-07-13 07:00:37+00
+38	Give a man a fish, feed him for a day; teach a man to fish, feed him for a lifetime	\N	Simply giving someone a fish is not as helpful to them in the long run as teaching them how to fish.	Eve	2023-07-13 07:00:38+00
+39	You can bring a horse to water but can’t make it drink	\N	You can give someone an advantage or provide them with an opportunity, but you can’t force them to do something if they don’t want to	Eve	2023-07-13 07:00:39+00
+40	One man’s trash is another man’s treasure	One man’s trash is another man’s treasure	What one person may consider worthless could be highly prized or valued by someone else.	\N	2023-07-13 07:00:40+00
+41	Burning the candle at both ends	Burn (one’s)/the candle at both ends	To overwork or exhaust oneself by doing too many things, especially both late at night and early in the morning.	\N	2023-07-13 07:00:41+00
+42	Polishing a turd	Polish a turd	To make something unpleasant seem more appealing than it really is—which is often a futile effort. "Turd" is a slang term for a piece of feces.	Miles	2023-07-13 07:00:42+00
+43	Put lipstick on a pig, its still a pig	\N	Making superficial or cosmetic changes to a product in a futile effort to disguise its fundamental failings	Eve	2023-07-13 07:00:43+00
+44	One step forward two steps back	 one step forward, two steps bac.	Marked by a small amount progress that is then eradicated by a large amount of setbacks, problems, or difficulties.	\N	2023-07-13 07:00:44+00
+45	It’s not over till the fat lady sings	It ain’t over till/until the fat lady sings	The final outcome cannot be assumed or determined until a given situation, event, etc., is completely finished.	\N	2023-07-13 07:00:45+00
+764	End of the line	The end of the line	The physical end of a route of travel, usually a bus or train route.	Christina	2023-08-19 07:00:05+00
+46	Heavy is the head that wears the crown	heavy hangs the head that wears a/the crown	The person who has the most power or authority suffers the largest amount of stress, anxiety, doubt, and worry.	Eve	2023-07-13 07:00:46+00
+47	Pick your poison	Pick your poison	\N	\N	2023-07-13 07:00:47+00
+48	An axe to grind	An ax(e) to grind	A complaint or dispute that one feels compelled to discuss.	\N	2023-07-13 07:00:48+00
+360	Not all hero’s wear capes	\N	\N	\N	2023-07-16 07:01:00+00
+49	Big shoes to fill	Big shoes to fill	A role vacated or left behind by someone who was exceptional in their performance and set very high standards as a result.	\N	2023-07-13 07:00:49+00
+50	The apple doesn’t fall far from the tree	The apple does not fall far from the tree	Said when someone is displaying traits or behaving in the same way as their relatives (especially parents).	\N	2023-07-13 07:00:50+00
+51	Chip off the old block	A chip off the old block	Someone whose character or personality resembles that of their parent.	\N	2023-07-13 07:00:51+00
+52	Chip on your shoulder	A chip on (one’s) shoulder	An attitude that leads one to become combative or easily angered.	\N	2023-07-13 07:00:52+00
+53	Reinvent the wheel	Reinvent the wheel	To do something in a wholly and drastically new way, often unnecessarily. (Usually used in negative constructions..	\N	2023-07-13 07:00:53+00
+54	Two peas in a pod	Two peas in a pod	Two people who are very similar, typically in interests, dispositions, or beliefs.	\N	2023-07-13 07:00:54+00
+55	Monkey on your back	Monkey on (one’s) back	\N	\N	2023-07-13 07:00:55+00
+56	Big fish in a small pond	A big fish in a small pond	A situation in which one person has more power, influence, knowledge, or experience than others within a small group. It often implies that the person may not have as much clout i."a bigger pond," i.e., a larger group or arena of some kind.	\N	2023-07-13 07:00:56+00
+57	When pigs fly	When pigs fly	At a point in time that will never come to pass. (Used to show skepticism or cynicism over some hypothetical situation or outcome..	\N	2023-07-13 07:00:57+00
+58	When hell freezes over	When hell freezes over	Never; at no time.	\N	2023-07-13 07:00:58+00
+59	Out of the frying pan and into the fire	\N	\N	Eve	2023-07-13 07:00:59+00
+60	The pot calling the kettle black	The pot calling the kettle black	A situation in which a person accuses someone of or criticizes someone for something that they themselves are guilty of.	Eve	2023-07-13 07:01:00+00
+61	Frog in boiling water	\N	\N	\N	2023-07-13 07:01:01+00
+62	You gotta kiss a lot of frogs to find a prince	\N	\N	\N	2023-07-13 07:01:02+00
+63	Bat out of hell	\N	\N	\N	2023-07-13 07:01:03+00
+64	Going to hell in a hand basket	Go to hell in a handbasket	To be in an extremely and increasingly bad or ruinous condition; to be on the inevitable path to utter failure or ruin.	\N	2023-07-13 07:01:04+00
+65	Bite off more then you can chew	\N	\N	\N	2023-07-13 07:01:05+00
+66	The bigger they are the harder they fall	The bigger they are, the harder they fall	Those who are exceptionally large, powerful, or influential will have more to lose when they fail, and their failure will be all the more dramatic or spectacular because of it.	\N	2023-07-13 07:01:06+00
+67	The hair of the dog that bit you	The hair of the dog (that bit you)	An alcoholic drink consumed to remedy a hangover. The phrase comes from the notion that literally rubbing the hair of the dog that bit you on the wound would help it to heal.	Eve	2023-07-13 07:01:07+00
+68	Wish in one hand and shit in the other	\N	\N	Miles	2023-07-13 07:01:08+00
+69	All who wander are not lost	\N	\N	\N	2023-07-13 07:01:09+00
+70	All that glitters is not gold	All that glitters is not gold	Things that have an outward appeal are often not as beautiful or valuable as they seem.	\N	2023-07-13 07:01:10+00
+71	Diamond in the rough	Diamond in the rough	A person or thing with exceptional qualities or characteristics that cannot be seen from the surface.	\N	2023-07-13 07:01:11+00
+72	Leave no stone unturned	Leave no stone unturned	To look for something in every possible place.	\N	2023-07-13 07:01:12+00
+73	No holds barred	No-holds-barred	free of restrictions or hampering conventions	\N	2023-07-13 07:01:13+00
+74	Throw the baby out with the bath water	Throw the baby out with the bath	To discard something valuable or important while disposing of something considered worthless, especially an outdated idea or form of behavior. The phrase is often used in the negative as a warning against such thoughtless behavior.	Eve	2023-07-13 07:01:14+00
+174	Fall off the wagon	Fall off the wagon	To return to drinking alcohol after a period of abstinence. Usually said of recovering alcoholics.	\N	2023-07-14 07:47:00+00
+76	Slow and steady wins the race	Slow and steady wins the race	Persistent, consistent, and diligent progress, even if it is somewhat slow, will produce better results than rushing to get somewhere or achieve something, as the latter can result in mistakes or may prove unsustainable or unreliable.	\N	2023-07-13 07:01:16+00
+77	Two sides to to the same coin	\N	\N	\N	2023-07-13 07:01:17+00
+78	Play the hand you’re dealt	Play the hand (one) is dealt	To accept, deal with, and make the most of one’s current situation or circumstances; to make use of that which one is afforded or has available.	\N	2023-07-13 07:01:18+00
+79	When life gives you lemons make lemonade	When life gives you lemons, make lemonade	Focus on the good in a bad situation and take action accordingly.	\N	2023-07-13 07:01:19+00
+80	Put a pin in it	Put a pin in it	To take a break from discussing some topic, with plans to resume the discussion later.	\N	2023-07-13 07:01:20+00
+81	The cherry on top	Cherry on top	The flourish that caps something off (much like a cherry tops off an ice cream sundae). Sometimes used in the phrase "pretty please with a cherry on top.".	\N	2023-07-13 07:01:21+00
+82	Icing on the cake	The icing on the cake	An additional benefit or positive aspect to something that is already considered positive or beneficial.	\N	2023-07-13 07:01:22+00
+83	The squeaky wheel gets the grease	The squeaky wheel gets the grease	The person complaining or protesting the loudest or most frequently is the one who will receive the most attention from others.	\N	2023-07-13 07:01:23+00
+84	Raised nails get pounded	\N	\N	\N	2023-07-13 07:01:24+00
+85	Softer than a baby’s bottom	\N	\N	\N	2023-07-13 07:01:25+00
+86	Hell or high water	By hell or high water	By any means necessary; regardless of any difficulty, problem, or obstacle.	\N	2023-07-13 07:01:26+00
+87	Stuck between a rock and a hard place	\N	\N	\N	2023-07-13 07:01:27+00
+88	Airing out your dirty laundry.	\N	\N	\N	2023-07-13 07:01:28+00
+89	Skeletons in your closet	Skeleton in the/(one’s) closet	An embarrassing or shameful secret. Primarily heard in US.	\N	2023-07-13 07:01:29+00
+90	Skating on thin ice	Skating on thin ice	Engaged in some activity or behavior that is very risky, dangerous, or likely to cause a lot of trouble.	\N	2023-07-13 07:01:30+00
+145	Pay the pied piper	\N	\N	Miles	2023-07-14 07:00:18+00
+146	Got a screw loose	\N	\N	Miles	2023-07-14 07:00:19+00
+91	Flying too close to the sun	Fly too close to the sun	To do something especially ambitious and daring that can or ultimately does lead to one’s own undoing or downfall. An allusion to the mythical figure Icarus, whose wings made of feathers and wax melted when he flew too close to the sun.	Eve	2023-07-13 07:01:31+00
+92	Toot your own horn	Toot (one’s) own horn	To boast or brag about one’s own abilities, skills, success, achievements, etc.	\N	2023-07-13 07:01:32+00
+93	Pat yourself on the back	\N	\N	\N	2023-07-13 07:01:33+00
+152	Spill the beans	Spill the beans	To reveal something that was meant to be a secret.	Eve	2023-07-14 07:25:00+00
+153	At loose ends	At loose ends	Uneasy, typically due to some problem or unresolved issue.	Eve	2023-07-14 07:26:00+00
+94	Catch more flies with honey than vinegar	You (can) catch more flies with honey than (with) vinegar	You are more likely to get the results you want from other people if you treat them with kindness or flattery, rather than being aggressive, demanding, or caustic.	Eve	2023-07-13 07:01:34+00
+95	Kill them with kindness	Kill (one) with kindness	To harm, inconvenience, or bother one by treating them with excessive favor or kindness.	Eve	2023-07-13 07:01:35+00
+96	Eye for an eye makes the whole world blind	An eye for an eye makes the whole world blind	No good will result from avenging injuries in a manner equal to the original offense.	Eve	2023-07-13 07:01:36+00
+97	In the land of the blind the one eyed man is king	In the land of the blind, the one-eyed man is king	Someone with few skills or abilities can impress and wield power over those who have even less to offer.	Eve	2023-07-13 07:01:37+00
+98	That ship has sailed	That ship has sailed	Some possibility or option is no longer available or likely.	Eve	2023-07-13 07:01:38+00
+99	Two ships passing the night	\N	\N	\N	2023-07-13 07:01:39+00
+100	The pen is mightier than the sword	The pen is mightier than the sword	Strong, eloquent, or well-crafted speech or writing is more influential on a greater number of people than force or violence.	\N	2023-07-13 07:01:40+00
+101	Double edged sword	Double-edged sword	Something that can be both beneficial and problematic.	Miles	2023-07-13 07:01:41+00
+102	I don’t have a dog in that fight	\N	\N	\N	2023-07-13 07:01:42+00
+103	Spare the rod, spoil the child	\N	\N	Eve	2023-07-13 07:01:43+00
+104	Like water off a ducks back	\N	\N	Eve	2023-07-13 07:01:44+00
+105	The juice isn’t worth the squeeze	\N	\N	Miles	2023-07-13 07:01:45+00
+106	Can’t get blood from a stone	You can’t get blood from a stone	It is impossible to obtain something from someone if they are too parsimonious, uncharitable, or resolved against it.	Miles	2023-07-13 07:01:46+00
+107	Don’t judge a book by its cover	Don’t judge a book by its cover	Don’t base your opinion of something (or someone) on the way it (or one) looks.	\N	2023-07-13 07:01:47+00
+108	You can’t step into the same river twice	\N	\N	Eve	2023-07-13 07:01:48+00
+109	Don’t whistle up the wind	\N	\N	\N	2023-07-13 07:01:49+00
+110	Stick a fork in me	Stick a fork in (me/it/something)	A phrase used to indicate that one or something is finished, complete, or no longer able to continue. Alludes to the practice of testing how thoroughly a piece of meat is cooked by piercing it with a fork.	\N	2023-07-13 07:01:50+00
+111	This goose is cooked	(one’s) goose is cooked	One is thoroughly defeated, ruined, or finished.	Eve	2023-07-13 07:01:51+00
+112	You shake it more than twice you’re playing with it	\N	\N	Miles	2023-07-13 07:01:52+00
+113	Why buy the cow when the milk is free	Why buy a/the cow when you can get (the) milk for free?	If someone is already able to obtain some commodity or benefit freely or easily, then they won’t be inclined to pay for the source of it.	\N	2023-07-13 07:01:53+00
+114	Don’t rock the boat	Don’t rock the boat	Don’t say or do something that could upset a stable situation.	\N	2023-07-13 07:01:54+00
+115	If the shoe fits, wear it	If the shoe fits(, wear it)	If something (typically negative) applies to one, one should acknowledge it or accept responsibility or blame for it.	\N	2023-07-13 07:01:55+00
+321	Wrong side of the tracks	The wrong side of the tracks	A part of a town or city that is particularly impoverished (and usually dangerous or undesirable as a result).	\N	2023-07-16 07:00:21+00
+116	If it walks like a duck, talks like duck, it’s probably a duck	if it looks like a duck and walks like a duck, it is a duck	If something has all the characteristics of a thing, it is probably that thing, regardless of what it is called or presented as. There are many variations of the expression, and it is often shortened to the first part of the phrase.	\N	2023-07-13 07:01:56+00
+117	Waiting for the other shoe to drop	Waiting for the other shoe to drop	To wait for the next, seemingly unavoidable (and typically negative) thing to happen.	Eve	2023-07-13 07:01:57+00
+121	Early bird gets the worm	The early bird catches the worm	Someone who seizes some opportunity at the earliest point in time will have the best chance of reaping its benefits.	\N	2023-07-13 07:02:01+00
+122	Let sleeping dogs lie	Let sleeping dogs lie	To leave a situation alone so as to avoid worsening it.	Eve	2023-07-13 07:02:02+00
+123	A stitch in time saves nine	A stitch in time (saves nine)	A prompt, decisive action taken now will prevent problems later.	Eve	2023-07-13 07:02:03+00
+124	Every dog has his day	Every dog has his/her/their day	Even the least fortunate person will have success at some point.	Eve	2023-07-13 07:02:04+00
+125	Reap what you sow	Reap what (one) sows	To suffer the negative consequences of one’s actions.	\N	2023-07-13 07:02:05+00
+126	Till the cows come home	Until the cows come home	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 07:02:06+00
+127	Chickens come home to roost	(one’s) chickens come home to roost	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 07:02:07+00
+133	Baked in the cake	Baked in the cake	\N	Miles	2023-07-14 07:00:06+00
+137	Oldest trick in the book	The oldest trick in the book	A method of deception, or of addressing some issue, that is well known or has been used for a long time.	Miles	2023-07-14 07:00:10+00
+138	I’m picking up what you’re putting down	\N	\N	Miles	2023-07-14 07:00:11+00
+139	Biting the hand that feeds you	Bite the hand that feeds (you)	To scorn or poorly treat those on whom you depend or derive benefit.	Miles	2023-07-14 07:00:12+00
+140	Put you’re money where your mouth is?	\N	\N	Miles	2023-07-14 07:00:13+00
+141	Get your ducks in a row	Get (one’s) ducks in a row	To take action to become well-organized, prepared, or up-to-date.	Miles	2023-07-14 07:00:14+00
+142	As the crow flies	As the crow flies	The measurement of distance in a straight line. (From the notion that crows always fly in a straight line..	Miles	2023-07-14 07:00:15+00
+143	The lights are on by nobody is home	\N	\N	Miles	2023-07-14 07:00:16+00
+144	Not playing with a full deck	Not playing with a full deck	Not mentally sound; crazy or mentally deranged.	Miles	2023-07-14 07:00:17+00
+147	Walk a mile in someone’s shoes	Walk a mile in (someone’s) shoes	To spend time trying to consider or understand another person’s perspectives, experiences, or motivations before making a judgment about them.	Miles	2023-07-14 07:00:20+00
+148	This isn’t my first rodeo	Not (one’s) first rodeo	One is experienced with a certain situation, especially in relation to potential pitfalls or deceitful practices by others.	Miles	2023-07-14 07:00:21+00
+149	Bury the hatchet	Bury the hatchet	To make peace with someone.	Miles	2023-07-14 07:22:00+00
+150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 07:23:00+00
+151	Look what the cat dragged in	Look what the cat(’s) dragged in	A mild and usually playful insult used to announce someone’s arrival and suggest that the person has a messy or otherwise disheveled physical appearance.	Eve	2023-07-14 07:24:00+00
+340	Reading the writing in the wall	\N	\N	\N	2023-07-16 07:00:40+00
+525	The bigger the pants the deeper the pockets	\N	\N	Eve	2023-07-19 07:00:45+00
+154	Canary in a coal mine	Canary in a/the coal mine	Something or someone who, due to sensitivity to his, her, or its surroundings, acts as an indicator and early warning of possible adverse conditions or danger. Refers to the former practice of taking caged canaries into coal mines. The birds would die if methane gas became present and thereby alert miners to the danger.	Eve	2023-07-14 07:27:00+00
+156	All hands on deck	All hands on deck	\N	Miles	2023-07-14 07:29:00+00
+157	Crying wolf	Cry wolf	To claim that something is happening when it really isn’t, which results in the rejection of subsequent valid claims. The expression comes from one of Aesop’s fables, in which a young shepherd lies about a wolf threatening his flock so many times that people do not believe him when he and his flock are legitimately in danger.	Eve	2023-07-14 07:30:00+00
+158	Cross your t’s dot your i’s	\N	\N	\N	2023-07-14 07:31:00+00
+159	Over the moon	Over the moon	Extremely happy.	Eve	2023-07-14 07:32:00+00
+160	Shoot for the stars	Shoot for the stars	To set one’s goals or ambitions very high; to try to attain or achieve something particularly difficult.	Eve	2023-07-14 07:33:00+00
+161	Read between the lines	Read between the lines	To infer or understand the real or hidden meaning behind the superficial appearance of something. "Lines" refers to lines of text on a printed page.	Eve	2023-07-14 07:34:00+00
+162	Put that in you’re pipe and smoke it	\N	\N	Miles	2023-07-14 07:35:00+00
+163	Rode hard and put away wet	Ride hard and put (something) away wet	\N	Miles	2023-07-14 07:36:00+00
+164	Put the axe to the grindstone	\N	\N	Miles	2023-07-14 07:37:00+00
+165	A penny saved is a penny earned	A penny saved is a penny earned	Every small amount helps to build one’s savings (i.e. by saving a penny, you have one more penny).	Miles	2023-07-14 07:38:00+00
+166	Key to my heart	The key to (one’s) heart	That which will make one very happy or content; the way to make one appreciate, like, or love someone else.	Eve	2023-07-14 07:39:00+00
+168	You can’t have your cake and eat it too	You can’t have your cake and eat it(, too)	You cannot have or do two things that are both desirable but normally contradictory or impossible to have or do simultaneously.	\N	2023-07-14 07:41:00+00
+169	Kill two birds with one stone	Kill two birds with one stone	To complete, achieve, or take care of two tasks at the same time or with a singular series of actions; to solve two problems with one action or solution.	Eve	2023-07-14 07:42:00+00
+170	I don’t have a horse in that race	\N	\N	Eve	2023-07-14 07:43:00+00
+171	That’s the way the cookie crumbles	That’s the way the cookie crumbles	There is nothing we can do about the way things have unfolded, especially bad ones, so there is no reason to be upset about it.	Miles	2023-07-14 07:44:00+00
+172	A straight arrow	Straight arrow	An honest, ethical person who makes good decisions.	\N	2023-07-14 07:45:00+00
+173	On the straight and narrow	On the straight and narrow	Maintaining a morally upright way of life; only making choices that are considered morally and legally correct.	Eve	2023-07-14 07:46:00+00
+175	Knocking on death’s door	\N	\N	\N	2023-07-14 07:48:00+00
+176	Pushing daisies	\N	\N	\N	2023-07-14 07:49:00+00
+177	Every rose has its thorn	Every rose has its/a thorn	There is rarely a good or positive thing, event, or circumstance that is not accompanied by some aspect that is negative or unpleasant.	Miles	2023-07-14 07:50:00+00
+178	Lightning never strikes the same place twice	Lightning never strikes (the same place) twice	Something that’s very extraordinary and unlikely to happen will never happen to the same person twice. (Said especially of tragic or unfortunate events..	\N	2023-07-14 07:51:00+00
+179	Dog eat dog world	A dog-eat-dog world	A society, situation, industry, etc. characterized by ruthless behavior and competition.	\N	2023-07-14 07:52:00+00
+180	It’s a small world after all	\N	\N	\N	2023-07-14 07:53:00+00
+181	Smoke em if you got em	\N	\N	\N	2023-07-14 07:54:00+00
+182	On the tip of your tongue	On the tip of (one’s) tongue	Almost able to be recalled.	\N	2023-07-14 07:55:00+00
+183	Pulled the short straw	\N	\N	\N	2023-07-14 07:56:00+00
+184	Dear in headlights	\N	\N	\N	2023-07-14 07:57:00+00
+185	Babe in the woods	Babe in the woods	A person who is gullible, naïve, or lacks experience in a specific situation.	\N	2023-07-14 07:58:00+00
+186	Cold feet	Cold feet	Nervousness or anxiety felt before one attempts to do something.	\N	2023-07-14 07:59:00+00
+187	Caught red handed	Catch (one) red-handed	To see, and perhaps apprehend, someone as they are doing something (often something nefarious). The phrase might have originally referred to blood on a murderer’s hands.	\N	2023-07-14 08:00:00+00
+188	Going hard in the paint	\N	\N	\N	2023-07-14 08:01:00+00
+189	On the fence	On the fence	Not making a decision or taking a side when presented with two options or possibilities; undecided.	\N	2023-07-14 08:02:00+00
+566	Dancing with the devil	\N	\N	\N	2023-07-20 07:00:30+00
+190	In the weeds	(deep) in the weeds	Of a restaurant worker, completely overwhelmed with diners’ orders and unable to keep up with the pace.	\N	2023-07-14 08:03:00+00
+191	Putting the cart before the horse	Put the cart before the horse	To do things out of the proper order.	\N	2023-07-14 08:04:00+00
+192	Paint the town red	Paint the town (red)	To go out into a city or town and have an enjoyable time, typically by visiting various establishments, such as bars, restaurants, clubs, etc.	\N	2023-07-14 08:05:00+00
+193	Pipe dream	Pipe dream	A dream or idea that is impossible to accomplish.	\N	2023-07-14 08:06:00+00
+195	Don’t blow smoke up my ass	\N	\N	\N	2023-07-14 08:08:00+00
+196	Monkey see monkey do	Monkey see, monkey do	Children naturally tend to imitate or copy what they see adults or other children doing.	\N	2023-07-14 08:09:00+00
+197	Pull yourself up by your bootstraps	Pull (oneself) up by (one’s) (own) bootstraps	To improve one’s life or circumstances through one’s own efforts, rather than relying on others.	\N	2023-07-14 08:10:00+00
+198	Rat race	Rat race	A fierce competition for success, wealth, or power.	\N	2023-07-14 08:11:00+00
+199	Written in stone	Written in stone	Permanently fixed or firmly established; incapable of being changed. Often used in the negative.	\N	2023-07-14 08:12:00+00
+200	Smooth sailing	Smooth sailing	Progress or advancement that is free from difficulties, obstacles, or challenges.	\N	2023-07-14 08:13:00+00
+201	All down hill from here	\N	\N	\N	2023-07-14 08:14:00+00
+202	Shooting blanks	Shoot blanks	Of a man, to have a low sperm count in his semen.	\N	2023-07-14 08:15:00+00
+203	Pushing rope	\N	\N	\N	2023-07-14 08:16:00+00
+204	Blacker the berry sweeter the juice	\N	\N	\N	2023-07-14 08:17:00+00
+205	Over my dead body	Over my dead body	I will never allow it; under no circumstances will that be permitted to happen (i.e., something can only happen if I am not alive to prevent it).	\N	2023-07-14 08:18:00+00
+206	Raise the roof	Raise the roof	To engage in loud, unrestrained, and boisterous behavior, especially at a party or while celebrating.	\N	2023-07-14 08:19:00+00
+207	It takes village to raise a child	\N	\N	\N	2023-07-14 08:20:00+00
+208	Get on board	\N	\N	\N	2023-07-14 08:21:00+00
+343	Fly on the wall	Fly on the wall	One who is able to observe something closely but invisibly and without interfering in the situation.	\N	2023-07-16 07:00:43+00
+209	Below the belt	Below the belt	Unfairly targeted at one’s weakness or vulnerability. The phrase refers to boxing, in which hitting an opponent below the waist is prohibited.	\N	2023-07-14 08:22:00+00
+210	0 to 60	Go from zero to sixty	To accelerate from a standstill to sixty miles per hour. Used to indicate how quickly a vehicle, especially an automobile, can accelerate.	\N	2023-07-14 08:23:00+00
+211	Turn on a dime	Turn on a dime	To turn very quickly and with great agility.	\N	2023-07-14 08:24:00+00
+212	Once bitten twice shy	Once bitten, twice shy	Once one is hurt by someone or something, one will be extra cautious to avoid that person or thing.	\N	2023-07-14 08:25:00+00
+213	The road to hell is paved with good intentions	The road to hell is paved with good intentions	Good intentions do not matter if a person’s actions lead to bad outcomes.	\N	2023-07-14 08:26:00+00
+214	Don’t shit where you eat	Don’t shit where you eat	Do not engage in troublesome or dubious behavior at one’s home, place of business, or any location where one frequents, for it invites undesired consequences.	\N	2023-07-14 08:27:00+00
+215	Don’t dip the pen in company ink	\N	\N	\N	2023-07-14 08:28:00+00
+216	Pulling your leg	Pull (one’s) leg	To tease or joke with someone, often by trying to convince them of something untrue.	\N	2023-07-14 08:29:00+00
+220	Glass half empty	Glass half empty	Of or characterized by a generally pessimistic worldview. (Typically hyphenated and used as a modifier before a noun..	\N	2023-07-14 08:33:00+00
+222	Strike gold	Strike gold	Literally, to discover gold, as in a gold mine.	\N	2023-07-14 08:35:00+00
+223	Ruling with an iron fist	Rule with an iron fist	To rule, govern, or control a group or population with complete, typically tyrannical authority over all aspects of life, work, etc.	\N	2023-07-14 08:36:00+00
+224	Now we’re cooking with gas	Now (one’s) cooking (with gas)	Now one is making progress or doing something right.	\N	2023-07-14 08:37:00+00
+225	Not on the same page	\N	\N	\N	2023-07-14 08:38:00+00
+322	Dumpster fire	Dumpster fire	A complete and utter disaster or a completely chaotic situation, likened to a fire in a dumpster, which quickly becomes uncontrollable. The phrase can be applied to both situations and people.	\N	2023-07-16 07:00:22+00
+535	Bigger fish to fry	Bigger fish to fry	More important matters to deal with.	Miles	2023-07-19 07:00:55+00
+217	Jerking your chain	Jerk (one’s) chain	To tease someone, often by trying to convince them of something untrue.	\N	2023-07-14 08:30:00+00
+226	Stop and smell the roses	Stop and smell the roses	To take time to enjoy the finer or more enjoyable aspects of life, especially when one has become overworked or overly stressed.	\N	2023-07-14 08:39:00+00
+227	Slippery slope	Slippery slope	A situation in which some behavior or action will eventually lead to a worse form of the same behavior or action, or a disastrous outcome.	\N	2023-07-14 08:40:00+00
+228	Pick your battles	Pick (one’s) battle(s)	To choose not to participate in minor, unimportant, or overly difficult arguments, contests, or confrontations, saving one’s strength instead for those that will be of greater importance or where one has a greater chance of success.	\N	2023-07-14 08:41:00+00
+229	On my last leg	On (one’s) last legs	Near physical collapse or death.	\N	2023-07-14 08:42:00+00
+230	Watch a pot it never boils	\N	\N	Eve	2023-07-14 08:43:00+00
+231	The tip of the iceberg	Just the tip of the iceberg	Only a small, often unrepresentative portion of something much larger or more complex that cannot yet be seen or understood.	Miles	2023-07-14 08:44:00+00
+232	Needle in a haystack	Needle in a haystack	Something that is very difficult to locate.	Eve	2023-07-14 08:45:00+00
+233	Still waters run deep	Still waters run deep	Quiet people have interesting, profound, or complex thoughts.	Eve	2023-07-14 08:46:00+00
+234	An elephant never forgets	An elephant never forgets	One remembers everything. A play on the idea that elephants have great memories.	Eve	2023-07-14 08:47:00+00
+235	Trojan horse	Trojan horse	Something that initially seems innocuous but is ultimately bad or malicious. A reference to the myth in which Ancient Greek soldiers hid inside a giant wooden horse in order to gain access to the city of Troy.	Eve	2023-07-14 08:48:00+00
+236	Like a fish in water	\N	\N	Eve	2023-07-14 08:49:00+00
+237	Where there’s smoke there’s fire	Where there’s smoke, there’s fire	When there is some indication of a problem or wrongdoing, such a thing probably occurred or exists.	Eve	2023-07-14 08:50:00+00
+238	Shot in the dark	A shot in the dark	A guess or estimate with very little or no assurance as to its accuracy.	Eve	2023-07-14 08:51:00+00
+239	If you can’t beat ‘em join em	\N	\N	Eve	2023-07-14 08:52:00+00
+240	Low hanging fruit	Low-hanging fruit	That which is especially easy to obtain or achieve. Often implies something that is perhaps not as satisfying as that which takes more effort or skill to obtain or do.	Miles	2023-07-14 08:53:00+00
+323	The front lines	\N	\N	\N	2023-07-16 07:00:23+00
+324	Don’t cry over spilt milk	\N	\N	\N	2023-07-16 07:00:24+00
+325	Meat shield	\N	\N	Miles	2023-07-16 07:00:25+00
+327	Throw down the gauntlet	Throw down the gauntlet	To issue a challenge or invitation, as to a fight, argument, or competition.	\N	2023-07-16 07:00:27+00
+765	In the thick of it	In the thick of it	Very busy; in the middle of or preoccupied with something or several things.	Christina	2023-08-20 07:00:00+00
+339	Stepping on toes	\N	\N	\N	2023-07-16 07:00:39+00
+499	A prison of our own device	\N	\N	Eve	2023-07-19 07:00:19+00
+1023	Being on the ball	\N	\N	Miles	2023-09-28 07:00:02+00
+328	Getting your foot in the door	Get a/(one’s) foot in the door	To have a chance to do something that could lead to further opportunities. The phrase is often used to refer to employment.	\N	2023-07-16 07:00:28+00
+329	One foot out the door	One foot out the door	A lack of commitment to or eagerness to give up on someone or something.	\N	2023-07-16 07:00:29+00
+330	Dip your toe in	Dip (one’s) toe in(to) (something)	To tentatively begin or get involved in a new experience. Likened to gently placing one’s toe into water to test its temperature.	\N	2023-07-16 07:00:30+00
+331	Test the waters	Test the water(s)	To informally or casually attempt to gauge the reaction of a potential audience or recipient of something, or to try to get an idea of what something will be like before actually doing it. Likened to feeling the temperature of water before getting in.	\N	2023-07-16 07:00:31+00
+332	Play the field	Play the field	To bet on all horses in a race other than the one favored to win.	\N	2023-07-16 07:00:32+00
+333	Play ball	Play ball	In baseball, a phrase traditionally said or shouted by the umpire to start the game.	\N	2023-07-16 07:00:33+00
+334	Throw it at the wall and see what sticks	\N	\N	\N	2023-07-16 07:00:34+00
+335	Watch a pot it never boils	\N	\N	\N	2023-07-16 07:00:35+00
+336	That’s all she wrote	That’s all she wrote	This is the end; there is nothing left to say.	\N	2023-07-16 07:00:36+00
+337	Head too big to fit in the door	\N	\N	\N	2023-07-16 07:00:37+00
+338	Kick the can down the road	Kick the can down the road	Especially in politics, to postpone or defer a definitive action, decision, or solution, usually by effecting a short-term one instead.	Miles	2023-07-16 07:00:38+00
+341	Coming out of the woodwork	Come out of the woodwork	To appear unexpectedly, or from unexpected places.	\N	2023-07-16 07:00:41+00
+342	If walls could talk	\N	\N	\N	2023-07-16 07:00:42+00
+344	The walls have ears	The walls have ears	Someone might be eavesdropping.	\N	2023-07-16 07:00:44+00
+345	Blow this popsicle stand	Blow this popsicle stand	To leave a place, especially one that has become dull or of no use or interest, generally in search of something better.	Miles	2023-07-16 07:00:45+00
+346	Till the wheels fall off	The wheels fall off	Things go disastrously wrong; a situation devolves into ruin or chaos.	\N	2023-07-16 07:00:46+00
+347	Hot on your tail	\N	\N	\N	2023-07-16 07:00:47+00
+348	Bone to pick	A bone to pick	An issue to discuss—typically one that is a source of annoyance for the speaker.	\N	2023-07-16 07:00:48+00
+349	Put out to pasture	Put (someone or something) out to pasture	Literally, to retire an animal from working by allowing it roam in a field or pasture.	\N	2023-07-16 07:00:49+00
+350	Ball and chain	Ball and chain	Something, usually a responsibility of some kind, that restricts one’s freedom or limits one’s possibilities for personal pursuits.	\N	2023-07-16 07:00:50+00
+351	Down in the dumps	Down in the dumps	Sad or depressed.	\N	2023-07-16 07:00:51+00
+352	Don’t let the bed bugs bite	Don’t let the bedbugs bite	Sleep soundly and well. Part of the sing-song rhym."good night, sleep tight, don’t let the bedbugs bite,"	\N	2023-07-16 07:00:52+00
+353	Smoke and mirrors	Smoke and mirrors	Trickery, deception, or misdirection.	\N	2023-07-16 07:00:53+00
+354	Running circles around someone	Run circles around (someone or something)	To move much faster than someone or something.	\N	2023-07-16 07:00:54+00
+355	Picking up slack	\N	\N	\N	2023-07-16 07:00:55+00
+265	Playing with fire	Play with fire	To do something that risks causing one harm, damage, or misfortune; to do something dangerous.	\N	2023-07-15 07:00:24+00
+267	Perfect storm	Perfect storm	A chance or rare combination of individual elements, circumstances, or events that together form a disastrous, catastrophic, or extremely unpleasant problem or difficulty.	Eve	2023-07-15 07:00:26+00
+268	Cut corners	Cut corners	To skip certain steps in order to do something as easily or cheaply as possible, usually to the detriment of the finished product or end result.	Miles	2023-07-15 07:00:27+00
+269	Tall drink of water	Tall drink of water	A tall, typically slender person.	Eve	2023-07-15 07:00:28+00
+270	The road less traveled	The road less traveled	The less popular or common option. The phrase is typically associated with Robert Frost’s 1916 poem "The Road Not Taken."	Miles	2023-07-15 07:00:29+00
+271	A square peg in a round hole	A square peg in a round hole	A person who does not fit in or is not comfortable with others or in a particular situation; someone who is unsuited to a certain task, position, situation, or group of people.	Miles	2023-07-15 07:00:30+00
+272	Bouncing off the walls	Be bouncing off the walls	To be very active and energetic to the point of hyperactivity.	Miles	2023-07-15 07:00:31+00
+273	Tie a pork chop around it neck to get the dog to play with it	\N	\N	Kieth	2023-07-15 07:00:32+00
+274	Color me pink	\N	\N	Miles	2023-07-15 07:00:33+00
+275	Like lemmings to the sea	\N	\N	Miles	2023-07-15 07:00:34+00
+276	A scholar and a gentleman	A scholar and a gentleman	Someone (usually a male, due to the gender implication o."gentleman") who is admirable or of high esteem. Although used sincerely as a compliment, it is generally bombastic and lighthearted in nature.	Miles	2023-07-15 07:00:35+00
+277	Gone with the wind	Gone with the wind	A phrase used to describe something that has disappeared, passed, or vanished, permanently or completely. The phrase was popularized by Margaret Mitchell’s 1936 novel of the same name.	Miles	2023-07-15 07:00:36+00
+278	Old hat	Old hat	Unoriginal, out of date, or old-fashioned.	Eve	2023-07-15 07:00:37+00
+279	Doesn’t fit the mold	\N	\N	Miles	2023-07-15 07:00:38+00
+280	Left a bad taste in your mouth	Leave a bad taste in (one’s) mouth	To give one a negative impression (based on something that has already happened).	\N	2023-07-15 07:00:39+00
+281	Cold shoulder	Cold shoulder	\N	Miles	2023-07-15 07:00:40+00
+282	Tongue in cheek	(with) tongue in cheek	Humorous or intended as a joke, though seeming or appearing to be serious.	Eve	2023-07-15 07:00:41+00
+283	When there’s a will there’s a way	\N	\N	Miles	2023-07-15 07:00:42+00
+284	No harm no foul	No harm, no foul	If there was no bad outcome to an action, then there’s no need to be angry or upset about it.	Eve	2023-07-15 07:00:43+00
+285	Cut the chord	\N	\N	Miles	2023-07-15 07:00:44+00
+286	Hit the hay	Hit the hay	To get into bed and go to sleep.	Miles	2023-07-15 07:00:45+00
+287	Live by the sword die by the sword	Live by the sword, die by the sword	Those who live a violent lifestyle will usually die a violent death.	Miles	2023-07-15 07:00:46+00
+288	Knocking boots	Knock boots (with one)	To have sex (with one).	Miles	2023-07-15 07:00:47+00
+289	Bumping uglies	Bump uglies	To have sex.	Miles	2023-07-15 07:00:48+00
+682	Hill i’m willing to die on	\N	\N	Miles	2023-08-09 07:00:10+00
+290	Get your ears lowered	Get (one’s) ears lowered	To get a haircut, especially to a length that reveals one’s ears.	Miles	2023-07-15 07:00:49+00
+291	Dragging your feet	Drag (one’s) feet	Literally, to not completely pick up one’s feet when walking, so that they drag with each step.	Miles	2023-07-15 07:00:50+00
+292	With your tail between your legs	With (one’s) tail between (one’s) legs	Displaying embarrassment or shame, especially after losing or having to admit that one was wrong. Likened to a dog literally putting its tail between its legs after being disciplined.	Miles	2023-07-15 07:00:51+00
+293	Spic and span	Spick and span	Totally clean and/or organized.	Miles	2023-07-15 07:00:52+00
+294	Roll in the hay	Roll in the hay	A sexual encounter, often one considered casual.	Eve	2023-07-15 07:00:53+00
+295	Run the gamut	Run the gamut	To cover or extend across a wide and varied range.	Miles	2023-07-15 07:00:54+00
+296	If it was a snake it would of bit you	\N	\N	Eve	2023-07-15 07:00:55+00
+297	If looks could kill	If looks could kill	An expression used when someone makes an angry or unpleasant face at someone, indicating that such an expression represents hostility.	Eve	2023-07-15 07:00:56+00
+298	Staring daggers	\N	\N	Eve	2023-07-15 07:00:57+00
+299	No skin off my back	Be no skin off (one’s) back	To be no cause of concern or interest to one; to pose one no difficulty, threat, or risk.	Eve	2023-07-15 07:00:58+00
+356	Burning the midnight oil	Burn the midnight oil	To stay up late working on a project or task. The phrase refers to the outdated practice of using an oil lamp.	Mike	2023-07-16 07:00:56+00
+357	Pass the torch	Pass the torch	To transfer or bestow one’s role, position, responsibilities, etc., to someone else.	Miles	2023-07-16 07:00:57+00
+358	Butterflies in your stomach	Butterflies in (one’s) stomach	A feeling of nervousness.	\N	2023-07-16 07:00:58+00
+359	The lady doth protest too much	The lady doth protest too much	Used to indicate that someone (not necessarily a woman) is only denying something so fervently because the opposite is actually true.	Eve	2023-07-16 07:00:59+00
+361	Walking on eggshells	Be walking on eggshells	To be acting with great care and consideration so as not to upset someone.	\N	2023-07-16 07:01:01+00
+414	Rule of thumb	Rule of thumb	An approximation; a suggested method or guideline.	\N	2023-07-16 07:01:54+00
+362	Treading water	Tread water	To move one’s feet and hands in a motion that will allow one to keep one’s head above the surface of the water.	\N	2023-07-16 07:01:02+00
+363	Keeping your head above water	Keep (one’s) head above water	Literally, to hold one’s head out of the water as to avoid drowning.	\N	2023-07-16 07:01:03+00
+364	Under the table	Under the table	Secretly (often because what is being done is illegal).	\N	2023-07-16 07:01:04+00
+365	Tables have turned	\N	\N	\N	2023-07-16 07:01:05+00
+366	Deep-6	Deep six	\N	\N	2023-07-16 07:01:06+00
+367	6 feet under	\N	\N	\N	2023-07-16 07:01:07+00
+368	Look on the bright side	Look on the bright side	To highlight the good in an otherwise bad situation.	\N	2023-07-16 07:01:08+00
+369	Casting a wide net	Cast a wide net	To do something that will attract, appeal to, or include as large or diverse a group of people as possible.	\N	2023-07-16 07:01:09+00
+371	Food for thought	Food for thought	Something to consider.	\N	2023-07-16 07:01:11+00
+372	Penny pinching	Penny pincher	Someone who is extremely frugal or miserly with their money; someone who is very unwilling or reluctant to spend.	\N	2023-07-16 07:01:12+00
+373	Cream of the crop	The cream of the crop	The best of a particular group.	\N	2023-07-16 07:01:13+00
+218	The Blood of the covenant is thicker than the water of the womb	\N	\N	Eve	2023-07-14 08:31:00+00
+698	Staying in your own lane	\N	\N	Miles	2023-08-11 07:00:07+00
+374	Separate the wheat from the chaff	Separate the wheat from the chaff	To separate the good or valuable from that which is inferior.	\N	2023-07-16 07:01:14+00
+375	Reel it in	Reel in	To draw someone or something toward oneself by winding in a line. A noun or pronoun can be used between "reel" and "in.".	\N	2023-07-16 07:01:15+00
+376	Right hand man	Right-hand man	One’s primary or most trusted assistant. Not necessarily a man.	\N	2023-07-16 07:01:16+00
+377	No man is an island	No man is an island(, entire of itself)	A person requires the company and support of others and society as a whole in order to thrive. The line is from John Donne’.	Eve	2023-07-16 07:01:17+00
+378	Revenge is a dish best served cold	Revenge is a dish best served cold.	Revenge that takes place far in the future, after the offending party has forgotten how they wronged someone, is much more satisfying.	Eve	2023-07-16 07:01:18+00
+379	Opportunity is not a lengthy visitor	\N	\N	Eve	2023-07-16 07:01:19+00
+380	If you want to make an omelette you have to break some eggs.	\N	\N	\N	2023-07-16 07:01:20+00
+381	Give ‘em enough rope to hang himself with	\N	\N	\N	2023-07-16 07:01:21+00
+382	Kick them while they’re down	\N	\N	Miles	2023-07-16 07:01:22+00
+432	Paint yourself into a corner	Paint (oneself) into a corner	To create a predicament or unpleasant situation for oneself whereby there are no or very few favorable solutions or outcomes.	\N	2023-07-17 07:00:17+00
+383	Tying the knot	Tie the knot	To get married. An allusion to the handfasting ceremony, an ancient tradition of binding the hands of the bride and groom with lengths of cloth, cord, rope, etc., as a symbol of their lasting union.	Miles	2023-07-16 07:01:23+00
+384	Tie up loose ends	Tie up (some/a few) loose ends	To take care of, finish, or resolve some issues or pieces of business that are not critical but have remained outstanding.	Miles	2023-07-16 07:01:24+00
+385	If it ain’t broke don’t fix it	If it ain’t broke, don’t fix it	If something is performing or functioning well enough, there’s no need to change or interfere with it (as you may introduce new problems as a result..	Mike	2023-07-16 07:01:25+00
+386	My ears are burning	(one’s) ears are burning	One intuits that people were talking about them, despite not witnessing it.	Mike	2023-07-16 07:01:26+00
+387	The ball is in your court	The ball is in (one’s) court	One has the responsibility for further action, especially after someone else previously held responsibility. The phrase originated in tennis.	Mike	2023-07-16 07:01:27+00
+389	As right as rain	(as) right as rain	In good health or order; feeling or working just as someone or something should.	\N	2023-07-16 07:01:29+00
+390	The bark is worse than the bite	\N	\N	\N	2023-07-16 07:01:30+00
+391	Path of least resistance	The path of least resistance	The thing, option, or course of action that is easiest to do; that which avoids confrontation, difficulty, awkwardness, or tension.	\N	2023-07-16 07:01:31+00
+766	Run of the mill	Run-of-the-mill	Common, standard, or average; mediocre.	Miles	2023-08-20 07:00:01+00
+398	To flesh out	\N	\N	\N	2023-07-16 07:01:38+00
+392	Keeping me on my toes	Keep (one) on (one’s) toes	To force someone to stay active, alert, and focused on something or someone.	\N	2023-07-16 07:01:32+00
+393	Go touch grass	\N	\N	\N	2023-07-16 07:01:33+00
+394	In a pickle	In a pickle	In a troublesome or difficult situation. The adjectives "pretty" and "right" are commonly used before "pickle".	\N	2023-07-16 07:01:34+00
+395	Caught with your hand in the cookie jar	Caught with (one’s) hand in the cookie jar	To have been caught in the act or attempt of some wrongdoing, especially one involving bribery or the illicit exploitation of one’s position of power or authority.	\N	2023-07-16 07:01:35+00
+396	Trim the fat	Trim the fat	To excise or discard elements that are seen as superfluous or unnecessary.	\N	2023-07-16 07:01:36+00
+397	Taking candy from a baby	\N	\N	\N	2023-07-16 07:01:37+00
+399	Get ahead of the game	Get ahead of the game	To become prepared for or begin work on something ahead of schedule.	\N	2023-07-16 07:01:39+00
+400	In the trenches	(down) in the trenches	The place, situation, or environment in which the most difficult or demanding work takes place.	\N	2023-07-16 07:01:40+00
+401	Cross that bridge when we come to it	Cross that bridge when (one) comes to it	To address something only when it actually happens or becomes an issue.	\N	2023-07-16 07:01:41+00
+402	Take at at face value	\N	\N	\N	2023-07-16 07:01:42+00
+403	Toe the line	Toe the line	To adhere to the rules of something. (Often misspelled as "tow the line.".	\N	2023-07-16 07:01:43+00
+404	Draw a line in the sand	Draw a line in the sand	To establish a figurative boundary that someone or some group refuses to cross or beyond which no further advance or compromise is accepted.	\N	2023-07-16 07:01:44+00
+405	On framing time	\N	\N	\N	2023-07-16 07:01:45+00
+406	Hold my beer	Hold my beer	A phrase indicating that one is about to do something stupid or dangerous. The image is that of a person at a party who asks a friend to hold their beer so that they can attempt some kind of ill-advised stunt. It is often used humorously to describe how something bad was followed by something even worse.	\N	2023-07-16 07:01:46+00
+407	Don’t feed them after midnight	\N	\N	\N	2023-07-16 07:01:47+00
+408	Short end of the stick	The short end of the stick	An unequal outcome of a deal that results in a disadvantage or burden.	\N	2023-07-16 07:01:48+00
+409	Beating a dead horse	Beat a dead horse	To continue to focus on an issue or topic that is no longer of any importance or relevance.	\N	2023-07-16 07:01:49+00
+410	Slippery fish	\N	\N	\N	2023-07-16 07:01:50+00
+411	Snake in the grass	Snake in the grass	One who feigns friendship with the intent to deceive.	\N	2023-07-16 07:01:51+00
+412	Sit back and rest on your laurels	\N	\N	Eve	2023-07-16 07:01:52+00
+413	Barefoot and pregnant	Negative connotations	A common assumption is that the expression relates t.	Eve	2023-07-16 07:01:53+00
+582	Wrapped around their little finger	\N	\N	Eve	2023-07-17 07:10:00+00
+415	Ring a bell	Ring a bell	To seem familiar, remind one of something, or stimulate an incomplete or indistinct memory.	\N	2023-07-16 07:01:55+00
+669	Jump the gun	Jump the gun	To start something before it is permissible, appropriate, or advisable. The phrase alludes to starting to run in a foot race before the starting gun goes off.	\N	2023-08-08 07:00:11+00
+670	Show you the ropes	Show (one) the ropes	To explain or demonstrate to one how to do or perform a job, task, or activity.	\N	2023-08-08 07:00:12+00
+671	Getting something under your belt	Get (something) under (one’s) belt	To get something to eat or drink.	\N	2023-08-08 07:00:13+00
+672	Shit a brick	Shit a brick	To be very scared or nervous. The plural ("shit bricks") is also commonly used.	\N	2023-08-08 07:00:14+00
+673	Balls to the wall	Balls to the wall	With maximum effort, energy, or speed, and without caution or restraint.	\N	2023-08-09 07:00:01+00
+388	Once in a blue moon	Once in a blue moon	Very rarely.	Mike	2023-07-16 07:01:28+00
+534	Bone to pick	A bone to pick	An issue to discuss—typically one that is a source of annoyance for the speaker.	Miles	2023-07-19 07:00:54+00
+421	Strike while the iron is hot	Strike while the iron is hot	To make most of an opportunity or favorable conditions while one has the chance to do so.	\N	2023-07-17 07:00:06+00
+422	Set in stone	Set in stone	Permanent. Typically refers to a plan or idea.	\N	2023-07-17 07:00:07+00
+424	Trail of bread crumbs	\N	\N	\N	2023-07-17 07:00:09+00
+425	Hanging on by a thread	Hang on by a thread	To be perilously close to failing, dying, or resulting in a bad outcome.	\N	2023-07-17 07:00:10+00
+426	Green thumb	Green thumb	A proclivity for successfully growing plant life. (Often used with "have.".	\N	2023-07-17 07:00:11+00
+427	Splitting hairs	Split hairs	To make or focus on trivial or petty details, differences, or distinctions.	\N	2023-07-17 07:00:12+00
+428	Beast of burden	Beast of burden	A domesticated animal used by humans to carry or pull heavy loads.	\N	2023-07-17 07:00:13+00
+429	Hang me out to dry	Hang (one) out to dry	To desert one in a troubling situation.	\N	2023-07-17 07:00:14+00
+430	With out a pot to piss in or a window to throw it out of	\N	\N	\N	2023-07-17 07:00:15+00
+431	Without a leg to stand in	\N	\N	\N	2023-07-17 07:00:16+00
+596	Bury the hatchet	Bury the hatchet	To make peace with someone.	\N	2023-07-23 07:00:16+00
+433	Shooting from the hip	Shoot from the hip	To speak or act rashly, recklessly, or bluntly, without consideration of potential consequences. An allusion to firing a handgun immediately upon drawing it from its holster without taking time to aim.	\N	2023-07-17 07:00:18+00
+434	Outside of my wheelhouse	Out(side) (of) (someone’s) wheelhouse	Against, outside of, or not matching someone’s general interests, abilities, or area of familiarity; outside of someone’s comfort zone.	\N	2023-07-17 07:00:19+00
+435	Above my pay grade	Above (one’s) pay grade	The responsibility of those who are of a higher authority than oneself, denoted by the level of pay that one receives in comparison to one’s superiors.	\N	2023-07-17 07:00:20+00
+436	Caught in the crosshairs	\N	\N	\N	2023-07-17 07:00:21+00
+437	Target on you back	\N	\N	\N	2023-07-17 07:00:22+00
+438	Price on your head	\N	\N	\N	2023-07-17 07:00:23+00
+439	Death by 1000 cuts	\N	\N	Miles	2023-07-17 07:00:24+00
+440	Can’t trust them as far as you can throw them	\N	\N	\N	2023-07-17 07:00:25+00
+441	Throw caution to the wind	Throw caution to the wind(s)	To abandon one’s cautiousness in order to take a risk.	\N	2023-07-17 07:00:26+00
+442	Hold your horses	Hold your horses	Wait a moment or be patient (often because you are moving too quickly or thoughtlessly).	\N	2023-07-17 07:00:27+00
+767	Off the cuff	Off the cuff	Casually and spontaneously; without planning or preparation. Often hyphenated.	Miles	2023-08-20 07:00:02+00
+498	Kiss the ring	Kiss the ring	To make a gesture of deference, fealty, or genuflection to a person of power or authority.	Eve	2023-07-19 07:00:18+00
+443	Bring a knife to a gunfight	Bring a knife to a gunfight	To come poorly prepared or equipped for some task, goal, competition, or confrontation. Often used in the negative as a forewarning or piece of advice.	\N	2023-07-17 07:00:28+00
+444	Mexican standoff	Mexican standoff	An impasse, deadlock, or stalemate from which no party involved will or can emerge victorious.	\N	2023-07-17 07:00:29+00
+445	Play your cards right	Play (one’s) cards right	To act adeptly and with good judgment; to make the best and most effective use of the resources at one’s disposal.	\N	2023-07-17 07:00:30+00
+446	Play your cards close to the chest	\N	\N	\N	2023-07-17 07:00:31+00
+447	Ace up your sleeve	Ace up (one’s) sleeve	A secret plan, idea, or advantage that can be utilized if and when it is required. A reference to cheating at a card game by hiding a favorable card up one’s sleeve.	\N	2023-07-17 07:00:32+00
+449	Hold your hand	Hold (one’s) hand	Literally, to grasp one’s hand and continue holding it, typically while walking together or sitting next to each other, often as a show of affection.	\N	2023-07-17 07:00:34+00
+747	Sticking your foot in your mouth	\N	\N	Miles	2023-08-18 07:00:08+00
+450	The 11th hour	The eleventh hour	The last possible moment or opportunity. Can be hyphenated if used as a modifier before a noun.	\N	2023-07-17 07:00:35+00
+451	A real class act	\N	\N	\N	2023-07-17 07:00:36+00
+452	For the birds	For the birds	Worthless, stupid, or completely undesirable.	\N	2023-07-17 07:00:37+00
+453	Make ends meet	Make (both) ends meet	To earn just enough money to cover one’s living expenses.	\N	2023-07-17 07:00:38+00
+454	Wear your heart on your sleeve	Wear (one’s) heart on (one’s) sleeve	To openly display or make known one’s emotions or sentiments.	\N	2023-07-17 07:00:39+00
+455	Got it in the bag	\N	\N	\N	2023-07-17 07:00:40+00
+456	Idle hands are the devils playground	\N	\N	\N	2023-07-17 07:00:41+00
+457	Secure the bag	\N	\N	\N	2023-07-17 07:00:42+00
+458	Slow your roll	Slow (one’s) roll	To calm oneself down. Primarily heard in US.	\N	2023-07-17 07:00:43+00
+459	Off the beaten path	Off the beaten path	Little-known, or in a remote or lesser-known area.	\N	2023-07-17 07:00:44+00
+460	Read em and weep	Read ’em and weep	Look at these results, which clearly show that I am the winner and you are the loser. A clichéd expression that is especially commonly used during card games.	\N	2023-07-17 07:00:45+00
+461	My hands are tied	(one’s) hands are tied	One is being prevented from acting, helping, or intervening as one should or desires to because of circumstances beyond one’s control, such as rules, conflicting orders, or higher priorities.	\N	2023-07-17 07:00:46+00
+462	With one had tied behind my back	\N	\N	\N	2023-07-17 07:00:47+00
+463	Knock your dick in the dirt	\N	\N	Miles	2023-07-17 07:00:48+00
+526	Ask me your questions I’ll tell you my lies	\N	\N	Eve	2023-07-19 07:00:46+00
+834	Another face in the crowd	\N	\N	Miles	2023-08-25 07:00:28+00
+464	Moving the goalpost	Move the goalposts	To alter the rules or parameters of a situation in such a way as to suit one’s needs or objectives, making it more difficult for someone else to succeed, keep pace, or achieve an opposing objective.	\N	2023-07-17 07:00:49+00
+465	Pulling the rug from under you	Pull the rug (out) from under (someone)	To suddenly or unexpectedly remove or rescind support, help, or assistance from someone; to abruptly leave someone in a problematic or difficult situation.	\N	2023-07-17 07:00:50+00
+466	All roads lead to rome	All roads lead to rome	The same outcome can be reached by many methods or ideas. This phrase refers to the road system of the Roman Empire, in which Rome was positioned in the center, with every road attached to it.	\N	2023-07-17 07:00:51+00
+467	Walk in the park	A walk in the park	A task or activity that is easy or effortless to accomplish.	\N	2023-07-17 07:00:52+00
+468	Too many irons in the fire	Too many irons in the fire	An excessive number of simultaneous activities or potential undertakings or opportunities underway.	Mike	2023-07-16 08:00:00+00
+469	Two tacos short of a combination plate	\N	\N	\N	2023-07-17 07:00:53+00
+674	Deep dive	Deep dive	A thorough analysis, perhaps one that seems excessive or unwarranted for a particular topic.	\N	2023-08-09 07:00:02+00
+219	Stabbed in the back	Stabbed in the back	Having had one’s confidence or trust betrayed.	\N	2023-07-14 08:32:00+00
+448	Coming in hot	\N	\N	\N	2023-07-17 07:00:33+00
+471	Burying your head in the sand	Bury (one’s) head in the sand	To avoid, or try to avoid, a particular situation by pretending that it does not exist. The phrase refers to the common but mistaken belief that ostriches bury their heads in the sand when frightened, so as to avoid being seen.	\N	2023-07-18 07:00:01+00
+472	Burn a hole in your pocket	Burn a hole in (one’s) pocket	To be in one’s possession and causing one an intense urge to make use of it. Typically used in reference to money, suggesting that the person with the money feels the need to spend it quickly.	\N	2023-07-18 07:00:02+00
+474	If you fall of your horse you gotta get back on	\N	\N	\N	2023-07-18 07:00:04+00
+475	If you want to make god laugh make a plan	\N	\N	\N	2023-07-18 07:00:05+00
+476	Gun shy	Gun-shy	Frightened of using a gun or by the sound of one firing.	\N	2023-07-18 07:00:06+00
+477	Trigger happy	Trigger-happy	Eager to use a weapon, i.e. to pull the trigger (of a gun).	\N	2023-07-18 07:00:07+00
+478	You can’t take it with you	(you) can’t take it with you (when you go)	A warning against materialism that alludes to the fact that you can’t keep your money or possessions when you die.	\N	2023-07-18 07:00:08+00
+479	Doesn’t pack a punch	\N	\N	\N	2023-07-18 07:00:09+00
+480	A drop in the bucket	Drop in the bucket	A tiny amount, especially when compared to a much larger one.	\N	2023-07-18 07:00:10+00
+547	Don’t shoot the messenger	Don’t shoot the messenger	Don’t get angry at or punish someone who is simply delivering bad or undesirable news as they are not responsible for it.	\N	2023-07-20 07:00:11+00
+846	Ride on someone’s coattails	\N	\N	Miles	2023-08-26 07:00:04+00
+492	Lose the battle but win the war	Lose the battle, but win the war	To suffer a minor defeat or failure, but achieve a larger, more important, or overarching success or victory over time. The phrase is often split into two halves across different parts of a sentence to achieve its meaning.	Eve	2023-07-19 07:00:12+00
+493	Uncharted waters	Uncharted waters	A situation or circumstance that is foreign, unclear, or unfamiliar and which may be dangerous or difficult as a result.	Miles	2023-07-19 07:00:13+00
+495	Never look into another bowl except to see if they have enough	\N	\N	Eve	2023-07-19 07:00:15+00
+496	A rose by any other name would smell as sweet	A rose by any other name (would smell as sweet)	What someone or something is called does not change their innate characteristics or attributes. The shorter version of the phrase is often used when describing undesirable people or things.	Eve	2023-07-19 07:00:16+00
+497	He who laughs last laughs best	Have the last laugh	To ultimately achieve success after encountering adversity or doubt from others.	Eve	2023-07-19 07:00:17+00
+500	What goes around comes around	What goes around comes around	One’s actions or behavior will eventually have consequences for one, even if indirectly. The phrase typically refers to one being a victim of the same negative circumstances that they have inflicted on others.	Eve	2023-07-19 07:00:20+00
+501	If your going to get we you might as well go swimming	\N	\N	Eve	2023-07-19 07:00:21+00
+502	Don’t cry over spilt milk	\N	\N	\N	2023-07-19 07:00:22+00
+503	Put someone on a pedestal	Put (someone or something) (up) on a pedestal	To believe or behave as if someone or something is perfect, wonderful, or better than others, to the extent that one is unable to see its potential flaws or faults.	Miles	2023-07-19 07:00:23+00
+504	The view from your ivory tower	\N	\N	Eve	2023-07-19 07:00:24+00
+505	On your high horse	On (one’s) high horse	Having an attitude of condescending moral superiority.	Eve	2023-07-19 07:00:25+00
+506	Turn a blind eye	Turn a blind eye (to something)	To knowingly ignore some wrongdoing.	Miles	2023-07-19 07:00:26+00
+507	Cat got your tongue	(has the) cat got your tongue?	A humorous question directed at one who is not speaking very much or at all.	Miles	2023-07-19 07:00:27+00
+508	Hard nut to crack	A hard nut (to crack)	A person, thing, situation, or problem that is particularly difficult to understand, solve, or deal with.	Miles	2023-07-19 07:00:28+00
+509	Up shit creek without a paddle	Up shit creek (without a paddle)	In a challenging or troublesome situation, especially one that cannot be easily resolved.	miles	2023-07-19 07:00:29+00
+510	Even the Mona Lisa is falling apart	\N	\N	Eve	2023-07-19 07:00:30+00
+511	Diamonds are made under pressure but not over night	\N	\N	Eve	2023-07-19 07:00:31+00
+512	Men are from mars, women are from Venus	\N	\N	Eve	2023-07-19 07:00:32+00
+513	Reopen an old wound	\N	\N	Miles	2023-07-19 07:00:33+00
+514	Pour salt in the wound and expect it to heal	\N	\N	Eve	2023-07-19 07:00:34+00
+515	Swimming with the fishes	Be swimming with the fishes	To be murdered and have one’s body disposed of in a river,lake, or ocean.	Miles	2023-07-19 07:00:35+00
+516	Light at the end of the tunnel	Light at the end of the tunnel	A sign that something difficult or unpleasant is almost at an end.	Miles	2023-07-19 07:00:36+00
+517	Pride is a cold bedfellow	\N	\N	Eve	2023-07-19 07:00:37+00
+518	Cut off the head and the body will die	\N	\N	Eve	2023-07-19 07:00:38+00
+519	The little dutch boy with his finger in the dike	\N	\N	Eve	2023-07-19 07:00:39+00
+520	A hard pill to swallow	A hard pill to swallow	Something, especially a fact or piece of news, that is unpleasant or difficult but which is unavoidable or must be accepted.	Miles	2023-07-19 07:00:40+00
+521	Nothing left to do but bite the bullet	\N	\N	Eve	2023-07-19 07:00:41+00
+522	Bring home the bacon	Bring home the bacon	To earn money, as from steady employment. The phrase may originate from the fairground contest in which participants try to catch a greased pig in order to win it.	\N	2023-07-19 07:00:42+00
+523	Butter your bread on both sides	Butter (one’s) bread on both sides	To benefit or profit from two or more separate and often contradictory or incompatible things or sources.	Eve	2023-07-19 07:00:43+00
+527	In the belly of the beast	In the belly of the beast	Within the worst, most central area or part of something deeply unpleasant or malicious.	Miles	2023-07-19 07:00:47+00
+528	Wild goose chase	Wild goose chase	A prolonged or chaotic search for something that is difficult to find (often because it does not exist).	Miles	2023-07-19 07:00:48+00
+529	Jack of all trades	Jack of all trades	A person who is skilled in many different areas.	Miles	2023-07-19 07:00:49+00
+530	Cut the mustard	Cut the mustard	\N	Miles	2023-07-19 07:00:50+00
+531	Don’t pull the wool over my eyes	\N	\N	Miles	2023-07-19 07:00:51+00
+532	Shoot yourself in the foot	Shoot (oneself) in the foot	To damage or impede one’s own plans, progress, or actions through foolish actions or words.	Miles	2023-07-19 07:00:52+00
+533	Salad days	Salad days	A youthful, carefree time of innocence and inexperience. The phrase comes from a line in Shakespeare’.	Miles	2023-07-19 07:00:53+00
+930	Shake a leg	\N	\N	Christina	2023-09-01 07:00:06+00
+537	Taste of your own medicine	A taste of (one’s) own medicine	An experience of the same harmful or unpleasant thing that one has inflicted on others; an attack in the same manner in which one attacks others.	\N	2023-07-20 07:00:01+00
+538	March to the best of your own drum	\N	\N	\N	2023-07-20 07:00:02+00
+539	Cross your heart and hope to die	\N	\N	\N	2023-07-20 07:00:03+00
+540	Scraping the bottom of the barrel	Scrape the bottom of the barrel	To use or select from the last or worst of the resources or options from a particular range or set, even if they are not satisfactory, because there are no others to choose from.	\N	2023-07-20 07:00:04+00
+541	Gift that keeps on giving	The gift that keeps on giving	Something that continues to have a payoff, consequences, or other such impact.	\N	2023-07-20 07:00:05+00
+542	Let me sleep on it	\N	\N	\N	2023-07-20 07:00:06+00
+543	Don’t sleep on it	\N	\N	\N	2023-07-20 07:00:07+00
+544	Down the rabbit hole	Down a/the rabbit hole	In a situation, process, or journey that is particularly strange, problematic, difficult, complex, or chaotic, especially one that becomes increasingly so as it develops or unfolds. (An allusion t.	\N	2023-07-20 07:00:08+00
+545	Level the playing field	Level the playing field	To make a situation or activity more fair and balanced by giving an extra advantage or opportunity to those who would normally be at a disadvantage, or by attempting to take away or diminish advantages, perhaps of one’s adversary or competitor.	\N	2023-07-20 07:00:09+00
+546	Your ass is grass	(one’s) ass is grass	\N	\N	2023-07-20 07:00:10+00
+847	Shit rolls down hill	\N	\N	Eve	2023-08-26 07:00:05+00
+548	Don’t hate the player hate the game	Don’t hate the player, hate the game	You should hate a system or situation rather than the people involved in it.	\N	2023-07-20 07:00:12+00
+549	Bucket list	Bucket list	A list of accomplishments or tasks one hopes to do or achieve before one dies.	\N	2023-07-20 07:00:13+00
+550	Partner in crime	Partner in crime	One who aids or accompanies someone in crimes or nefarious actions.	\N	2023-07-20 07:00:14+00
+551	Anyway you slice it	\N	\N	\N	2023-07-20 07:00:15+00
+552	All is fair in love and war	All is fair in love and war	Otherwise questionable actions are acceptable under extenuating circumstances. Often written as "all’s fair in love and war.".	\N	2023-07-20 07:00:16+00
+553	Above my pay grade	Above (one’s) pay grade	The responsibility of those who are of a higher authority than oneself, denoted by the level of pay that one receives in comparison to one’s superiors.	\N	2023-07-20 07:00:17+00
+554	Not on my dime	\N	\N	\N	2023-07-20 07:00:18+00
+556	Rubbing elbows	Rub elbows	To interact or mingle with a person or group.	\N	2023-07-20 07:00:20+00
+557	Beating around the bush	Beat around the bush	To speak vaguely or euphemistically so as to avoid talking directly about an unpleasant or sensitive topic. Primarily heard in US.	\N	2023-07-20 07:00:21+00
+558	Keep your friends close and your enemies closer	Keep your friends close and your enemies closer	Be very aware of your enemies’ behavior in order to detect and avoid any malicious actions.	\N	2023-07-20 07:00:22+00
+559	Keep your eyes on the prize	Keep your eye(s) on the prize	To remain focused on a particular goal or award, especially when the path to it is long or arduous.	\N	2023-07-20 07:00:23+00
+560	Under the radar	Under (the/one’s) radar	Without being noticed, detected, or addressed.	\N	2023-07-20 07:00:24+00
+561	Take under your wing	\N	\N	\N	2023-07-20 07:00:25+00
+562	Straw that broke the camel’s back	The straw that breaks the camel’s back	A seemingly small or inconsequential issue, problem, or burden that proves to be the final catalyst in causing an overworked or overburdened person, system, organization, etc., to fail, give up, or collapse.	\N	2023-07-20 07:00:26+00
+563	Late in the game	Late in the game	At a late point in some situation, development, activity, etc. Likened to an athletic game or match.	\N	2023-07-20 07:00:27+00
+564	Last straw	The last straw	The final problem, setback, or source of irritation in a series that causes one to finally lose patience or for something to stop working.	\N	2023-07-20 07:00:28+00
+565	Connect the dots	Connect the dots	Literally, to draw a line between dots, often as part of a children’s activity to create an illustration or design.	\N	2023-07-20 07:00:29+00
+567	When push comes to shove	If push comes to shove	If the situation deteriorates or becomes desperate; if drastic measures are needed.	\N	2023-07-20 07:00:31+00
+568	Been around the block	Been around (the block)	To have experience, either in a particular area or in one’s life overall.	\N	2023-07-20 07:00:32+00
+569	Eye for an eye	Eye for an eye (and a tooth for a tooth).	If someone hurts you, you should punish the offender by hurting him or her in the same way. (An ancient principle of justice going back to biblical times..	\N	2023-07-20 07:00:33+00
+570	Eyes in the back of your head	Eyes in the back of (one’s) head	The ability to detect what is going on all around one, even beyond one’s field of vision.	\N	2023-07-20 07:00:34+00
+571	In the clear	In the clear	Deemed innocent or able to avoid blame for some crime or misdeed.	\N	2023-07-20 07:00:35+00
+572	Cold turkey	Cold turkey	The abrupt cessation of something (most often the use of a drug).	\N	2023-07-20 07:00:36+00
+573	We’re gonna need a bigger boat	\N	\N	\N	2023-07-20 07:00:37+00
+574	It’s all greek to me	(it’s) (all) greek to me	This might as well be a foreign language, because I don’t understand it at all. The phrase comes from Shakespeare’s pla.	\N	2023-07-20 07:00:38+00
+575	How do you like them apples	How do you like them apples	A phrase used to draw attention to one’s cleverness or superiority to the one being addressed, especially after a recent triumph.	\N	2023-07-20 07:00:39+00
+576	Break the mold	Break the mold	To do something in a new way.	\N	2023-07-20 07:00:40+00
+577	Worth your weight in salt	\N	\N	\N	2023-07-20 07:00:41+00
+578	Turn on a dime	Turn on a dime	To turn very quickly and with great agility.	\N	2023-07-20 07:00:42+00
+579	Hold down the fort	Hold (down) the fort	To maintain the proper functioning or order of some situation or place, typically during someone’s absence.	\N	2023-07-20 07:00:43+00
+580	I’m all ears	I’m all ears	I’m ready and eager to hear what you have to say.	Miles	2023-07-23 07:00:01+00
+675	Kick rocks	Kick rocks	An expression of disdain used to tell someone to go away or quit bothering one.	\N	2023-08-09 07:00:03+00
+581	Bend over backwards	Bend over backward(s)	To exert a lot of effort towards some end. This phrase is often used to express frustration when one’s efforts go unrecognized.	\N	2023-07-23 07:00:02+00
+583	No spring chicken	No spring chicken	No longer young or youthful. (A "spring chicken" refers to a young chicken..	Eve	2023-07-23 07:00:03+00
+584	Counting sheep	Count sheep	To perform any repetitive or monotonous thought exercise as a means of calming the mind to try to fall asleep (such as the traditional sleep aid of counting imaginary sheep).	Eve	2023-07-23 07:00:04+00
+585	Leg up in life	\N	\N	Eve	2023-07-23 07:00:05+00
+586	Put your pants on one leg at a time	Put (one’s) pants on one leg at a time (just like everybody else)	To be an ordinary human being; to go through life like everyone else. (Used especially in reference to someone who is of an elevated social status, such as a celebrity, star athlete, member of royalty, etc.	Eve	2023-07-23 07:00:06+00
+587	Boots on the ground	Boots on the ground	Soldiers who are on active duty and physically present during a combat operation.	Eve	2023-07-23 07:00:07+00
+588	Down to the nitty gritty	\N	\N	Eve	2023-07-23 07:00:08+00
+589	Knock on wood	Knock on wood	A superstitious expression said, typically in combination with actually touching or knocking on a wooden object or surface, when one desires something positive to continue, lest the mention of i."jinx" or somehow reverse one’s good fortune.	\N	2023-07-23 07:00:09+00
+590	Salt of the earth	The salt of the earth	A person or group that is regarded as genuine, unpretentious, and morally sound. This phrase is typically complimentary.	\N	2023-07-23 07:00:10+00
+591	Under the weather	Under the weather	Mildly ill.	\N	2023-07-23 07:00:11+00
+592	Fly in in the ointment	\N	\N	\N	2023-07-23 07:00:12+00
+593	Nothing to write home about	Nothing to write home about	Not especially impressive, remarkable, or noteworthy; rather dull, mediocre, uninteresting, or unimportant.	\N	2023-07-23 07:00:13+00
+594	A hired gun	\N	\N	\N	2023-07-23 07:00:14+00
+595	Dropped the ball	Drop the ball	To make a mistake.	\N	2023-07-23 07:00:15+00
+597	Open the floodgates	Open the floodgates	To allow for an expanding number of (typically negative) consequences as the result of another related action.	\N	2023-07-23 07:00:17+00
+598	See a man about a horse	See a man about a horse	To leave somewhere without explaining where one is going, but usually used as an obvious euphemism for going to the toilet or getting an alcoholic drink.	\N	2023-07-23 07:00:18+00
+599	Taken with a grain of salt	Take (something) with a grain of salt	To consider or evaluate something, such as a statement, with the understanding that it may not be completely true or accurate, typically due to the unreliability of the source.	\N	2023-07-23 07:00:19+00
+600	Trust you as far as i can throw you	\N	\N	\N	2023-07-23 07:00:20+00
+601	You made your bed now you got to lay in it	\N	\N	\N	2023-07-23 07:00:21+00
+602	Rolling with the punches	Roll with the punches	Literally, in martial arts (especially boxing), to maneuver one’s body away from a blow so as to lessen the force of the impact.	\N	2023-07-23 07:00:22+00
+603	Two way street	Two-way street	A situation in which both sides must put forth an equal amount of effort to achieve a desired result.	Eve	2023-07-24 07:00:01+00
+604	Double down	Double down	In blackjack, to double one’s wager after seeing one’s initial hand of cards, with only one more card allowed to be drawn afterward.	Eve	2023-07-23 07:00:23+00
+605	Stand your ground	Stand (one’s) ground	To brace oneself and maintain one’s position during or when anticipating an attack.	Eve	2023-07-23 07:00:24+00
+606	Dust your shoulders off	\N	\N	Eve	2023-07-23 07:00:25+00
+607	Blowing steam	\N	\N	Miles	2023-07-24 07:00:02+00
+608	Thrown to the wolves	Wolf	\N	Eve	2023-07-24 07:00:03+00
+609	Throw under the bus	Throw (one) under the bus	To exploit one’s trust for an ulterior purpose, advantage, or agenda; to harm one through deceit or treachery.	Eve	2023-07-24 07:00:04+00
+610	Raised by wolves	Raised by wolves	Of or describing someone who seems particularly uncouth or socially inept.	Eve	2023-07-24 07:00:05+00
+611	Leaving a trail of breadcrumbs	\N	\N	Eve	2023-07-24 07:00:06+00
+612	Get with the program	Get with the program	To conform or fall in line with what is expected.	Miles	2023-07-24 07:00:07+00
+613	Water under the bridge	Water under the bridge	A prior issue that is now resolved or considered resolved.	\N	2023-07-24 07:00:08+00
+615	On the shoulders with of giants	\N	\N	Eve	2023-07-25 07:00:01+00
+616	Pull out all the stops	Pull out all the stops	To do something with maximum effort or ability; to use all or the best available resources when doing something.	Eve	2023-07-24 07:00:10+00
+617	Steal their thunder	Steal (one’s) thunder	To garner the attention or praise that one had been expecting or receiving for some accomplishment, announcement, etc.	Eve	2023-07-24 07:00:11+00
+618	Wash your hands of the whole affair	\N	\N	Eve	2023-07-24 07:00:12+00
+619	Break the bank	Break the bank	To be very expensive. The phrase is often used in the negative to convey the opposite.	\N	2023-07-25 07:00:02+00
+620	Speak of the devil and he shall appear	Speak of the devil, and he shall appear	An acknowledgment of a person who has arrived just as or after they were being discussed.	\N	2023-07-25 07:00:03+00
+621	Curiosity killed the cat but satisfaction brought it back	\N	\N	\N	2023-07-25 07:00:04+00
+622	Wake up and smell the coffee	Wake up and smell the coffee	Pay attention to what is happening.	\N	2023-07-25 07:00:05+00
+623	You can’t put the toothpaste back in the tube	Put the toothpaste back in the tube	To attempt to revert a situation to how it formerly existed by containing, limiting, or repressing information, ideas, advancements, etc., that have become commonplace or public knowledge. Almost always used in the negative to denote the impossibility of such an attempt.	\N	2023-07-25 07:00:06+00
+624	A pictures worth a 1000 words	\N	\N	\N	2023-07-25 07:00:07+00
+625	Doing the lord’s work	\N	\N	\N	2023-07-25 07:00:08+00
+626	When small men cast long shadows the day is almost over	\N	\N	\N	2023-07-25 07:00:09+00
+627	Meat and potatoes	Meat-and-potatoes	Concerned with or pertaining to the most basic or fundamental aspects of something.	\N	2023-07-25 07:00:10+00
+628	Beating your head against the wall	Beat (one’s) head against a/the wall	To attempt continuously and fruitlessly to accomplish some task or achieve some goal that is or seems ultimately hopeless.	\N	2023-07-25 07:00:11+00
+629	Barking up the wrong tree	Bark up the wrong tree	To attempt or pursue a futile course of action, often by making some kind of suggestion or request.	\N	2023-07-25 07:00:12+00
+630	Falling on deaf ears	Fall on deaf ears	To be ignored.	\N	2023-07-25 07:00:13+00
+631	Don’t ask how the sausage is made	\N	\N	\N	2023-07-25 07:00:14+00
+696	Play it by ear	Play by ear	\N	Miles	2023-08-11 07:00:05+00
+697	Getting something off your chest	get (something) off (one’s) chest	To reveal or discuss something that has caused one emotional discomfort and that one has repressed, kept hidden, or neglected to discuss earlier.	Miles	2023-08-11 07:00:06+00
+702	Throw me a bone	Throw (one) a bone	To attempt to appease or placate someone by giving them something trivial or of minor importance or by doing some small favor for them. (A reference to giving a dog a bone or scrap from a bigger portion of food..	Miles	2023-08-13 07:00:01+00
+704	Spill the tea	Spill the tea	To share or reveal gossip. "Tea" is a slang term for gossip.	Christina	2023-08-13 07:00:03+00
+632	The emperor’s new clothes	The emperor’s new clothes	Something widely accepted as true or professed as being praiseworthy due to an unwillingness of the general population to criticize it or be seen as going against popular opinion. Taken from the Hans Christian Andersen fable of the same name, in which a vain king is sold imaginary clothing (i.e., nothing at all) by two weavers who promise him that it is visible only to the wise and cannot be seen by those who are ignorant, incompetent, or unfit for their position.	\N	2023-07-25 07:00:15+00
+633	Kick into gear	\N	\N	\N	2023-07-25 07:00:16+00
+634	Shooting the shit	Shoot the shit	To chat or converse aimlessly or casually, without any serious topic of conversation.	\N	2023-07-25 07:00:17+00
+635	Something’s rotten in denmark	Something is rotten in (the state of) denmark	Something strange or suspicious is going on.	Eve	2023-07-26 07:00:01+00
+636	Exit stage left	Exit stage left	An allusion to stage directions in theater, indicating when (and where) an actor should leave the stage from a scene.	Miles	2023-07-26 07:00:02+00
+637	Waiting for the dust to settle	Wait for the dust to settle	To wait until a disturbance or commotion has lessened or been resolved.	Miles	2023-07-26 07:00:03+00
+638	Throw dust in your eyes	Throw dust in (one’s) eyes	To mislead or deceive one by presenting or introducing distracting or obfuscating information.	Eve	2023-07-26 07:00:04+00
+639	Achilles heel	Achilles’ heel	A weakness or vulnerability that can lead to permanent destruction or downfall. In Greek mythology, the hero Achilles was killed after being struck in the heel—the only weak spot on his body.	Miles	2023-07-26 07:00:05+00
+640	A chain is only as strong as it’s weakest link	\N	\N	Miles	2023-07-26 07:00:06+00
+641	A chink in the armor	Chink in (one’s)/the armor	A minor but very detrimental flaw or weakness.	Eve	2023-07-26 07:00:07+00
+642	Missing link	Missing link	A hypothetical extinct animal that is believed to be the evolutionary connection between man and ape.	Miles	2023-07-26 07:00:08+00
+643	Changing gears	Change gear	Literally, to switch a car, bicycle, or other vehicle into a different gear.	Matt	2023-07-27 07:00:01+00
+768	Dark night of the soul	Poem and treatise of st. john of the cross	\N	Eve	2023-08-20 07:00:03+00
+644	When you hear hoofbeats think horses not zebras	When you hear hoofbeats, think horses, not zebras.	The simplest, most common, or most obvious explanation for something is most likely the correct one. Used especially in relation to medical diagnoses.	Matt	2023-07-27 07:00:02+00
+645	In over your head	In over (one’s) head	Too deeply involved in or with a difficult situation, beyond the point of being able to control or cope any longer.	\N	2023-07-27 07:00:03+00
+646	Plenty of fish in the sea	There are plenty of (other) fish in the sea	There are many other excellent or more suitable people, things, opportunities, or possibilities in the world that one may find. Said especially when one has recently been unlucky, unsuccessful, or has broken up with a romantic partner.	\N	2023-07-27 07:00:04+00
+647	My dogs are barking	(one’s) dogs are barking	One’s feet are very sore and tired from physical exertion.	\N	2023-07-27 07:00:05+00
+649	Put your money where your mouth is	Put (one’s) money where (one’s) mouth is	To do, live up to, or follow through on something one talks about, threatens, or promises, especially (but not always) when it involves spending money.	\N	2023-07-27 07:00:07+00
+650	Maiden voyage	Maiden voyage	The first time a vehicle, especially a boat or ship, departs on a journey.	\N	2023-07-27 07:00:08+00
+651	No guts no glory	No guts, no glory	Success does not come without the courage to take risks.	\N	2023-07-27 07:00:09+00
+652	Flash in the pan	Flash in the pan	Someone or something whose success or popularity is short-lived.	\N	2023-07-27 07:00:10+00
+653	It’s better to burn out than fade away	\N	\N	\N	2023-07-27 07:00:11+00
+654	Left in the lurch	Leave (one) in the lurch	To leave or abandon one without assistance in a particularly awkward, difficult, or troublesome situation.	\N	2023-07-27 07:00:12+00
+655	High and dry	High and dry	Literally, dry and unaffected by water, typically flood waters.	\N	2023-07-27 07:00:13+00
+656	Bury the lead	Bury the lead	In journalism, to open a news article with secondary or superfluous information, thus relegating the central premise (the lead, which usually occupies this position) to a later part.	\N	2023-07-27 07:00:14+00
+657	The sky is the limit	The sky’s the limit	Anything is possible.	\N	2023-07-27 07:00:15+00
+658	A rising tide lifts al boats	\N	\N	\N	2023-07-27 07:00:16+00
+676	Takes the cake	Take the cake	To be the worst in a series of negative actions. Primarily heard in US.	Miles	2023-08-09 07:00:04+00
+677	Wrap it up	Wrap it up	To get to the point of what one is saying. Often used as an imperative.	Miles	2023-08-09 07:00:05+00
+678	Cut some slack	Cut (one) some slack	To allow one more latitude or freedom than usual; to be more lenient with one.	Miles	2023-08-09 07:00:06+00
+679	When shit hits the fan	(the) shit hits the fan	Things have become suddenly very chaotic, disastrous, difficult, or controversial.	Miles	2023-08-09 07:00:07+00
+680	Under the sun	Under the sun	On earth; in existence.	Christina	2023-08-09 07:00:08+00
+681	Gravy train	The gravy train	A state, position, or job in which one makes an excessive amount of money without expending much or any effort.	Miles	2023-08-09 07:00:09+00
+683	Let your hair down	Let (one’s) hair down	To cease acting formally or conservatively; to ignore or relinquish one’s inhibitions or reservations. Also worded as "let down (one’s) hair".	Christina	2023-08-09 07:00:11+00
+685	Kick to the curb	Kick (someone or something) to the curb	To discard, abandon, or dismiss someone or something that has become redundant, obsolete, useless, or unwanted.	Christina	2023-08-09 07:00:13+00
+686	Clean slate	Clean slate	An opportunity to start fresh despite past mistakes or problems.	Christina	2023-08-09 07:00:14+00
+687	On top of the world	On top of the world	Elated; blissfully or triumphantly happy.	Miles	2023-08-09 07:00:15+00
+689	Nothing to hang your hat on	\N	\N	\N	2023-08-09 07:00:17+00
+690	Pull some strings	Pull (some/a few) strings	To use the power or influence one has over others, especially people of importance, to get what one wants or to help someone else.	Miles	2023-08-10 07:00:01+00
+691	Shit the bed	Shit the bed	To fail spectacularly or to a great degree.	Christina	2023-08-10 07:00:02+00
+692	Another notch on your belt	\N	\N	Miles	2023-08-11 07:00:01+00
+693	Shits and giggles	Shits and giggles	Fun or amusement derived without any serious purpose or motivation.	Miles	2023-08-11 07:00:02+00
+694	Neck and neck	Neck and neck	Extremely close together; at or near an equal level. Usually said of competitors in a race or competition.	Miles	2023-08-11 07:00:03+00
+695	Get this show on the road	Get this show on the road	To promptly begin or get something started.	Miles	2023-08-11 07:00:04+00
+648	Make it rain	Make it rain	To throw or drop dollar bills in a show of wealth.	\N	2023-07-27 07:00:06+00
+699	Put it past someone	\N	\N	Miles	2023-08-11 07:00:08+00
+700	Trusting you as far as you can throw them	\N	\N	Miles	2023-08-11 07:00:09+00
+701	Closed mouths don’t get fed	\N	\N	Eve	2023-08-11 07:00:10+00
+703	Not my cup of tea	Cup of tea	Something one prefers, desires, enjoys, or cares about. Often used in the negative to mean the opposite.	Miles	2023-08-13 07:00:02+00
+706	Pulling a rabbit out of a hat	Pull a rabbit out of a hat	To do something surprising and seemingly impossible; to produce something in a way that has no obvious explanation, as if done by magic. A reference to the magician’s trick of literally pulling a live rabbit out of a hat.	\N	2023-08-14 07:00:02+00
+707	Scratched the surface	Scratch	\N	\N	2023-08-14 07:00:03+00
+708	Rub off on someone	Rub off	To come off (of something else) after being rubbed.	\N	2023-08-14 07:00:04+00
+716	Sight for sore eyes	A sight for sore eyes	Someone or something that one is excited or overjoyed to see, often after a long absence or separation.	Miles	2023-08-15 07:00:08+00
+717	In the pit of your stomach	\N	\N	Christina	2023-08-15 07:00:09+00
+718	Lump in your throat	Lump in (one’s) throat	An intense emotional reaction resulting in a sensation of tightness in the throat, as often precedes crying.	Miles	2023-08-15 07:00:10+00
+719	Knock out of the park	Knock (something) out of the (ball)park	To do or perform something extraordinarily well; to produce or earn an exceptional achievement. An allusion to a baseball that is hit hard enough to land outside the stadium.	Miles	2023-08-15 07:00:11+00
+720	On pins and needles	On pins and needles	Anxious and tense. (Likely an allusion to the tingling sensation that occurs when blood flow returns to a numb limb..	Christina	2023-08-15 07:00:12+00
+721	Chicken with its head cut off	Like a chicken with its head cut off	With great haste and in a careless or senseless manner.	Miles	2023-08-15 07:00:13+00
+722	Over the hill	Over the hill	Past the peak of one’s life or career; too old. Often hyphenated.	Miles	2023-08-15 07:00:14+00
+723	Piece of cake	Piece of cake	A very easy task or accomplishment.	Christina	2023-08-15 07:00:15+00
+724	Have a cow	Have a cow	To get very upset about something, often more than is expected or warranted.	Christina	2023-08-15 07:00:16+00
+725	Bum rush	Bum rush	To attack or barge into a person or place forcefully or violently.	Miles	2023-08-15 07:00:17+00
+726	To die for	To die for	Extremely attractive, enjoyable, or desirable.	Miles	2023-08-15 07:00:18+00
+727	Blow your cover	Blow (one’s) cover	To expose one’s true identity or motives after they had been intentionally concealed (i.e. after one had been "undercover").	Miles	2023-08-15 07:00:19+00
+728	Don’t judge a fish by its ability to climb a tree	\N	\N	Miles	2023-08-15 07:00:20+00
+729	The devil is in the details	The devil is in the detail(s)	Plans, actions, or situations that seem sound must be carefully examined, because minor details can end up causing major, unforeseen problems.	Christina	2023-08-15 07:00:21+00
+730	Cleanliness is next to godliness	Cleanliness is next to godliness	A phrase that strongly encourages and promotes neatness and personal hygiene.	Christina	2023-08-15 07:00:22+00
+731	This town ain’t big enough for the two of us	\N	\N	Miles	2023-08-15 07:00:23+00
+732	Time for a gun fight	\N	\N	Christina	2023-08-15 07:00:24+00
+733	Pop you’re cherry	\N	\N	Christina	2023-08-15 07:00:25+00
+734	Get your rocks off	Get (one’s) rocks off	\N	Miles	2023-08-15 07:00:26+00
+735	Rock your socks off	\N	\N	Christina	2023-08-15 07:00:27+00
+736	Cool your jets	Cool (one’s) jets	To calm oneself down; to become less agitated.	Miles	2023-08-15 07:00:28+00
+737	Knee jerk reaction	Knee-jerk reaction	Any spontaneous, reflexive, and unthinking reaction or response.	\N	2023-08-16 07:00:01+00
+738	Ruffle your feathers	Ruffle (one’s) feathers	To annoy, irritate, or upset someone.	\N	2023-08-16 07:00:02+00
+739	Turn over a new leaf	Turn over a new leaf	To change one’s behavior, usually in a positive way.	Miles	2023-08-17 07:00:01+00
+740	Rounding the bend	\N	\N	Miles	2023-08-18 07:00:01+00
+741	Par for the course	Par for the course	Normal, typical, or to be expected (especially when something is a source of annoyance or frustration). An allusion to golf, in whic."par" is the number of strokes that it should take a player to get the ball into a particular hole on a golf course.	Miles	2023-08-18 07:00:02+00
+742	Up in arms	Up in arms	Very upset or angry about something. Likened to an armed rebellion, from which the phrase originated.	Miles	2023-08-18 07:00:03+00
+743	With guns blazing	With (one’s) guns blazing	Forcefully and with all of one’s energy and a strong sense of urgency or purpose, especially when directed at an argument or problem that has angered or frustrated one.	Miles	2023-08-18 07:00:04+00
+744	Make heads or tails of it	\N	\N	Miles	2023-08-18 07:00:05+00
+745	Tits up	Tits up	mildly vulgar Broken or malfunctioning; dead, falling apart, or ceasing to work.	Miles	2023-08-18 07:00:06+00
+746	Sit on it	Sit on it	An exclamation of frustration directed at another person. Popularized by the TV sho.	Miles	2023-08-18 07:00:07+00
+748	Get off on the wrong foot	Get off on the wrong foot	To have a bad start. Said of something that goes or has gone awry at the very beginning.	Miles	2023-08-18 07:00:09+00
+749	Bright eyed and bushy tailed	Bright-eyed and bushy-tailed	Energetic and enthusiastic.	Ryan	2023-08-18 07:00:10+00
+750	Squeezing the lemon	\N	\N	Ryan	2023-08-18 07:00:11+00
+751	Bleeding the lizard	\N	\N	Miles	2023-08-18 07:00:12+00
+752	Choking the chicken	Choke the chicken	To masturbate. A term only applied to males.	Ryan	2023-08-18 07:00:13+00
+753	Beating the meat	Beat (one’s) meat	To masturbate. A term only applied to males.	Ryan	2023-08-18 07:00:14+00
+754	Flicking the bean	\N	\N	Miles	2023-08-18 07:00:15+00
+755	Soften the blow	Soften the blow	To make the impact of something negative less harmful.	Ryan	2023-08-18 07:00:16+00
+756	Sitting pretty	Sit pretty	To be or remain in an ideal situation or advantageous position.	Ryan	2023-08-18 07:00:17+00
+757	Tasted grapes	\N	\N	Ryan	2023-08-18 07:00:18+00
+759	Walking on sunshine	Walk on sunshine	To be in a state of euphoria.	Miles	2023-08-18 07:00:20+00
+986	Wind down/wind up	\N	\N	Christina	2023-09-09 07:00:01+00
+1052	Licking someone’s boots	\N	\N	Miles	2023-10-27 07:00:05+00
+774	Golden goose	Golden goose	A person, thing, or organization that is or has the potential to earn a lot of money for a long period of time. Taken from a folk tale of a goose that would lay a golden egg once a day, but which was killed by its owner because he wanted all of its gold at once.	Miles	2023-08-20 07:00:09+00
+775	Beyond the pale	Beyond the pale	Completely unacceptable or inappropriate. A "pale" is an area bounded by a fence.	Eve	2023-08-20 07:00:10+00
+776	Revenge is a dish best served cold	Revenge is a dish best served cold.	Revenge that takes place far in the future, after the offending party has forgotten how they wronged someone, is much more satisfying.	Miles	2023-08-21 07:00:01+00
+833	Bun in the oven	A bun in the oven	An unborn child growing in one’s womb.	Miles	2023-08-25 07:00:27+00
+777	Fall from grace	Fall from grace	To fall out of favor, typically due to having done something that tarnishes one’s reputation.	Eve	2023-08-22 07:00:01+00
+779	Do the honors	Do the honors	To perform a task or duty of an official nature, often in a social setting. Sometimes used humorously.	Miles	2023-08-22 07:00:03+00
+780	That tracks	\N	\N	Miles	2023-08-22 07:00:04+00
+781	Pull the trigger	Pull the trigger (on something)	To make a final decision or commit to a certain course of action (about something).	Miles	2023-08-22 07:00:05+00
+782	In the the chute	\N	\N	Miles	2023-08-22 07:00:06+00
+783	Down the hatch	Down the hatch	Down one’s throat. This phrase is usually said before one drinks something (often something that has an especially foul or strong taste).	Miles	2023-08-22 07:00:07+00
+784	Batten down the hatches	Batten down the hatches	To prepare for a challenging situation. While this originated as a nautical phrase, it is now used for any sort of imminent problem.	Eve	2023-08-22 07:00:08+00
+785	To not give two shits	\N	\N	\N	2023-08-22 07:00:09+00
+786	Dog and pony show	Dog and pony show	An elaborately organized event used mainly for promotion or to drive sales.	Eve	2023-08-22 07:00:10+00
+787	Throw your hat in the ring	Throw (one’s) hat in(to) the ring	To announce that one is going to be competing with others, especially in a political election.	Eve	2023-08-22 07:00:11+00
+788	My enemy’s enemy is my friend	My enemy’s enemy is my friend	A phrase highlighting how a common enemy can be a unifying force for otherwise disparate groups or people.	Miles	2023-08-22 07:00:12+00
+789	Taking the high road	\N	\N	Miles	2023-08-22 07:00:13+00
+790	Have a falling out	A falling out	A severe quarrel or disagreement, especially one that leads to a temporary or permanent end of a relationship.	Miles	2023-08-22 07:00:14+00
+791	A broken record	\N	\N	MIles	2023-08-23 07:00:01+00
+848	In a heartbeat	In a heartbeat	Very quickly; as soon as is possible.	Miles	2023-08-26 07:00:06+00
+792	A bridge too far	A bridge too far	An act or plan whose ambition overreaches its capability, resulting in or potentially leading to difficulty or failure. Taken from the 1974 boo.	Miles	2023-08-23 07:00:02+00
+793	Think outside the box	Think outside (of) the box	To think of something that is outside of or beyond what is considered usual, traditional, or conventional; to think innovatively.	Miles	2023-08-23 07:00:03+00
+794	One fell swoop	One fell swoop	A single decisive or powerful action.	Miles	2023-08-23 07:00:04+00
+795	Addressing the elephant in the room	\N	\N	Miles	2023-08-23 07:00:05+00
+796	Opening up pandora’s box	\N	\N	Miles	2023-08-23 07:00:06+00
+797	Pot of gold at the end of the rainbow	Pot of gold at the end of the rainbow	The ultimate goal, reward, achievement, etc., at the end of a difficult or arduous process.	Miles	2023-08-23 07:00:07+00
+798	Live off the fat of the land	Live off the fat of the land	To live comfortably on a surplus of resources, without working very hard.	Miles	2023-08-23 07:00:08+00
+799	Get a lay of the land	\N	\N	Miles	2023-08-23 07:00:09+00
+800	Get the juices flowing	\N	\N	Miles	2023-08-24 07:00:01+00
+801	Eye opening	Eye-opening	Causing or resulting in a shocking or startling revelation.	Miles	2023-08-24 07:00:02+00
+802	Poking the bear	Poke the bear	To intentionally irritate or bother someone, especially when doing so carries an obvious risk.	Miles	2023-08-24 07:00:03+00
+803	Spin a web of lies	Spin a web of lies	To create an intricate contrivance of misdirection, omission, or deception that ultimately serves to ensnare or entangle oneself or others.	Miles	2023-08-24 07:00:04+00
+804	Coming out of your shell	Come out of (one’s) shell	To be or become less shy or reticent and more sociable, outgoing, or enthusiastic.	Christina	2023-08-24 07:00:05+00
+806	Put some feelers out	\N	\N	Miles	2023-08-24 07:00:07+00
+807	Barrel of monkeys	Barrel of monkeys	A group that is having fun and enjoying themselves. Often used in the phrase "more fun than a barrel of monkeys.".	Christina	2023-08-25 07:00:01+00
+808	Monkey see monkey do	Monkey see, monkey do	Children naturally tend to imitate or copy what they see adults or other children doing.	Miles	2023-08-25 07:00:02+00
+809	Getting your ass handed to you	\N	\N	Miles	2023-08-25 07:00:03+00
+810	Come full circle	Come full circle	To return to the original or a similar position, situation, or circumstance where one or something started.	Miles	2023-08-25 07:00:04+00
+811	High on the hog	High on the hog	Ostentatiously. The phrase refers to the rich being able to afford the choicest cut of meat, which, from a pig, is higher up on the animal.	Miles	2023-08-25 07:00:05+00
+812	Taking the words out of someone’s mouth	\N	\N	Miles	2023-08-25 07:00:06+00
+813	To be blown away	\N	\N	Miles	2023-08-25 07:00:07+00
+814	Setting the bar low	Set the bar (high/low)	To establish an expected, required, or desired standard of quality. (Often said of a standard that is constrictive in being either too low or too high).	Miles	2023-08-25 07:00:08+00
+815	Game changer	Game-changer	That which dramatically or fundamentally alters a situation or the way in which something is done or thought about.	Miles	2023-08-25 07:00:09+00
+816	Keep your eyes peeled	Keep (one’s) eye(s) peeled (for someone or something)	To remain vigilant or carefully watchful (for something or someone).	Miles	2023-08-25 07:00:10+00
+817	Hell hath no fury like a woman’s scorn	\N	\N	Miles	2023-08-25 07:00:11+00
+818	Top notch	Top-notch	Stellar; excellent; the best. Can be used with or without a hyphen.	Miles	2023-08-25 07:00:12+00
+819	Hit or miss	Hit or miss	Sometimes good or successful, sometimes not; having mixed or unpredictable results; random, aimless, careless, or haphazard. Often hyphenated.	Miles	2023-08-25 07:00:13+00
+820	Shooting your shot	Shoot (one’s) shot	To take the risk of making one’s availability and interest known to others, as to a prospective employer or romantic partner.	Miles	2023-08-25 07:00:14+00
+821	Hidden gem	Hidden gem	That which is of exceptional or underappreciated quality but is not especially popular or widely known.	Miles	2023-08-25 07:00:15+00
+822	Too big for your britches	Too big for (one’s) boots	Overconfident in one’s importance, skill, or authority; behaving as if one is more important or influential than one actually is.	Miles	2023-08-25 07:00:16+00
+1051	Picking something up	\N	\N	Miles	2023-10-27 07:00:04+00
+825	Preaching to the choir	Preach to the choir	To try to convince someone about something that they already support; to state one’s opinion to those who are already most receptive to it.	Miles	2023-08-25 07:00:19+00
+826	Had it up to here	\N	\N	Miles	2023-08-25 07:00:20+00
+828	On a roll	On a roll	Experiencing a particularly successful period, without any setbacks or low points.	Miles	2023-08-25 07:00:22+00
+829	Short fuse	A short fuse	A tendency to become angered, enraged, or upset very quickly or easily; a short temper.	Miles	2023-08-25 07:00:23+00
+830	Hot headed	Hothead	A person with an excitable, fiery, or impetuous temper or disposition; one who is quick to get angry or act rashly.	Miles	2023-08-25 07:00:24+00
+831	Having a ring to it	\N	\N	Miles	2023-08-25 07:00:25+00
+832	Dropping the kids off at the pool	\N	\N	Miles	2023-08-25 07:00:26+00
+835	A fine line	A fine line	A very narrow division between two deceptively similar things, one of which is worse than the other.	Christina	2023-08-25 07:00:29+00
+836	Saving something for a rainy day	Save (something) for a rainy day	To reserve something, especially money, for use in a time or period of unforeseen difficulty, trouble, or need.	Christina	2023-08-25 07:00:30+00
+952	Being in someone’s corner	\N	\N	Christina	2023-09-03 07:00:11+00
+837	Shaking in your boots	Shake in (one’s) boots	To tremble with fear. Often used sarcastically.	Christina	2023-08-25 07:00:31+00
+838	Water water all around and not a drop to drink	\N	\N	Eve	2023-08-25 07:00:32+00
+839	Let your guard down	Let (one’s) guard down	To become less guarded or vigilant; to stop being cautious about potential trouble or danger.	Eve	2023-08-25 07:00:33+00
+840	Hole in the wall	Hole in the wall	A small, inconspicuous place, often an establishment such a restaurant. The term sometimes but not always has a negative connotation implying a place that is perceived to be disreputable in some way.	Christina	2023-08-25 07:00:34+00
+841	Pulling teeth	Pull teeth	To do something that is especially difficult, tedious, or requires an extreme amount of effort; to do something in the most difficult or unpleasant way possible.	Miles	2023-08-25 07:00:35+00
+842	Take a load off	Take a load off (one’s feet)	To sit down and rest one’s feet; to relax. (Usually said as a suggestion..	Christina	2023-08-25 07:00:36+00
+843	Shit end of the stick	\N	\N	Miles	2023-08-26 07:00:01+00
+844	Tide me over	Tide (one) over	To maintain, sustain, or support one through a lean or difficult time until more of something is acquired, especially food or money.	Eve	2023-08-26 07:00:02+00
+845	By the skin of your teeth	By the skin of (one’s) teeth	Barely. Often used to describe something that almost didn’t happen.	Miles	2023-08-26 07:00:03+00
+849	Calm before the storm	Calm before the storm	A period of inactivity or tranquility before something chaotic begins. Likened to a literal period of calm before a storm begins.	Christina	2023-08-26 07:00:07+00
+850	Take by storm	Take (someone, something, or some place) by storm	To conquer, seize, or lay siege to something, someone, or some place with a sudden and furious attack.	Christina	2023-08-27 07:00:01+00
+851	Lift the veil	Lift the veil (on something)	To divulge, explain, or reveal something that was previously a secret.	Miles	2023-08-27 07:00:02+00
+852	A feather in your cap	A feather in (one’s) cap	An accomplishment or achievement that one takes pride in.	Miles	2023-08-27 07:00:03+00
+853	Clear cut	Clear-cut	\N	Miles	2023-08-27 07:00:04+00
+854	Head over heals	\N	\N	Miles	2023-08-28 07:00:01+00
+855	Going for broke	Go for broke	To give something one’s full effort.	Miles	2023-08-28 07:00:02+00
+856	Steal the show	Steal the show	To become the main focus of attention or deliver the most captivating performance in the presence of one or more others, typically unexpectedly.	Miles	2023-08-28 07:00:03+00
+857	In a nutshell	In a nutshell	In summary; concisely.	Miles	2023-08-28 07:00:04+00
+858	Throw away the key	Lock (someone) up and throw away the key	To incarcerate someone in prison forever or indefinitely.	Miles	2023-08-28 07:00:05+00
+860	Joined at the hip	Joined at the hip	Always near or spending a lot of time with someone else, often a close friend.	Miles	2023-08-28 07:00:07+00
+861	Over your head	Over (one’s) head	Too complicated to be understood by one.	Miles	2023-08-28 07:00:08+00
+862	In too deep	In too deep	Too involved in something to easily extract oneself or make reasonable decisions.	Christina	2023-08-28 07:00:09+00
+863	Under the spotlight	Under the spotlight	The center of attention.	Christina	2023-08-28 07:00:10+00
+864	Under a microscope	Under a microscope	Under close inspection or intense scrutiny.	Christina	2023-08-28 07:00:11+00
+865	Tag team	Tag team	\N	Christina	2023-08-28 07:00:12+00
+866	Break a leg	Break a leg	A phrase of encouragement typically said to one who is about to perform before an audience, especially a theater actor.	Christina	2023-08-28 07:00:13+00
+867	Chips stacked against someone	\N	\N	Miles	2023-08-28 07:00:14+00
+868	Different animal	\N	\N	Miles	2023-08-28 07:00:15+00
+869	Apple of my eye	The apple of (one’s) eye	A cherished or favored person. This phrase is thought to be Biblical in origin.	Christina	2023-08-28 07:00:16+00
+870	Lift the lid	\N	\N	Eve	2023-08-28 07:00:17+00
+871	On the fly	On the fly	Quickly and informally, without thought or preparation.	Christina	2023-08-29 07:00:01+00
+872	Out of touch	Out of touch	Not in contact or communicating any longer; not aware of the news or status of someone or something.	Christina	2023-08-29 07:00:02+00
+873	Get your knickers in a twist	Get (one’s) knickers in a twist	To become overly upset or emotional over something, especially that which is trivial or unimportant.	Miles	2023-08-29 07:00:03+00
+874	Stake your claim	Stake (one’s) claim	To assert one’s ownership of or right to something.	Miles	2023-08-29 07:00:04+00
+875	Hold a candle	Hold a candle to (someone or something)	To compare to someone or something; to be as good or desirable as someone or something. Often used in the negative to mean the opposite.	Miles	2023-08-29 07:00:05+00
+805	Shedding your skin	\N	\N	Miles	2023-08-24 07:00:06+00
+876	Bought the farm	Bought the farm	Died.	Eve	2023-08-29 07:00:06+00
+877	Cliff hanger	Cliffhanger	An ending of a piece of fiction (e.g., a television episode, chapter of a book, a film, etc.) characterized by a dramatically suspenseful and uncertain end.	Eve	2023-08-29 07:00:07+00
+880	Parse out	Parse out	To make sense of or find meaning in something. A noun or pronoun can be used between "parse" and "out.".	Eve	2023-08-30 07:00:03+00
+881	Pan out	Pan out	To conclude in a successful or pleasing manner; to work out.	Christina	2023-08-30 07:00:04+00
+882	Back to brunch	\N	\N	Eve	2023-08-30 07:00:05+00
+883	Down the drain	Down the drain	In a state of failure or ruination.	Miles	2023-08-30 07:00:06+00
+884	Kiss of death	Kiss of death	An action, event, or association that causes inevitable ruin or failure. An allusion to Judas Iscariot’s betrayal of Jesus Christ, during which Judas kissed Jesus as a way of identifying him to those who would put him to death.	Eve	2023-08-30 07:00:07+00
+885	Bees knees	Be the bee’s knees	To be exceptionally great, excellent, or high-quality.	Miles	2023-08-30 07:00:08+00
+886	Fly off the handle	Fly off the handle	To become uncontrollably angry; to lose control of one’s temper.	Miles	2023-08-30 07:00:09+00
+887	Let loose	Let (someone or something) loose	To make free or give up control of something or someone; to release or discharge something or someone, as from confinement.	Christina	2023-08-31 07:00:01+00
+888	Come to grips	\N	\N	Christina	2023-08-31 07:00:02+00
+889	From the ground up	From the ground up	From the first step through to completion; entirely.	Christina	2023-08-31 07:00:03+00
+890	I’ll be a monkeys uncle	\N	\N	Miles	2023-08-31 07:00:04+00
+891	Rally the troops	Rally the troops	To call others together to join with or lend support to someone or something. An allusion to reassembling dispersed soldiers ("troops"). Usually used as an imperative.	Christina	2023-08-31 07:00:05+00
+892	Off the charts	Off the charts	Quite a lot more or better than is usual or was expected.	Christina	2023-08-31 07:00:06+00
+893	Pain in the ass	Pain in the ass	An especially irritating, aggravating, or obnoxious person, thing, or situation. Primarily heard in US.	Christina	2023-08-31 07:00:07+00
+894	Bases are covered	\N	\N	Miles	2023-08-31 07:00:08+00
+895	Next level	Next-level	Especially good or advanced.	Christina	2023-08-31 07:00:09+00
+896	Read the fine print	Read the fine print	To make oneself aware of the specific terms, conditions, restrictions, limitations, etc., of an agreement, contract, or other document, which are often printed in very small type and thus easy to miss.	Miles	2023-08-31 07:00:10+00
+897	The jury is out	The jury is (still) out	A decision has not yet been made.	Miles	2023-08-31 07:00:11+00
+898	Breaking the seal	\N	\N	Miles	2023-08-31 07:00:12+00
+899	Going all in	\N	\N	\N	2023-08-31 07:00:13+00
+900	Upping the ante	Up the ante	To raise the stakes in a betting game.	Miles	2023-08-31 07:00:14+00
+937	Get a bee in your bonnet	\N	\N	Christina	2023-09-02 07:00:03+00
+901	Tipping point	Tipping point	A critical or pivotal point in a situation or process at which some small or singular influence acts as a catalyst for a broader, more dramatic, or irreversible change.	Miles	2023-08-31 07:00:15+00
+902	Ace in the hole	Ace in the hole	A major advantage that one keeps hidden until an ideal time. The phrase originated in poker, in which an ace is the most valuable card. Primarily heard in UK.	Christina	2023-08-31 07:00:16+00
+903	Easter egg	Easter egg	\N	Miles	2023-08-31 07:00:17+00
+904	At a crossroad	\N	\N	Miles	2023-08-31 07:00:18+00
+959	Go out on a limb	Go out on a limb	To do or say something that lacks evidence or support.	\N	2023-09-04 07:00:02+00
+905	Selling your soul to the devil	Sell (one’s) soul (to the devil)	To abandon one’s values or morals in return for some highly desired benefit, typically success, power, wealth, etc.	Christina	2023-08-31 07:00:19+00
+906	Head to head	Head-to-head	Describing a one-on-one matchup or comparison.	Christina	2023-08-31 07:00:20+00
+907	Hand to hand	Hand to hand	Involving or characterized by people in close proximity to one another. Hyphenated if used as a modifier before a noun.	Miles	2023-08-31 07:00:21+00
+908	Blow it to kingdom come	Blow (someone or something) to kingdom come	\N	Miles	2023-08-31 07:00:22+00
+909	Fountain of youth	Fountain of youth	Anything reputed or promising to restore one’s youth, vitality, or health, or at least the appearance thereof.	Miles	2023-08-31 07:00:23+00
+910	Head in the clouds	Head in the clouds	Impractical, aloof, or fanciful to the point of being very unhelpful or counterproductive.	Christina	2023-08-31 07:00:24+00
+911	Rein it in	\N	\N	\N	2023-08-31 07:00:25+00
+912	To no avail	To no avail	Having or with very little benefit, efficacy, or effect.	Christina	2023-08-31 07:00:26+00
+913	Wrap your mind around it	\N	\N	\N	2023-08-31 07:00:27+00
+914	Fork in the road	Fork in the road	Literally, the point at which one road splits or separates off into other roads.	Christina	2023-08-31 07:00:28+00
+915	Fill someone in	Fill in	\N	Miles	2023-08-31 07:00:29+00
+916	Put it on the back burner	Put (something) on the back burner	To establish something as being a low priority; to give something less or little thought or attention; to postpone, suspend, or hold off on doing something.	Miles	2023-08-31 07:00:30+00
+917	Trickle in	Trickle in	Of a liquid, to flow or seep in(to something) in drops or a thin stream.	\N	2023-08-31 07:00:31+00
+918	Last man standing	The last man/woman/person standing	The final person who endures or emerges victorious from some situation, activity, or pursuit in which others are eliminated.	Christina	2023-08-31 07:00:32+00
+919	Put a cork in it	Put a cork in it	To stop talking and be quiet. Usually used as an imperative.	Christina	2023-08-31 07:00:33+00
+920	Bottled up	Bottle up	\N	Christina	2023-08-31 07:00:34+00
+921	Man of the hour	(the) man/woman of the hour	A person currently being celebrated, honored, or admired by others, especially for a recent victory, accomplishment, or other cause for celebration.	Christina	2023-08-31 07:00:35+00
+922	Start off on the right foot	Start off on the right foot	To have a positive or favorable start.	Christina	2023-08-31 07:00:36+00
+923	End on a good note	\N	\N	Christina	2023-08-31 07:00:37+00
+924	Scratching my head	\N	\N	Christina	2023-08-31 07:00:38+00
+925	Mind’s eye	In (one’s) mind’s eye	In one’s imagination or mind, especially referring to something that is being visualized.	Christina	2023-09-01 07:00:01+00
+926	Going to town	Go to town	To act with great energy and/or enthusiasm.	Christina	2023-09-01 07:00:02+00
+927	Blow your load	Blow (one’s) load	To lose or spend all of one’s money.	Christina	2023-09-01 07:00:03+00
+859	In hog heaven	In hog heaven	In a state of extreme happiness.	Miles	2023-08-28 07:00:06+00
+928	Give it a shot	Give it a shot	To try something (often for the first time as a means of forming an opinion about it).	Christina	2023-09-01 07:00:04+00
+929	Shake it off	Shake off	To rid or free oneself from someone or something that one finds aggravating, upsetting, or annoying.	Christina	2023-09-01 07:00:05+00
+932	Leave you hanging	Leave (one) hanging	To withhold information from one when it is expected to be delivered.	Christina	2023-09-01 07:00:08+00
+933	If wishes were horses then beggars would ride	If wishes were horses, (then) beggars would ride	One must work for the things one wants, not merely wish for them to come true; wishing for something won’t make it happen.	Eve	2023-09-01 07:00:09+00
+934	Dead in the water	Dead in the water	Completely defunct.	Miles	2023-09-01 07:00:10+00
+935	Shake your tail feathers	Shake (one’s) tail feather	To dance, especially by moving one’s buttocks along to the beat.	Christina	2023-09-02 07:00:01+00
+936	Egg on your face	Egg on (one’s) face	The embarrassment that results from a failure or faux pas. Typically used in the phrase "have egg on (one’s) face.".	Christina	2023-09-02 07:00:02+00
+938	Reaching the end of your rope	Reach the end of (one’s) rope	To be completely worn out, exasperated, or exhausted; to have no more patience, endurance, or energy left.	Christina	2023-09-02 07:00:04+00
+939	Bring something to the table	Bring (something) to the table	To provide or offer a useful skill or attribute to a shared task, activity, or endeavor.	Miles	2023-09-02 07:00:05+00
+940	Give someone lip	\N	\N	Christina	2023-09-02 07:00:06+00
+941	Out of the blue	Out of the blue	Completely unexpectedly.	Miles	2023-09-02 07:00:07+00
+942	Night and day	Night and day	All the time; continuously.	Miles	2023-09-03 07:00:01+00
+943	If you build it they will come	\N	\N	Christina	2023-09-03 07:00:02+00
+944	Ride it out	Ride out	To travel to or from a place on a vehicle or animal.	Christina	2023-09-03 07:00:03+00
+945	Going to the end of the earth	\N	\N	Christina	2023-09-03 07:00:04+00
+946	Blood on your hands	\N	\N	Miles	2023-09-03 07:00:05+00
+947	Stick it to the man	Stick it to the man	To show resistance to or fight back against the established doctrines of a person or body of authority, especially the government.	Christina	2023-09-03 07:00:06+00
+948	Pull the plug	Pull the plug (on someone or something)	Literally, to discontinue the power supply for a device by removing its power cable from the socket.	Miles	2023-09-03 07:00:07+00
+949	Pushing someone’s buttons	Push (one’s) buttons	To do things that create a very strong emotional reaction in one, especially anger, irritation, or exasperation.	Miles	2023-09-03 07:00:08+00
+950	Go wherever the wind takes you	\N	\N	\N	2023-09-03 07:00:09+00
+951	Loose cannon	Loose cannon	Someone who has the propensity to act unpredictably or to lose their temper very quickly.	Miles	2023-09-03 07:00:10+00
+953	Taking the piss	Take the piss (out of) (someone or something)	To tease, mock, or ridicule (someone or something); to joke or kid around (about someone or something). Primarily heard in UK, Ireland.	Christina	2023-09-03 07:00:12+00
+954	To be on fire	\N	\N	Christina	2023-09-03 07:00:13+00
+955	Clap back	Clap back	\N	Miles	2023-09-03 07:00:14+00
+1013	I’ll fall on that sword	\N	\N	Miles	2023-09-20 07:00:03+00
+956	Sound the alarm	Sound the alarm	Literally, to activate an alarm.	Miles	2023-09-03 07:00:15+00
+957	Count your blessings	Count (one’s) blessings	To reflect on the good things in one’s life and be grateful for them.	Miles	2023-09-03 07:00:16+00
+958	Bag of tricks	Bag of tricks	The items that one has available for use. The phrase originally referred to the items a magician would use for magic tricks.	\N	2023-09-04 07:00:01+00
+960	Glass ceiling	Glass ceiling	The systemic discrimination (likened to an invisible barrier) against certain groups in the workplace, especially women, that prevents them from advancing.	\N	2023-09-04 07:00:03+00
+961	The powder trail is lit	\N	\N	\N	2023-09-04 07:00:04+00
+962	Under the hood	Under the hood	The underlying implementation of a product (hardware, software, or idea).  Implies that the implementation is not intuitively obvious from the appearance, but the speaker is about to enable the listener t.	\N	2023-09-04 07:00:05+00
+963	Chip away at something	\N	\N	\N	2023-09-04 07:00:06+00
+964	Take a stab at something	A try (at something)	A chance or opportunity to do or attempt something.	Miles	2023-09-06 07:00:01+00
+965	Plant the seed	Plant the seeds (of something)	To do something that ensures a certain outcome in the future, especially an unfortunate or tragic one.	Miles	2023-09-04 07:00:07+00
+966	Hit the ground running	Hit the ground running	To begin something energetically and successfully.	Christina	2023-09-06 07:00:02+00
+967	Bite the dust	Bite the dust	\N	Christina	2023-09-07 07:00:01+00
+968	Pull it off	Pull off	\N	Christina	2023-09-07 07:00:02+00
+969	Get under your skin	Get under (one’s) skin	To become a source of irritation.	Miles	2023-09-07 07:00:03+00
+970	Across the board	Across the board	Applying to or impacting every part or individual in a group or spectrum of things.	Miles	2023-09-07 07:00:04+00
+971	Take something and run with it	\N	\N	Miles	2023-09-07 07:00:05+00
+972	Come to terms	Come to terms	To agree to or do something, especially a set of demands or conditions.	Miles	2023-09-07 07:00:06+00
+973	Setting the stage	Set the stage for (something)	Literally, to prepare and decorate a stage for something, such as a performance.	Miles	2023-09-07 07:00:07+00
+974	Put someone on blast	Put (one) on blast	To publicly attack, scold, shame, or mock one, typically on social media.	Miles	2023-09-07 07:00:08+00
+975	In the ballpark	In the ballpark	Close to something specific, often a cost or amount.	Miles	2023-09-07 07:00:09+00
+976	Lean into it	Lean into (someone or something)	To push into or press against someone or something.	Miles	2023-09-07 07:00:10+00
+977	Change of heart	A change of heart	A change in one’s opinion or feelings on a matter.	Miles	2023-09-07 07:00:11+00
+978	Weed out	Weed out	To remove one or multiple undesirable people or things from a group. A noun or pronoun can be used between "weed" and "out.".	Miles	2023-09-07 07:00:12+00
+979	Thinning the herd	\N	\N	Miles	2023-09-07 07:00:13+00
+980	Send someone for a loop	\N	\N	Miles	2023-09-07 07:00:14+00
+981	Keep in touch	Keep in touch	To maintain contact with another person, especially at intervals so as to remain up to date with each other’s lives.	Miles	2023-09-07 07:00:15+00
+982	On the same/different level	\N	\N	Miles	2023-09-07 07:00:16+00
+983	Match made in heaven	A match made in heaven	An extremely well-suited pairing of people or things; a match that will result in a particularly positive or successful outcome.	Miles	2023-09-07 07:00:17+00
+984	Bottom line	The bottom line	Literally, the final figure on a statement showing a person or company’s total profit or loss.	Christina	2023-09-07 07:00:18+00
+987	Ramping up	Ramp up	To increase. A noun or pronoun can be used between "ramp" and "up.".	Christina	2023-09-09 07:00:02+00
+988	To piggyback off of something	Piggyback off (of) (something)	To use something said or done by someone else as the foundation for one’s own actions.	Christina	2023-09-09 07:00:03+00
+989	Thread the needle	Thread the needle	\N	Christina	2023-09-09 07:00:04+00
+990	Chicken out	Chicken out	To refuse to do something due to fear (real or perceived).	Christina	2023-09-09 07:00:05+00
+991	Lose your head	Lose (one’s) head	To lose one’s composure and act emotionally or irrationally.	Miles	2023-09-09 07:00:06+00
+992	Run it up the flagpole	Run it up the flagpole (and see who salutes)	To test out an idea in order to gauge interest or gain feedback.	Christina	2023-09-09 07:00:07+00
+993	Another nail in the coffin	Another nail in the coffin	Another negative event or action that contributes to one’s downfall or to something’s failure.	Miles	2023-09-09 07:00:08+00
+994	Hit rock bottom	Hit rock bottom	The reach the lowest or worst point of a decline.	Miles	2023-09-09 07:00:09+00
+995	Eagle eye	Eagle eye	Eeyesight, especially for something in particular.	Christina	2023-09-11 07:00:01+00
+996	Out of left field	Out of left field	Uncommon, unpopular, or otherwise strange.	Christina	2023-09-11 07:00:02+00
+997	Half cocked	Half-cocked	Prematurely, impulsively, or rashly.	Christina	2023-09-11 07:00:03+00
+998	Heart to heart	Heart-to-heart	\N	Miles	2023-09-11 07:00:04+00
+999	Sitting duck	Sitting duck	A person or thing that is vulnerable to or unprotected from attack; an easy target.	Christina	2023-09-12 07:00:01+00
+1000	Sticking your neck out for someone	\N	\N	Christina	2023-09-12 07:00:02+00
+1001	Clear the air	Clear the air	To remove or improve stale air or an unpleasant odor.	Christina	2023-09-12 07:00:03+00
+1002	Put a sock in it	Put a sock in it	To stop talking. Often used as an imperative.	Christina	2023-09-12 07:00:04+00
+1003	To put your finger on something	\N	\N	Miles	2023-09-12 07:00:05+00
+1004	Have your finger on the pulse	Have (one’s) finger on the pulse	To be very aware of current trends and happenings in a particular place.	Miles	2023-09-12 07:00:06+00
+1005	Buckle down	Buckle down	\N	Miles	2023-09-12 07:00:07+00
+1006	Blow over	Blow over	\N	Christina	2023-09-18 07:00:01+00
+1007	Work yourself into a lather	Work (oneself) into a lather	To become very nervous, distressed, or upset.	Christina	2023-09-18 07:00:02+00
+1008	Ham it up	Ham it up	To act in an exaggerated way, typically in order to be funny.	Christina	2023-09-18 07:00:03+00
+1009	Be my guest	Be my guest	Used to express encouragement or allowance for someone else to take action.	Christina	2023-09-18 07:00:04+00
+1010	Blow it out of the water	Blow (someone or something) out of the water	To totally defeat or ruin someone or something. The image refers to the explosion of a ship that has been hit by enemy fire.	Miles	2023-09-19 07:00:01+00
+1011	To sink in	Sink in	To penetrate, absorb, or soak in (to something).	Miles	2023-09-20 07:00:01+00
+1012	When something goes pear shaped	\N	\N	Miles	2023-09-20 07:00:02+00
+1014	Sleep with one eye open	Sleep with one eye open	To stay awake or sleep very lightly so as to remain very wary, cautious, or alert.	Miles	2023-09-20 07:00:04+00
+1016	Fired up	(all) fired up	Feeling very excited or passionate about something.	\N	2023-09-22 07:00:02+00
+1017	Bobs your uncle	\N	\N	Miles	2023-09-24 07:00:01+00
+1018	Rub someone the wrong way	Rub (one) the wrong way	To irritate one due to someone’s or something’s presence, nature, or habitual behavior (as opposed to directly and intentionally). Primarily heard in US.	Miles	2023-09-24 07:00:02+00
+1019	To yank someone’s chain	\N	\N	Christina	2023-09-24 07:00:03+00
+1020	Something in the wind	Something in the wind	Something rumored, anticipated, or intuited to happen or take place.	Christina	2023-09-24 07:00:04+00
+1021	Keep the train rolling	\N	\N	Christina	2023-09-24 07:00:05+00
+1022	Get your head in the game	Get (one’s) head in the game	To focus on and put one’s best effort into the athletic match currently underway.	Miles	2023-09-28 07:00:01+00
+1024	Back against the wall	Back to the wall	In a bad or high-pressure situation in which one’s choice or ability to act is limited.	Miles	2023-09-28 07:00:03+00
+1025	Backed into a corner	Be backed into a corner	To be forced into a difficult or unpleasant situation that one cannot easily resolve or escape.	Miles	2023-09-28 07:00:04+00
+1026	Smuggling plums	\N	\N	Ryan	2023-09-28 07:00:05+00
+1027	Get to the bottom of some thing	\N	\N	Christina	2023-09-28 07:00:06+00
+1028	Bottom of the totem pole	\N	\N	Christina	2023-09-28 07:00:07+00
+1029	Buckle up	Buckle up	\N	Miles	2023-09-29 07:00:01+00
+1030	Scratches that same itch	\N	\N	Miles	2023-09-29 07:00:02+00
+1031	Flying off the shelf	\N	\N	Miles	2023-09-29 07:00:03+00
+1032	Off to the races	Off to the races	Departing for something.	Miles	2023-09-29 07:00:04+00
+1033	Grind my gears	Grind (someone’s) gears	To greatly or specifically irritate or annoy someone.	Christina	2023-10-06 07:00:01+00
+1034	Locked and loaded	Locked and loaded	Loaded with ammunition and prepared to be fired.	Miles	2023-10-01 07:00:01+00
+1035	Cut and dried	Cut and dried	Prearranged, unchangeable, and dull. When it appears before a noun, the phrase is usually hyphenated.	Miles	2023-10-01 07:00:02+00
+1036	Slip through the cracks	Slip through the cracks	To go unnoticed or undealt with; to be unintentionally neglected or ignored, especially in a corporate, political, or social system.	Miles	2023-10-01 07:00:03+00
+1037	Close a chapter	\N	\N	Christina	2023-10-10 07:00:01+00
+1038	Knock out	Knock (oneself) out	Expend a lot of one’s energy or try very hard (doing something). The image is of working so hard as to become unconscious.	Christina	2023-10-10 07:00:02+00
+1039	Take it on the chin	Take (something) on the chin	Literally, to receive an impact, especially a punch, on one’s chin.	Christina	2023-10-10 07:00:03+00
+1040	Dig your own grave	Dig (one’s) own grave	To do something that has or will have negative consequences that are easily able to be foreseen.	Christina	2023-10-10 07:00:04+00
+1048	Taking a nose dive	Take a nosedive	Of an aircraft, to go into a sudden and rapid descent toward the ground leading with the nose of the plane.	Miles	2023-10-27 07:00:02+00
+1049	Rolls off the tongue	Roll off the tongue	To be very easy or enjoyable to say. Sometimes used sarcastically to imply the opposite.	Miles	2023-10-27 07:00:03+00
+1053	Kissing someone’s ass	\N	\N	Miles	2023-10-27 07:00:06+00
+1054	On deck	On deck	Literally, on the deck of a ship or boat.	Miles	2023-10-27 07:00:07+00
+1055	Out of hand	Out of hand	In an unruly or unmanageable state or manner; out of control.	Miles	2023-10-27 07:00:08+00
+1056	Roll up your sleeves	Roll up (one’s) sleeves	To do or get ready to do something difficult, intense, or demanding. Literally rolling up one’s sleeves is often done before performing some kind of work.	Christina	2023-10-31 07:00:01+00
+1057	Piss on a page	\N	\N	Christina	2023-10-31 07:00:02+00
+1058	Licking your wounds	Lick (one’s) wounds	To withdraw after a misstep or defeat in order to recover.	Christina	2023-10-31 07:00:03+00
+1059	In a pinch	In a pinch	When something ideal or preferred is not available; as a substitute.	Miles	2023-10-31 07:00:04+00
+1060	To put someone on the spot	\N	\N	Christina	2023-11-07 07:00:01+00
+1062	Middle of the road	Middle-of-the-road	Describing an option that is neither the most nor the least expensive.	Miles	2023-11-11 07:00:01+00
+1063	Stick up your ass	Stick up (one’s) ass	A rigid and uptight demeanor.	Miles	2023-11-11 07:00:02+00
+1064	Up in the air	Be up in the air	To be uncertain or subject to change.	Christina	2023-11-16 07:00:01+00
+1067	Go to bat	Go to bat for (one)	To act in support of one.	Christina	2023-11-17 07:00:01+00
+1071	Cherry picking	Cherry-pick	To choose something very carefully to ensure that the best option is chosen, perhaps through means that provide one an unfair advantage or from a selection that others do not have ready access to.	Christina	2023-11-17 07:00:05+00
+1072	Hot to trot	Hot to trot	Eager or impatient to do something.	Christina	2023-11-17 07:00:06+00
+1074	Cutting your teeth on something	Cut (one’s) teeth on (something)	To gain experience with something, especially at a young age (when one’s teeth would be coming in).	Matt	2023-12-10 07:00:01+00
+769	Off the rails	Be off the rails	To be in a state of chaos, dysfunction, or disorder.	Miles	2023-08-20 07:00:04+00
+705	Off the bat	Off the bat	In a trajectory caused by being hit by a bat.	\N	2023-08-14 07:00:01+00
+3	Don’t hold your breath	Don’t hold your breath	Don’t expect something to happen. (The idea being that one couldn’t hold one’s breath long enough for the unlikely thing to happen.)	\N	2023-07-13 07:00:03+00
+10	Let the cat out of the bag	Let the cat out of the bag	To reveal a secret.	\N	2023-07-13 07:00:10+00
+1078	If frogs had glass asses they would would only hop once	\N	Some mistakes you can only make once.	Miles	2024-01-08 07:00:03+00
+1076	Twisting in the wind	\N	To have been left in a very difficult, troublesome, or problematic situation, often to receive punishment or blame.	Miles	2024-01-08 07:00:01+00
+1073	A wake up call	\N	An event that triggers a sense of urgency or the motivation to make a change.	Miles	2023-11-17 07:00:07+00
+1069	Having your thumb up your ass	\N	To be lazy or idle.	Christina	2023-11-17 07:00:03+00
+1066	Pissing into the wind	\N	To do something totally pointless, fruitless, or futile; to waste one's time doing something that will not or cannot come to pass.	Miles	2023-11-16 07:00:03+00
+666	Rule the roost	Rule the roost	To be the real boss; to be the person in charge.	\N	2023-08-08 07:00:08+00
+667	Leave the table while you still have an appetite	\N	\N	\N	2023-08-08 07:00:09+00
+128	Missed the forest for the trees	can’t see the forest for the trees	Cannot see, understand, or focus on a situation in its entirety due to being preoccupied with minor details.	Eve	2023-07-14 07:00:01+00
+129	When in Rome, do as the Romans do	When in rome (do as the romans do)	One should do what is customary or typical in a particular place or setting, especially when one is a tourist.	Miles	2023-07-14 07:00:02+00
+130	6 in one hand half dozen in the other	six in one, (and) half a dozen in the other	The difference between these two options is negligible, irrelevant, or unimportant; either option is fine or will work as well as the other.	Eve	2023-07-14 07:00:03+00
+131	6 ways to Sunday	6 wasy to Sunday	Thoroughly or completely; in every possible way; from every conceivable angle.	Eve	2023-07-14 07:00:04+00
+134	A wolf in sheep’s clothing	A wolf in sheep’s clothing	A person or thing that appears harmless but is actually dangerous or bad.	Miles	2023-07-14 07:00:07+00
+135	Does a bear shit in the woods	\N	A rhetorical question meaning the answer to the previous question is emphatically and obviously "yes.".	Miles	2023-07-14 07:00:08+00
+136	Raining cats and dogs	It’s raining cats and dogs	It is raining extremely heavily.	Eve	2023-07-14 07:00:09+00
+758	Cloud 9	Cloud nine	\N	Ryan	2023-08-18 07:00:19+00
+167	Not in the cards	\N	\N	\N	2023-07-14 07:40:00+00
+772	To live in someone’s shadow	\N	\N	Eve	2023-08-20 07:00:07+00
+241	Let it slide	Let (something or someone) slide	To choose not to take any action to correct or improve a particular situation or someone’s actions or behavior.	Miles	2023-07-15 07:00:00+00
+221	Well runs dry	\N	\N	\N	2023-07-14 08:34:00+00
+242	Pass the buck	Pass the buck	To shift or reassign the blame or responsibility (for something) to another person, group, or thing.	Miles	2023-07-15 07:00:01+00
+243	X marks the spot	X marks the spot	This sign or mark (not necessarily an X) indicates the specific or exact location (of something).	Miles	2023-07-15 07:00:02+00
+244	15 minutes of fame	15 minutes of fame	A brief period of celebrity or notoriety. The term was coined by artist Andy Warhol.	Miles	2023-07-15 07:00:03+00
+245	Hit the spot	Hit the spot	To satisfy something, such as hunger or a craving.	Miles	2023-07-15 07:00:04+00
+246	Made in the shade	Made in the shade	In a comfortable position in life, usually due to some manner of financial success or windfall.	Eve	2023-07-15 07:00:05+00
+247	Run for your money	Run for (one’s) money	A prolonged period of success.	Miles	2023-07-15 07:00:06+00
+249	Out to lunch	Out to (some meal)	Away from one’s normal location to eat a particular meal.	Eve	2023-07-15 07:00:08+00
+250	Circling the drain	Circle the drain	To be in a state of severe deterioration such that one is approaching inevitable ruin, failure, or death. Usually used in the continuous form.	Eve	2023-07-15 07:00:09+00
+251	That’s the ticket	That’s the ticket	That is exactly the thing that is or was needed or called for.	\N	2023-07-15 07:00:10+00
+252	Sloppy seconds	\N	\N	Miles	2023-07-15 07:00:11+00
+253	Back in the fold	\N	\N	Eve	2023-07-15 07:00:12+00
+254	Take someone under your wing	Take (someone) under (one’s) wing	To act as someone’s guardian, protector, or mentor, especially someone who is vulnerable or in need of help, protection, or instruction.	Eve	2023-07-15 07:00:13+00
+255	We’re not in kansas anymore	Be not in kansas anymore	To no longer be in a place that one knows or where one is comfortable; to be in a completely unfamiliar and/or discomfiting environment. A reference t.	Eve	2023-07-15 07:00:14+00
+256	Out of the woods	Out of the wood(s)	No longer in danger or dealing with a particular difficulty, though not entirely resolved. Usually used in the negative.	Eve	2023-07-15 07:00:15+00
+257	Balls of steel	\N	\N	Eve	2023-07-15 07:00:16+00
+258	Eyes too big for your stomach	\N	\N	\N	2023-07-15 07:00:17+00
+259	Doe eyed	\N	\N	Eve	2023-07-15 07:00:18+00
+260	Snug as a bug in a rug	Snug as a bug (in a rug)	Very warm and cozy, typically while wrapped in blankets.	Miles	2023-07-15 07:00:19+00
+261	The cat that ate the canary	The cat that ate the canary	Someone who is smugly pleased or self-satisfied.	Eve	2023-07-15 07:00:20+00
+262	Tongue twister	Tongue twister	A word or phrase that is hard to say clearly due to difficult alliteration or pronunciation.	Eve	2023-07-15 07:00:21+00
+263	Roll of the dice	Roll of the dice	An especially risky action undertaken to achieve a favorable but unlikely outcome.	Eve	2023-07-15 07:00:22+00
+264	He’s lost his marbles	\N	\N	\N	2023-07-15 07:00:23+00
+266	Dead of night	Dead of night	The middle of the night.	Eve	2023-07-15 07:00:25+00
+301	Comparison is the thief of joy	\N	\N	Eve	2023-07-16 07:00:01+00
+302	Robbing the cradle	Rob the cradle	To date someone who is much younger than oneself.	Miles	2023-07-16 07:00:02+00
+303	Going the way of the buffalo	\N	\N	Miles	2023-07-16 07:00:03+00
+713	The whole enchilada	The whole enchilada	Every part of a multifaceted thing or situation taken together as a whole; the whole thing.	Christina	2023-08-15 07:00:05+00
+304	Shell of your former self	A shell of (someone’s or something’s) former self	A person, group, place, etc., that has become dramatically less healthy, vivacious, or robust, often following some traumatic event or negative circumstances.	Eve	2023-07-16 07:00:04+00
+305	The call is coming from inside the house	\N	\N	Eve	2023-07-16 07:00:05+00
+306	Coming out swinging	Come out swinging	To compete or defend someone or something passionately or aggressively.	Eve	2023-07-16 07:00:06+00
+307	Rose colored glasses	Rose-colored glasses	An unduly idealistic, optimistic, sentimental, or wistful perspective on or about something. Primarily heard in US.	Eve	2023-07-16 07:00:07+00
+308	Fog of war	The fog of war	Confusion, uncertainty, or skewed judgment caused by the violence and chaos of warfare, especially in relation to one’s own capability compared to that of one’s enemy.	Miles	2023-07-16 07:00:08+00
+309	The whole 9 yards	\N	\N	\N	2023-07-16 07:00:09+00
+2	Waiting with baited breath	Wait with bated breath	To remain in a state of eager anticipation (of or for something).	Eve	2023-07-13 07:00:02+00
+4	People in glass houses shouldn’t throw stones	People (who live) in glass houses shouldn’t throw stones.	People who are vulnerable to criticism should not criticize others, especially not for the faults that they themselves have (since such criticism will likely be returned).	\N	2023-07-13 07:00:04+00
+879	Snap out of it	Snap out of (something)	To suddenly recover or be freed from some negative or undesirable condition, emotion, or situation.	Christina	2023-08-30 07:00:02+00
+659	Served on a silver platter	\N	\N	Miles	2023-08-08 07:00:01+00
+5	Don’t look a gift horse in the mouth	Don’t look a gift horse in the mouth	If you receive a gift, do so graciously, without voicing criticisms. The saying is attributed to St. Jerome and refers to the practice of looking at a horse’s teeth to determine its age.	\N	2023-07-13 07:00:05+00
+709	Off the deep end	Off the deep end	Crazy or irrational.	Christina	2023-08-15 07:00:01+00
+6	Don’t count your chickens before they hatch	Don’t count your chickens before they hatch.	Don’t make plans based on future events, outcomes, or successes that might not come to pass.	\N	2023-07-13 07:00:06+00
+7	Don’t keep all your eggs in one basket	put all (one’s) eggs in one basket	To invest, devote, or commit all of one’s energy or resources into a single venture, opportunity, or goal, generally at the risk of losing everything in the event that that thing fails or does not come to fruition.	\N	2023-07-13 07:00:07+00
+8	A bird in the hand is worth two in the bush	A bird in the hand is worth two in the bush	It is better to have something less valuable than to pursue something more valuable that may not be able to be obtained.	\N	2023-07-13 07:00:08+00
+9	There’s more than one way to skin a cat	There’s more than one way to skin a cat	There are many methods one may employ in achieving one’s ends.	Miles	2023-07-13 07:00:09+00
+11	Open a can of worms	Open (up) a can of worms	To initiate, instigate, or reveal a situation that is or is likely to become very complicated or problematic or that will have a negative outcome.	\N	2023-07-13 07:00:11+00
+12	Bull in a china shop	A bull in a china shop	Someone who is aggressively reckless and clumsy in a situation that requires delicacy and care.	Miles	2023-07-13 07:00:12+00
+13	One trick pony	A one-trick pony	A person, group, or thing that is known for or limited to only one unique or noteworthy skill, talent, ability, quality, area of success, etc.	\N	2023-07-13 07:00:13+00
+714	The whole kit and caboodle	The (whole) kit and caboodle	All the parts of a group of things.	Miles	2023-08-15 07:00:06+00
+310	Turning over in your grave	(someone) is/would be turning over in their grave	The thing in question is offensive to the memory of someone; someone would be filled with shame, disgust, or disapproval if they were alive today.	Eve	2023-07-16 07:00:10+00
+311	Shooting fish in a barrel	Like shooting fish in a barrel	Of some task or activity, exceptionally easy to do or accomplish.	Miles	2023-07-16 07:00:11+00
+312	Light a fire under your ass	\N	\N	Mike	2023-07-16 07:00:12+00
+313	An old flame	An/(one’s) old flame	One’s former lover.	Mike	2023-07-16 07:00:13+00
+314	Up in smoke	Up in smoke	Destroyed by fire.	Mike	2023-07-16 07:00:14+00
+315	Fighting fire with fire	Fight fire with fire	To retaliate with the same methods that one has had to endure.	Miles	2023-07-16 07:00:15+00
+316	Firing in all cylinders	\N	\N	Mike	2023-07-16 07:00:16+00
+317	The lion’s share	The lion’s share	The largest part or portion of something.	\N	2023-07-16 07:00:17+00
+318	Pedal to the metal	Pedal to the metal	Drive as fast as you can; push the accelerator down.	\N	2023-07-16 07:00:18+00
+319	Throw in the towel	Throw in the towel	To give up on some endeavor; to quit or abandon something; to admit defeat or failure.	\N	2023-07-16 07:00:19+00
+486	The nearer the bone the sweeter the meat	The nearer the bone, the sweeter the meat	The last parts of something are the most enjoyable.	Eve	2023-07-19 07:00:06+00
+300	Carrot on a stick	Carrot on a stick	A reward that is promised to someone as an incentive to complete some task.	Miles	2023-07-16 07:00:00+00
+773	To never measure up	\N	\N	Eve	2023-08-20 07:00:08+00
+370	Paint with broad strokes	\N	\N	\N	2023-07-16 07:01:10+00
+416	Fly by the seat of your pants	Fly by the seat of (one’s) pants	To rely on one’s instinct, as opposed to acting according to a set plan.	Eve	2023-07-17 07:00:01+00
+132	Burning bridges	Burn (one’s) bridges	\N	Miles	2023-07-14 07:00:05+00
+326	Throw up a white flag	\N	\N	\N	2023-07-16 07:00:26+00
+423	The clay is dry	\N	\N	\N	2023-07-17 07:00:08+00
+1015	Get back in the saddle	\N	\N	Christina	2023-09-22 07:00:01+00
+420	Kick the bucket	\N	\N	\N	2023-07-17 07:00:05+00
+417	Play stupid games win stupid prizes	Play stupid games, win stupid prizes	If you engage in behavior that is stupid, obnoxious, or reckless, you will suffer unpleasant consequences.	Eve	2023-07-17 07:00:02+00
+418	On the nose	On the nose	Precisely accurate; exactly right.	\N	2023-07-17 07:00:03+00
+419	Hit the nail on the head	Hit the nail (right) on the head	Literally, to strike a nail on its head (the flat, circular end).	\N	2023-07-17 07:00:04+00
+485	Jack of all trades	Jack of all trades	A person who is skilled in many different areas.	\N	2023-07-19 07:00:05+00
+823	Get a big head	Get a big head	To become arrogant or conceited; to assume an exaggeratedly high opinion of oneself.	Miles	2023-08-25 07:00:17+00
+470	A whole other ball game	\N	\N	Mike	2023-07-18 07:00:00+00
+487	To worry is to make payments on a debt that may never come due	\N	\N	Eve	2023-07-19 07:00:07+00
+824	Getting on your soap box	\N	\N	Miles	2023-08-25 07:00:18+00
+473	Letting your true colors shine	\N	\N	\N	2023-07-18 07:00:03+00
+481	Opiate of the masses	The opiate of the masses	That which creates a feeling of false happiness, contentment, or numbness to reality. Adapted from Karl Marx’s description of organized religion.	Eve	2023-07-19 07:00:01+00
+482	The faster they rise the harder they fall	\N	\N	Eve	2023-07-19 07:00:02+00
+483	Out of sight out of mind	Out of sight, out of mind	That which cannot be seen or is not noticeable will be forgotten.	\N	2023-07-19 07:00:03+00
+484	Wearing multiple hats	\N	\N	\N	2023-07-19 07:00:04+00
+488	A rolling stone gathers no moss	A rolling stone gathers no moss	A person who wanders or travels often and at length will not be burdened by attachments such as friends, family, or possessions. Can be used as a negative (to suggest that such a person won’t find a fulfilling place in life) or as a positive (to suggest that they will have a more interesting and unpredictable life).	Eve	2023-07-19 07:00:08+00
+489	Necessity is the mother of invention	Necessity is the mother of invention	Creative solutions are often produced in response to difficulties or hardships that need to be overcome.	Eve	2023-07-19 07:00:09+00
+490	A day late and a dollar short	A day late and a dollar short	Too late to be of any benefit.	Eve	2023-07-19 07:00:10+00
+491	Sixpence none the richer	History	\N	Eve	2023-07-19 07:00:11+00
+494	For whom the bell tolls	Background	Ernest Hemingway wrot.	Eve	2023-07-19 07:00:14+00
+878	Out of the loop	Out of the loop	Not privy to the most up-to-date information.	Christina	2023-08-30 07:00:01+00
+536	Herding cats	Be like herding cats	To be very unwieldy or unmanageable; to be nearly impossible to organize. Usually said of a group of people.	Eve	2023-07-20 07:00:00+00
+524	Slap my ass and call me Sally	\N	\N	Eve	2023-07-19 07:00:44+00
+660	Fed from a silver spoon	\N	\N	Miles	2023-08-08 07:00:02+00
+661	The road paved in gold	\N	\N	\N	2023-08-08 07:00:03+00
+662	Pillow talk	Pillow talk	Intimate conversations between two people in a romantic relationship when they are in bed together.	\N	2023-08-08 07:00:04+00
+663	Get the ball rolling	Get the ball rolling	To set something, often a process, in motion; to begin.	\N	2023-08-08 07:00:05+00
+664	Long walk off a short pier	\N	\N	\N	2023-08-08 07:00:06+00
+665	Bent out of shape	Bent out of shape	Of a person, upset or angry.	\N	2023-08-08 07:00:07+00
+688	Cut me to the quick	Cut (one) to the quick	To slice a part of the body very deeply.	Christina	2023-08-09 07:00:16+00
+684	Time to hang up your hat	\N	\N	\N	2023-08-09 07:00:12+00
+710	Toe to toe	Toe-to-toe	A direct conflict between two people or groups, possibly in close quarters.	Christina	2023-08-15 07:00:02+00
+711	By a hair	By a hair	By an extremely short or slim margin (of distance, time, or another measure).	Miles	2023-08-15 07:00:03+00
+712	Chip in	Chip in	To contribute to something being undertaken by a group, such as a task or collection.	Christina	2023-08-15 07:00:04+00
+715	Flavor of the month	Flavor of the month	Someone or something very popular but only temporarily or ephemerally. The phrase is often used to describe fleeting romantic relationships.	Miles	2023-08-15 07:00:07+00
+931	Take something off your plate	\N	\N	Christina	2023-09-01 07:00:07+00
+760	Putting in leg work	\N	\N	Christina	2023-08-19 07:00:01+00
+761	In the limelight	In the limelight	At the center of attention. The phrase refers to a type of lamp that was previously used in theatrical stage lighting.	Christina	2023-08-19 07:00:02+00
+762	15 minutes of fame	15 minutes of fame	A brief period of celebrity or notoriety. The term was coined by artist Andy Warhol.	Christina	2023-08-19 07:00:03+00
+763	Hit the bricks	Hit the bricks	To depart, often on foot.	Christina	2023-08-19 07:00:04+00
+770	Living under a rock	Live under a rock	To be oblivious to or ignorant of something that is very widely known, often related to pop culture.	Eve	2023-08-20 07:00:05+00
+771	True measure of a man	\N	\N	Eve	2023-08-20 07:00:06+00
+778	This day in age	\N	\N	Miles	2023-08-22 07:00:02+00
+827	Turn an burn	\N	\N	Miles	2023-08-25 07:00:21+00
+985	Hand in glove	Hand in glove	In close association or collaboration (with someone or something).	Christina	2023-09-07 07:00:19+00
+118	The grass is always greener on the other side of the fence	The grass is always greener (on the other side)	Other people’s circumstances or belongings always seem more desirable than one’s own.	\N	2023-07-13 07:01:58+00
+119	Birds of a feather flock together	Birds of a feather flock together	People who have similar interests, ideas, or characteristics tend to seek out or associate with one another.	\N	2023-07-13 07:01:59+00
+120	What’s good for the goose is good for the gander	what’s good for the goose is good for the gander	Used to say that one person or situation should be treated the same way that another person or situation is treated	Eve	2023-07-13 07:02:00+00
+155	Screwed the pooch	Screw the pooch	To make a very serious, grievous, or irreversible mistake; to ruin something or cause something to fail due to such an error.	Eve	2023-07-14 07:28:00+00
+194	Chasing the dragon	Chase the dragon	To smoke a controlled substance, often heroin.	\N	2023-07-14 08:07:00+00
+248	Chopped liver	Chopped liver	A trivial, unimportant, or unappealing person or thing. The phrase likely originated as a part of Jewish humor, referring to the serving of chopped liver as a common side dish (thus overlooked in favor of the main course), the taste of which many do not find appealing.	Miles	2023-07-15 07:00:07+00
+555	Light in the loafers	\N	Homosexual, especially of men.	\N	2023-07-20 07:00:19+00
+614	Shit or get off the pot	Shit or get off the pot	Either commit to doing something productive or step aside and stop wasting time.	\N	2023-07-24 07:00:09+00
+1041	Put it all on the line	Put it all on the line	To put forth one’s maximum amount of energy or effort; to make use of all of one’s resources or abilities.	Christina	2023-10-10 07:00:05+00
+1042	Over the top	Over the top	Beyond a certain limit, threshold, goal, or quota.	Miles	2023-10-14 07:00:01+00
+1043	Touch base	Touch base (with someone)	To contact someone to update them or receive an update from them.	Miles	2023-10-14 07:00:02+00
+1044	Within an inch of life	Within an inch of (one’s) life	Very soundly or thoroughly, to or as if to the point of near death.	Christina	2023-10-18 07:00:01+00
+1045	Picking your brain	Pick (one’s) brain(s)	To ask one questions in order to obtain detailed information or advice.	Christina	2023-10-18 07:00:02+00
+1046	A slap in the face	Slap in the face	Words or actions that have offended or otherwise upset someone.	Christina	2023-10-18 07:00:03+00
+1047	A slap on the wrist	Slap on the wrist	A mild punishment or warning.	Miles	2023-10-27 07:00:01+00
+1050	To have someone’s back	\N	\N	Miles	2023-10-27 07:00:03+00
+19	The cream rises to the top	The cream (always) rises to the top	Those with the most skill, the best work ethic, or the strongest moral character will inevitably find success in life.	Miles	2023-07-13 07:00:19+00
+1	Not my circus, not my monkeys	Not my circus, not my monkeys	This troublesome, burdensome, or volatile situation is none of my concern, and thus I refuse to get involved in it. A loan translation of the Polish idiom.	Eve	2023-07-13 07:00:01+00
+1080	Not on my watch	\N	That will not happen while I am in charge or on the lookout.	Christina	2024-01-16 07:00:02+00
+1079	The cock of the walk	\N	Someone who is overly confident, self-assured, or behaves in a dominant and boastful manner, often believing they are the most important or powerful person in a particular situation.	Christina	2024-01-16 07:00:01+00
+1122	If frogs had wings they wouldn't bump their asses when they hopped	\N	Used to advise someone not to wish for something impossible.	Miles	2025-07-04 18:07:20+00
+1075	Dont go chasing waterfalls	\N	A cautionary saying about the dangers of chasing after unattainable dreams and desires.	Christina	2023-12-10 07:00:02+00
+1070	Think your shit dont stink	\N	To assume an air of arrogance, condescension, or superiority over others; to think that one is better or more refined than other people.	Christina	2023-11-17 07:00:04+00
+1068	Cooking something up	Cook up	To invent a story, plan, etc., usually dishonestly	Christina	2023-11-17 07:00:02+00
+1061	As the twig is bent so grows the tree	\N	The shaping of a person's character, values, and behaviors begins from a young age and continues to influence them throughout their life	Miles	2023-11-07 07:00:02+00
+1065	Spit on	\N	It signifies a complete disregard or disrespect for something or someone. It’s a way of expressing utter disdain or contempt.	Christina	2023-11-16 07:00:02+00
 \.
 
 
 --
--- TOC entry 3594 (class 0 OID 147476)
--- Dependencies: 210
--- Data for Name: idioms_test; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: realtime; Owner: supabase_admin
 --
 
-COPY public.idioms_test (id, title, title_general, definition, contributor, timestamps) FROM stdin;
-14	Don’t piss on my leg and tell me it’s raining	Piss on someone’s leg and tell them it’s raining	To tell someone an obvious lie.	Miles	2023-07-13 00:00:14-07
-15	Too many chefs in the kitchen	Too many chefs in the kitchen	Too many people are trying to control, influence, or work on something, with the quality of the final product suffering as a result.	Miles	2023-07-13 00:00:15-07
-16	If you can’t handle the heat get out of the kitchen	If you can’t stand the heat, get out of the kitchen	Used as a way to tell someone that they should either stop complaining about a difficult or unpleasant activity, or stop doing it	Miles	2023-07-13 00:00:16-07
-17	Running on fumes	Running on fumes	Continuing to operate with no or very little enthusiasm, energy, or resources left. A reference to a car that has nearly run out of fuel.	\N	2023-07-13 00:00:17-07
-18	One bad apple spoils the bunch	One bad apple spoils the (whole) bunch	It only takes one person, thing, element, etc., to ruin the entire group, situation, project, etc. Refers to the fact that a rotting apple can cause other apples in close proximity to begin to rot as well.	Eve	2023-07-13 00:00:18-07
-19	The cream rises to the top	The cream (always) rises to the top	Those with the most skill, the best work ethic, or the strongest moral character will inevitably find success in life.	Miles	2023-07-13 00:00:19-07
-20	Cut from same cloth	\N	Very similar in characteristics or behaviors.	\N	2023-07-13 00:00:20-07
-21	Stick in the mud	Stick-in-the-mud	Someone who is considered boring, often due to unpopular or outdated beliefs.	Miles	2023-07-13 00:00:21-07
-22	Don’t rain on my parade	Don’t rain on (one’s) parade	Don’t ruin one’s plans or temper one’s excitement.	Eve	2023-07-13 00:00:22-07
-23	Even the darkest storm cloud has a silver lining	\N	The potential for something positive or beneficial to result from a negative situation. Often used in the phrase "every cloud has a silver lining." (A silver lining on a cloud is an indication that the sun is behind it.)	Eve	2023-07-13 00:00:23-07
-24	Mess with a bull you get the horn	If you mess with the bull, you get the horns	If you anger, irritate, or provoke someone enough, you will induce some hostile retaliation or emotional reaction.	Miles	2023-07-13 00:00:24-07
-25	It’s always darkest before dawn	it’s (always) darkest (just) before the dawn	The worst part of an experience, situation, period of time, etc., usually happens just before things get better.	Eve	2023-07-13 00:00:25-07
-26	When it rains it pours	When it rains, it pours	When something good or bad happens, similarly good or bad things tend to follow.	\N	2023-07-13 00:00:26-07
-27	Time and tide wait for no man	time and tide wait for no one	The opportunities of life will pass you by if you delay or procrastinate in taking advantage of them.	\N	2023-07-13 00:00:27-07
-28	Even a broken clock is right twice a day	a broken clock is right twice a day	Even people who are usually wrong can be right sometimes, even if just by accident. From the idea that the stationary hands of a broken clock will still display the correct time at two points during the 24-hour cycle.	Miles	2023-07-13 00:00:28-07
-29	For whom the bell tolls	Background	Ernest Hemingway wrot.	Miles	2023-07-13 00:00:29-07
-30	Make hay while the sun is shining	Make hay while the sun is shining	To take advantage of favorable conditions; to make the most of an opportunity when it is available.	Eve	2023-07-13 00:00:30-07
-31	Mellow is the man who knows what he’s missing	\N	\N	Eve	2023-07-13 00:00:31-07
-32	Can’t teach an old dog new tricks	It’s hard to teach an old dog new tricks	It is exceptionally difficult to teach some new skill or behavior to someone, especially an older person, who is already firmly set in their ways.	\N	2023-07-13 00:00:32-07
-33	Hindsight’s 20/20	Hindsight is (always) 20/20	It is easier to clearly reevaluate past actions or decisions than when they are being made or done; things are clearer or more obvious when they are reflected upon. A reference to the visual acuity of normal eyesight (20/20 vision).	\N	2023-07-13 00:00:33-07
-34	Give a mouse a cookie and he’ll ask for a glass of milk	\N	\N	Eve	2023-07-13 00:00:34-07
-320	Waking up on the wrong side of the bed	Wake up on the wrong side of (the) bed	To be in a particularly and persistently irritable, unhappy, or grouchy mood or state, especially when it is not in line with one’s normal disposition.	\N	2023-07-16 00:00:20-07
-668	Fair weather friend	Fair-weather friend	Someone who remains a friend only when things are going well but abandons others during times of trouble or difficulty.	\N	2023-08-08 00:00:10-07
-75	Everything but the kitchen sink	Everything but the kitchen sink	Nearly everything one can reasonably imagine; many different things, often to the point of excess or redundancy.	\N	2023-07-13 00:01:15-07
-35	Give an inch and they take a mile	give an inch and they’ll take a mile	Make a small concession and they’ll take advantage of you.	Miles	2023-07-13 00:00:35-07
-36	The more the merrier	The more the merrier	More people will make something more enjoyable. Often used to welcome one to join a group or activity.	\N	2023-07-13 00:00:36-07
-37	Measure twice cut once	Measure twice, cut once	An axiom that encourages careful first steps in order to avoid extra work later on.	Miles	2023-07-13 00:00:37-07
-38	Give a man a fish, feed him for a day; teach a man to fish, feed him for a lifetime	\N	Simply giving someone a fish is not as helpful to them in the long run as teaching them how to fish.	Eve	2023-07-13 00:00:38-07
-39	You can bring a horse to water but can’t make it drink	\N	You can give someone an advantage or provide them with an opportunity, but you can’t force them to do something if they don’t want to	Eve	2023-07-13 00:00:39-07
-40	One man’s trash is another man’s treasure	One man’s trash is another man’s treasure	What one person may consider worthless could be highly prized or valued by someone else.	\N	2023-07-13 00:00:40-07
-41	Burning the candle at both ends	Burn (one’s)/the candle at both ends	To overwork or exhaust oneself by doing too many things, especially both late at night and early in the morning.	\N	2023-07-13 00:00:41-07
-42	Polishing a turd	Polish a turd	To make something unpleasant seem more appealing than it really is—which is often a futile effort. "Turd" is a slang term for a piece of feces.	Miles	2023-07-13 00:00:42-07
-43	Put lipstick on a pig, its still a pig	\N	Making superficial or cosmetic changes to a product in a futile effort to disguise its fundamental failings	Eve	2023-07-13 00:00:43-07
-44	One step forward two steps back	 one step forward, two steps bac.	Marked by a small amount progress that is then eradicated by a large amount of setbacks, problems, or difficulties.	\N	2023-07-13 00:00:44-07
-45	It’s not over till the fat lady sings	It ain’t over till/until the fat lady sings	The final outcome cannot be assumed or determined until a given situation, event, etc., is completely finished.	\N	2023-07-13 00:00:45-07
-764	End of the line	The end of the line	The physical end of a route of travel, usually a bus or train route.	Christina	2023-08-19 00:00:05-07
-46	Heavy is the head that wears the crown	heavy hangs the head that wears a/the crown	The person who has the most power or authority suffers the largest amount of stress, anxiety, doubt, and worry.	Eve	2023-07-13 00:00:46-07
-47	Pick your poison	Pick your poison	\N	\N	2023-07-13 00:00:47-07
-48	An axe to grind	An ax(e) to grind	A complaint or dispute that one feels compelled to discuss.	\N	2023-07-13 00:00:48-07
-49	Big shoes to fill	Big shoes to fill	A role vacated or left behind by someone who was exceptional in their performance and set very high standards as a result.	\N	2023-07-13 00:00:49-07
-50	The apple doesn’t fall far from the tree	The apple does not fall far from the tree	Said when someone is displaying traits or behaving in the same way as their relatives (especially parents).	\N	2023-07-13 00:00:50-07
-51	Chip off the old block	A chip off the old block	Someone whose character or personality resembles that of their parent.	\N	2023-07-13 00:00:51-07
-52	Chip on your shoulder	A chip on (one’s) shoulder	An attitude that leads one to become combative or easily angered.	\N	2023-07-13 00:00:52-07
-53	Reinvent the wheel	Reinvent the wheel	To do something in a wholly and drastically new way, often unnecessarily. (Usually used in negative constructions..	\N	2023-07-13 00:00:53-07
-54	Two peas in a pod	Two peas in a pod	Two people who are very similar, typically in interests, dispositions, or beliefs.	\N	2023-07-13 00:00:54-07
-55	Monkey on your back	Monkey on (one’s) back	\N	\N	2023-07-13 00:00:55-07
-56	Big fish in a small pond	A big fish in a small pond	A situation in which one person has more power, influence, knowledge, or experience than others within a small group. It often implies that the person may not have as much clout i."a bigger pond," i.e., a larger group or arena of some kind.	\N	2023-07-13 00:00:56-07
-57	When pigs fly	When pigs fly	At a point in time that will never come to pass. (Used to show skepticism or cynicism over some hypothetical situation or outcome..	\N	2023-07-13 00:00:57-07
-58	When hell freezes over	When hell freezes over	Never; at no time.	\N	2023-07-13 00:00:58-07
-59	Out of the frying pan and into the fire	\N	\N	Eve	2023-07-13 00:00:59-07
-60	The pot calling the kettle black	The pot calling the kettle black	A situation in which a person accuses someone of or criticizes someone for something that they themselves are guilty of.	Eve	2023-07-13 00:01:00-07
-61	Frog in boiling water	\N	\N	\N	2023-07-13 00:01:01-07
-62	You gotta kiss a lot of frogs to find a prince	\N	\N	\N	2023-07-13 00:01:02-07
-63	Bat out of hell	\N	\N	\N	2023-07-13 00:01:03-07
-64	Going to hell in a hand basket	Go to hell in a handbasket	To be in an extremely and increasingly bad or ruinous condition; to be on the inevitable path to utter failure or ruin.	\N	2023-07-13 00:01:04-07
-65	Bite off more then you can chew	\N	\N	\N	2023-07-13 00:01:05-07
-66	The bigger they are the harder they fall	The bigger they are, the harder they fall	Those who are exceptionally large, powerful, or influential will have more to lose when they fail, and their failure will be all the more dramatic or spectacular because of it.	\N	2023-07-13 00:01:06-07
-67	The hair of the dog that bit you	The hair of the dog (that bit you)	An alcoholic drink consumed to remedy a hangover. The phrase comes from the notion that literally rubbing the hair of the dog that bit you on the wound would help it to heal.	Eve	2023-07-13 00:01:07-07
-68	Wish in one hand and shit in the other	\N	\N	Miles	2023-07-13 00:01:08-07
-69	All who wander are not lost	\N	\N	\N	2023-07-13 00:01:09-07
-70	All that glitters is not gold	All that glitters is not gold	Things that have an outward appeal are often not as beautiful or valuable as they seem.	\N	2023-07-13 00:01:10-07
-71	Diamond in the rough	Diamond in the rough	A person or thing with exceptional qualities or characteristics that cannot be seen from the surface.	\N	2023-07-13 00:01:11-07
-72	Leave no stone unturned	Leave no stone unturned	To look for something in every possible place.	\N	2023-07-13 00:01:12-07
-73	No holds barred	No-holds-barred	free of restrictions or hampering conventions	\N	2023-07-13 00:01:13-07
-74	Throw the baby out with the bath water	Throw the baby out with the bath	To discard something valuable or important while disposing of something considered worthless, especially an outdated idea or form of behavior. The phrase is often used in the negative as a warning against such thoughtless behavior.	Eve	2023-07-13 00:01:14-07
-174	Fall off the wagon	Fall off the wagon	To return to drinking alcohol after a period of abstinence. Usually said of recovering alcoholics.	\N	2023-07-14 00:47:00-07
-76	Slow and steady wins the race	Slow and steady wins the race	Persistent, consistent, and diligent progress, even if it is somewhat slow, will produce better results than rushing to get somewhere or achieve something, as the latter can result in mistakes or may prove unsustainable or unreliable.	\N	2023-07-13 00:01:16-07
-77	Two sides to to the same coin	\N	\N	\N	2023-07-13 00:01:17-07
-78	Play the hand you’re dealt	Play the hand (one) is dealt	To accept, deal with, and make the most of one’s current situation or circumstances; to make use of that which one is afforded or has available.	\N	2023-07-13 00:01:18-07
-79	When life gives you lemons make lemonade	When life gives you lemons, make lemonade	Focus on the good in a bad situation and take action accordingly.	\N	2023-07-13 00:01:19-07
-80	Put a pin in it	Put a pin in it	To take a break from discussing some topic, with plans to resume the discussion later.	\N	2023-07-13 00:01:20-07
-81	The cherry on top	Cherry on top	The flourish that caps something off (much like a cherry tops off an ice cream sundae). Sometimes used in the phrase "pretty please with a cherry on top.".	\N	2023-07-13 00:01:21-07
-82	Icing on the cake	The icing on the cake	An additional benefit or positive aspect to something that is already considered positive or beneficial.	\N	2023-07-13 00:01:22-07
-83	The squeaky wheel gets the grease	The squeaky wheel gets the grease	The person complaining or protesting the loudest or most frequently is the one who will receive the most attention from others.	\N	2023-07-13 00:01:23-07
-84	Raised nails get pounded	\N	\N	\N	2023-07-13 00:01:24-07
-85	Softer than a baby’s bottom	\N	\N	\N	2023-07-13 00:01:25-07
-86	Hell or high water	By hell or high water	By any means necessary; regardless of any difficulty, problem, or obstacle.	\N	2023-07-13 00:01:26-07
-87	Stuck between a rock and a hard place	\N	\N	\N	2023-07-13 00:01:27-07
-88	Airing out your dirty laundry.	\N	\N	\N	2023-07-13 00:01:28-07
-89	Skeletons in your closet	Skeleton in the/(one’s) closet	An embarrassing or shameful secret. Primarily heard in US.	\N	2023-07-13 00:01:29-07
-90	Skating on thin ice	Skating on thin ice	Engaged in some activity or behavior that is very risky, dangerous, or likely to cause a lot of trouble.	\N	2023-07-13 00:01:30-07
-91	Flying too close to the sun	Fly too close to the sun	To do something especially ambitious and daring that can or ultimately does lead to one’s own undoing or downfall. An allusion to the mythical figure Icarus, whose wings made of feathers and wax melted when he flew too close to the sun.	Eve	2023-07-13 00:01:31-07
-92	Toot your own horn	Toot (one’s) own horn	To boast or brag about one’s own abilities, skills, success, achievements, etc.	\N	2023-07-13 00:01:32-07
-93	Pat yourself on the back	\N	\N	\N	2023-07-13 00:01:33-07
-152	Spill the beans	Spill the beans	To reveal something that was meant to be a secret.	Eve	2023-07-14 00:25:00-07
-153	At loose ends	At loose ends	Uneasy, typically due to some problem or unresolved issue.	Eve	2023-07-14 00:26:00-07
-94	Catch more flies with honey than vinegar	You (can) catch more flies with honey than (with) vinegar	You are more likely to get the results you want from other people if you treat them with kindness or flattery, rather than being aggressive, demanding, or caustic.	Eve	2023-07-13 00:01:34-07
-95	Kill them with kindness	Kill (one) with kindness	To harm, inconvenience, or bother one by treating them with excessive favor or kindness.	Eve	2023-07-13 00:01:35-07
-96	Eye for an eye makes the whole world blind	An eye for an eye makes the whole world blind	No good will result from avenging injuries in a manner equal to the original offense.	Eve	2023-07-13 00:01:36-07
-97	In the land of the blind the one eyed man is king	In the land of the blind, the one-eyed man is king	Someone with few skills or abilities can impress and wield power over those who have even less to offer.	Eve	2023-07-13 00:01:37-07
-98	That ship has sailed	That ship has sailed	Some possibility or option is no longer available or likely.	Eve	2023-07-13 00:01:38-07
-99	Two ships passing the night	\N	\N	\N	2023-07-13 00:01:39-07
-100	The pen is mightier than the sword	The pen is mightier than the sword	Strong, eloquent, or well-crafted speech or writing is more influential on a greater number of people than force or violence.	\N	2023-07-13 00:01:40-07
-101	Double edged sword	Double-edged sword	Something that can be both beneficial and problematic.	Miles	2023-07-13 00:01:41-07
-102	I don’t have a dog in that fight	\N	\N	\N	2023-07-13 00:01:42-07
-103	Spare the rod, spoil the child	\N	\N	Eve	2023-07-13 00:01:43-07
-104	Like water off a ducks back	\N	\N	Eve	2023-07-13 00:01:44-07
-105	The juice isn’t worth the squeeze	\N	\N	Miles	2023-07-13 00:01:45-07
-106	Can’t get blood from a stone	You can’t get blood from a stone	It is impossible to obtain something from someone if they are too parsimonious, uncharitable, or resolved against it.	Miles	2023-07-13 00:01:46-07
-107	Don’t judge a book by its cover	Don’t judge a book by its cover	Don’t base your opinion of something (or someone) on the way it (or one) looks.	\N	2023-07-13 00:01:47-07
-108	You can’t step into the same river twice	\N	\N	Eve	2023-07-13 00:01:48-07
-109	Don’t whistle up the wind	\N	\N	\N	2023-07-13 00:01:49-07
-110	Stick a fork in me	Stick a fork in (me/it/something)	A phrase used to indicate that one or something is finished, complete, or no longer able to continue. Alludes to the practice of testing how thoroughly a piece of meat is cooked by piercing it with a fork.	\N	2023-07-13 00:01:50-07
-111	This goose is cooked	(one’s) goose is cooked	One is thoroughly defeated, ruined, or finished.	Eve	2023-07-13 00:01:51-07
-112	You shake it more than twice you’re playing with it	\N	\N	Miles	2023-07-13 00:01:52-07
-113	Why buy the cow when the milk is free	Why buy a/the cow when you can get (the) milk for free?	If someone is already able to obtain some commodity or benefit freely or easily, then they won’t be inclined to pay for the source of it.	\N	2023-07-13 00:01:53-07
-114	Don’t rock the boat	Don’t rock the boat	Don’t say or do something that could upset a stable situation.	\N	2023-07-13 00:01:54-07
-115	If the shoe fits, wear it	If the shoe fits(, wear it)	If something (typically negative) applies to one, one should acknowledge it or accept responsibility or blame for it.	\N	2023-07-13 00:01:55-07
-321	Wrong side of the tracks	The wrong side of the tracks	A part of a town or city that is particularly impoverished (and usually dangerous or undesirable as a result).	\N	2023-07-16 00:00:21-07
-116	If it walks like a duck, talks like duck, it’s probably a duck	if it looks like a duck and walks like a duck, it is a duck	If something has all the characteristics of a thing, it is probably that thing, regardless of what it is called or presented as. There are many variations of the expression, and it is often shortened to the first part of the phrase.	\N	2023-07-13 00:01:56-07
-117	Waiting for the other shoe to drop	Waiting for the other shoe to drop	To wait for the next, seemingly unavoidable (and typically negative) thing to happen.	Eve	2023-07-13 00:01:57-07
-121	Early bird gets the worm	The early bird catches the worm	Someone who seizes some opportunity at the earliest point in time will have the best chance of reaping its benefits.	\N	2023-07-13 00:02:01-07
-122	Let sleeping dogs lie	Let sleeping dogs lie	To leave a situation alone so as to avoid worsening it.	Eve	2023-07-13 00:02:02-07
-123	A stitch in time saves nine	A stitch in time (saves nine)	A prompt, decisive action taken now will prevent problems later.	Eve	2023-07-13 00:02:03-07
-124	Every dog has his day	Every dog has his/her/their day	Even the least fortunate person will have success at some point.	Eve	2023-07-13 00:02:04-07
-125	Reap what you sow	Reap what (one) sows	To suffer the negative consequences of one’s actions.	\N	2023-07-13 00:02:05-07
-126	Till the cows come home	Until the cows come home	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 00:02:06-07
-127	Chickens come home to roost	(one’s) chickens come home to roost	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 00:02:07-07
-133	Baked in the cake	Baked in the cake	\N	Miles	2023-07-14 00:00:06-07
-137	Oldest trick in the book	The oldest trick in the book	A method of deception, or of addressing some issue, that is well known or has been used for a long time.	Miles	2023-07-14 00:00:10-07
-138	I’m picking up what you’re putting down	\N	\N	Miles	2023-07-14 00:00:11-07
-139	Biting the hand that feeds you	Bite the hand that feeds (you)	To scorn or poorly treat those on whom you depend or derive benefit.	Miles	2023-07-14 00:00:12-07
-140	Put you’re money where your mouth is?	\N	\N	Miles	2023-07-14 00:00:13-07
-141	Get your ducks in a row	Get (one’s) ducks in a row	To take action to become well-organized, prepared, or up-to-date.	Miles	2023-07-14 00:00:14-07
-142	As the crow flies	As the crow flies	The measurement of distance in a straight line. (From the notion that crows always fly in a straight line..	Miles	2023-07-14 00:00:15-07
-143	The lights are on by nobody is home	\N	\N	Miles	2023-07-14 00:00:16-07
-144	Not playing with a full deck	Not playing with a full deck	Not mentally sound; crazy or mentally deranged.	Miles	2023-07-14 00:00:17-07
-145	Pay the pied piper	\N	\N	Miles	2023-07-14 00:00:18-07
-146	Got a screw loose	\N	\N	Miles	2023-07-14 00:00:19-07
-147	Walk a mile in someone’s shoes	Walk a mile in (someone’s) shoes	To spend time trying to consider or understand another person’s perspectives, experiences, or motivations before making a judgment about them.	Miles	2023-07-14 00:00:20-07
-148	This isn’t my first rodeo	Not (one’s) first rodeo	One is experienced with a certain situation, especially in relation to potential pitfalls or deceitful practices by others.	Miles	2023-07-14 00:00:21-07
-149	Bury the hatchet	Bury the hatchet	To make peace with someone.	Miles	2023-07-14 00:22:00-07
-150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 00:23:00-07
-151	Look what the cat dragged in	Look what the cat(’s) dragged in	A mild and usually playful insult used to announce someone’s arrival and suggest that the person has a messy or otherwise disheveled physical appearance.	Eve	2023-07-14 00:24:00-07
-154	Canary in a coal mine	Canary in a/the coal mine	Something or someone who, due to sensitivity to his, her, or its surroundings, acts as an indicator and early warning of possible adverse conditions or danger. Refers to the former practice of taking caged canaries into coal mines. The birds would die if methane gas became present and thereby alert miners to the danger.	Eve	2023-07-14 00:27:00-07
-156	All hands on deck	All hands on deck	\N	Miles	2023-07-14 00:29:00-07
-157	Crying wolf	Cry wolf	To claim that something is happening when it really isn’t, which results in the rejection of subsequent valid claims. The expression comes from one of Aesop’s fables, in which a young shepherd lies about a wolf threatening his flock so many times that people do not believe him when he and his flock are legitimately in danger.	Eve	2023-07-14 00:30:00-07
-158	Cross your t’s dot your i’s	\N	\N	\N	2023-07-14 00:31:00-07
-159	Over the moon	Over the moon	Extremely happy.	Eve	2023-07-14 00:32:00-07
-160	Shoot for the stars	Shoot for the stars	To set one’s goals or ambitions very high; to try to attain or achieve something particularly difficult.	Eve	2023-07-14 00:33:00-07
-161	Read between the lines	Read between the lines	To infer or understand the real or hidden meaning behind the superficial appearance of something. "Lines" refers to lines of text on a printed page.	Eve	2023-07-14 00:34:00-07
-162	Put that in you’re pipe and smoke it	\N	\N	Miles	2023-07-14 00:35:00-07
-163	Rode hard and put away wet	Ride hard and put (something) away wet	\N	Miles	2023-07-14 00:36:00-07
-164	Put the axe to the grindstone	\N	\N	Miles	2023-07-14 00:37:00-07
-165	A penny saved is a penny earned	A penny saved is a penny earned	Every small amount helps to build one’s savings (i.e. by saving a penny, you have one more penny).	Miles	2023-07-14 00:38:00-07
-166	Key to my heart	The key to (one’s) heart	That which will make one very happy or content; the way to make one appreciate, like, or love someone else.	Eve	2023-07-14 00:39:00-07
-168	You can’t have your cake and eat it too	You can’t have your cake and eat it(, too)	You cannot have or do two things that are both desirable but normally contradictory or impossible to have or do simultaneously.	\N	2023-07-14 00:41:00-07
-169	Kill two birds with one stone	Kill two birds with one stone	To complete, achieve, or take care of two tasks at the same time or with a singular series of actions; to solve two problems with one action or solution.	Eve	2023-07-14 00:42:00-07
-170	I don’t have a horse in that race	\N	\N	Eve	2023-07-14 00:43:00-07
-171	That’s the way the cookie crumbles	That’s the way the cookie crumbles	There is nothing we can do about the way things have unfolded, especially bad ones, so there is no reason to be upset about it.	Miles	2023-07-14 00:44:00-07
-172	A straight arrow	Straight arrow	An honest, ethical person who makes good decisions.	\N	2023-07-14 00:45:00-07
-173	On the straight and narrow	On the straight and narrow	Maintaining a morally upright way of life; only making choices that are considered morally and legally correct.	Eve	2023-07-14 00:46:00-07
-175	Knocking on death’s door	\N	\N	\N	2023-07-14 00:48:00-07
-176	Pushing daisies	\N	\N	\N	2023-07-14 00:49:00-07
-177	Every rose has its thorn	Every rose has its/a thorn	There is rarely a good or positive thing, event, or circumstance that is not accompanied by some aspect that is negative or unpleasant.	Miles	2023-07-14 00:50:00-07
-178	Lightning never strikes the same place twice	Lightning never strikes (the same place) twice	Something that’s very extraordinary and unlikely to happen will never happen to the same person twice. (Said especially of tragic or unfortunate events..	\N	2023-07-14 00:51:00-07
-179	Dog eat dog world	A dog-eat-dog world	A society, situation, industry, etc. characterized by ruthless behavior and competition.	\N	2023-07-14 00:52:00-07
-180	It’s a small world after all	\N	\N	\N	2023-07-14 00:53:00-07
-181	Smoke em if you got em	\N	\N	\N	2023-07-14 00:54:00-07
-182	On the tip of your tongue	On the tip of (one’s) tongue	Almost able to be recalled.	\N	2023-07-14 00:55:00-07
-183	Pulled the short straw	\N	\N	\N	2023-07-14 00:56:00-07
-184	Dear in headlights	\N	\N	\N	2023-07-14 00:57:00-07
-185	Babe in the woods	Babe in the woods	A person who is gullible, naïve, or lacks experience in a specific situation.	\N	2023-07-14 00:58:00-07
-186	Cold feet	Cold feet	Nervousness or anxiety felt before one attempts to do something.	\N	2023-07-14 00:59:00-07
-187	Caught red handed	Catch (one) red-handed	To see, and perhaps apprehend, someone as they are doing something (often something nefarious). The phrase might have originally referred to blood on a murderer’s hands.	\N	2023-07-14 01:00:00-07
-188	Going hard in the paint	\N	\N	\N	2023-07-14 01:01:00-07
-189	On the fence	On the fence	Not making a decision or taking a side when presented with two options or possibilities; undecided.	\N	2023-07-14 01:02:00-07
-566	Dancing with the devil	\N	\N	\N	2023-07-20 00:00:30-07
-190	In the weeds	(deep) in the weeds	Of a restaurant worker, completely overwhelmed with diners’ orders and unable to keep up with the pace.	\N	2023-07-14 01:03:00-07
-191	Putting the cart before the horse	Put the cart before the horse	To do things out of the proper order.	\N	2023-07-14 01:04:00-07
-192	Paint the town red	Paint the town (red)	To go out into a city or town and have an enjoyable time, typically by visiting various establishments, such as bars, restaurants, clubs, etc.	\N	2023-07-14 01:05:00-07
-193	Pipe dream	Pipe dream	A dream or idea that is impossible to accomplish.	\N	2023-07-14 01:06:00-07
-195	Don’t blow smoke up my ass	\N	\N	\N	2023-07-14 01:08:00-07
-196	Monkey see monkey do	Monkey see, monkey do	Children naturally tend to imitate or copy what they see adults or other children doing.	\N	2023-07-14 01:09:00-07
-197	Pull yourself up by your bootstraps	Pull (oneself) up by (one’s) (own) bootstraps	To improve one’s life or circumstances through one’s own efforts, rather than relying on others.	\N	2023-07-14 01:10:00-07
-198	Rat race	Rat race	A fierce competition for success, wealth, or power.	\N	2023-07-14 01:11:00-07
-199	Written in stone	Written in stone	Permanently fixed or firmly established; incapable of being changed. Often used in the negative.	\N	2023-07-14 01:12:00-07
-200	Smooth sailing	Smooth sailing	Progress or advancement that is free from difficulties, obstacles, or challenges.	\N	2023-07-14 01:13:00-07
-201	All down hill from here	\N	\N	\N	2023-07-14 01:14:00-07
-202	Shooting blanks	Shoot blanks	Of a man, to have a low sperm count in his semen.	\N	2023-07-14 01:15:00-07
-203	Pushing rope	\N	\N	\N	2023-07-14 01:16:00-07
-204	Blacker the berry sweeter the juice	\N	\N	\N	2023-07-14 01:17:00-07
-205	Over my dead body	Over my dead body	I will never allow it; under no circumstances will that be permitted to happen (i.e., something can only happen if I am not alive to prevent it).	\N	2023-07-14 01:18:00-07
-206	Raise the roof	Raise the roof	To engage in loud, unrestrained, and boisterous behavior, especially at a party or while celebrating.	\N	2023-07-14 01:19:00-07
-207	It takes village to raise a child	\N	\N	\N	2023-07-14 01:20:00-07
-208	Get on board	\N	\N	\N	2023-07-14 01:21:00-07
-343	Fly on the wall	Fly on the wall	One who is able to observe something closely but invisibly and without interfering in the situation.	\N	2023-07-16 00:00:43-07
-209	Below the belt	Below the belt	Unfairly targeted at one’s weakness or vulnerability. The phrase refers to boxing, in which hitting an opponent below the waist is prohibited.	\N	2023-07-14 01:22:00-07
-210	0 to 60	Go from zero to sixty	To accelerate from a standstill to sixty miles per hour. Used to indicate how quickly a vehicle, especially an automobile, can accelerate.	\N	2023-07-14 01:23:00-07
-211	Turn on a dime	Turn on a dime	To turn very quickly and with great agility.	\N	2023-07-14 01:24:00-07
-212	Once bitten twice shy	Once bitten, twice shy	Once one is hurt by someone or something, one will be extra cautious to avoid that person or thing.	\N	2023-07-14 01:25:00-07
-213	The road to hell is paved with good intentions	The road to hell is paved with good intentions	Good intentions do not matter if a person’s actions lead to bad outcomes.	\N	2023-07-14 01:26:00-07
-214	Don’t shit where you eat	Don’t shit where you eat	Do not engage in troublesome or dubious behavior at one’s home, place of business, or any location where one frequents, for it invites undesired consequences.	\N	2023-07-14 01:27:00-07
-215	Don’t dip the pen in company ink	\N	\N	\N	2023-07-14 01:28:00-07
-216	Pulling your leg	Pull (one’s) leg	To tease or joke with someone, often by trying to convince them of something untrue.	\N	2023-07-14 01:29:00-07
-220	Glass half empty	Glass half empty	Of or characterized by a generally pessimistic worldview. (Typically hyphenated and used as a modifier before a noun..	\N	2023-07-14 01:33:00-07
-222	Strike gold	Strike gold	Literally, to discover gold, as in a gold mine.	\N	2023-07-14 01:35:00-07
-223	Ruling with an iron fist	Rule with an iron fist	To rule, govern, or control a group or population with complete, typically tyrannical authority over all aspects of life, work, etc.	\N	2023-07-14 01:36:00-07
-224	Now we’re cooking with gas	Now (one’s) cooking (with gas)	Now one is making progress or doing something right.	\N	2023-07-14 01:37:00-07
-225	Not on the same page	\N	\N	\N	2023-07-14 01:38:00-07
-322	Dumpster fire	Dumpster fire	A complete and utter disaster or a completely chaotic situation, likened to a fire in a dumpster, which quickly becomes uncontrollable. The phrase can be applied to both situations and people.	\N	2023-07-16 00:00:22-07
-535	Bigger fish to fry	Bigger fish to fry	More important matters to deal with.	Miles	2023-07-19 00:00:55-07
-217	Jerking your chain	Jerk (one’s) chain	To tease someone, often by trying to convince them of something untrue.	\N	2023-07-14 01:30:00-07
-226	Stop and smell the roses	Stop and smell the roses	To take time to enjoy the finer or more enjoyable aspects of life, especially when one has become overworked or overly stressed.	\N	2023-07-14 01:39:00-07
-227	Slippery slope	Slippery slope	A situation in which some behavior or action will eventually lead to a worse form of the same behavior or action, or a disastrous outcome.	\N	2023-07-14 01:40:00-07
-228	Pick your battles	Pick (one’s) battle(s)	To choose not to participate in minor, unimportant, or overly difficult arguments, contests, or confrontations, saving one’s strength instead for those that will be of greater importance or where one has a greater chance of success.	\N	2023-07-14 01:41:00-07
-229	On my last leg	On (one’s) last legs	Near physical collapse or death.	\N	2023-07-14 01:42:00-07
-230	Watch a pot it never boils	\N	\N	Eve	2023-07-14 01:43:00-07
-231	The tip of the iceberg	Just the tip of the iceberg	Only a small, often unrepresentative portion of something much larger or more complex that cannot yet be seen or understood.	Miles	2023-07-14 01:44:00-07
-232	Needle in a haystack	Needle in a haystack	Something that is very difficult to locate.	Eve	2023-07-14 01:45:00-07
-233	Still waters run deep	Still waters run deep	Quiet people have interesting, profound, or complex thoughts.	Eve	2023-07-14 01:46:00-07
-234	An elephant never forgets	An elephant never forgets	One remembers everything. A play on the idea that elephants have great memories.	Eve	2023-07-14 01:47:00-07
-235	Trojan horse	Trojan horse	Something that initially seems innocuous but is ultimately bad or malicious. A reference to the myth in which Ancient Greek soldiers hid inside a giant wooden horse in order to gain access to the city of Troy.	Eve	2023-07-14 01:48:00-07
-236	Like a fish in water	\N	\N	Eve	2023-07-14 01:49:00-07
-237	Where there’s smoke there’s fire	Where there’s smoke, there’s fire	When there is some indication of a problem or wrongdoing, such a thing probably occurred or exists.	Eve	2023-07-14 01:50:00-07
-238	Shot in the dark	A shot in the dark	A guess or estimate with very little or no assurance as to its accuracy.	Eve	2023-07-14 01:51:00-07
-239	If you can’t beat ‘em join em	\N	\N	Eve	2023-07-14 01:52:00-07
-240	Low hanging fruit	Low-hanging fruit	That which is especially easy to obtain or achieve. Often implies something that is perhaps not as satisfying as that which takes more effort or skill to obtain or do.	Miles	2023-07-14 01:53:00-07
-323	The front lines	\N	\N	\N	2023-07-16 00:00:23-07
-324	Don’t cry over spilt milk	\N	\N	\N	2023-07-16 00:00:24-07
-325	Meat shield	\N	\N	Miles	2023-07-16 00:00:25-07
-327	Throw down the gauntlet	Throw down the gauntlet	To issue a challenge or invitation, as to a fight, argument, or competition.	\N	2023-07-16 00:00:27-07
-765	In the thick of it	In the thick of it	Very busy; in the middle of or preoccupied with something or several things.	Christina	2023-08-20 00:00:00-07
-339	Stepping on toes	\N	\N	\N	2023-07-16 00:00:39-07
-328	Getting your foot in the door	Get a/(one’s) foot in the door	To have a chance to do something that could lead to further opportunities. The phrase is often used to refer to employment.	\N	2023-07-16 00:00:28-07
-329	One foot out the door	One foot out the door	A lack of commitment to or eagerness to give up on someone or something.	\N	2023-07-16 00:00:29-07
-330	Dip your toe in	Dip (one’s) toe in(to) (something)	To tentatively begin or get involved in a new experience. Likened to gently placing one’s toe into water to test its temperature.	\N	2023-07-16 00:00:30-07
-331	Test the waters	Test the water(s)	To informally or casually attempt to gauge the reaction of a potential audience or recipient of something, or to try to get an idea of what something will be like before actually doing it. Likened to feeling the temperature of water before getting in.	\N	2023-07-16 00:00:31-07
-332	Play the field	Play the field	To bet on all horses in a race other than the one favored to win.	\N	2023-07-16 00:00:32-07
-333	Play ball	Play ball	In baseball, a phrase traditionally said or shouted by the umpire to start the game.	\N	2023-07-16 00:00:33-07
-334	Throw it at the wall and see what sticks	\N	\N	\N	2023-07-16 00:00:34-07
-335	Watch a pot it never boils	\N	\N	\N	2023-07-16 00:00:35-07
-336	That’s all she wrote	That’s all she wrote	This is the end; there is nothing left to say.	\N	2023-07-16 00:00:36-07
-337	Head too big to fit in the door	\N	\N	\N	2023-07-16 00:00:37-07
-338	Kick the can down the road	Kick the can down the road	Especially in politics, to postpone or defer a definitive action, decision, or solution, usually by effecting a short-term one instead.	Miles	2023-07-16 00:00:38-07
-340	Reading the writing in the wall	\N	\N	\N	2023-07-16 00:00:40-07
-341	Coming out of the woodwork	Come out of the woodwork	To appear unexpectedly, or from unexpected places.	\N	2023-07-16 00:00:41-07
-342	If walls could talk	\N	\N	\N	2023-07-16 00:00:42-07
-344	The walls have ears	The walls have ears	Someone might be eavesdropping.	\N	2023-07-16 00:00:44-07
-345	Blow this popsicle stand	Blow this popsicle stand	To leave a place, especially one that has become dull or of no use or interest, generally in search of something better.	Miles	2023-07-16 00:00:45-07
-346	Till the wheels fall off	The wheels fall off	Things go disastrously wrong; a situation devolves into ruin or chaos.	\N	2023-07-16 00:00:46-07
-347	Hot on your tail	\N	\N	\N	2023-07-16 00:00:47-07
-348	Bone to pick	A bone to pick	An issue to discuss—typically one that is a source of annoyance for the speaker.	\N	2023-07-16 00:00:48-07
-349	Put out to pasture	Put (someone or something) out to pasture	Literally, to retire an animal from working by allowing it roam in a field or pasture.	\N	2023-07-16 00:00:49-07
-350	Ball and chain	Ball and chain	Something, usually a responsibility of some kind, that restricts one’s freedom or limits one’s possibilities for personal pursuits.	\N	2023-07-16 00:00:50-07
-351	Down in the dumps	Down in the dumps	Sad or depressed.	\N	2023-07-16 00:00:51-07
-352	Don’t let the bed bugs bite	Don’t let the bedbugs bite	Sleep soundly and well. Part of the sing-song rhym."good night, sleep tight, don’t let the bedbugs bite,"	\N	2023-07-16 00:00:52-07
-353	Smoke and mirrors	Smoke and mirrors	Trickery, deception, or misdirection.	\N	2023-07-16 00:00:53-07
-354	Running circles around someone	Run circles around (someone or something)	To move much faster than someone or something.	\N	2023-07-16 00:00:54-07
-355	Picking up slack	\N	\N	\N	2023-07-16 00:00:55-07
-265	Playing with fire	Play with fire	To do something that risks causing one harm, damage, or misfortune; to do something dangerous.	\N	2023-07-15 00:00:24-07
-267	Perfect storm	Perfect storm	A chance or rare combination of individual elements, circumstances, or events that together form a disastrous, catastrophic, or extremely unpleasant problem or difficulty.	Eve	2023-07-15 00:00:26-07
-268	Cut corners	Cut corners	To skip certain steps in order to do something as easily or cheaply as possible, usually to the detriment of the finished product or end result.	Miles	2023-07-15 00:00:27-07
-269	Tall drink of water	Tall drink of water	A tall, typically slender person.	Eve	2023-07-15 00:00:28-07
-270	The road less traveled	The road less traveled	The less popular or common option. The phrase is typically associated with Robert Frost’s 1916 poem "The Road Not Taken."	Miles	2023-07-15 00:00:29-07
-271	A square peg in a round hole	A square peg in a round hole	A person who does not fit in or is not comfortable with others or in a particular situation; someone who is unsuited to a certain task, position, situation, or group of people.	Miles	2023-07-15 00:00:30-07
-272	Bouncing off the walls	Be bouncing off the walls	To be very active and energetic to the point of hyperactivity.	Miles	2023-07-15 00:00:31-07
-273	Tie a pork chop around it neck to get the dog to play with it	\N	\N	Kieth	2023-07-15 00:00:32-07
-274	Color me pink	\N	\N	Miles	2023-07-15 00:00:33-07
-275	Like lemmings to the sea	\N	\N	Miles	2023-07-15 00:00:34-07
-276	A scholar and a gentleman	A scholar and a gentleman	Someone (usually a male, due to the gender implication o."gentleman") who is admirable or of high esteem. Although used sincerely as a compliment, it is generally bombastic and lighthearted in nature.	Miles	2023-07-15 00:00:35-07
-277	Gone with the wind	Gone with the wind	A phrase used to describe something that has disappeared, passed, or vanished, permanently or completely. The phrase was popularized by Margaret Mitchell’s 1936 novel of the same name.	Miles	2023-07-15 00:00:36-07
-278	Old hat	Old hat	Unoriginal, out of date, or old-fashioned.	Eve	2023-07-15 00:00:37-07
-279	Doesn’t fit the mold	\N	\N	Miles	2023-07-15 00:00:38-07
-280	Left a bad taste in your mouth	Leave a bad taste in (one’s) mouth	To give one a negative impression (based on something that has already happened).	\N	2023-07-15 00:00:39-07
-281	Cold shoulder	Cold shoulder	\N	Miles	2023-07-15 00:00:40-07
-282	Tongue in cheek	(with) tongue in cheek	Humorous or intended as a joke, though seeming or appearing to be serious.	Eve	2023-07-15 00:00:41-07
-283	When there’s a will there’s a way	\N	\N	Miles	2023-07-15 00:00:42-07
-284	No harm no foul	No harm, no foul	If there was no bad outcome to an action, then there’s no need to be angry or upset about it.	Eve	2023-07-15 00:00:43-07
-285	Cut the chord	\N	\N	Miles	2023-07-15 00:00:44-07
-286	Hit the hay	Hit the hay	To get into bed and go to sleep.	Miles	2023-07-15 00:00:45-07
-287	Live by the sword die by the sword	Live by the sword, die by the sword	Those who live a violent lifestyle will usually die a violent death.	Miles	2023-07-15 00:00:46-07
-288	Knocking boots	Knock boots (with one)	To have sex (with one).	Miles	2023-07-15 00:00:47-07
-289	Bumping uglies	Bump uglies	To have sex.	Miles	2023-07-15 00:00:48-07
-682	Hill i’m willing to die on	\N	\N	Miles	2023-08-09 00:00:10-07
-290	Get your ears lowered	Get (one’s) ears lowered	To get a haircut, especially to a length that reveals one’s ears.	Miles	2023-07-15 00:00:49-07
-291	Dragging your feet	Drag (one’s) feet	Literally, to not completely pick up one’s feet when walking, so that they drag with each step.	Miles	2023-07-15 00:00:50-07
-292	With your tail between your legs	With (one’s) tail between (one’s) legs	Displaying embarrassment or shame, especially after losing or having to admit that one was wrong. Likened to a dog literally putting its tail between its legs after being disciplined.	Miles	2023-07-15 00:00:51-07
-293	Spic and span	Spick and span	Totally clean and/or organized.	Miles	2023-07-15 00:00:52-07
-294	Roll in the hay	Roll in the hay	A sexual encounter, often one considered casual.	Eve	2023-07-15 00:00:53-07
-295	Run the gamut	Run the gamut	To cover or extend across a wide and varied range.	Miles	2023-07-15 00:00:54-07
-296	If it was a snake it would of bit you	\N	\N	Eve	2023-07-15 00:00:55-07
-297	If looks could kill	If looks could kill	An expression used when someone makes an angry or unpleasant face at someone, indicating that such an expression represents hostility.	Eve	2023-07-15 00:00:56-07
-298	Staring daggers	\N	\N	Eve	2023-07-15 00:00:57-07
-299	No skin off my back	Be no skin off (one’s) back	To be no cause of concern or interest to one; to pose one no difficulty, threat, or risk.	Eve	2023-07-15 00:00:58-07
-356	Burning the midnight oil	Burn the midnight oil	To stay up late working on a project or task. The phrase refers to the outdated practice of using an oil lamp.	Mike	2023-07-16 00:00:56-07
-357	Pass the torch	Pass the torch	To transfer or bestow one’s role, position, responsibilities, etc., to someone else.	Miles	2023-07-16 00:00:57-07
-358	Butterflies in your stomach	Butterflies in (one’s) stomach	A feeling of nervousness.	\N	2023-07-16 00:00:58-07
-359	The lady doth protest too much	The lady doth protest too much	Used to indicate that someone (not necessarily a woman) is only denying something so fervently because the opposite is actually true.	Eve	2023-07-16 00:00:59-07
-360	Not all hero’s wear capes	\N	\N	\N	2023-07-16 00:01:00-07
-361	Walking on eggshells	Be walking on eggshells	To be acting with great care and consideration so as not to upset someone.	\N	2023-07-16 00:01:01-07
-414	Rule of thumb	Rule of thumb	An approximation; a suggested method or guideline.	\N	2023-07-16 00:01:54-07
-362	Treading water	Tread water	To move one’s feet and hands in a motion that will allow one to keep one’s head above the surface of the water.	\N	2023-07-16 00:01:02-07
-363	Keeping your head above water	Keep (one’s) head above water	Literally, to hold one’s head out of the water as to avoid drowning.	\N	2023-07-16 00:01:03-07
-364	Under the table	Under the table	Secretly (often because what is being done is illegal).	\N	2023-07-16 00:01:04-07
-365	Tables have turned	\N	\N	\N	2023-07-16 00:01:05-07
-366	Deep-6	Deep six	\N	\N	2023-07-16 00:01:06-07
-367	6 feet under	\N	\N	\N	2023-07-16 00:01:07-07
-368	Look on the bright side	Look on the bright side	To highlight the good in an otherwise bad situation.	\N	2023-07-16 00:01:08-07
-369	Casting a wide net	Cast a wide net	To do something that will attract, appeal to, or include as large or diverse a group of people as possible.	\N	2023-07-16 00:01:09-07
-371	Food for thought	Food for thought	Something to consider.	\N	2023-07-16 00:01:11-07
-372	Penny pinching	Penny pincher	Someone who is extremely frugal or miserly with their money; someone who is very unwilling or reluctant to spend.	\N	2023-07-16 00:01:12-07
-373	Cream of the crop	The cream of the crop	The best of a particular group.	\N	2023-07-16 00:01:13-07
-218	The Blood of the covenant is thicker than the water of the womb	\N	\N	Eve	2023-07-14 01:31:00-07
-698	Staying in your own lane	\N	\N	Miles	2023-08-11 00:00:07-07
-374	Separate the wheat from the chaff	Separate the wheat from the chaff	To separate the good or valuable from that which is inferior.	\N	2023-07-16 00:01:14-07
-375	Reel it in	Reel in	To draw someone or something toward oneself by winding in a line. A noun or pronoun can be used between "reel" and "in.".	\N	2023-07-16 00:01:15-07
-376	Right hand man	Right-hand man	One’s primary or most trusted assistant. Not necessarily a man.	\N	2023-07-16 00:01:16-07
-377	No man is an island	No man is an island(, entire of itself)	A person requires the company and support of others and society as a whole in order to thrive. The line is from John Donne’.	Eve	2023-07-16 00:01:17-07
-378	Revenge is a dish best served cold	Revenge is a dish best served cold.	Revenge that takes place far in the future, after the offending party has forgotten how they wronged someone, is much more satisfying.	Eve	2023-07-16 00:01:18-07
-379	Opportunity is not a lengthy visitor	\N	\N	Eve	2023-07-16 00:01:19-07
-380	If you want to make an omelette you have to break some eggs.	\N	\N	\N	2023-07-16 00:01:20-07
-381	Give ‘em enough rope to hang himself with	\N	\N	\N	2023-07-16 00:01:21-07
-382	Kick them while they’re down	\N	\N	Miles	2023-07-16 00:01:22-07
-432	Paint yourself into a corner	Paint (oneself) into a corner	To create a predicament or unpleasant situation for oneself whereby there are no or very few favorable solutions or outcomes.	\N	2023-07-17 00:00:17-07
-383	Tying the knot	Tie the knot	To get married. An allusion to the handfasting ceremony, an ancient tradition of binding the hands of the bride and groom with lengths of cloth, cord, rope, etc., as a symbol of their lasting union.	Miles	2023-07-16 00:01:23-07
-384	Tie up loose ends	Tie up (some/a few) loose ends	To take care of, finish, or resolve some issues or pieces of business that are not critical but have remained outstanding.	Miles	2023-07-16 00:01:24-07
-385	If it ain’t broke don’t fix it	If it ain’t broke, don’t fix it	If something is performing or functioning well enough, there’s no need to change or interfere with it (as you may introduce new problems as a result..	Mike	2023-07-16 00:01:25-07
-386	My ears are burning	(one’s) ears are burning	One intuits that people were talking about them, despite not witnessing it.	Mike	2023-07-16 00:01:26-07
-387	The ball is in your court	The ball is in (one’s) court	One has the responsibility for further action, especially after someone else previously held responsibility. The phrase originated in tennis.	Mike	2023-07-16 00:01:27-07
-389	As right as rain	(as) right as rain	In good health or order; feeling or working just as someone or something should.	\N	2023-07-16 00:01:29-07
-390	The bark is worse than the bite	\N	\N	\N	2023-07-16 00:01:30-07
-391	Path of least resistance	The path of least resistance	The thing, option, or course of action that is easiest to do; that which avoids confrontation, difficulty, awkwardness, or tension.	\N	2023-07-16 00:01:31-07
-766	Run of the mill	Run-of-the-mill	Common, standard, or average; mediocre.	Miles	2023-08-20 00:00:01-07
-398	To flesh out	\N	\N	\N	2023-07-16 00:01:38-07
-392	Keeping me on my toes	Keep (one) on (one’s) toes	To force someone to stay active, alert, and focused on something or someone.	\N	2023-07-16 00:01:32-07
-393	Go touch grass	\N	\N	\N	2023-07-16 00:01:33-07
-394	In a pickle	In a pickle	In a troublesome or difficult situation. The adjectives "pretty" and "right" are commonly used before "pickle".	\N	2023-07-16 00:01:34-07
-395	Caught with your hand in the cookie jar	Caught with (one’s) hand in the cookie jar	To have been caught in the act or attempt of some wrongdoing, especially one involving bribery or the illicit exploitation of one’s position of power or authority.	\N	2023-07-16 00:01:35-07
-396	Trim the fat	Trim the fat	To excise or discard elements that are seen as superfluous or unnecessary.	\N	2023-07-16 00:01:36-07
-397	Taking candy from a baby	\N	\N	\N	2023-07-16 00:01:37-07
-399	Get ahead of the game	Get ahead of the game	To become prepared for or begin work on something ahead of schedule.	\N	2023-07-16 00:01:39-07
-400	In the trenches	(down) in the trenches	The place, situation, or environment in which the most difficult or demanding work takes place.	\N	2023-07-16 00:01:40-07
-401	Cross that bridge when we come to it	Cross that bridge when (one) comes to it	To address something only when it actually happens or becomes an issue.	\N	2023-07-16 00:01:41-07
-402	Take at at face value	\N	\N	\N	2023-07-16 00:01:42-07
-403	Toe the line	Toe the line	To adhere to the rules of something. (Often misspelled as "tow the line.".	\N	2023-07-16 00:01:43-07
-404	Draw a line in the sand	Draw a line in the sand	To establish a figurative boundary that someone or some group refuses to cross or beyond which no further advance or compromise is accepted.	\N	2023-07-16 00:01:44-07
-405	On framing time	\N	\N	\N	2023-07-16 00:01:45-07
-406	Hold my beer	Hold my beer	A phrase indicating that one is about to do something stupid or dangerous. The image is that of a person at a party who asks a friend to hold their beer so that they can attempt some kind of ill-advised stunt. It is often used humorously to describe how something bad was followed by something even worse.	\N	2023-07-16 00:01:46-07
-407	Don’t feed them after midnight	\N	\N	\N	2023-07-16 00:01:47-07
-408	Short end of the stick	The short end of the stick	An unequal outcome of a deal that results in a disadvantage or burden.	\N	2023-07-16 00:01:48-07
-409	Beating a dead horse	Beat a dead horse	To continue to focus on an issue or topic that is no longer of any importance or relevance.	\N	2023-07-16 00:01:49-07
-410	Slippery fish	\N	\N	\N	2023-07-16 00:01:50-07
-411	Snake in the grass	Snake in the grass	One who feigns friendship with the intent to deceive.	\N	2023-07-16 00:01:51-07
-412	Sit back and rest on your laurels	\N	\N	Eve	2023-07-16 00:01:52-07
-413	Barefoot and pregnant	Negative connotations	A common assumption is that the expression relates t.	Eve	2023-07-16 00:01:53-07
-582	Wrapped around their little finger	\N	\N	Eve	2023-07-17 00:10:00-07
-415	Ring a bell	Ring a bell	To seem familiar, remind one of something, or stimulate an incomplete or indistinct memory.	\N	2023-07-16 00:01:55-07
-669	Jump the gun	Jump the gun	To start something before it is permissible, appropriate, or advisable. The phrase alludes to starting to run in a foot race before the starting gun goes off.	\N	2023-08-08 00:00:11-07
-670	Show you the ropes	Show (one) the ropes	To explain or demonstrate to one how to do or perform a job, task, or activity.	\N	2023-08-08 00:00:12-07
-671	Getting something under your belt	Get (something) under (one’s) belt	To get something to eat or drink.	\N	2023-08-08 00:00:13-07
-672	Shit a brick	Shit a brick	To be very scared or nervous. The plural ("shit bricks") is also commonly used.	\N	2023-08-08 00:00:14-07
-673	Balls to the wall	Balls to the wall	With maximum effort, energy, or speed, and without caution or restraint.	\N	2023-08-09 00:00:01-07
-388	Once in a blue moon	Once in a blue moon	Very rarely.	Mike	2023-07-16 00:01:28-07
-534	Bone to pick	A bone to pick	An issue to discuss—typically one that is a source of annoyance for the speaker.	Miles	2023-07-19 00:00:54-07
-421	Strike while the iron is hot	Strike while the iron is hot	To make most of an opportunity or favorable conditions while one has the chance to do so.	\N	2023-07-17 00:00:06-07
-422	Set in stone	Set in stone	Permanent. Typically refers to a plan or idea.	\N	2023-07-17 00:00:07-07
-424	Trail of bread crumbs	\N	\N	\N	2023-07-17 00:00:09-07
-425	Hanging on by a thread	Hang on by a thread	To be perilously close to failing, dying, or resulting in a bad outcome.	\N	2023-07-17 00:00:10-07
-426	Green thumb	Green thumb	A proclivity for successfully growing plant life. (Often used with "have.".	\N	2023-07-17 00:00:11-07
-427	Splitting hairs	Split hairs	To make or focus on trivial or petty details, differences, or distinctions.	\N	2023-07-17 00:00:12-07
-428	Beast of burden	Beast of burden	A domesticated animal used by humans to carry or pull heavy loads.	\N	2023-07-17 00:00:13-07
-429	Hang me out to dry	Hang (one) out to dry	To desert one in a troubling situation.	\N	2023-07-17 00:00:14-07
-430	With out a pot to piss in or a window to throw it out of	\N	\N	\N	2023-07-17 00:00:15-07
-431	Without a leg to stand in	\N	\N	\N	2023-07-17 00:00:16-07
-596	Bury the hatchet	Bury the hatchet	To make peace with someone.	\N	2023-07-23 00:00:16-07
-433	Shooting from the hip	Shoot from the hip	To speak or act rashly, recklessly, or bluntly, without consideration of potential consequences. An allusion to firing a handgun immediately upon drawing it from its holster without taking time to aim.	\N	2023-07-17 00:00:18-07
-434	Outside of my wheelhouse	Out(side) (of) (someone’s) wheelhouse	Against, outside of, or not matching someone’s general interests, abilities, or area of familiarity; outside of someone’s comfort zone.	\N	2023-07-17 00:00:19-07
-435	Above my pay grade	Above (one’s) pay grade	The responsibility of those who are of a higher authority than oneself, denoted by the level of pay that one receives in comparison to one’s superiors.	\N	2023-07-17 00:00:20-07
-436	Caught in the crosshairs	\N	\N	\N	2023-07-17 00:00:21-07
-437	Target on you back	\N	\N	\N	2023-07-17 00:00:22-07
-438	Price on your head	\N	\N	\N	2023-07-17 00:00:23-07
-439	Death by 1000 cuts	\N	\N	Miles	2023-07-17 00:00:24-07
-440	Can’t trust them as far as you can throw them	\N	\N	\N	2023-07-17 00:00:25-07
-441	Throw caution to the wind	Throw caution to the wind(s)	To abandon one’s cautiousness in order to take a risk.	\N	2023-07-17 00:00:26-07
-442	Hold your horses	Hold your horses	Wait a moment or be patient (often because you are moving too quickly or thoughtlessly).	\N	2023-07-17 00:00:27-07
-767	Off the cuff	Off the cuff	Casually and spontaneously; without planning or preparation. Often hyphenated.	Miles	2023-08-20 00:00:02-07
-443	Bring a knife to a gunfight	Bring a knife to a gunfight	To come poorly prepared or equipped for some task, goal, competition, or confrontation. Often used in the negative as a forewarning or piece of advice.	\N	2023-07-17 00:00:28-07
-444	Mexican standoff	Mexican standoff	An impasse, deadlock, or stalemate from which no party involved will or can emerge victorious.	\N	2023-07-17 00:00:29-07
-445	Play your cards right	Play (one’s) cards right	To act adeptly and with good judgment; to make the best and most effective use of the resources at one’s disposal.	\N	2023-07-17 00:00:30-07
-446	Play your cards close to the chest	\N	\N	\N	2023-07-17 00:00:31-07
-447	Ace up your sleeve	Ace up (one’s) sleeve	A secret plan, idea, or advantage that can be utilized if and when it is required. A reference to cheating at a card game by hiding a favorable card up one’s sleeve.	\N	2023-07-17 00:00:32-07
-449	Hold your hand	Hold (one’s) hand	Literally, to grasp one’s hand and continue holding it, typically while walking together or sitting next to each other, often as a show of affection.	\N	2023-07-17 00:00:34-07
-747	Sticking your foot in your mouth	\N	\N	Miles	2023-08-18 00:00:08-07
-450	The 11th hour	The eleventh hour	The last possible moment or opportunity. Can be hyphenated if used as a modifier before a noun.	\N	2023-07-17 00:00:35-07
-451	A real class act	\N	\N	\N	2023-07-17 00:00:36-07
-452	For the birds	For the birds	Worthless, stupid, or completely undesirable.	\N	2023-07-17 00:00:37-07
-453	Make ends meet	Make (both) ends meet	To earn just enough money to cover one’s living expenses.	\N	2023-07-17 00:00:38-07
-454	Wear your heart on your sleeve	Wear (one’s) heart on (one’s) sleeve	To openly display or make known one’s emotions or sentiments.	\N	2023-07-17 00:00:39-07
-455	Got it in the bag	\N	\N	\N	2023-07-17 00:00:40-07
-456	Idle hands are the devils playground	\N	\N	\N	2023-07-17 00:00:41-07
-457	Secure the bag	\N	\N	\N	2023-07-17 00:00:42-07
-458	Slow your roll	Slow (one’s) roll	To calm oneself down. Primarily heard in US.	\N	2023-07-17 00:00:43-07
-459	Off the beaten path	Off the beaten path	Little-known, or in a remote or lesser-known area.	\N	2023-07-17 00:00:44-07
-460	Read em and weep	Read ’em and weep	Look at these results, which clearly show that I am the winner and you are the loser. A clichéd expression that is especially commonly used during card games.	\N	2023-07-17 00:00:45-07
-461	My hands are tied	(one’s) hands are tied	One is being prevented from acting, helping, or intervening as one should or desires to because of circumstances beyond one’s control, such as rules, conflicting orders, or higher priorities.	\N	2023-07-17 00:00:46-07
-462	With one had tied behind my back	\N	\N	\N	2023-07-17 00:00:47-07
-463	Knock your dick in the dirt	\N	\N	Miles	2023-07-17 00:00:48-07
-464	Moving the goalpost	Move the goalposts	To alter the rules or parameters of a situation in such a way as to suit one’s needs or objectives, making it more difficult for someone else to succeed, keep pace, or achieve an opposing objective.	\N	2023-07-17 00:00:49-07
-465	Pulling the rug from under you	Pull the rug (out) from under (someone)	To suddenly or unexpectedly remove or rescind support, help, or assistance from someone; to abruptly leave someone in a problematic or difficult situation.	\N	2023-07-17 00:00:50-07
-466	All roads lead to rome	All roads lead to rome	The same outcome can be reached by many methods or ideas. This phrase refers to the road system of the Roman Empire, in which Rome was positioned in the center, with every road attached to it.	\N	2023-07-17 00:00:51-07
-467	Walk in the park	A walk in the park	A task or activity that is easy or effortless to accomplish.	\N	2023-07-17 00:00:52-07
-468	Too many irons in the fire	Too many irons in the fire	An excessive number of simultaneous activities or potential undertakings or opportunities underway.	Mike	2023-07-16 01:00:00-07
-469	Two tacos short of a combination plate	\N	\N	\N	2023-07-17 00:00:53-07
-674	Deep dive	Deep dive	A thorough analysis, perhaps one that seems excessive or unwarranted for a particular topic.	\N	2023-08-09 00:00:02-07
-219	Stabbed in the back	Stabbed in the back	Having had one’s confidence or trust betrayed.	\N	2023-07-14 01:32:00-07
-448	Coming in hot	\N	\N	\N	2023-07-17 00:00:33-07
-471	Burying your head in the sand	Bury (one’s) head in the sand	To avoid, or try to avoid, a particular situation by pretending that it does not exist. The phrase refers to the common but mistaken belief that ostriches bury their heads in the sand when frightened, so as to avoid being seen.	\N	2023-07-18 00:00:01-07
-472	Burn a hole in your pocket	Burn a hole in (one’s) pocket	To be in one’s possession and causing one an intense urge to make use of it. Typically used in reference to money, suggesting that the person with the money feels the need to spend it quickly.	\N	2023-07-18 00:00:02-07
-474	If you fall of your horse you gotta get back on	\N	\N	\N	2023-07-18 00:00:04-07
-475	If you want to make god laugh make a plan	\N	\N	\N	2023-07-18 00:00:05-07
-476	Gun shy	Gun-shy	Frightened of using a gun or by the sound of one firing.	\N	2023-07-18 00:00:06-07
-477	Trigger happy	Trigger-happy	Eager to use a weapon, i.e. to pull the trigger (of a gun).	\N	2023-07-18 00:00:07-07
-478	You can’t take it with you	(you) can’t take it with you (when you go)	A warning against materialism that alludes to the fact that you can’t keep your money or possessions when you die.	\N	2023-07-18 00:00:08-07
-479	Doesn’t pack a punch	\N	\N	\N	2023-07-18 00:00:09-07
-480	A drop in the bucket	Drop in the bucket	A tiny amount, especially when compared to a much larger one.	\N	2023-07-18 00:00:10-07
-547	Don’t shoot the messenger	Don’t shoot the messenger	Don’t get angry at or punish someone who is simply delivering bad or undesirable news as they are not responsible for it.	\N	2023-07-20 00:00:11-07
-846	Ride on someone’s coattails	\N	\N	Miles	2023-08-26 00:00:04-07
-492	Lose the battle but win the war	Lose the battle, but win the war	To suffer a minor defeat or failure, but achieve a larger, more important, or overarching success or victory over time. The phrase is often split into two halves across different parts of a sentence to achieve its meaning.	Eve	2023-07-19 00:00:12-07
-493	Uncharted waters	Uncharted waters	A situation or circumstance that is foreign, unclear, or unfamiliar and which may be dangerous or difficult as a result.	Miles	2023-07-19 00:00:13-07
-495	Never look into another bowl except to see if they have enough	\N	\N	Eve	2023-07-19 00:00:15-07
-496	A rose by any other name would smell as sweet	A rose by any other name (would smell as sweet)	What someone or something is called does not change their innate characteristics or attributes. The shorter version of the phrase is often used when describing undesirable people or things.	Eve	2023-07-19 00:00:16-07
-497	He who laughs last laughs best	Have the last laugh	To ultimately achieve success after encountering adversity or doubt from others.	Eve	2023-07-19 00:00:17-07
-498	Kiss the ring	Kiss the ring	To make a gesture of deference, fealty, or genuflection to a person of power or authority.	Eve	2023-07-19 00:00:18-07
-499	A prison of our own device	\N	\N	Eve	2023-07-19 00:00:19-07
-500	What goes around comes around	What goes around comes around	One’s actions or behavior will eventually have consequences for one, even if indirectly. The phrase typically refers to one being a victim of the same negative circumstances that they have inflicted on others.	Eve	2023-07-19 00:00:20-07
-501	If your going to get we you might as well go swimming	\N	\N	Eve	2023-07-19 00:00:21-07
-502	Don’t cry over spilt milk	\N	\N	\N	2023-07-19 00:00:22-07
-503	Put someone on a pedestal	Put (someone or something) (up) on a pedestal	To believe or behave as if someone or something is perfect, wonderful, or better than others, to the extent that one is unable to see its potential flaws or faults.	Miles	2023-07-19 00:00:23-07
-504	The view from your ivory tower	\N	\N	Eve	2023-07-19 00:00:24-07
-505	On your high horse	On (one’s) high horse	Having an attitude of condescending moral superiority.	Eve	2023-07-19 00:00:25-07
-506	Turn a blind eye	Turn a blind eye (to something)	To knowingly ignore some wrongdoing.	Miles	2023-07-19 00:00:26-07
-507	Cat got your tongue	(has the) cat got your tongue?	A humorous question directed at one who is not speaking very much or at all.	Miles	2023-07-19 00:00:27-07
-508	Hard nut to crack	A hard nut (to crack)	A person, thing, situation, or problem that is particularly difficult to understand, solve, or deal with.	Miles	2023-07-19 00:00:28-07
-509	Up shit creek without a paddle	Up shit creek (without a paddle)	In a challenging or troublesome situation, especially one that cannot be easily resolved.	miles	2023-07-19 00:00:29-07
-510	Even the Mona Lisa is falling apart	\N	\N	Eve	2023-07-19 00:00:30-07
-511	Diamonds are made under pressure but not over night	\N	\N	Eve	2023-07-19 00:00:31-07
-512	Men are from mars, women are from Venus	\N	\N	Eve	2023-07-19 00:00:32-07
-513	Reopen an old wound	\N	\N	Miles	2023-07-19 00:00:33-07
-514	Pour salt in the wound and expect it to heal	\N	\N	Eve	2023-07-19 00:00:34-07
-515	Swimming with the fishes	Be swimming with the fishes	To be murdered and have one’s body disposed of in a river,lake, or ocean.	Miles	2023-07-19 00:00:35-07
-516	Light at the end of the tunnel	Light at the end of the tunnel	A sign that something difficult or unpleasant is almost at an end.	Miles	2023-07-19 00:00:36-07
-517	Pride is a cold bedfellow	\N	\N	Eve	2023-07-19 00:00:37-07
-518	Cut off the head and the body will die	\N	\N	Eve	2023-07-19 00:00:38-07
-519	The little dutch boy with his finger in the dike	\N	\N	Eve	2023-07-19 00:00:39-07
-520	A hard pill to swallow	A hard pill to swallow	Something, especially a fact or piece of news, that is unpleasant or difficult but which is unavoidable or must be accepted.	Miles	2023-07-19 00:00:40-07
-521	Nothing left to do but bite the bullet	\N	\N	Eve	2023-07-19 00:00:41-07
-522	Bring home the bacon	Bring home the bacon	To earn money, as from steady employment. The phrase may originate from the fairground contest in which participants try to catch a greased pig in order to win it.	\N	2023-07-19 00:00:42-07
-523	Butter your bread on both sides	Butter (one’s) bread on both sides	To benefit or profit from two or more separate and often contradictory or incompatible things or sources.	Eve	2023-07-19 00:00:43-07
-525	The bigger the pants the deeper the pockets	\N	\N	Eve	2023-07-19 00:00:45-07
-526	Ask me your questions I’ll tell you my lies	\N	\N	Eve	2023-07-19 00:00:46-07
-527	In the belly of the beast	In the belly of the beast	Within the worst, most central area or part of something deeply unpleasant or malicious.	Miles	2023-07-19 00:00:47-07
-528	Wild goose chase	Wild goose chase	A prolonged or chaotic search for something that is difficult to find (often because it does not exist).	Miles	2023-07-19 00:00:48-07
-529	Jack of all trades	Jack of all trades	A person who is skilled in many different areas.	Miles	2023-07-19 00:00:49-07
-530	Cut the mustard	Cut the mustard	\N	Miles	2023-07-19 00:00:50-07
-531	Don’t pull the wool over my eyes	\N	\N	Miles	2023-07-19 00:00:51-07
-532	Shoot yourself in the foot	Shoot (oneself) in the foot	To damage or impede one’s own plans, progress, or actions through foolish actions or words.	Miles	2023-07-19 00:00:52-07
-533	Salad days	Salad days	A youthful, carefree time of innocence and inexperience. The phrase comes from a line in Shakespeare’.	Miles	2023-07-19 00:00:53-07
-930	Shake a leg	\N	\N	Christina	2023-09-01 00:00:06-07
-537	Taste of your own medicine	A taste of (one’s) own medicine	An experience of the same harmful or unpleasant thing that one has inflicted on others; an attack in the same manner in which one attacks others.	\N	2023-07-20 00:00:01-07
-538	March to the best of your own drum	\N	\N	\N	2023-07-20 00:00:02-07
-539	Cross your heart and hope to die	\N	\N	\N	2023-07-20 00:00:03-07
-540	Scraping the bottom of the barrel	Scrape the bottom of the barrel	To use or select from the last or worst of the resources or options from a particular range or set, even if they are not satisfactory, because there are no others to choose from.	\N	2023-07-20 00:00:04-07
-541	Gift that keeps on giving	The gift that keeps on giving	Something that continues to have a payoff, consequences, or other such impact.	\N	2023-07-20 00:00:05-07
-542	Let me sleep on it	\N	\N	\N	2023-07-20 00:00:06-07
-543	Don’t sleep on it	\N	\N	\N	2023-07-20 00:00:07-07
-544	Down the rabbit hole	Down a/the rabbit hole	In a situation, process, or journey that is particularly strange, problematic, difficult, complex, or chaotic, especially one that becomes increasingly so as it develops or unfolds. (An allusion t.	\N	2023-07-20 00:00:08-07
-545	Level the playing field	Level the playing field	To make a situation or activity more fair and balanced by giving an extra advantage or opportunity to those who would normally be at a disadvantage, or by attempting to take away or diminish advantages, perhaps of one’s adversary or competitor.	\N	2023-07-20 00:00:09-07
-546	Your ass is grass	(one’s) ass is grass	\N	\N	2023-07-20 00:00:10-07
-847	Shit rolls down hill	\N	\N	Eve	2023-08-26 00:00:05-07
-548	Don’t hate the player hate the game	Don’t hate the player, hate the game	You should hate a system or situation rather than the people involved in it.	\N	2023-07-20 00:00:12-07
-549	Bucket list	Bucket list	A list of accomplishments or tasks one hopes to do or achieve before one dies.	\N	2023-07-20 00:00:13-07
-550	Partner in crime	Partner in crime	One who aids or accompanies someone in crimes or nefarious actions.	\N	2023-07-20 00:00:14-07
-551	Anyway you slice it	\N	\N	\N	2023-07-20 00:00:15-07
-552	All is fair in love and war	All is fair in love and war	Otherwise questionable actions are acceptable under extenuating circumstances. Often written as "all’s fair in love and war.".	\N	2023-07-20 00:00:16-07
-553	Above my pay grade	Above (one’s) pay grade	The responsibility of those who are of a higher authority than oneself, denoted by the level of pay that one receives in comparison to one’s superiors.	\N	2023-07-20 00:00:17-07
-554	Not on my dime	\N	\N	\N	2023-07-20 00:00:18-07
-556	Rubbing elbows	Rub elbows	To interact or mingle with a person or group.	\N	2023-07-20 00:00:20-07
-557	Beating around the bush	Beat around the bush	To speak vaguely or euphemistically so as to avoid talking directly about an unpleasant or sensitive topic. Primarily heard in US.	\N	2023-07-20 00:00:21-07
-558	Keep your friends close and your enemies closer	Keep your friends close and your enemies closer	Be very aware of your enemies’ behavior in order to detect and avoid any malicious actions.	\N	2023-07-20 00:00:22-07
-559	Keep your eyes on the prize	Keep your eye(s) on the prize	To remain focused on a particular goal or award, especially when the path to it is long or arduous.	\N	2023-07-20 00:00:23-07
-560	Under the radar	Under (the/one’s) radar	Without being noticed, detected, or addressed.	\N	2023-07-20 00:00:24-07
-561	Take under your wing	\N	\N	\N	2023-07-20 00:00:25-07
-562	Straw that broke the camel’s back	The straw that breaks the camel’s back	A seemingly small or inconsequential issue, problem, or burden that proves to be the final catalyst in causing an overworked or overburdened person, system, organization, etc., to fail, give up, or collapse.	\N	2023-07-20 00:00:26-07
-563	Late in the game	Late in the game	At a late point in some situation, development, activity, etc. Likened to an athletic game or match.	\N	2023-07-20 00:00:27-07
-564	Last straw	The last straw	The final problem, setback, or source of irritation in a series that causes one to finally lose patience or for something to stop working.	\N	2023-07-20 00:00:28-07
-565	Connect the dots	Connect the dots	Literally, to draw a line between dots, often as part of a children’s activity to create an illustration or design.	\N	2023-07-20 00:00:29-07
-567	When push comes to shove	If push comes to shove	If the situation deteriorates or becomes desperate; if drastic measures are needed.	\N	2023-07-20 00:00:31-07
-568	Been around the block	Been around (the block)	To have experience, either in a particular area or in one’s life overall.	\N	2023-07-20 00:00:32-07
-569	Eye for an eye	Eye for an eye (and a tooth for a tooth).	If someone hurts you, you should punish the offender by hurting him or her in the same way. (An ancient principle of justice going back to biblical times..	\N	2023-07-20 00:00:33-07
-570	Eyes in the back of your head	Eyes in the back of (one’s) head	The ability to detect what is going on all around one, even beyond one’s field of vision.	\N	2023-07-20 00:00:34-07
-571	In the clear	In the clear	Deemed innocent or able to avoid blame for some crime or misdeed.	\N	2023-07-20 00:00:35-07
-572	Cold turkey	Cold turkey	The abrupt cessation of something (most often the use of a drug).	\N	2023-07-20 00:00:36-07
-573	We’re gonna need a bigger boat	\N	\N	\N	2023-07-20 00:00:37-07
-574	It’s all greek to me	(it’s) (all) greek to me	This might as well be a foreign language, because I don’t understand it at all. The phrase comes from Shakespeare’s pla.	\N	2023-07-20 00:00:38-07
-575	How do you like them apples	How do you like them apples	A phrase used to draw attention to one’s cleverness or superiority to the one being addressed, especially after a recent triumph.	\N	2023-07-20 00:00:39-07
-576	Break the mold	Break the mold	To do something in a new way.	\N	2023-07-20 00:00:40-07
-577	Worth your weight in salt	\N	\N	\N	2023-07-20 00:00:41-07
-578	Turn on a dime	Turn on a dime	To turn very quickly and with great agility.	\N	2023-07-20 00:00:42-07
-579	Hold down the fort	Hold (down) the fort	To maintain the proper functioning or order of some situation or place, typically during someone’s absence.	\N	2023-07-20 00:00:43-07
-580	I’m all ears	I’m all ears	I’m ready and eager to hear what you have to say.	Miles	2023-07-23 00:00:01-07
-675	Kick rocks	Kick rocks	An expression of disdain used to tell someone to go away or quit bothering one.	\N	2023-08-09 00:00:03-07
-581	Bend over backwards	Bend over backward(s)	To exert a lot of effort towards some end. This phrase is often used to express frustration when one’s efforts go unrecognized.	\N	2023-07-23 00:00:02-07
-583	No spring chicken	No spring chicken	No longer young or youthful. (A "spring chicken" refers to a young chicken..	Eve	2023-07-23 00:00:03-07
-584	Counting sheep	Count sheep	To perform any repetitive or monotonous thought exercise as a means of calming the mind to try to fall asleep (such as the traditional sleep aid of counting imaginary sheep).	Eve	2023-07-23 00:00:04-07
-585	Leg up in life	\N	\N	Eve	2023-07-23 00:00:05-07
-586	Put your pants on one leg at a time	Put (one’s) pants on one leg at a time (just like everybody else)	To be an ordinary human being; to go through life like everyone else. (Used especially in reference to someone who is of an elevated social status, such as a celebrity, star athlete, member of royalty, etc.	Eve	2023-07-23 00:00:06-07
-587	Boots on the ground	Boots on the ground	Soldiers who are on active duty and physically present during a combat operation.	Eve	2023-07-23 00:00:07-07
-588	Down to the nitty gritty	\N	\N	Eve	2023-07-23 00:00:08-07
-589	Knock on wood	Knock on wood	A superstitious expression said, typically in combination with actually touching or knocking on a wooden object or surface, when one desires something positive to continue, lest the mention of i."jinx" or somehow reverse one’s good fortune.	\N	2023-07-23 00:00:09-07
-590	Salt of the earth	The salt of the earth	A person or group that is regarded as genuine, unpretentious, and morally sound. This phrase is typically complimentary.	\N	2023-07-23 00:00:10-07
-591	Under the weather	Under the weather	Mildly ill.	\N	2023-07-23 00:00:11-07
-592	Fly in in the ointment	\N	\N	\N	2023-07-23 00:00:12-07
-593	Nothing to write home about	Nothing to write home about	Not especially impressive, remarkable, or noteworthy; rather dull, mediocre, uninteresting, or unimportant.	\N	2023-07-23 00:00:13-07
-594	A hired gun	\N	\N	\N	2023-07-23 00:00:14-07
-595	Dropped the ball	Drop the ball	To make a mistake.	\N	2023-07-23 00:00:15-07
-597	Open the floodgates	Open the floodgates	To allow for an expanding number of (typically negative) consequences as the result of another related action.	\N	2023-07-23 00:00:17-07
-598	See a man about a horse	See a man about a horse	To leave somewhere without explaining where one is going, but usually used as an obvious euphemism for going to the toilet or getting an alcoholic drink.	\N	2023-07-23 00:00:18-07
-599	Taken with a grain of salt	Take (something) with a grain of salt	To consider or evaluate something, such as a statement, with the understanding that it may not be completely true or accurate, typically due to the unreliability of the source.	\N	2023-07-23 00:00:19-07
-600	Trust you as far as i can throw you	\N	\N	\N	2023-07-23 00:00:20-07
-601	You made your bed now you got to lay in it	\N	\N	\N	2023-07-23 00:00:21-07
-602	Rolling with the punches	Roll with the punches	Literally, in martial arts (especially boxing), to maneuver one’s body away from a blow so as to lessen the force of the impact.	\N	2023-07-23 00:00:22-07
-603	Two way street	Two-way street	A situation in which both sides must put forth an equal amount of effort to achieve a desired result.	Eve	2023-07-24 00:00:01-07
-604	Double down	Double down	In blackjack, to double one’s wager after seeing one’s initial hand of cards, with only one more card allowed to be drawn afterward.	Eve	2023-07-23 00:00:23-07
-605	Stand your ground	Stand (one’s) ground	To brace oneself and maintain one’s position during or when anticipating an attack.	Eve	2023-07-23 00:00:24-07
-606	Dust your shoulders off	\N	\N	Eve	2023-07-23 00:00:25-07
-607	Blowing steam	\N	\N	Miles	2023-07-24 00:00:02-07
-608	Thrown to the wolves	Wolf	\N	Eve	2023-07-24 00:00:03-07
-609	Throw under the bus	Throw (one) under the bus	To exploit one’s trust for an ulterior purpose, advantage, or agenda; to harm one through deceit or treachery.	Eve	2023-07-24 00:00:04-07
-610	Raised by wolves	Raised by wolves	Of or describing someone who seems particularly uncouth or socially inept.	Eve	2023-07-24 00:00:05-07
-611	Leaving a trail of breadcrumbs	\N	\N	Eve	2023-07-24 00:00:06-07
-612	Get with the program	Get with the program	To conform or fall in line with what is expected.	Miles	2023-07-24 00:00:07-07
-613	Water under the bridge	Water under the bridge	A prior issue that is now resolved or considered resolved.	\N	2023-07-24 00:00:08-07
-615	On the shoulders with of giants	\N	\N	Eve	2023-07-25 00:00:01-07
-616	Pull out all the stops	Pull out all the stops	To do something with maximum effort or ability; to use all or the best available resources when doing something.	Eve	2023-07-24 00:00:10-07
-617	Steal their thunder	Steal (one’s) thunder	To garner the attention or praise that one had been expecting or receiving for some accomplishment, announcement, etc.	Eve	2023-07-24 00:00:11-07
-618	Wash your hands of the whole affair	\N	\N	Eve	2023-07-24 00:00:12-07
-619	Break the bank	Break the bank	To be very expensive. The phrase is often used in the negative to convey the opposite.	\N	2023-07-25 00:00:02-07
-620	Speak of the devil and he shall appear	Speak of the devil, and he shall appear	An acknowledgment of a person who has arrived just as or after they were being discussed.	\N	2023-07-25 00:00:03-07
-621	Curiosity killed the cat but satisfaction brought it back	\N	\N	\N	2023-07-25 00:00:04-07
-622	Wake up and smell the coffee	Wake up and smell the coffee	Pay attention to what is happening.	\N	2023-07-25 00:00:05-07
-623	You can’t put the toothpaste back in the tube	Put the toothpaste back in the tube	To attempt to revert a situation to how it formerly existed by containing, limiting, or repressing information, ideas, advancements, etc., that have become commonplace or public knowledge. Almost always used in the negative to denote the impossibility of such an attempt.	\N	2023-07-25 00:00:06-07
-624	A pictures worth a 1000 words	\N	\N	\N	2023-07-25 00:00:07-07
-625	Doing the lord’s work	\N	\N	\N	2023-07-25 00:00:08-07
-626	When small men cast long shadows the day is almost over	\N	\N	\N	2023-07-25 00:00:09-07
-627	Meat and potatoes	Meat-and-potatoes	Concerned with or pertaining to the most basic or fundamental aspects of something.	\N	2023-07-25 00:00:10-07
-628	Beating your head against the wall	Beat (one’s) head against a/the wall	To attempt continuously and fruitlessly to accomplish some task or achieve some goal that is or seems ultimately hopeless.	\N	2023-07-25 00:00:11-07
-629	Barking up the wrong tree	Bark up the wrong tree	To attempt or pursue a futile course of action, often by making some kind of suggestion or request.	\N	2023-07-25 00:00:12-07
-630	Falling on deaf ears	Fall on deaf ears	To be ignored.	\N	2023-07-25 00:00:13-07
-631	Don’t ask how the sausage is made	\N	\N	\N	2023-07-25 00:00:14-07
-696	Play it by ear	Play by ear	\N	Miles	2023-08-11 00:00:05-07
-697	Getting something off your chest	get (something) off (one’s) chest	To reveal or discuss something that has caused one emotional discomfort and that one has repressed, kept hidden, or neglected to discuss earlier.	Miles	2023-08-11 00:00:06-07
-702	Throw me a bone	Throw (one) a bone	To attempt to appease or placate someone by giving them something trivial or of minor importance or by doing some small favor for them. (A reference to giving a dog a bone or scrap from a bigger portion of food..	Miles	2023-08-13 00:00:01-07
-704	Spill the tea	Spill the tea	To share or reveal gossip. "Tea" is a slang term for gossip.	Christina	2023-08-13 00:00:03-07
-632	The emperor’s new clothes	The emperor’s new clothes	Something widely accepted as true or professed as being praiseworthy due to an unwillingness of the general population to criticize it or be seen as going against popular opinion. Taken from the Hans Christian Andersen fable of the same name, in which a vain king is sold imaginary clothing (i.e., nothing at all) by two weavers who promise him that it is visible only to the wise and cannot be seen by those who are ignorant, incompetent, or unfit for their position.	\N	2023-07-25 00:00:15-07
-633	Kick into gear	\N	\N	\N	2023-07-25 00:00:16-07
-634	Shooting the shit	Shoot the shit	To chat or converse aimlessly or casually, without any serious topic of conversation.	\N	2023-07-25 00:00:17-07
-635	Something’s rotten in denmark	Something is rotten in (the state of) denmark	Something strange or suspicious is going on.	Eve	2023-07-26 00:00:01-07
-636	Exit stage left	Exit stage left	An allusion to stage directions in theater, indicating when (and where) an actor should leave the stage from a scene.	Miles	2023-07-26 00:00:02-07
-637	Waiting for the dust to settle	Wait for the dust to settle	To wait until a disturbance or commotion has lessened or been resolved.	Miles	2023-07-26 00:00:03-07
-638	Throw dust in your eyes	Throw dust in (one’s) eyes	To mislead or deceive one by presenting or introducing distracting or obfuscating information.	Eve	2023-07-26 00:00:04-07
-639	Achilles heel	Achilles’ heel	A weakness or vulnerability that can lead to permanent destruction or downfall. In Greek mythology, the hero Achilles was killed after being struck in the heel—the only weak spot on his body.	Miles	2023-07-26 00:00:05-07
-640	A chain is only as strong as it’s weakest link	\N	\N	Miles	2023-07-26 00:00:06-07
-641	A chink in the armor	Chink in (one’s)/the armor	A minor but very detrimental flaw or weakness.	Eve	2023-07-26 00:00:07-07
-642	Missing link	Missing link	A hypothetical extinct animal that is believed to be the evolutionary connection between man and ape.	Miles	2023-07-26 00:00:08-07
-643	Changing gears	Change gear	Literally, to switch a car, bicycle, or other vehicle into a different gear.	Matt	2023-07-27 00:00:01-07
-768	Dark night of the soul	Poem and treatise of st. john of the cross	\N	Eve	2023-08-20 00:00:03-07
-644	When you hear hoofbeats think horses not zebras	When you hear hoofbeats, think horses, not zebras.	The simplest, most common, or most obvious explanation for something is most likely the correct one. Used especially in relation to medical diagnoses.	Matt	2023-07-27 00:00:02-07
-645	In over your head	In over (one’s) head	Too deeply involved in or with a difficult situation, beyond the point of being able to control or cope any longer.	\N	2023-07-27 00:00:03-07
-646	Plenty of fish in the sea	There are plenty of (other) fish in the sea	There are many other excellent or more suitable people, things, opportunities, or possibilities in the world that one may find. Said especially when one has recently been unlucky, unsuccessful, or has broken up with a romantic partner.	\N	2023-07-27 00:00:04-07
-647	My dogs are barking	(one’s) dogs are barking	One’s feet are very sore and tired from physical exertion.	\N	2023-07-27 00:00:05-07
-649	Put your money where your mouth is	Put (one’s) money where (one’s) mouth is	To do, live up to, or follow through on something one talks about, threatens, or promises, especially (but not always) when it involves spending money.	\N	2023-07-27 00:00:07-07
-650	Maiden voyage	Maiden voyage	The first time a vehicle, especially a boat or ship, departs on a journey.	\N	2023-07-27 00:00:08-07
-651	No guts no glory	No guts, no glory	Success does not come without the courage to take risks.	\N	2023-07-27 00:00:09-07
-652	Flash in the pan	Flash in the pan	Someone or something whose success or popularity is short-lived.	\N	2023-07-27 00:00:10-07
-653	It’s better to burn out than fade away	\N	\N	\N	2023-07-27 00:00:11-07
-654	Left in the lurch	Leave (one) in the lurch	To leave or abandon one without assistance in a particularly awkward, difficult, or troublesome situation.	\N	2023-07-27 00:00:12-07
-655	High and dry	High and dry	Literally, dry and unaffected by water, typically flood waters.	\N	2023-07-27 00:00:13-07
-656	Bury the lead	Bury the lead	In journalism, to open a news article with secondary or superfluous information, thus relegating the central premise (the lead, which usually occupies this position) to a later part.	\N	2023-07-27 00:00:14-07
-657	The sky is the limit	The sky’s the limit	Anything is possible.	\N	2023-07-27 00:00:15-07
-658	A rising tide lifts al boats	\N	\N	\N	2023-07-27 00:00:16-07
-676	Takes the cake	Take the cake	To be the worst in a series of negative actions. Primarily heard in US.	Miles	2023-08-09 00:00:04-07
-677	Wrap it up	Wrap it up	To get to the point of what one is saying. Often used as an imperative.	Miles	2023-08-09 00:00:05-07
-678	Cut some slack	Cut (one) some slack	To allow one more latitude or freedom than usual; to be more lenient with one.	Miles	2023-08-09 00:00:06-07
-679	When shit hits the fan	(the) shit hits the fan	Things have become suddenly very chaotic, disastrous, difficult, or controversial.	Miles	2023-08-09 00:00:07-07
-680	Under the sun	Under the sun	On earth; in existence.	Christina	2023-08-09 00:00:08-07
-681	Gravy train	The gravy train	A state, position, or job in which one makes an excessive amount of money without expending much or any effort.	Miles	2023-08-09 00:00:09-07
-683	Let your hair down	Let (one’s) hair down	To cease acting formally or conservatively; to ignore or relinquish one’s inhibitions or reservations. Also worded as "let down (one’s) hair".	Christina	2023-08-09 00:00:11-07
-685	Kick to the curb	Kick (someone or something) to the curb	To discard, abandon, or dismiss someone or something that has become redundant, obsolete, useless, or unwanted.	Christina	2023-08-09 00:00:13-07
-686	Clean slate	Clean slate	An opportunity to start fresh despite past mistakes or problems.	Christina	2023-08-09 00:00:14-07
-687	On top of the world	On top of the world	Elated; blissfully or triumphantly happy.	Miles	2023-08-09 00:00:15-07
-689	Nothing to hang your hat on	\N	\N	\N	2023-08-09 00:00:17-07
-690	Pull some strings	Pull (some/a few) strings	To use the power or influence one has over others, especially people of importance, to get what one wants or to help someone else.	Miles	2023-08-10 00:00:01-07
-691	Shit the bed	Shit the bed	To fail spectacularly or to a great degree.	Christina	2023-08-10 00:00:02-07
-692	Another notch on your belt	\N	\N	Miles	2023-08-11 00:00:01-07
-693	Shits and giggles	Shits and giggles	Fun or amusement derived without any serious purpose or motivation.	Miles	2023-08-11 00:00:02-07
-694	Neck and neck	Neck and neck	Extremely close together; at or near an equal level. Usually said of competitors in a race or competition.	Miles	2023-08-11 00:00:03-07
-695	Get this show on the road	Get this show on the road	To promptly begin or get something started.	Miles	2023-08-11 00:00:04-07
-648	Make it rain	Make it rain	To throw or drop dollar bills in a show of wealth.	\N	2023-07-27 00:00:06-07
-699	Put it past someone	\N	\N	Miles	2023-08-11 00:00:08-07
-700	Trusting you as far as you can throw them	\N	\N	Miles	2023-08-11 00:00:09-07
-701	Closed mouths don’t get fed	\N	\N	Eve	2023-08-11 00:00:10-07
-703	Not my cup of tea	Cup of tea	Something one prefers, desires, enjoys, or cares about. Often used in the negative to mean the opposite.	Miles	2023-08-13 00:00:02-07
-706	Pulling a rabbit out of a hat	Pull a rabbit out of a hat	To do something surprising and seemingly impossible; to produce something in a way that has no obvious explanation, as if done by magic. A reference to the magician’s trick of literally pulling a live rabbit out of a hat.	\N	2023-08-14 00:00:02-07
-707	Scratched the surface	Scratch	\N	\N	2023-08-14 00:00:03-07
-708	Rub off on someone	Rub off	To come off (of something else) after being rubbed.	\N	2023-08-14 00:00:04-07
-716	Sight for sore eyes	A sight for sore eyes	Someone or something that one is excited or overjoyed to see, often after a long absence or separation.	Miles	2023-08-15 00:00:08-07
-717	In the pit of your stomach	\N	\N	Christina	2023-08-15 00:00:09-07
-718	Lump in your throat	Lump in (one’s) throat	An intense emotional reaction resulting in a sensation of tightness in the throat, as often precedes crying.	Miles	2023-08-15 00:00:10-07
-719	Knock out of the park	Knock (something) out of the (ball)park	To do or perform something extraordinarily well; to produce or earn an exceptional achievement. An allusion to a baseball that is hit hard enough to land outside the stadium.	Miles	2023-08-15 00:00:11-07
-720	On pins and needles	On pins and needles	Anxious and tense. (Likely an allusion to the tingling sensation that occurs when blood flow returns to a numb limb..	Christina	2023-08-15 00:00:12-07
-721	Chicken with its head cut off	Like a chicken with its head cut off	With great haste and in a careless or senseless manner.	Miles	2023-08-15 00:00:13-07
-722	Over the hill	Over the hill	Past the peak of one’s life or career; too old. Often hyphenated.	Miles	2023-08-15 00:00:14-07
-723	Piece of cake	Piece of cake	A very easy task or accomplishment.	Christina	2023-08-15 00:00:15-07
-724	Have a cow	Have a cow	To get very upset about something, often more than is expected or warranted.	Christina	2023-08-15 00:00:16-07
-725	Bum rush	Bum rush	To attack or barge into a person or place forcefully or violently.	Miles	2023-08-15 00:00:17-07
-726	To die for	To die for	Extremely attractive, enjoyable, or desirable.	Miles	2023-08-15 00:00:18-07
-727	Blow your cover	Blow (one’s) cover	To expose one’s true identity or motives after they had been intentionally concealed (i.e. after one had been "undercover").	Miles	2023-08-15 00:00:19-07
-728	Don’t judge a fish by its ability to climb a tree	\N	\N	Miles	2023-08-15 00:00:20-07
-729	The devil is in the details	The devil is in the detail(s)	Plans, actions, or situations that seem sound must be carefully examined, because minor details can end up causing major, unforeseen problems.	Christina	2023-08-15 00:00:21-07
-730	Cleanliness is next to godliness	Cleanliness is next to godliness	A phrase that strongly encourages and promotes neatness and personal hygiene.	Christina	2023-08-15 00:00:22-07
-731	This town ain’t big enough for the two of us	\N	\N	Miles	2023-08-15 00:00:23-07
-732	Time for a gun fight	\N	\N	Christina	2023-08-15 00:00:24-07
-733	Pop you’re cherry	\N	\N	Christina	2023-08-15 00:00:25-07
-734	Get your rocks off	Get (one’s) rocks off	\N	Miles	2023-08-15 00:00:26-07
-735	Rock your socks off	\N	\N	Christina	2023-08-15 00:00:27-07
-736	Cool your jets	Cool (one’s) jets	To calm oneself down; to become less agitated.	Miles	2023-08-15 00:00:28-07
-737	Knee jerk reaction	Knee-jerk reaction	Any spontaneous, reflexive, and unthinking reaction or response.	\N	2023-08-16 00:00:01-07
-738	Ruffle your feathers	Ruffle (one’s) feathers	To annoy, irritate, or upset someone.	\N	2023-08-16 00:00:02-07
-739	Turn over a new leaf	Turn over a new leaf	To change one’s behavior, usually in a positive way.	Miles	2023-08-17 00:00:01-07
-740	Rounding the bend	\N	\N	Miles	2023-08-18 00:00:01-07
-741	Par for the course	Par for the course	Normal, typical, or to be expected (especially when something is a source of annoyance or frustration). An allusion to golf, in whic."par" is the number of strokes that it should take a player to get the ball into a particular hole on a golf course.	Miles	2023-08-18 00:00:02-07
-742	Up in arms	Up in arms	Very upset or angry about something. Likened to an armed rebellion, from which the phrase originated.	Miles	2023-08-18 00:00:03-07
-743	With guns blazing	With (one’s) guns blazing	Forcefully and with all of one’s energy and a strong sense of urgency or purpose, especially when directed at an argument or problem that has angered or frustrated one.	Miles	2023-08-18 00:00:04-07
-744	Make heads or tails of it	\N	\N	Miles	2023-08-18 00:00:05-07
-745	Tits up	Tits up	mildly vulgar Broken or malfunctioning; dead, falling apart, or ceasing to work.	Miles	2023-08-18 00:00:06-07
-746	Sit on it	Sit on it	An exclamation of frustration directed at another person. Popularized by the TV sho.	Miles	2023-08-18 00:00:07-07
-748	Get off on the wrong foot	Get off on the wrong foot	To have a bad start. Said of something that goes or has gone awry at the very beginning.	Miles	2023-08-18 00:00:09-07
-749	Bright eyed and bushy tailed	Bright-eyed and bushy-tailed	Energetic and enthusiastic.	Ryan	2023-08-18 00:00:10-07
-750	Squeezing the lemon	\N	\N	Ryan	2023-08-18 00:00:11-07
-751	Bleeding the lizard	\N	\N	Miles	2023-08-18 00:00:12-07
-752	Choking the chicken	Choke the chicken	To masturbate. A term only applied to males.	Ryan	2023-08-18 00:00:13-07
-753	Beating the meat	Beat (one’s) meat	To masturbate. A term only applied to males.	Ryan	2023-08-18 00:00:14-07
-754	Flicking the bean	\N	\N	Miles	2023-08-18 00:00:15-07
-755	Soften the blow	Soften the blow	To make the impact of something negative less harmful.	Ryan	2023-08-18 00:00:16-07
-756	Sitting pretty	Sit pretty	To be or remain in an ideal situation or advantageous position.	Ryan	2023-08-18 00:00:17-07
-757	Tasted grapes	\N	\N	Ryan	2023-08-18 00:00:18-07
-759	Walking on sunshine	Walk on sunshine	To be in a state of euphoria.	Miles	2023-08-18 00:00:20-07
-986	Wind down/wind up	\N	\N	Christina	2023-09-09 00:00:01-07
-1052	Licking someone’s boots	\N	\N	Miles	2023-10-27 00:00:05-07
-774	Golden goose	Golden goose	A person, thing, or organization that is or has the potential to earn a lot of money for a long period of time. Taken from a folk tale of a goose that would lay a golden egg once a day, but which was killed by its owner because he wanted all of its gold at once.	Miles	2023-08-20 00:00:09-07
-775	Beyond the pale	Beyond the pale	Completely unacceptable or inappropriate. A "pale" is an area bounded by a fence.	Eve	2023-08-20 00:00:10-07
-776	Revenge is a dish best served cold	Revenge is a dish best served cold.	Revenge that takes place far in the future, after the offending party has forgotten how they wronged someone, is much more satisfying.	Miles	2023-08-21 00:00:01-07
-777	Fall from grace	Fall from grace	To fall out of favor, typically due to having done something that tarnishes one’s reputation.	Eve	2023-08-22 00:00:01-07
-779	Do the honors	Do the honors	To perform a task or duty of an official nature, often in a social setting. Sometimes used humorously.	Miles	2023-08-22 00:00:03-07
-780	That tracks	\N	\N	Miles	2023-08-22 00:00:04-07
-781	Pull the trigger	Pull the trigger (on something)	To make a final decision or commit to a certain course of action (about something).	Miles	2023-08-22 00:00:05-07
-782	In the the chute	\N	\N	Miles	2023-08-22 00:00:06-07
-783	Down the hatch	Down the hatch	Down one’s throat. This phrase is usually said before one drinks something (often something that has an especially foul or strong taste).	Miles	2023-08-22 00:00:07-07
-784	Batten down the hatches	Batten down the hatches	To prepare for a challenging situation. While this originated as a nautical phrase, it is now used for any sort of imminent problem.	Eve	2023-08-22 00:00:08-07
-785	To not give two shits	\N	\N	\N	2023-08-22 00:00:09-07
-786	Dog and pony show	Dog and pony show	An elaborately organized event used mainly for promotion or to drive sales.	Eve	2023-08-22 00:00:10-07
-787	Throw your hat in the ring	Throw (one’s) hat in(to) the ring	To announce that one is going to be competing with others, especially in a political election.	Eve	2023-08-22 00:00:11-07
-788	My enemy’s enemy is my friend	My enemy’s enemy is my friend	A phrase highlighting how a common enemy can be a unifying force for otherwise disparate groups or people.	Miles	2023-08-22 00:00:12-07
-789	Taking the high road	\N	\N	Miles	2023-08-22 00:00:13-07
-790	Have a falling out	A falling out	A severe quarrel or disagreement, especially one that leads to a temporary or permanent end of a relationship.	Miles	2023-08-22 00:00:14-07
-791	A broken record	\N	\N	MIles	2023-08-23 00:00:01-07
-848	In a heartbeat	In a heartbeat	Very quickly; as soon as is possible.	Miles	2023-08-26 00:00:06-07
-792	A bridge too far	A bridge too far	An act or plan whose ambition overreaches its capability, resulting in or potentially leading to difficulty or failure. Taken from the 1974 boo.	Miles	2023-08-23 00:00:02-07
-793	Think outside the box	Think outside (of) the box	To think of something that is outside of or beyond what is considered usual, traditional, or conventional; to think innovatively.	Miles	2023-08-23 00:00:03-07
-794	One fell swoop	One fell swoop	A single decisive or powerful action.	Miles	2023-08-23 00:00:04-07
-795	Addressing the elephant in the room	\N	\N	Miles	2023-08-23 00:00:05-07
-796	Opening up pandora’s box	\N	\N	Miles	2023-08-23 00:00:06-07
-797	Pot of gold at the end of the rainbow	Pot of gold at the end of the rainbow	The ultimate goal, reward, achievement, etc., at the end of a difficult or arduous process.	Miles	2023-08-23 00:00:07-07
-798	Live off the fat of the land	Live off the fat of the land	To live comfortably on a surplus of resources, without working very hard.	Miles	2023-08-23 00:00:08-07
-799	Get a lay of the land	\N	\N	Miles	2023-08-23 00:00:09-07
-800	Get the juices flowing	\N	\N	Miles	2023-08-24 00:00:01-07
-801	Eye opening	Eye-opening	Causing or resulting in a shocking or startling revelation.	Miles	2023-08-24 00:00:02-07
-802	Poking the bear	Poke the bear	To intentionally irritate or bother someone, especially when doing so carries an obvious risk.	Miles	2023-08-24 00:00:03-07
-803	Spin a web of lies	Spin a web of lies	To create an intricate contrivance of misdirection, omission, or deception that ultimately serves to ensnare or entangle oneself or others.	Miles	2023-08-24 00:00:04-07
-804	Coming out of your shell	Come out of (one’s) shell	To be or become less shy or reticent and more sociable, outgoing, or enthusiastic.	Christina	2023-08-24 00:00:05-07
-806	Put some feelers out	\N	\N	Miles	2023-08-24 00:00:07-07
-807	Barrel of monkeys	Barrel of monkeys	A group that is having fun and enjoying themselves. Often used in the phrase "more fun than a barrel of monkeys.".	Christina	2023-08-25 00:00:01-07
-808	Monkey see monkey do	Monkey see, monkey do	Children naturally tend to imitate or copy what they see adults or other children doing.	Miles	2023-08-25 00:00:02-07
-809	Getting your ass handed to you	\N	\N	Miles	2023-08-25 00:00:03-07
-810	Come full circle	Come full circle	To return to the original or a similar position, situation, or circumstance where one or something started.	Miles	2023-08-25 00:00:04-07
-811	High on the hog	High on the hog	Ostentatiously. The phrase refers to the rich being able to afford the choicest cut of meat, which, from a pig, is higher up on the animal.	Miles	2023-08-25 00:00:05-07
-812	Taking the words out of someone’s mouth	\N	\N	Miles	2023-08-25 00:00:06-07
-813	To be blown away	\N	\N	Miles	2023-08-25 00:00:07-07
-814	Setting the bar low	Set the bar (high/low)	To establish an expected, required, or desired standard of quality. (Often said of a standard that is constrictive in being either too low or too high).	Miles	2023-08-25 00:00:08-07
-815	Game changer	Game-changer	That which dramatically or fundamentally alters a situation or the way in which something is done or thought about.	Miles	2023-08-25 00:00:09-07
-816	Keep your eyes peeled	Keep (one’s) eye(s) peeled (for someone or something)	To remain vigilant or carefully watchful (for something or someone).	Miles	2023-08-25 00:00:10-07
-817	Hell hath no fury like a woman’s scorn	\N	\N	Miles	2023-08-25 00:00:11-07
-818	Top notch	Top-notch	Stellar; excellent; the best. Can be used with or without a hyphen.	Miles	2023-08-25 00:00:12-07
-819	Hit or miss	Hit or miss	Sometimes good or successful, sometimes not; having mixed or unpredictable results; random, aimless, careless, or haphazard. Often hyphenated.	Miles	2023-08-25 00:00:13-07
-820	Shooting your shot	Shoot (one’s) shot	To take the risk of making one’s availability and interest known to others, as to a prospective employer or romantic partner.	Miles	2023-08-25 00:00:14-07
-821	Hidden gem	Hidden gem	That which is of exceptional or underappreciated quality but is not especially popular or widely known.	Miles	2023-08-25 00:00:15-07
-822	Too big for your britches	Too big for (one’s) boots	Overconfident in one’s importance, skill, or authority; behaving as if one is more important or influential than one actually is.	Miles	2023-08-25 00:00:16-07
-1051	Picking something up	\N	\N	Miles	2023-10-27 00:00:04-07
-825	Preaching to the choir	Preach to the choir	To try to convince someone about something that they already support; to state one’s opinion to those who are already most receptive to it.	Miles	2023-08-25 00:00:19-07
-826	Had it up to here	\N	\N	Miles	2023-08-25 00:00:20-07
-828	On a roll	On a roll	Experiencing a particularly successful period, without any setbacks or low points.	Miles	2023-08-25 00:00:22-07
-829	Short fuse	A short fuse	A tendency to become angered, enraged, or upset very quickly or easily; a short temper.	Miles	2023-08-25 00:00:23-07
-830	Hot headed	Hothead	A person with an excitable, fiery, or impetuous temper or disposition; one who is quick to get angry or act rashly.	Miles	2023-08-25 00:00:24-07
-831	Having a ring to it	\N	\N	Miles	2023-08-25 00:00:25-07
-832	Dropping the kids off at the pool	\N	\N	Miles	2023-08-25 00:00:26-07
-833	Bun in the oven	A bun in the oven	An unborn child growing in one’s womb.	Miles	2023-08-25 00:00:27-07
-834	Another face in the crowd	\N	\N	Miles	2023-08-25 00:00:28-07
-835	A fine line	A fine line	A very narrow division between two deceptively similar things, one of which is worse than the other.	Christina	2023-08-25 00:00:29-07
-836	Saving something for a rainy day	Save (something) for a rainy day	To reserve something, especially money, for use in a time or period of unforeseen difficulty, trouble, or need.	Christina	2023-08-25 00:00:30-07
-952	Being in someone’s corner	\N	\N	Christina	2023-09-03 00:00:11-07
-837	Shaking in your boots	Shake in (one’s) boots	To tremble with fear. Often used sarcastically.	Christina	2023-08-25 00:00:31-07
-838	Water water all around and not a drop to drink	\N	\N	Eve	2023-08-25 00:00:32-07
-839	Let your guard down	Let (one’s) guard down	To become less guarded or vigilant; to stop being cautious about potential trouble or danger.	Eve	2023-08-25 00:00:33-07
-840	Hole in the wall	Hole in the wall	A small, inconspicuous place, often an establishment such a restaurant. The term sometimes but not always has a negative connotation implying a place that is perceived to be disreputable in some way.	Christina	2023-08-25 00:00:34-07
-841	Pulling teeth	Pull teeth	To do something that is especially difficult, tedious, or requires an extreme amount of effort; to do something in the most difficult or unpleasant way possible.	Miles	2023-08-25 00:00:35-07
-842	Take a load off	Take a load off (one’s feet)	To sit down and rest one’s feet; to relax. (Usually said as a suggestion..	Christina	2023-08-25 00:00:36-07
-843	Shit end of the stick	\N	\N	Miles	2023-08-26 00:00:01-07
-844	Tide me over	Tide (one) over	To maintain, sustain, or support one through a lean or difficult time until more of something is acquired, especially food or money.	Eve	2023-08-26 00:00:02-07
-845	By the skin of your teeth	By the skin of (one’s) teeth	Barely. Often used to describe something that almost didn’t happen.	Miles	2023-08-26 00:00:03-07
-849	Calm before the storm	Calm before the storm	A period of inactivity or tranquility before something chaotic begins. Likened to a literal period of calm before a storm begins.	Christina	2023-08-26 00:00:07-07
-850	Take by storm	Take (someone, something, or some place) by storm	To conquer, seize, or lay siege to something, someone, or some place with a sudden and furious attack.	Christina	2023-08-27 00:00:01-07
-851	Lift the veil	Lift the veil (on something)	To divulge, explain, or reveal something that was previously a secret.	Miles	2023-08-27 00:00:02-07
-852	A feather in your cap	A feather in (one’s) cap	An accomplishment or achievement that one takes pride in.	Miles	2023-08-27 00:00:03-07
-853	Clear cut	Clear-cut	\N	Miles	2023-08-27 00:00:04-07
-854	Head over heals	\N	\N	Miles	2023-08-28 00:00:01-07
-855	Going for broke	Go for broke	To give something one’s full effort.	Miles	2023-08-28 00:00:02-07
-856	Steal the show	Steal the show	To become the main focus of attention or deliver the most captivating performance in the presence of one or more others, typically unexpectedly.	Miles	2023-08-28 00:00:03-07
-857	In a nutshell	In a nutshell	In summary; concisely.	Miles	2023-08-28 00:00:04-07
-858	Throw away the key	Lock (someone) up and throw away the key	To incarcerate someone in prison forever or indefinitely.	Miles	2023-08-28 00:00:05-07
-860	Joined at the hip	Joined at the hip	Always near or spending a lot of time with someone else, often a close friend.	Miles	2023-08-28 00:00:07-07
-861	Over your head	Over (one’s) head	Too complicated to be understood by one.	Miles	2023-08-28 00:00:08-07
-862	In too deep	In too deep	Too involved in something to easily extract oneself or make reasonable decisions.	Christina	2023-08-28 00:00:09-07
-863	Under the spotlight	Under the spotlight	The center of attention.	Christina	2023-08-28 00:00:10-07
-864	Under a microscope	Under a microscope	Under close inspection or intense scrutiny.	Christina	2023-08-28 00:00:11-07
-865	Tag team	Tag team	\N	Christina	2023-08-28 00:00:12-07
-866	Break a leg	Break a leg	A phrase of encouragement typically said to one who is about to perform before an audience, especially a theater actor.	Christina	2023-08-28 00:00:13-07
-867	Chips stacked against someone	\N	\N	Miles	2023-08-28 00:00:14-07
-868	Different animal	\N	\N	Miles	2023-08-28 00:00:15-07
-869	Apple of my eye	The apple of (one’s) eye	A cherished or favored person. This phrase is thought to be Biblical in origin.	Christina	2023-08-28 00:00:16-07
-870	Lift the lid	\N	\N	Eve	2023-08-28 00:00:17-07
-871	On the fly	On the fly	Quickly and informally, without thought or preparation.	Christina	2023-08-29 00:00:01-07
-872	Out of touch	Out of touch	Not in contact or communicating any longer; not aware of the news or status of someone or something.	Christina	2023-08-29 00:00:02-07
-873	Get your knickers in a twist	Get (one’s) knickers in a twist	To become overly upset or emotional over something, especially that which is trivial or unimportant.	Miles	2023-08-29 00:00:03-07
-874	Stake your claim	Stake (one’s) claim	To assert one’s ownership of or right to something.	Miles	2023-08-29 00:00:04-07
-875	Hold a candle	Hold a candle to (someone or something)	To compare to someone or something; to be as good or desirable as someone or something. Often used in the negative to mean the opposite.	Miles	2023-08-29 00:00:05-07
-805	Shedding your skin	\N	\N	Miles	2023-08-24 00:00:06-07
-876	Bought the farm	Bought the farm	Died.	Eve	2023-08-29 00:00:06-07
-877	Cliff hanger	Cliffhanger	An ending of a piece of fiction (e.g., a television episode, chapter of a book, a film, etc.) characterized by a dramatically suspenseful and uncertain end.	Eve	2023-08-29 00:00:07-07
-880	Parse out	Parse out	To make sense of or find meaning in something. A noun or pronoun can be used between "parse" and "out.".	Eve	2023-08-30 00:00:03-07
-881	Pan out	Pan out	To conclude in a successful or pleasing manner; to work out.	Christina	2023-08-30 00:00:04-07
-882	Back to brunch	\N	\N	Eve	2023-08-30 00:00:05-07
-883	Down the drain	Down the drain	In a state of failure or ruination.	Miles	2023-08-30 00:00:06-07
-884	Kiss of death	Kiss of death	An action, event, or association that causes inevitable ruin or failure. An allusion to Judas Iscariot’s betrayal of Jesus Christ, during which Judas kissed Jesus as a way of identifying him to those who would put him to death.	Eve	2023-08-30 00:00:07-07
-885	Bees knees	Be the bee’s knees	To be exceptionally great, excellent, or high-quality.	Miles	2023-08-30 00:00:08-07
-886	Fly off the handle	Fly off the handle	To become uncontrollably angry; to lose control of one’s temper.	Miles	2023-08-30 00:00:09-07
-887	Let loose	Let (someone or something) loose	To make free or give up control of something or someone; to release or discharge something or someone, as from confinement.	Christina	2023-08-31 00:00:01-07
-888	Come to grips	\N	\N	Christina	2023-08-31 00:00:02-07
-889	From the ground up	From the ground up	From the first step through to completion; entirely.	Christina	2023-08-31 00:00:03-07
-890	I’ll be a monkeys uncle	\N	\N	Miles	2023-08-31 00:00:04-07
-891	Rally the troops	Rally the troops	To call others together to join with or lend support to someone or something. An allusion to reassembling dispersed soldiers ("troops"). Usually used as an imperative.	Christina	2023-08-31 00:00:05-07
-892	Off the charts	Off the charts	Quite a lot more or better than is usual or was expected.	Christina	2023-08-31 00:00:06-07
-893	Pain in the ass	Pain in the ass	An especially irritating, aggravating, or obnoxious person, thing, or situation. Primarily heard in US.	Christina	2023-08-31 00:00:07-07
-894	Bases are covered	\N	\N	Miles	2023-08-31 00:00:08-07
-895	Next level	Next-level	Especially good or advanced.	Christina	2023-08-31 00:00:09-07
-896	Read the fine print	Read the fine print	To make oneself aware of the specific terms, conditions, restrictions, limitations, etc., of an agreement, contract, or other document, which are often printed in very small type and thus easy to miss.	Miles	2023-08-31 00:00:10-07
-897	The jury is out	The jury is (still) out	A decision has not yet been made.	Miles	2023-08-31 00:00:11-07
-898	Breaking the seal	\N	\N	Miles	2023-08-31 00:00:12-07
-899	Going all in	\N	\N	\N	2023-08-31 00:00:13-07
-900	Upping the ante	Up the ante	To raise the stakes in a betting game.	Miles	2023-08-31 00:00:14-07
-937	Get a bee in your bonnet	\N	\N	Christina	2023-09-02 00:00:03-07
-901	Tipping point	Tipping point	A critical or pivotal point in a situation or process at which some small or singular influence acts as a catalyst for a broader, more dramatic, or irreversible change.	Miles	2023-08-31 00:00:15-07
-902	Ace in the hole	Ace in the hole	A major advantage that one keeps hidden until an ideal time. The phrase originated in poker, in which an ace is the most valuable card. Primarily heard in UK.	Christina	2023-08-31 00:00:16-07
-903	Easter egg	Easter egg	\N	Miles	2023-08-31 00:00:17-07
-904	At a crossroad	\N	\N	Miles	2023-08-31 00:00:18-07
-959	Go out on a limb	Go out on a limb	To do or say something that lacks evidence or support.	\N	2023-09-04 00:00:02-07
-905	Selling your soul to the devil	Sell (one’s) soul (to the devil)	To abandon one’s values or morals in return for some highly desired benefit, typically success, power, wealth, etc.	Christina	2023-08-31 00:00:19-07
-906	Head to head	Head-to-head	Describing a one-on-one matchup or comparison.	Christina	2023-08-31 00:00:20-07
-907	Hand to hand	Hand to hand	Involving or characterized by people in close proximity to one another. Hyphenated if used as a modifier before a noun.	Miles	2023-08-31 00:00:21-07
-908	Blow it to kingdom come	Blow (someone or something) to kingdom come	\N	Miles	2023-08-31 00:00:22-07
-909	Fountain of youth	Fountain of youth	Anything reputed or promising to restore one’s youth, vitality, or health, or at least the appearance thereof.	Miles	2023-08-31 00:00:23-07
-910	Head in the clouds	Head in the clouds	Impractical, aloof, or fanciful to the point of being very unhelpful or counterproductive.	Christina	2023-08-31 00:00:24-07
-911	Rein it in	\N	\N	\N	2023-08-31 00:00:25-07
-912	To no avail	To no avail	Having or with very little benefit, efficacy, or effect.	Christina	2023-08-31 00:00:26-07
-913	Wrap your mind around it	\N	\N	\N	2023-08-31 00:00:27-07
-914	Fork in the road	Fork in the road	Literally, the point at which one road splits or separates off into other roads.	Christina	2023-08-31 00:00:28-07
-915	Fill someone in	Fill in	\N	Miles	2023-08-31 00:00:29-07
-916	Put it on the back burner	Put (something) on the back burner	To establish something as being a low priority; to give something less or little thought or attention; to postpone, suspend, or hold off on doing something.	Miles	2023-08-31 00:00:30-07
-917	Trickle in	Trickle in	Of a liquid, to flow or seep in(to something) in drops or a thin stream.	\N	2023-08-31 00:00:31-07
-918	Last man standing	The last man/woman/person standing	The final person who endures or emerges victorious from some situation, activity, or pursuit in which others are eliminated.	Christina	2023-08-31 00:00:32-07
-919	Put a cork in it	Put a cork in it	To stop talking and be quiet. Usually used as an imperative.	Christina	2023-08-31 00:00:33-07
-920	Bottled up	Bottle up	\N	Christina	2023-08-31 00:00:34-07
-921	Man of the hour	(the) man/woman of the hour	A person currently being celebrated, honored, or admired by others, especially for a recent victory, accomplishment, or other cause for celebration.	Christina	2023-08-31 00:00:35-07
-922	Start off on the right foot	Start off on the right foot	To have a positive or favorable start.	Christina	2023-08-31 00:00:36-07
-923	End on a good note	\N	\N	Christina	2023-08-31 00:00:37-07
-924	Scratching my head	\N	\N	Christina	2023-08-31 00:00:38-07
-925	Mind’s eye	In (one’s) mind’s eye	In one’s imagination or mind, especially referring to something that is being visualized.	Christina	2023-09-01 00:00:01-07
-926	Going to town	Go to town	To act with great energy and/or enthusiasm.	Christina	2023-09-01 00:00:02-07
-927	Blow your load	Blow (one’s) load	To lose or spend all of one’s money.	Christina	2023-09-01 00:00:03-07
-859	In hog heaven	In hog heaven	In a state of extreme happiness.	Miles	2023-08-28 00:00:06-07
-928	Give it a shot	Give it a shot	To try something (often for the first time as a means of forming an opinion about it).	Christina	2023-09-01 00:00:04-07
-929	Shake it off	Shake off	To rid or free oneself from someone or something that one finds aggravating, upsetting, or annoying.	Christina	2023-09-01 00:00:05-07
-932	Leave you hanging	Leave (one) hanging	To withhold information from one when it is expected to be delivered.	Christina	2023-09-01 00:00:08-07
-933	If wishes were horses then beggars would ride	If wishes were horses, (then) beggars would ride	One must work for the things one wants, not merely wish for them to come true; wishing for something won’t make it happen.	Eve	2023-09-01 00:00:09-07
-934	Dead in the water	Dead in the water	Completely defunct.	Miles	2023-09-01 00:00:10-07
-935	Shake your tail feathers	Shake (one’s) tail feather	To dance, especially by moving one’s buttocks along to the beat.	Christina	2023-09-02 00:00:01-07
-936	Egg on your face	Egg on (one’s) face	The embarrassment that results from a failure or faux pas. Typically used in the phrase "have egg on (one’s) face.".	Christina	2023-09-02 00:00:02-07
-938	Reaching the end of your rope	Reach the end of (one’s) rope	To be completely worn out, exasperated, or exhausted; to have no more patience, endurance, or energy left.	Christina	2023-09-02 00:00:04-07
-939	Bring something to the table	Bring (something) to the table	To provide or offer a useful skill or attribute to a shared task, activity, or endeavor.	Miles	2023-09-02 00:00:05-07
-940	Give someone lip	\N	\N	Christina	2023-09-02 00:00:06-07
-941	Out of the blue	Out of the blue	Completely unexpectedly.	Miles	2023-09-02 00:00:07-07
-942	Night and day	Night and day	All the time; continuously.	Miles	2023-09-03 00:00:01-07
-943	If you build it they will come	\N	\N	Christina	2023-09-03 00:00:02-07
-944	Ride it out	Ride out	To travel to or from a place on a vehicle or animal.	Christina	2023-09-03 00:00:03-07
-945	Going to the end of the earth	\N	\N	Christina	2023-09-03 00:00:04-07
-946	Blood on your hands	\N	\N	Miles	2023-09-03 00:00:05-07
-947	Stick it to the man	Stick it to the man	To show resistance to or fight back against the established doctrines of a person or body of authority, especially the government.	Christina	2023-09-03 00:00:06-07
-948	Pull the plug	Pull the plug (on someone or something)	Literally, to discontinue the power supply for a device by removing its power cable from the socket.	Miles	2023-09-03 00:00:07-07
-949	Pushing someone’s buttons	Push (one’s) buttons	To do things that create a very strong emotional reaction in one, especially anger, irritation, or exasperation.	Miles	2023-09-03 00:00:08-07
-950	Go wherever the wind takes you	\N	\N	\N	2023-09-03 00:00:09-07
-951	Loose cannon	Loose cannon	Someone who has the propensity to act unpredictably or to lose their temper very quickly.	Miles	2023-09-03 00:00:10-07
-953	Taking the piss	Take the piss (out of) (someone or something)	To tease, mock, or ridicule (someone or something); to joke or kid around (about someone or something). Primarily heard in UK, Ireland.	Christina	2023-09-03 00:00:12-07
-954	To be on fire	\N	\N	Christina	2023-09-03 00:00:13-07
-955	Clap back	Clap back	\N	Miles	2023-09-03 00:00:14-07
-956	Sound the alarm	Sound the alarm	Literally, to activate an alarm.	Miles	2023-09-03 00:00:15-07
-957	Count your blessings	Count (one’s) blessings	To reflect on the good things in one’s life and be grateful for them.	Miles	2023-09-03 00:00:16-07
-958	Bag of tricks	Bag of tricks	The items that one has available for use. The phrase originally referred to the items a magician would use for magic tricks.	\N	2023-09-04 00:00:01-07
-960	Glass ceiling	Glass ceiling	The systemic discrimination (likened to an invisible barrier) against certain groups in the workplace, especially women, that prevents them from advancing.	\N	2023-09-04 00:00:03-07
-961	The powder trail is lit	\N	\N	\N	2023-09-04 00:00:04-07
-962	Under the hood	Under the hood	The underlying implementation of a product (hardware, software, or idea).  Implies that the implementation is not intuitively obvious from the appearance, but the speaker is about to enable the listener t.	\N	2023-09-04 00:00:05-07
-963	Chip away at something	\N	\N	\N	2023-09-04 00:00:06-07
-964	Take a stab at something	A try (at something)	A chance or opportunity to do or attempt something.	Miles	2023-09-06 00:00:01-07
-965	Plant the seed	Plant the seeds (of something)	To do something that ensures a certain outcome in the future, especially an unfortunate or tragic one.	Miles	2023-09-04 00:00:07-07
-966	Hit the ground running	Hit the ground running	To begin something energetically and successfully.	Christina	2023-09-06 00:00:02-07
-967	Bite the dust	Bite the dust	\N	Christina	2023-09-07 00:00:01-07
-968	Pull it off	Pull off	\N	Christina	2023-09-07 00:00:02-07
-969	Get under your skin	Get under (one’s) skin	To become a source of irritation.	Miles	2023-09-07 00:00:03-07
-970	Across the board	Across the board	Applying to or impacting every part or individual in a group or spectrum of things.	Miles	2023-09-07 00:00:04-07
-971	Take something and run with it	\N	\N	Miles	2023-09-07 00:00:05-07
-972	Come to terms	Come to terms	To agree to or do something, especially a set of demands or conditions.	Miles	2023-09-07 00:00:06-07
-973	Setting the stage	Set the stage for (something)	Literally, to prepare and decorate a stage for something, such as a performance.	Miles	2023-09-07 00:00:07-07
-974	Put someone on blast	Put (one) on blast	To publicly attack, scold, shame, or mock one, typically on social media.	Miles	2023-09-07 00:00:08-07
-975	In the ballpark	In the ballpark	Close to something specific, often a cost or amount.	Miles	2023-09-07 00:00:09-07
-976	Lean into it	Lean into (someone or something)	To push into or press against someone or something.	Miles	2023-09-07 00:00:10-07
-977	Change of heart	A change of heart	A change in one’s opinion or feelings on a matter.	Miles	2023-09-07 00:00:11-07
-978	Weed out	Weed out	To remove one or multiple undesirable people or things from a group. A noun or pronoun can be used between "weed" and "out.".	Miles	2023-09-07 00:00:12-07
-979	Thinning the herd	\N	\N	Miles	2023-09-07 00:00:13-07
-980	Send someone for a loop	\N	\N	Miles	2023-09-07 00:00:14-07
-981	Keep in touch	Keep in touch	To maintain contact with another person, especially at intervals so as to remain up to date with each other’s lives.	Miles	2023-09-07 00:00:15-07
-982	On the same/different level	\N	\N	Miles	2023-09-07 00:00:16-07
-983	Match made in heaven	A match made in heaven	An extremely well-suited pairing of people or things; a match that will result in a particularly positive or successful outcome.	Miles	2023-09-07 00:00:17-07
-984	Bottom line	The bottom line	Literally, the final figure on a statement showing a person or company’s total profit or loss.	Christina	2023-09-07 00:00:18-07
-987	Ramping up	Ramp up	To increase. A noun or pronoun can be used between "ramp" and "up.".	Christina	2023-09-09 00:00:02-07
-988	To piggyback off of something	Piggyback off (of) (something)	To use something said or done by someone else as the foundation for one’s own actions.	Christina	2023-09-09 00:00:03-07
-989	Thread the needle	Thread the needle	\N	Christina	2023-09-09 00:00:04-07
-990	Chicken out	Chicken out	To refuse to do something due to fear (real or perceived).	Christina	2023-09-09 00:00:05-07
-991	Lose your head	Lose (one’s) head	To lose one’s composure and act emotionally or irrationally.	Miles	2023-09-09 00:00:06-07
-992	Run it up the flagpole	Run it up the flagpole (and see who salutes)	To test out an idea in order to gauge interest or gain feedback.	Christina	2023-09-09 00:00:07-07
-993	Another nail in the coffin	Another nail in the coffin	Another negative event or action that contributes to one’s downfall or to something’s failure.	Miles	2023-09-09 00:00:08-07
-994	Hit rock bottom	Hit rock bottom	The reach the lowest or worst point of a decline.	Miles	2023-09-09 00:00:09-07
-995	Eagle eye	Eagle eye	Eeyesight, especially for something in particular.	Christina	2023-09-11 00:00:01-07
-996	Out of left field	Out of left field	Uncommon, unpopular, or otherwise strange.	Christina	2023-09-11 00:00:02-07
-997	Half cocked	Half-cocked	Prematurely, impulsively, or rashly.	Christina	2023-09-11 00:00:03-07
-998	Heart to heart	Heart-to-heart	\N	Miles	2023-09-11 00:00:04-07
-999	Sitting duck	Sitting duck	A person or thing that is vulnerable to or unprotected from attack; an easy target.	Christina	2023-09-12 00:00:01-07
-1000	Sticking your neck out for someone	\N	\N	Christina	2023-09-12 00:00:02-07
-1001	Clear the air	Clear the air	To remove or improve stale air or an unpleasant odor.	Christina	2023-09-12 00:00:03-07
-1002	Put a sock in it	Put a sock in it	To stop talking. Often used as an imperative.	Christina	2023-09-12 00:00:04-07
-1003	To put your finger on something	\N	\N	Miles	2023-09-12 00:00:05-07
-1004	Have your finger on the pulse	Have (one’s) finger on the pulse	To be very aware of current trends and happenings in a particular place.	Miles	2023-09-12 00:00:06-07
-1005	Buckle down	Buckle down	\N	Miles	2023-09-12 00:00:07-07
-1006	Blow over	Blow over	\N	Christina	2023-09-18 00:00:01-07
-1007	Work yourself into a lather	Work (oneself) into a lather	To become very nervous, distressed, or upset.	Christina	2023-09-18 00:00:02-07
-1008	Ham it up	Ham it up	To act in an exaggerated way, typically in order to be funny.	Christina	2023-09-18 00:00:03-07
-1009	Be my guest	Be my guest	Used to express encouragement or allowance for someone else to take action.	Christina	2023-09-18 00:00:04-07
-1069	Thumb up your ass	\N	\N	Christina	2023-11-16 23:00:03-08
-1010	Blow it out of the water	Blow (someone or something) out of the water	To totally defeat or ruin someone or something. The image refers to the explosion of a ship that has been hit by enemy fire.	Miles	2023-09-19 00:00:01-07
-1011	To sink in	Sink in	To penetrate, absorb, or soak in (to something).	Miles	2023-09-20 00:00:01-07
-1012	When something goes pear shaped	\N	\N	Miles	2023-09-20 00:00:02-07
-1013	I’ll fall on that sword	\N	\N	Miles	2023-09-20 00:00:03-07
-1014	Sleep with one eye open	Sleep with one eye open	To stay awake or sleep very lightly so as to remain very wary, cautious, or alert.	Miles	2023-09-20 00:00:04-07
-1016	Fired up	(all) fired up	Feeling very excited or passionate about something.	\N	2023-09-22 00:00:02-07
-1017	Bobs your uncle	\N	\N	Miles	2023-09-24 00:00:01-07
-1018	Rub someone the wrong way	Rub (one) the wrong way	To irritate one due to someone’s or something’s presence, nature, or habitual behavior (as opposed to directly and intentionally). Primarily heard in US.	Miles	2023-09-24 00:00:02-07
-1019	To yank someone’s chain	\N	\N	Christina	2023-09-24 00:00:03-07
-1020	Something in the wind	Something in the wind	Something rumored, anticipated, or intuited to happen or take place.	Christina	2023-09-24 00:00:04-07
-1021	Keep the train rolling	\N	\N	Christina	2023-09-24 00:00:05-07
-1022	Get your head in the game	Get (one’s) head in the game	To focus on and put one’s best effort into the athletic match currently underway.	Miles	2023-09-28 00:00:01-07
-1024	Back against the wall	Back to the wall	In a bad or high-pressure situation in which one’s choice or ability to act is limited.	Miles	2023-09-28 00:00:03-07
-1025	Backed into a corner	Be backed into a corner	To be forced into a difficult or unpleasant situation that one cannot easily resolve or escape.	Miles	2023-09-28 00:00:04-07
-1026	Smuggling plums	\N	\N	Ryan	2023-09-28 00:00:05-07
-1027	Get to the bottom of some thing	\N	\N	Christina	2023-09-28 00:00:06-07
-1028	Bottom of the totem pole	\N	\N	Christina	2023-09-28 00:00:07-07
-1029	Buckle up	Buckle up	\N	Miles	2023-09-29 00:00:01-07
-1030	Scratches that same itch	\N	\N	Miles	2023-09-29 00:00:02-07
-1031	Flying off the shelf	\N	\N	Miles	2023-09-29 00:00:03-07
-1032	Off to the races	Off to the races	Departing for something.	Miles	2023-09-29 00:00:04-07
-1033	Grind my gears	Grind (someone’s) gears	To greatly or specifically irritate or annoy someone.	Christina	2023-10-06 00:00:01-07
-1034	Locked and loaded	Locked and loaded	Loaded with ammunition and prepared to be fired.	Miles	2023-10-01 00:00:01-07
-1035	Cut and dried	Cut and dried	Prearranged, unchangeable, and dull. When it appears before a noun, the phrase is usually hyphenated.	Miles	2023-10-01 00:00:02-07
-1036	Slip through the cracks	Slip through the cracks	To go unnoticed or undealt with; to be unintentionally neglected or ignored, especially in a corporate, political, or social system.	Miles	2023-10-01 00:00:03-07
-1037	Close a chapter	\N	\N	Christina	2023-10-10 00:00:01-07
-1038	Knock out	Knock (oneself) out	Expend a lot of one’s energy or try very hard (doing something). The image is of working so hard as to become unconscious.	Christina	2023-10-10 00:00:02-07
-1039	Take it on the chin	Take (something) on the chin	Literally, to receive an impact, especially a punch, on one’s chin.	Christina	2023-10-10 00:00:03-07
-1040	Dig your own grave	Dig (one’s) own grave	To do something that has or will have negative consequences that are easily able to be foreseen.	Christina	2023-10-10 00:00:04-07
-1048	Taking a nose dive	Take a nosedive	Of an aircraft, to go into a sudden and rapid descent toward the ground leading with the nose of the plane.	Miles	2023-10-27 00:00:02-07
-1049	Rolls off the tongue	Roll off the tongue	To be very easy or enjoyable to say. Sometimes used sarcastically to imply the opposite.	Miles	2023-10-27 00:00:03-07
-1053	Kissing someone’s ass	\N	\N	Miles	2023-10-27 00:00:06-07
-1054	On deck	On deck	Literally, on the deck of a ship or boat.	Miles	2023-10-27 00:00:07-07
-1055	Out of hand	Out of hand	In an unruly or unmanageable state or manner; out of control.	Miles	2023-10-27 00:00:08-07
-1056	Roll up your sleeves	Roll up (one’s) sleeves	To do or get ready to do something difficult, intense, or demanding. Literally rolling up one’s sleeves is often done before performing some kind of work.	Christina	2023-10-31 00:00:01-07
-1057	Piss on a page	\N	\N	Christina	2023-10-31 00:00:02-07
-1058	Licking your wounds	Lick (one’s) wounds	To withdraw after a misstep or defeat in order to recover.	Christina	2023-10-31 00:00:03-07
-1059	In a pinch	In a pinch	When something ideal or preferred is not available; as a substitute.	Miles	2023-10-31 00:00:04-07
-1060	To put someone on the spot	\N	\N	Christina	2023-11-06 23:00:01-08
-1061	As the twig is bent so grows the tree	\N	\N	Miles	2023-11-06 23:00:02-08
-1062	Middle of the road	Middle-of-the-road	Describing an option that is neither the most nor the least expensive.	Miles	2023-11-10 23:00:01-08
-1063	Stick up your ass	Stick up (one’s) ass	A rigid and uptight demeanor.	Miles	2023-11-10 23:00:02-08
-1064	Up in the air	Be up in the air	To be uncertain or subject to change.	Christina	2023-11-15 23:00:01-08
-1065	Spit on your grave	\N	\N	Christina	2023-11-15 23:00:02-08
-1066	Dont piss into the wind	\N	\N	Miles	2023-11-15 23:00:03-08
-1067	Go to bat	Go to bat for (one)	To act in support of one.	Christina	2023-11-16 23:00:01-08
-1068	Cooking something up	Cook up	\N	Christina	2023-11-16 23:00:02-08
-1070	Shit dont stink	\N	\N	Christina	2023-11-16 23:00:04-08
-1071	Cherry picking	Cherry-pick	To choose something very carefully to ensure that the best option is chosen, perhaps through means that provide one an unfair advantage or from a selection that others do not have ready access to.	Christina	2023-11-16 23:00:05-08
-1072	Hot to trot	Hot to trot	Eager or impatient to do something.	Christina	2023-11-16 23:00:06-08
-1074	Cutting your teeth on something	Cut (one’s) teeth on (something)	To gain experience with something, especially at a young age (when one’s teeth would be coming in).	Matt	2023-12-09 23:00:01-08
-1075	Dont go chasing waterfalls	\N	\N	Christina	2023-12-09 23:00:02-08
-1076	Twisting in the wind	\N	\N	Miles	2024-01-07 23:00:01-08
-1077	Put the pussy on the chain wax	\N	\N	Miles	2024-01-07 23:00:02-08
-1078	If frogs had glass asses they would would only hop once	\N	\N	Miles	2024-01-07 23:00:03-08
-1079	The cock of the walk	\N	\N	Christina	2024-01-15 23:00:01-08
-1080	Not on my watch	\N	\N	Christina	2024-01-15 23:00:02-08
-769	Off the rails	Be off the rails	To be in a state of chaos, dysfunction, or disorder.	Miles	2023-08-20 00:00:04-07
-705	Off the bat	Off the bat	In a trajectory caused by being hit by a bat.	\N	2023-08-14 00:00:01-07
-3	Don’t hold your breath	Don’t hold your breath	Don’t expect something to happen. (The idea being that one couldn’t hold one’s breath long enough for the unlikely thing to happen.)	\N	2023-07-13 00:00:03-07
-10	Let the cat out of the bag	Let the cat out of the bag	To reveal a secret.	\N	2023-07-13 00:00:10-07
-1073	A wake up call	\N	\N	Miles	2023-11-16 23:00:07-08
-666	Rule the roost	Rule the roost	To be the real boss; to be the person in charge.	\N	2023-08-08 00:00:08-07
-667	Leave the table while you still have an appetite	\N	\N	\N	2023-08-08 00:00:09-07
-1023	Being on the ball	\N	\N	Miles	2023-09-28 00:00:02-07
-128	Missed the forest for the trees	can’t see the forest for the trees	Cannot see, understand, or focus on a situation in its entirety due to being preoccupied with minor details.	Eve	2023-07-14 00:00:01-07
-129	When in Rome, do as the Romans do	When in rome (do as the romans do)	One should do what is customary or typical in a particular place or setting, especially when one is a tourist.	Miles	2023-07-14 00:00:02-07
-130	6 in one hand half dozen in the other	six in one, (and) half a dozen in the other	The difference between these two options is negligible, irrelevant, or unimportant; either option is fine or will work as well as the other.	Eve	2023-07-14 00:00:03-07
-131	6 ways to Sunday	6 wasy to Sunday	Thoroughly or completely; in every possible way; from every conceivable angle.	Eve	2023-07-14 00:00:04-07
-134	A wolf in sheep’s clothing	A wolf in sheep’s clothing	A person or thing that appears harmless but is actually dangerous or bad.	Miles	2023-07-14 00:00:07-07
-135	Does a bear shit in the woods	\N	A rhetorical question meaning the answer to the previous question is emphatically and obviously "yes.".	Miles	2023-07-14 00:00:08-07
-136	Raining cats and dogs	It’s raining cats and dogs	It is raining extremely heavily.	Eve	2023-07-14 00:00:09-07
-758	Cloud 9	Cloud nine	\N	Ryan	2023-08-18 00:00:19-07
-167	Not in the cards	\N	\N	\N	2023-07-14 00:40:00-07
-772	To live in someone’s shadow	\N	\N	Eve	2023-08-20 00:00:07-07
-241	Let it slide	Let (something or someone) slide	To choose not to take any action to correct or improve a particular situation or someone’s actions or behavior.	Miles	2023-07-15 00:00:00-07
-221	Well runs dry	\N	\N	\N	2023-07-14 01:34:00-07
-242	Pass the buck	Pass the buck	To shift or reassign the blame or responsibility (for something) to another person, group, or thing.	Miles	2023-07-15 00:00:01-07
-243	X marks the spot	X marks the spot	This sign or mark (not necessarily an X) indicates the specific or exact location (of something).	Miles	2023-07-15 00:00:02-07
-244	15 minutes of fame	15 minutes of fame	A brief period of celebrity or notoriety. The term was coined by artist Andy Warhol.	Miles	2023-07-15 00:00:03-07
-245	Hit the spot	Hit the spot	To satisfy something, such as hunger or a craving.	Miles	2023-07-15 00:00:04-07
-246	Made in the shade	Made in the shade	In a comfortable position in life, usually due to some manner of financial success or windfall.	Eve	2023-07-15 00:00:05-07
-247	Run for your money	Run for (one’s) money	A prolonged period of success.	Miles	2023-07-15 00:00:06-07
-249	Out to lunch	Out to (some meal)	Away from one’s normal location to eat a particular meal.	Eve	2023-07-15 00:00:08-07
-250	Circling the drain	Circle the drain	To be in a state of severe deterioration such that one is approaching inevitable ruin, failure, or death. Usually used in the continuous form.	Eve	2023-07-15 00:00:09-07
-251	That’s the ticket	That’s the ticket	That is exactly the thing that is or was needed or called for.	\N	2023-07-15 00:00:10-07
-252	Sloppy seconds	\N	\N	Miles	2023-07-15 00:00:11-07
-253	Back in the fold	\N	\N	Eve	2023-07-15 00:00:12-07
-254	Take someone under your wing	Take (someone) under (one’s) wing	To act as someone’s guardian, protector, or mentor, especially someone who is vulnerable or in need of help, protection, or instruction.	Eve	2023-07-15 00:00:13-07
-255	We’re not in kansas anymore	Be not in kansas anymore	To no longer be in a place that one knows or where one is comfortable; to be in a completely unfamiliar and/or discomfiting environment. A reference t.	Eve	2023-07-15 00:00:14-07
-256	Out of the woods	Out of the wood(s)	No longer in danger or dealing with a particular difficulty, though not entirely resolved. Usually used in the negative.	Eve	2023-07-15 00:00:15-07
-257	Balls of steel	\N	\N	Eve	2023-07-15 00:00:16-07
-258	Eyes too big for your stomach	\N	\N	\N	2023-07-15 00:00:17-07
-259	Doe eyed	\N	\N	Eve	2023-07-15 00:00:18-07
-260	Snug as a bug in a rug	Snug as a bug (in a rug)	Very warm and cozy, typically while wrapped in blankets.	Miles	2023-07-15 00:00:19-07
-261	The cat that ate the canary	The cat that ate the canary	Someone who is smugly pleased or self-satisfied.	Eve	2023-07-15 00:00:20-07
-262	Tongue twister	Tongue twister	A word or phrase that is hard to say clearly due to difficult alliteration or pronunciation.	Eve	2023-07-15 00:00:21-07
-263	Roll of the dice	Roll of the dice	An especially risky action undertaken to achieve a favorable but unlikely outcome.	Eve	2023-07-15 00:00:22-07
-264	He’s lost his marbles	\N	\N	\N	2023-07-15 00:00:23-07
-266	Dead of night	Dead of night	The middle of the night.	Eve	2023-07-15 00:00:25-07
-301	Comparison is the thief of joy	\N	\N	Eve	2023-07-16 00:00:01-07
-302	Robbing the cradle	Rob the cradle	To date someone who is much younger than oneself.	Miles	2023-07-16 00:00:02-07
-303	Going the way of the buffalo	\N	\N	Miles	2023-07-16 00:00:03-07
-713	The whole enchilada	The whole enchilada	Every part of a multifaceted thing or situation taken together as a whole; the whole thing.	Christina	2023-08-15 00:00:05-07
-304	Shell of your former self	A shell of (someone’s or something’s) former self	A person, group, place, etc., that has become dramatically less healthy, vivacious, or robust, often following some traumatic event or negative circumstances.	Eve	2023-07-16 00:00:04-07
-305	The call is coming from inside the house	\N	\N	Eve	2023-07-16 00:00:05-07
-306	Coming out swinging	Come out swinging	To compete or defend someone or something passionately or aggressively.	Eve	2023-07-16 00:00:06-07
-307	Rose colored glasses	Rose-colored glasses	An unduly idealistic, optimistic, sentimental, or wistful perspective on or about something. Primarily heard in US.	Eve	2023-07-16 00:00:07-07
-308	Fog of war	The fog of war	Confusion, uncertainty, or skewed judgment caused by the violence and chaos of warfare, especially in relation to one’s own capability compared to that of one’s enemy.	Miles	2023-07-16 00:00:08-07
-309	The whole 9 yards	\N	\N	\N	2023-07-16 00:00:09-07
-1	Not my circus, not my monkeys	Not my circus, not my monkeys	This troublesome, burdensome, or volatile situation is none of my concern, and thus I refuse to get involved in it. A loan translation of the Polish idio.	Eve	2023-07-13 00:00:01-07
-2	Waiting with baited breath	Wait with bated breath	To remain in a state of eager anticipation (of or for something).	Eve	2023-07-13 00:00:02-07
-4	People in glass houses shouldn’t throw stones	People (who live) in glass houses shouldn’t throw stones.	People who are vulnerable to criticism should not criticize others, especially not for the faults that they themselves have (since such criticism will likely be returned).	\N	2023-07-13 00:00:04-07
-5	Don’t look a gift horse in the mouth	Don’t look a gift horse in the mouth	If you receive a gift, do so graciously, without voicing criticisms. The saying is attributed to St. Jerome and refers to the practice of looking at a horse’s teeth to determine its age.	\N	2023-07-13 00:00:05-07
-6	Don’t count your chickens before they hatch	Don’t count your chickens before they hatch.	Don’t make plans based on future events, outcomes, or successes that might not come to pass.	\N	2023-07-13 00:00:06-07
-7	Don’t keep all your eggs in one basket	put all (one’s) eggs in one basket	To invest, devote, or commit all of one’s energy or resources into a single venture, opportunity, or goal, generally at the risk of losing everything in the event that that thing fails or does not come to fruition.	\N	2023-07-13 00:00:07-07
-8	A bird in the hand is worth two in the bush	A bird in the hand is worth two in the bush	It is better to have something less valuable than to pursue something more valuable that may not be able to be obtained.	\N	2023-07-13 00:00:08-07
-9	There’s more than one way to skin a cat	There’s more than one way to skin a cat	There are many methods one may employ in achieving one’s ends.	Miles	2023-07-13 00:00:09-07
-11	Open a can of worms	Open (up) a can of worms	To initiate, instigate, or reveal a situation that is or is likely to become very complicated or problematic or that will have a negative outcome.	\N	2023-07-13 00:00:11-07
-12	Bull in a china shop	A bull in a china shop	Someone who is aggressively reckless and clumsy in a situation that requires delicacy and care.	Miles	2023-07-13 00:00:12-07
-13	One trick pony	A one-trick pony	A person, group, or thing that is known for or limited to only one unique or noteworthy skill, talent, ability, quality, area of success, etc.	\N	2023-07-13 00:00:13-07
-714	The whole kit and caboodle	The (whole) kit and caboodle	All the parts of a group of things.	Miles	2023-08-15 00:00:06-07
-310	Turning over in your grave	(someone) is/would be turning over in their grave	The thing in question is offensive to the memory of someone; someone would be filled with shame, disgust, or disapproval if they were alive today.	Eve	2023-07-16 00:00:10-07
-311	Shooting fish in a barrel	Like shooting fish in a barrel	Of some task or activity, exceptionally easy to do or accomplish.	Miles	2023-07-16 00:00:11-07
-312	Light a fire under your ass	\N	\N	Mike	2023-07-16 00:00:12-07
-313	An old flame	An/(one’s) old flame	One’s former lover.	Mike	2023-07-16 00:00:13-07
-314	Up in smoke	Up in smoke	Destroyed by fire.	Mike	2023-07-16 00:00:14-07
-315	Fighting fire with fire	Fight fire with fire	To retaliate with the same methods that one has had to endure.	Miles	2023-07-16 00:00:15-07
-316	Firing in all cylinders	\N	\N	Mike	2023-07-16 00:00:16-07
-317	The lion’s share	The lion’s share	The largest part or portion of something.	\N	2023-07-16 00:00:17-07
-318	Pedal to the metal	Pedal to the metal	Drive as fast as you can; push the accelerator down.	\N	2023-07-16 00:00:18-07
-319	Throw in the towel	Throw in the towel	To give up on some endeavor; to quit or abandon something; to admit defeat or failure.	\N	2023-07-16 00:00:19-07
-486	The nearer the bone the sweeter the meat	The nearer the bone, the sweeter the meat	The last parts of something are the most enjoyable.	Eve	2023-07-19 00:00:06-07
-300	Carrot on a stick	Carrot on a stick	A reward that is promised to someone as an incentive to complete some task.	Miles	2023-07-16 00:00:00-07
-773	To never measure up	\N	\N	Eve	2023-08-20 00:00:08-07
-370	Paint with broad strokes	\N	\N	\N	2023-07-16 00:01:10-07
-416	Fly by the seat of your pants	Fly by the seat of (one’s) pants	To rely on one’s instinct, as opposed to acting according to a set plan.	Eve	2023-07-17 00:00:01-07
-132	Burning bridges	Burn (one’s) bridges	\N	Miles	2023-07-14 00:00:05-07
-326	Throw up a white flag	\N	\N	\N	2023-07-16 00:00:26-07
-423	The clay is dry	\N	\N	\N	2023-07-17 00:00:08-07
-1015	Get back in the saddle	\N	\N	Christina	2023-09-22 00:00:01-07
-420	Kick the bucket	\N	\N	\N	2023-07-17 00:00:05-07
-417	Play stupid games win stupid prizes	Play stupid games, win stupid prizes	If you engage in behavior that is stupid, obnoxious, or reckless, you will suffer unpleasant consequences.	Eve	2023-07-17 00:00:02-07
-418	On the nose	On the nose	Precisely accurate; exactly right.	\N	2023-07-17 00:00:03-07
-419	Hit the nail on the head	Hit the nail (right) on the head	Literally, to strike a nail on its head (the flat, circular end).	\N	2023-07-17 00:00:04-07
-485	Jack of all trades	Jack of all trades	A person who is skilled in many different areas.	\N	2023-07-19 00:00:05-07
-823	Get a big head	Get a big head	To become arrogant or conceited; to assume an exaggeratedly high opinion of oneself.	Miles	2023-08-25 00:00:17-07
-470	A whole other ball game	\N	\N	Mike	2023-07-18 00:00:00-07
-487	To worry is to make payments on a debt that may never come due	\N	\N	Eve	2023-07-19 00:00:07-07
-824	Getting on your soap box	\N	\N	Miles	2023-08-25 00:00:18-07
-473	Letting your true colors shine	\N	\N	\N	2023-07-18 00:00:03-07
-481	Opiate of the masses	The opiate of the masses	That which creates a feeling of false happiness, contentment, or numbness to reality. Adapted from Karl Marx’s description of organized religion.	Eve	2023-07-19 00:00:01-07
-482	The faster they rise the harder they fall	\N	\N	Eve	2023-07-19 00:00:02-07
-483	Out of sight out of mind	Out of sight, out of mind	That which cannot be seen or is not noticeable will be forgotten.	\N	2023-07-19 00:00:03-07
-484	Wearing multiple hats	\N	\N	\N	2023-07-19 00:00:04-07
-488	A rolling stone gathers no moss	A rolling stone gathers no moss	A person who wanders or travels often and at length will not be burdened by attachments such as friends, family, or possessions. Can be used as a negative (to suggest that such a person won’t find a fulfilling place in life) or as a positive (to suggest that they will have a more interesting and unpredictable life).	Eve	2023-07-19 00:00:08-07
-489	Necessity is the mother of invention	Necessity is the mother of invention	Creative solutions are often produced in response to difficulties or hardships that need to be overcome.	Eve	2023-07-19 00:00:09-07
-490	A day late and a dollar short	A day late and a dollar short	Too late to be of any benefit.	Eve	2023-07-19 00:00:10-07
-491	Sixpence none the richer	History	\N	Eve	2023-07-19 00:00:11-07
-494	For whom the bell tolls	Background	Ernest Hemingway wrot.	Eve	2023-07-19 00:00:14-07
-878	Out of the loop	Out of the loop	Not privy to the most up-to-date information.	Christina	2023-08-30 00:00:01-07
-536	Herding cats	Be like herding cats	To be very unwieldy or unmanageable; to be nearly impossible to organize. Usually said of a group of people.	Eve	2023-07-20 00:00:00-07
-524	Slap my ass and call me Sally	\N	\N	Eve	2023-07-19 00:00:44-07
-879	Snap out of it	Snap out of (something)	To suddenly recover or be freed from some negative or undesirable condition, emotion, or situation.	Christina	2023-08-30 00:00:02-07
-659	Served on a silver platter	\N	\N	Miles	2023-08-08 00:00:01-07
-660	Fed from a silver spoon	\N	\N	Miles	2023-08-08 00:00:02-07
-661	The road paved in gold	\N	\N	\N	2023-08-08 00:00:03-07
-662	Pillow talk	Pillow talk	Intimate conversations between two people in a romantic relationship when they are in bed together.	\N	2023-08-08 00:00:04-07
-663	Get the ball rolling	Get the ball rolling	To set something, often a process, in motion; to begin.	\N	2023-08-08 00:00:05-07
-664	Long walk off a short pier	\N	\N	\N	2023-08-08 00:00:06-07
-665	Bent out of shape	Bent out of shape	Of a person, upset or angry.	\N	2023-08-08 00:00:07-07
-688	Cut me to the quick	Cut (one) to the quick	To slice a part of the body very deeply.	Christina	2023-08-09 00:00:16-07
-684	Time to hang up your hat	\N	\N	\N	2023-08-09 00:00:12-07
-709	Off the deep end	Off the deep end	Crazy or irrational.	Christina	2023-08-15 00:00:01-07
-710	Toe to toe	Toe-to-toe	A direct conflict between two people or groups, possibly in close quarters.	Christina	2023-08-15 00:00:02-07
-711	By a hair	By a hair	By an extremely short or slim margin (of distance, time, or another measure).	Miles	2023-08-15 00:00:03-07
-712	Chip in	Chip in	To contribute to something being undertaken by a group, such as a task or collection.	Christina	2023-08-15 00:00:04-07
-715	Flavor of the month	Flavor of the month	Someone or something very popular but only temporarily or ephemerally. The phrase is often used to describe fleeting romantic relationships.	Miles	2023-08-15 00:00:07-07
-931	Take something off your plate	\N	\N	Christina	2023-09-01 00:00:07-07
-760	Putting in leg work	\N	\N	Christina	2023-08-19 00:00:01-07
-761	In the limelight	In the limelight	At the center of attention. The phrase refers to a type of lamp that was previously used in theatrical stage lighting.	Christina	2023-08-19 00:00:02-07
-762	15 minutes of fame	15 minutes of fame	A brief period of celebrity or notoriety. The term was coined by artist Andy Warhol.	Christina	2023-08-19 00:00:03-07
-763	Hit the bricks	Hit the bricks	To depart, often on foot.	Christina	2023-08-19 00:00:04-07
-770	Living under a rock	Live under a rock	To be oblivious to or ignorant of something that is very widely known, often related to pop culture.	Eve	2023-08-20 00:00:05-07
-771	True measure of a man	\N	\N	Eve	2023-08-20 00:00:06-07
-778	This day in age	\N	\N	Miles	2023-08-22 00:00:02-07
-827	Turn an burn	\N	\N	Miles	2023-08-25 00:00:21-07
-985	Hand in glove	Hand in glove	In close association or collaboration (with someone or something).	Christina	2023-09-07 00:00:19-07
-118	The grass is always greener on the other side of the fence	The grass is always greener (on the other side)	Other people’s circumstances or belongings always seem more desirable than one’s own.	\N	2023-07-13 00:01:58-07
-119	Birds of a feather flock together	Birds of a feather flock together	People who have similar interests, ideas, or characteristics tend to seek out or associate with one another.	\N	2023-07-13 00:01:59-07
-120	What’s good for the goose is good for the gander	what’s good for the goose is good for the gander	Used to say that one person or situation should be treated the same way that another person or situation is treated	Eve	2023-07-13 00:02:00-07
-155	Screwed the pooch	Screw the pooch	To make a very serious, grievous, or irreversible mistake; to ruin something or cause something to fail due to such an error.	Eve	2023-07-14 00:28:00-07
-194	Chasing the dragon	Chase the dragon	To smoke a controlled substance, often heroin.	\N	2023-07-14 01:07:00-07
-248	Chopped liver	Chopped liver	A trivial, unimportant, or unappealing person or thing. The phrase likely originated as a part of Jewish humor, referring to the serving of chopped liver as a common side dish (thus overlooked in favor of the main course), the taste of which many do not find appealing.	Miles	2023-07-15 00:00:07-07
-555	Light in the loafers	\N	Homosexual, especially of men.	\N	2023-07-20 00:00:19-07
-614	Shit or get off the pot	Shit or get off the pot	Either commit to doing something productive or step aside and stop wasting time.	\N	2023-07-24 00:00:09-07
-1041	Put it all on the line	Put it all on the line	To put forth one’s maximum amount of energy or effort; to make use of all of one’s resources or abilities.	Christina	2023-10-10 00:00:05-07
-1042	Over the top	Over the top	Beyond a certain limit, threshold, goal, or quota.	Miles	2023-10-14 00:00:01-07
-1043	Touch base	Touch base (with someone)	To contact someone to update them or receive an update from them.	Miles	2023-10-14 00:00:02-07
-1044	Within an inch of life	Within an inch of (one’s) life	Very soundly or thoroughly, to or as if to the point of near death.	Christina	2023-10-18 00:00:01-07
-1045	Picking your brain	Pick (one’s) brain(s)	To ask one questions in order to obtain detailed information or advice.	Christina	2023-10-18 00:00:02-07
-1046	A slap in the face	Slap in the face	Words or actions that have offended or otherwise upset someone.	Christina	2023-10-18 00:00:03-07
-1047	A slap on the wrist	Slap on the wrist	A mild punishment or warning.	Miles	2023-10-27 00:00:01-07
-1050	To have someone’s back	\N	\N	Miles	2023-10-27 00:00:03-07
+COPY realtime.schema_migrations (version, inserted_at) FROM stdin;
+20211116024918	2024-08-22 23:54:46
+20211116045059	2024-08-22 23:54:46
+20211116050929	2024-08-22 23:54:46
+20211116051442	2024-08-22 23:54:46
+20211116212300	2024-08-22 23:54:46
+20211116213355	2024-08-22 23:54:46
+20211116213934	2024-08-22 23:54:47
+20211116214523	2024-08-22 23:54:47
+20211122062447	2024-08-22 23:54:47
+20211124070109	2024-08-22 23:54:47
+20211202204204	2024-08-22 23:54:47
+20211202204605	2024-08-22 23:54:47
+20211210212804	2024-08-22 23:54:47
+20211228014915	2024-08-22 23:54:47
+20220107221237	2024-08-22 23:54:47
+20220228202821	2024-08-22 23:54:47
+20220312004840	2024-08-22 23:54:47
+20220603231003	2024-08-22 23:54:47
+20220603232444	2024-08-22 23:54:47
+20220615214548	2024-08-22 23:54:47
+20220712093339	2024-08-22 23:54:47
+20220908172859	2024-08-22 23:54:47
+20220916233421	2024-08-22 23:54:47
+20230119133233	2024-08-22 23:54:47
+20230128025114	2024-08-22 23:54:47
+20230128025212	2024-08-22 23:54:47
+20230227211149	2024-08-22 23:54:47
+20230228184745	2024-08-22 23:54:47
+20230308225145	2024-08-22 23:54:47
+20230328144023	2024-08-22 23:54:47
+20231018144023	2024-08-22 23:54:47
+20231204144023	2024-08-22 23:54:47
+20231204144024	2024-08-22 23:54:47
+20231204144025	2024-08-22 23:54:47
+20240108234812	2024-08-22 23:54:47
+20240109165339	2024-08-22 23:54:47
+20240227174441	2024-08-22 23:54:47
+20240311171622	2024-08-22 23:54:47
+20240321100241	2024-08-22 23:54:47
+20240401105812	2024-08-22 23:54:47
+20240418121054	2024-08-22 23:54:47
+20240523004032	2024-08-22 23:54:47
+20240618124746	2024-08-22 23:54:47
+20240801235015	2024-08-22 23:54:47
+20240805133720	2024-08-22 23:54:47
+20240827160934	2024-09-22 01:20:20
+20240919163303	2024-11-12 22:52:38
+20240919163305	2024-11-12 22:52:38
+20241019105805	2024-11-12 22:52:38
+20241030150047	2024-11-12 22:52:38
+20241108114728	2024-11-12 22:52:38
+20241121104152	2024-12-17 22:04:46
+20241130184212	2024-12-17 22:04:46
+20241220035512	2025-02-17 03:22:59
+20241220123912	2025-02-17 03:22:59
+20241224161212	2025-02-17 03:22:59
+20250107150512	2025-02-17 03:22:59
+20250110162412	2025-02-17 03:22:59
+20250123174212	2025-02-17 03:22:59
+20250128220012	2025-02-17 03:22:59
+20250506224012	2025-05-23 07:12:45
+20250523164012	2025-06-06 19:29:04
 \.
 
 
 --
--- TOC entry 3606 (class 0 OID 0)
--- Dependencies: 211
--- Name: idioms_examples_test_example_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Data for Name: subscription; Type: TABLE DATA; Schema: realtime; Owner: supabase_admin
 --
 
-SELECT pg_catalog.setval('public.idioms_examples_test_example_id_seq', 1, false);
-
-
---
--- TOC entry 3607 (class 0 OID 0)
--- Dependencies: 213
--- Name: idioms_origin_test_origin_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.idioms_origin_test_origin_id_seq', 1, false);
+COPY realtime.subscription (id, subscription_id, entity, filters, claims, created_at) FROM stdin;
+\.
 
 
 --
--- TOC entry 3608 (class 0 OID 0)
--- Dependencies: 209
--- Name: idioms_test_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Data for Name: buckets; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
 --
 
-SELECT pg_catalog.setval('public.idioms_test_id_seq', 1081, true);
+COPY storage.buckets (id, name, owner, created_at, updated_at, public, avif_autodetection, file_size_limit, allowed_mime_types, owner_id) FROM stdin;
+\.
 
 
 --
--- TOC entry 3447 (class 2606 OID 147512)
--- Name: idioms_examples_test idioms_examples_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Data for Name: migrations; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
 --
 
-ALTER TABLE ONLY public.idioms_examples_test
+COPY storage.migrations (id, name, hash, executed_at) FROM stdin;
+0	create-migrations-table	e18db593bcde2aca2a408c4d1100f6abba2195df	2024-08-22 23:53:18.073097
+1	initialmigration	6ab16121fbaa08bbd11b712d05f358f9b555d777	2024-08-22 23:53:18.096294
+2	storage-schema	5c7968fd083fcea04050c1b7f6253c9771b99011	2024-08-22 23:53:18.105933
+3	pathtoken-column	2cb1b0004b817b29d5b0a971af16bafeede4b70d	2024-08-22 23:53:18.198969
+4	add-migrations-rls	427c5b63fe1c5937495d9c635c263ee7a5905058	2024-08-22 23:53:18.265791
+5	add-size-functions	79e081a1455b63666c1294a440f8ad4b1e6a7f84	2024-08-22 23:53:18.31304
+6	change-column-name-in-get-size	f93f62afdf6613ee5e7e815b30d02dc990201044	2024-08-22 23:53:18.362201
+7	add-rls-to-buckets	e7e7f86adbc51049f341dfe8d30256c1abca17aa	2024-08-22 23:53:18.425107
+8	add-public-to-buckets	fd670db39ed65f9d08b01db09d6202503ca2bab3	2024-08-22 23:53:18.431452
+9	fix-search-function	3a0af29f42e35a4d101c259ed955b67e1bee6825	2024-08-22 23:53:18.481869
+10	search-files-search-function	68dc14822daad0ffac3746a502234f486182ef6e	2024-08-22 23:53:18.53986
+11	add-trigger-to-auto-update-updated_at-column	7425bdb14366d1739fa8a18c83100636d74dcaa2	2024-08-22 23:53:18.546805
+12	add-automatic-avif-detection-flag	8e92e1266eb29518b6a4c5313ab8f29dd0d08df9	2024-08-22 23:53:18.553474
+13	add-bucket-custom-limits	cce962054138135cd9a8c4bcd531598684b25e7d	2024-08-22 23:53:18.560844
+14	use-bytes-for-max-size	941c41b346f9802b411f06f30e972ad4744dad27	2024-08-22 23:53:18.613949
+15	add-can-insert-object-function	934146bc38ead475f4ef4b555c524ee5d66799e5	2024-08-22 23:53:18.685746
+16	add-version	76debf38d3fd07dcfc747ca49096457d95b1221b	2024-08-22 23:53:18.692008
+17	drop-owner-foreign-key	f1cbb288f1b7a4c1eb8c38504b80ae2a0153d101	2024-08-22 23:53:18.744654
+18	add_owner_id_column_deprecate_owner	e7a511b379110b08e2f214be852c35414749fe66	2024-08-22 23:53:18.797434
+19	alter-default-value-objects-id	02e5e22a78626187e00d173dc45f58fa66a4f043	2024-08-22 23:53:18.848831
+20	list-objects-with-delimiter	cd694ae708e51ba82bf012bba00caf4f3b6393b7	2024-08-22 23:53:18.918024
+21	s3-multipart-uploads	8c804d4a566c40cd1e4cc5b3725a664a9303657f	2024-08-22 23:53:18.939762
+22	s3-multipart-uploads-big-ints	9737dc258d2397953c9953d9b86920b8be0cdb73	2024-08-22 23:53:18.990385
+23	optimize-search-function	9d7e604cddc4b56a5422dc68c9313f4a1b6f132c	2024-08-22 23:53:19.083004
+24	operation-function	8312e37c2bf9e76bbe841aa5fda889206d2bf8aa	2024-08-22 23:53:19.091811
+25	custom-metadata	d974c6057c3db1c1f847afa0e291e6165693b990	2024-08-22 23:53:19.141217
+\.
+
+
+--
+-- Data for Name: objects; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
+--
+
+COPY storage.objects (id, bucket_id, name, owner, created_at, updated_at, last_accessed_at, metadata, version, owner_id, user_metadata) FROM stdin;
+\.
+
+
+--
+-- Data for Name: s3_multipart_uploads; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
+--
+
+COPY storage.s3_multipart_uploads (id, in_progress_size, upload_signature, bucket_id, key, version, owner_id, created_at, user_metadata) FROM stdin;
+\.
+
+
+--
+-- Data for Name: s3_multipart_uploads_parts; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
+--
+
+COPY storage.s3_multipart_uploads_parts (id, upload_id, size, part_number, bucket_id, key, etag, owner_id, version, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: supabase_migrations; Owner: postgres
+--
+
+COPY supabase_migrations.schema_migrations (version, statements, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: secrets; Type: TABLE DATA; Schema: vault; Owner: supabase_admin
+--
+
+COPY vault.secrets (id, name, description, secret, key_id, nonce, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: refresh_tokens_id_seq; Type: SEQUENCE SET; Schema: auth; Owner: supabase_auth_admin
+--
+
+SELECT pg_catalog.setval('auth.refresh_tokens_id_seq', 1, false);
+
+
+--
+-- Name: key_key_id_seq; Type: SEQUENCE SET; Schema: pgsodium; Owner: supabase_admin
+--
+
+SELECT pg_catalog.setval('pgsodium.key_key_id_seq', 1, false);
+
+
+--
+-- Name: idiom_examples_example_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.idiom_examples_example_id_seq', 4969, true);
+
+
+--
+-- Name: idioms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.idioms_id_seq', 1122, true);
+
+
+--
+-- Name: subscription_id_seq; Type: SEQUENCE SET; Schema: realtime; Owner: supabase_admin
+--
+
+SELECT pg_catalog.setval('realtime.subscription_id_seq', 1, false);
+
+
+--
+-- Name: mfa_amr_claims amr_id_pk; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_amr_claims
+    ADD CONSTRAINT amr_id_pk PRIMARY KEY (id);
+
+
+--
+-- Name: audit_log_entries audit_log_entries_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.audit_log_entries
+    ADD CONSTRAINT audit_log_entries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: flow_state flow_state_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.flow_state
+    ADD CONSTRAINT flow_state_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: identities identities_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.identities
+    ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: identities identities_provider_id_provider_unique; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.identities
+    ADD CONSTRAINT identities_provider_id_provider_unique UNIQUE (provider_id, provider);
+
+
+--
+-- Name: instances instances_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.instances
+    ADD CONSTRAINT instances_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mfa_amr_claims mfa_amr_claims_session_id_authentication_method_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_amr_claims
+    ADD CONSTRAINT mfa_amr_claims_session_id_authentication_method_pkey UNIQUE (session_id, authentication_method);
+
+
+--
+-- Name: mfa_challenges mfa_challenges_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_challenges
+    ADD CONSTRAINT mfa_challenges_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mfa_factors mfa_factors_last_challenged_at_key; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_factors
+    ADD CONSTRAINT mfa_factors_last_challenged_at_key UNIQUE (last_challenged_at);
+
+
+--
+-- Name: mfa_factors mfa_factors_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_factors
+    ADD CONSTRAINT mfa_factors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: one_time_tokens one_time_tokens_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.one_time_tokens
+    ADD CONSTRAINT one_time_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: refresh_tokens refresh_tokens_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.refresh_tokens
+    ADD CONSTRAINT refresh_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: refresh_tokens refresh_tokens_token_unique; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.refresh_tokens
+    ADD CONSTRAINT refresh_tokens_token_unique UNIQUE (token);
+
+
+--
+-- Name: saml_providers saml_providers_entity_id_key; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.saml_providers
+    ADD CONSTRAINT saml_providers_entity_id_key UNIQUE (entity_id);
+
+
+--
+-- Name: saml_providers saml_providers_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.saml_providers
+    ADD CONSTRAINT saml_providers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: saml_relay_states saml_relay_states_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.saml_relay_states
+    ADD CONSTRAINT saml_relay_states_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sso_domains sso_domains_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.sso_domains
+    ADD CONSTRAINT sso_domains_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sso_providers sso_providers_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.sso_providers
+    ADD CONSTRAINT sso_providers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_phone_key; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.users
+    ADD CONSTRAINT users_phone_key UNIQUE (phone);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idiom_examples idioms_examples_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.idiom_examples
     ADD CONSTRAINT idioms_examples_test_pkey PRIMARY KEY (example_id);
 
 
 --
--- TOC entry 3449 (class 2606 OID 147530)
--- Name: idioms_origin_test idioms_origin_test_idiom_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: idioms idioms_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.idioms_origin_test
-    ADD CONSTRAINT idioms_origin_test_idiom_id_key UNIQUE (idiom_id);
-
-
---
--- TOC entry 3451 (class 2606 OID 147528)
--- Name: idioms_origin_test idioms_origin_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.idioms_origin_test
-    ADD CONSTRAINT idioms_origin_test_pkey PRIMARY KEY (origin_id);
-
-
---
--- TOC entry 3445 (class 2606 OID 147484)
--- Name: idioms_test idioms_test_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.idioms_test
+ALTER TABLE ONLY public.idioms
     ADD CONSTRAINT idioms_test_pkey PRIMARY KEY (id);
 
 
 --
--- TOC entry 3452 (class 2606 OID 147513)
--- Name: idioms_examples_test idioms_examples_test_idiom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: realtime; Owner: supabase_realtime_admin
 --
 
-ALTER TABLE ONLY public.idioms_examples_test
-    ADD CONSTRAINT idioms_examples_test_idiom_id_fkey FOREIGN KEY (idiom_id) REFERENCES public.idioms_test(id);
+ALTER TABLE ONLY realtime.messages
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (id, inserted_at);
 
 
 --
--- TOC entry 3453 (class 2606 OID 147531)
--- Name: idioms_origin_test idioms_origin_test_idiom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: subscription pk_subscription; Type: CONSTRAINT; Schema: realtime; Owner: supabase_admin
 --
 
-ALTER TABLE ONLY public.idioms_origin_test
-    ADD CONSTRAINT idioms_origin_test_idiom_id_fkey FOREIGN KEY (idiom_id) REFERENCES public.idioms_test(id);
+ALTER TABLE ONLY realtime.subscription
+    ADD CONSTRAINT pk_subscription PRIMARY KEY (id);
 
 
--- Completed on 2024-10-06 19:50:54 PDT
+--
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: realtime; Owner: supabase_admin
+--
+
+ALTER TABLE ONLY realtime.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: buckets buckets_pkey; Type: CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.buckets
+    ADD CONSTRAINT buckets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: migrations migrations_name_key; Type: CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.migrations
+    ADD CONSTRAINT migrations_name_key UNIQUE (name);
+
+
+--
+-- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.migrations
+    ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: objects objects_pkey; Type: CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.objects
+    ADD CONSTRAINT objects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: s3_multipart_uploads_parts s3_multipart_uploads_parts_pkey; Type: CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.s3_multipart_uploads_parts
+    ADD CONSTRAINT s3_multipart_uploads_parts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: s3_multipart_uploads s3_multipart_uploads_pkey; Type: CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.s3_multipart_uploads
+    ADD CONSTRAINT s3_multipart_uploads_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: supabase_migrations; Owner: postgres
+--
+
+ALTER TABLE ONLY supabase_migrations.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: audit_logs_instance_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX audit_logs_instance_id_idx ON auth.audit_log_entries USING btree (instance_id);
+
+
+--
+-- Name: confirmation_token_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX confirmation_token_idx ON auth.users USING btree (confirmation_token) WHERE ((confirmation_token)::text !~ '^[0-9 ]*$'::text);
+
+
+--
+-- Name: email_change_token_current_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX email_change_token_current_idx ON auth.users USING btree (email_change_token_current) WHERE ((email_change_token_current)::text !~ '^[0-9 ]*$'::text);
+
+
+--
+-- Name: email_change_token_new_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX email_change_token_new_idx ON auth.users USING btree (email_change_token_new) WHERE ((email_change_token_new)::text !~ '^[0-9 ]*$'::text);
+
+
+--
+-- Name: factor_id_created_at_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX factor_id_created_at_idx ON auth.mfa_factors USING btree (user_id, created_at);
+
+
+--
+-- Name: flow_state_created_at_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX flow_state_created_at_idx ON auth.flow_state USING btree (created_at DESC);
+
+
+--
+-- Name: identities_email_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX identities_email_idx ON auth.identities USING btree (email text_pattern_ops);
+
+
+--
+-- Name: INDEX identities_email_idx; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON INDEX auth.identities_email_idx IS 'Auth: Ensures indexed queries on the email column';
+
+
+--
+-- Name: identities_user_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX identities_user_id_idx ON auth.identities USING btree (user_id);
+
+
+--
+-- Name: idx_auth_code; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX idx_auth_code ON auth.flow_state USING btree (auth_code);
+
+
+--
+-- Name: idx_user_id_auth_method; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX idx_user_id_auth_method ON auth.flow_state USING btree (user_id, authentication_method);
+
+
+--
+-- Name: mfa_challenge_created_at_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX mfa_challenge_created_at_idx ON auth.mfa_challenges USING btree (created_at DESC);
+
+
+--
+-- Name: mfa_factors_user_friendly_name_unique; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX mfa_factors_user_friendly_name_unique ON auth.mfa_factors USING btree (friendly_name, user_id) WHERE (TRIM(BOTH FROM friendly_name) <> ''::text);
+
+
+--
+-- Name: mfa_factors_user_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX mfa_factors_user_id_idx ON auth.mfa_factors USING btree (user_id);
+
+
+--
+-- Name: one_time_tokens_relates_to_hash_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX one_time_tokens_relates_to_hash_idx ON auth.one_time_tokens USING hash (relates_to);
+
+
+--
+-- Name: one_time_tokens_token_hash_hash_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX one_time_tokens_token_hash_hash_idx ON auth.one_time_tokens USING hash (token_hash);
+
+
+--
+-- Name: one_time_tokens_user_id_token_type_key; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX one_time_tokens_user_id_token_type_key ON auth.one_time_tokens USING btree (user_id, token_type);
+
+
+--
+-- Name: reauthentication_token_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX reauthentication_token_idx ON auth.users USING btree (reauthentication_token) WHERE ((reauthentication_token)::text !~ '^[0-9 ]*$'::text);
+
+
+--
+-- Name: recovery_token_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX recovery_token_idx ON auth.users USING btree (recovery_token) WHERE ((recovery_token)::text !~ '^[0-9 ]*$'::text);
+
+
+--
+-- Name: refresh_tokens_instance_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX refresh_tokens_instance_id_idx ON auth.refresh_tokens USING btree (instance_id);
+
+
+--
+-- Name: refresh_tokens_instance_id_user_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX refresh_tokens_instance_id_user_id_idx ON auth.refresh_tokens USING btree (instance_id, user_id);
+
+
+--
+-- Name: refresh_tokens_parent_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX refresh_tokens_parent_idx ON auth.refresh_tokens USING btree (parent);
+
+
+--
+-- Name: refresh_tokens_session_id_revoked_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX refresh_tokens_session_id_revoked_idx ON auth.refresh_tokens USING btree (session_id, revoked);
+
+
+--
+-- Name: refresh_tokens_updated_at_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX refresh_tokens_updated_at_idx ON auth.refresh_tokens USING btree (updated_at DESC);
+
+
+--
+-- Name: saml_providers_sso_provider_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX saml_providers_sso_provider_id_idx ON auth.saml_providers USING btree (sso_provider_id);
+
+
+--
+-- Name: saml_relay_states_created_at_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX saml_relay_states_created_at_idx ON auth.saml_relay_states USING btree (created_at DESC);
+
+
+--
+-- Name: saml_relay_states_for_email_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX saml_relay_states_for_email_idx ON auth.saml_relay_states USING btree (for_email);
+
+
+--
+-- Name: saml_relay_states_sso_provider_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX saml_relay_states_sso_provider_id_idx ON auth.saml_relay_states USING btree (sso_provider_id);
+
+
+--
+-- Name: sessions_not_after_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX sessions_not_after_idx ON auth.sessions USING btree (not_after DESC);
+
+
+--
+-- Name: sessions_user_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX sessions_user_id_idx ON auth.sessions USING btree (user_id);
+
+
+--
+-- Name: sso_domains_domain_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX sso_domains_domain_idx ON auth.sso_domains USING btree (lower(domain));
+
+
+--
+-- Name: sso_domains_sso_provider_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX sso_domains_sso_provider_id_idx ON auth.sso_domains USING btree (sso_provider_id);
+
+
+--
+-- Name: sso_providers_resource_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX sso_providers_resource_id_idx ON auth.sso_providers USING btree (lower(resource_id));
+
+
+--
+-- Name: unique_phone_factor_per_user; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX unique_phone_factor_per_user ON auth.mfa_factors USING btree (user_id, phone);
+
+
+--
+-- Name: user_id_created_at_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX user_id_created_at_idx ON auth.sessions USING btree (user_id, created_at);
+
+
+--
+-- Name: users_email_partial_key; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE UNIQUE INDEX users_email_partial_key ON auth.users USING btree (email) WHERE (is_sso_user = false);
+
+
+--
+-- Name: INDEX users_email_partial_key; Type: COMMENT; Schema: auth; Owner: supabase_auth_admin
+--
+
+COMMENT ON INDEX auth.users_email_partial_key IS 'Auth: A partial unique index that applies only when is_sso_user is false';
+
+
+--
+-- Name: users_instance_id_email_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX users_instance_id_email_idx ON auth.users USING btree (instance_id, lower((email)::text));
+
+
+--
+-- Name: users_instance_id_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX users_instance_id_idx ON auth.users USING btree (instance_id);
+
+
+--
+-- Name: users_is_anonymous_idx; Type: INDEX; Schema: auth; Owner: supabase_auth_admin
+--
+
+CREATE INDEX users_is_anonymous_idx ON auth.users USING btree (is_anonymous);
+
+
+--
+-- Name: ix_realtime_subscription_entity; Type: INDEX; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE INDEX ix_realtime_subscription_entity ON realtime.subscription USING btree (entity);
+
+
+--
+-- Name: subscription_subscription_id_entity_filters_key; Type: INDEX; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE UNIQUE INDEX subscription_subscription_id_entity_filters_key ON realtime.subscription USING btree (subscription_id, entity, filters);
+
+
+--
+-- Name: bname; Type: INDEX; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE UNIQUE INDEX bname ON storage.buckets USING btree (name);
+
+
+--
+-- Name: bucketid_objname; Type: INDEX; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE UNIQUE INDEX bucketid_objname ON storage.objects USING btree (bucket_id, name);
+
+
+--
+-- Name: idx_multipart_uploads_list; Type: INDEX; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE INDEX idx_multipart_uploads_list ON storage.s3_multipart_uploads USING btree (bucket_id, key, created_at);
+
+
+--
+-- Name: idx_objects_bucket_id_name; Type: INDEX; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE INDEX idx_objects_bucket_id_name ON storage.objects USING btree (bucket_id, name COLLATE "C");
+
+
+--
+-- Name: name_prefix_search; Type: INDEX; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE INDEX name_prefix_search ON storage.objects USING btree (name text_pattern_ops);
+
+
+--
+-- Name: subscription tr_check_filters; Type: TRIGGER; Schema: realtime; Owner: supabase_admin
+--
+
+CREATE TRIGGER tr_check_filters BEFORE INSERT OR UPDATE ON realtime.subscription FOR EACH ROW EXECUTE FUNCTION realtime.subscription_check_filters();
+
+
+--
+-- Name: objects update_objects_updated_at; Type: TRIGGER; Schema: storage; Owner: supabase_storage_admin
+--
+
+CREATE TRIGGER update_objects_updated_at BEFORE UPDATE ON storage.objects FOR EACH ROW EXECUTE FUNCTION storage.update_updated_at_column();
+
+
+--
+-- Name: identities identities_user_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.identities
+    ADD CONSTRAINT identities_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: mfa_amr_claims mfa_amr_claims_session_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_amr_claims
+    ADD CONSTRAINT mfa_amr_claims_session_id_fkey FOREIGN KEY (session_id) REFERENCES auth.sessions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: mfa_challenges mfa_challenges_auth_factor_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_challenges
+    ADD CONSTRAINT mfa_challenges_auth_factor_id_fkey FOREIGN KEY (factor_id) REFERENCES auth.mfa_factors(id) ON DELETE CASCADE;
+
+
+--
+-- Name: mfa_factors mfa_factors_user_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.mfa_factors
+    ADD CONSTRAINT mfa_factors_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: one_time_tokens one_time_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.one_time_tokens
+    ADD CONSTRAINT one_time_tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: refresh_tokens refresh_tokens_session_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.refresh_tokens
+    ADD CONSTRAINT refresh_tokens_session_id_fkey FOREIGN KEY (session_id) REFERENCES auth.sessions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: saml_providers saml_providers_sso_provider_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.saml_providers
+    ADD CONSTRAINT saml_providers_sso_provider_id_fkey FOREIGN KEY (sso_provider_id) REFERENCES auth.sso_providers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: saml_relay_states saml_relay_states_flow_state_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.saml_relay_states
+    ADD CONSTRAINT saml_relay_states_flow_state_id_fkey FOREIGN KEY (flow_state_id) REFERENCES auth.flow_state(id) ON DELETE CASCADE;
+
+
+--
+-- Name: saml_relay_states saml_relay_states_sso_provider_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.saml_relay_states
+    ADD CONSTRAINT saml_relay_states_sso_provider_id_fkey FOREIGN KEY (sso_provider_id) REFERENCES auth.sso_providers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: sessions sessions_user_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.sessions
+    ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: sso_domains sso_domains_sso_provider_id_fkey; Type: FK CONSTRAINT; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE ONLY auth.sso_domains
+    ADD CONSTRAINT sso_domains_sso_provider_id_fkey FOREIGN KEY (sso_provider_id) REFERENCES auth.sso_providers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: idiom_examples idioms_examples_test_idiom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.idiom_examples
+    ADD CONSTRAINT idioms_examples_test_idiom_id_fkey FOREIGN KEY (idiom_id) REFERENCES public.idioms(id) ON DELETE CASCADE;
+
+
+--
+-- Name: objects objects_bucketId_fkey; Type: FK CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.objects
+    ADD CONSTRAINT "objects_bucketId_fkey" FOREIGN KEY (bucket_id) REFERENCES storage.buckets(id);
+
+
+--
+-- Name: s3_multipart_uploads s3_multipart_uploads_bucket_id_fkey; Type: FK CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.s3_multipart_uploads
+    ADD CONSTRAINT s3_multipart_uploads_bucket_id_fkey FOREIGN KEY (bucket_id) REFERENCES storage.buckets(id);
+
+
+--
+-- Name: s3_multipart_uploads_parts s3_multipart_uploads_parts_bucket_id_fkey; Type: FK CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.s3_multipart_uploads_parts
+    ADD CONSTRAINT s3_multipart_uploads_parts_bucket_id_fkey FOREIGN KEY (bucket_id) REFERENCES storage.buckets(id);
+
+
+--
+-- Name: s3_multipart_uploads_parts s3_multipart_uploads_parts_upload_id_fkey; Type: FK CONSTRAINT; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE ONLY storage.s3_multipart_uploads_parts
+    ADD CONSTRAINT s3_multipart_uploads_parts_upload_id_fkey FOREIGN KEY (upload_id) REFERENCES storage.s3_multipart_uploads(id) ON DELETE CASCADE;
+
+
+--
+-- Name: audit_log_entries; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.audit_log_entries ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: flow_state; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.flow_state ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: identities; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.identities ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: instances; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.instances ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: mfa_amr_claims; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.mfa_amr_claims ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: mfa_challenges; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.mfa_challenges ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: mfa_factors; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.mfa_factors ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: one_time_tokens; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.one_time_tokens ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: refresh_tokens; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.refresh_tokens ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: saml_providers; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.saml_providers ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: saml_relay_states; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.saml_relay_states ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: schema_migrations; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.schema_migrations ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: sessions; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.sessions ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: sso_domains; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.sso_domains ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: sso_providers; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.sso_providers ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: users; Type: ROW SECURITY; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER TABLE auth.users ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: messages; Type: ROW SECURITY; Schema: realtime; Owner: supabase_realtime_admin
+--
+
+ALTER TABLE realtime.messages ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: buckets; Type: ROW SECURITY; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE storage.buckets ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: migrations; Type: ROW SECURITY; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE storage.migrations ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: objects; Type: ROW SECURITY; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: s3_multipart_uploads; Type: ROW SECURITY; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE storage.s3_multipart_uploads ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: s3_multipart_uploads_parts; Type: ROW SECURITY; Schema: storage; Owner: supabase_storage_admin
+--
+
+ALTER TABLE storage.s3_multipart_uploads_parts ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: supabase_realtime; Type: PUBLICATION; Schema: -; Owner: postgres
+--
+
+CREATE PUBLICATION supabase_realtime WITH (publish = 'insert, update, delete, truncate');
+
+
+ALTER PUBLICATION supabase_realtime OWNER TO postgres;
+
+--
+-- Name: SCHEMA auth; Type: ACL; Schema: -; Owner: supabase_admin
+--
+
+GRANT USAGE ON SCHEMA auth TO anon;
+GRANT USAGE ON SCHEMA auth TO authenticated;
+GRANT USAGE ON SCHEMA auth TO service_role;
+GRANT ALL ON SCHEMA auth TO supabase_auth_admin;
+GRANT ALL ON SCHEMA auth TO dashboard_user;
+GRANT USAGE ON SCHEMA auth TO postgres;
+
+
+--
+-- Name: SCHEMA extensions; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT USAGE ON SCHEMA extensions TO anon;
+GRANT USAGE ON SCHEMA extensions TO authenticated;
+GRANT USAGE ON SCHEMA extensions TO service_role;
+GRANT ALL ON SCHEMA extensions TO dashboard_user;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
+--
+
+GRANT USAGE ON SCHEMA public TO postgres;
+GRANT USAGE ON SCHEMA public TO anon;
+GRANT USAGE ON SCHEMA public TO authenticated;
+GRANT USAGE ON SCHEMA public TO service_role;
+
+
+--
+-- Name: SCHEMA realtime; Type: ACL; Schema: -; Owner: supabase_admin
+--
+
+GRANT USAGE ON SCHEMA realtime TO postgres;
+GRANT USAGE ON SCHEMA realtime TO anon;
+GRANT USAGE ON SCHEMA realtime TO authenticated;
+GRANT USAGE ON SCHEMA realtime TO service_role;
+GRANT ALL ON SCHEMA realtime TO supabase_realtime_admin;
+
+
+--
+-- Name: SCHEMA storage; Type: ACL; Schema: -; Owner: supabase_admin
+--
+
+GRANT USAGE ON SCHEMA storage TO postgres;
+GRANT USAGE ON SCHEMA storage TO anon;
+GRANT USAGE ON SCHEMA storage TO authenticated;
+GRANT USAGE ON SCHEMA storage TO service_role;
+GRANT ALL ON SCHEMA storage TO supabase_storage_admin;
+GRANT ALL ON SCHEMA storage TO dashboard_user;
+
+
+--
+-- Name: SCHEMA vault; Type: ACL; Schema: -; Owner: supabase_admin
+--
+
+GRANT USAGE ON SCHEMA vault TO postgres WITH GRANT OPTION;
+GRANT USAGE ON SCHEMA vault TO service_role;
+
+
+--
+-- Name: FUNCTION email(); Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON FUNCTION auth.email() TO dashboard_user;
+GRANT ALL ON FUNCTION auth.email() TO postgres;
+
+
+--
+-- Name: FUNCTION jwt(); Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON FUNCTION auth.jwt() TO postgres;
+GRANT ALL ON FUNCTION auth.jwt() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION role(); Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON FUNCTION auth.role() TO dashboard_user;
+GRANT ALL ON FUNCTION auth.role() TO postgres;
+
+
+--
+-- Name: FUNCTION uid(); Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON FUNCTION auth.uid() TO dashboard_user;
+GRANT ALL ON FUNCTION auth.uid() TO postgres;
+
+
+--
+-- Name: FUNCTION algorithm_sign(signables text, secret text, algorithm text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.algorithm_sign(signables text, secret text, algorithm text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.algorithm_sign(signables text, secret text, algorithm text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION armor(bytea); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.armor(bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.armor(bytea) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION armor(bytea, text[], text[]); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.armor(bytea, text[], text[]) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.armor(bytea, text[], text[]) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION crypt(text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.crypt(text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.crypt(text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION dearmor(text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.dearmor(text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.dearmor(text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION decrypt(bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.decrypt(bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.decrypt(bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION decrypt_iv(bytea, bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.decrypt_iv(bytea, bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.decrypt_iv(bytea, bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION digest(bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.digest(bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.digest(bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION digest(text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.digest(text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.digest(text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION encrypt(bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.encrypt(bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.encrypt(bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION encrypt_iv(bytea, bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.encrypt_iv(bytea, bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.encrypt_iv(bytea, bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION gen_random_bytes(integer); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.gen_random_bytes(integer) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.gen_random_bytes(integer) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION gen_random_uuid(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.gen_random_uuid() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.gen_random_uuid() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION gen_salt(text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.gen_salt(text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.gen_salt(text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION gen_salt(text, integer); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.gen_salt(text, integer) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.gen_salt(text, integer) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION grant_pg_cron_access(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+REVOKE ALL ON FUNCTION extensions.grant_pg_cron_access() FROM supabase_admin;
+GRANT ALL ON FUNCTION extensions.grant_pg_cron_access() TO supabase_admin WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.grant_pg_cron_access() TO dashboard_user;
+GRANT ALL ON FUNCTION extensions.grant_pg_cron_access() TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: FUNCTION grant_pg_graphql_access(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.grant_pg_graphql_access() TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: FUNCTION grant_pg_net_access(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+REVOKE ALL ON FUNCTION extensions.grant_pg_net_access() FROM supabase_admin;
+GRANT ALL ON FUNCTION extensions.grant_pg_net_access() TO supabase_admin WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.grant_pg_net_access() TO dashboard_user;
+GRANT ALL ON FUNCTION extensions.grant_pg_net_access() TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: FUNCTION hmac(bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.hmac(bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.hmac(bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION hmac(text, text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.hmac(text, text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.hmac(text, text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pg_stat_statements(showtext boolean, OUT userid oid, OUT dbid oid, OUT toplevel boolean, OUT queryid bigint, OUT query text, OUT plans bigint, OUT total_plan_time double precision, OUT min_plan_time double precision, OUT max_plan_time double precision, OUT mean_plan_time double precision, OUT stddev_plan_time double precision, OUT calls bigint, OUT total_exec_time double precision, OUT min_exec_time double precision, OUT max_exec_time double precision, OUT mean_exec_time double precision, OUT stddev_exec_time double precision, OUT rows bigint, OUT shared_blks_hit bigint, OUT shared_blks_read bigint, OUT shared_blks_dirtied bigint, OUT shared_blks_written bigint, OUT local_blks_hit bigint, OUT local_blks_read bigint, OUT local_blks_dirtied bigint, OUT local_blks_written bigint, OUT temp_blks_read bigint, OUT temp_blks_written bigint, OUT blk_read_time double precision, OUT blk_write_time double precision, OUT temp_blk_read_time double precision, OUT temp_blk_write_time double precision, OUT wal_records bigint, OUT wal_fpi bigint, OUT wal_bytes numeric, OUT jit_functions bigint, OUT jit_generation_time double precision, OUT jit_inlining_count bigint, OUT jit_inlining_time double precision, OUT jit_optimization_count bigint, OUT jit_optimization_time double precision, OUT jit_emission_count bigint, OUT jit_emission_time double precision); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pg_stat_statements(showtext boolean, OUT userid oid, OUT dbid oid, OUT toplevel boolean, OUT queryid bigint, OUT query text, OUT plans bigint, OUT total_plan_time double precision, OUT min_plan_time double precision, OUT max_plan_time double precision, OUT mean_plan_time double precision, OUT stddev_plan_time double precision, OUT calls bigint, OUT total_exec_time double precision, OUT min_exec_time double precision, OUT max_exec_time double precision, OUT mean_exec_time double precision, OUT stddev_exec_time double precision, OUT rows bigint, OUT shared_blks_hit bigint, OUT shared_blks_read bigint, OUT shared_blks_dirtied bigint, OUT shared_blks_written bigint, OUT local_blks_hit bigint, OUT local_blks_read bigint, OUT local_blks_dirtied bigint, OUT local_blks_written bigint, OUT temp_blks_read bigint, OUT temp_blks_written bigint, OUT blk_read_time double precision, OUT blk_write_time double precision, OUT temp_blk_read_time double precision, OUT temp_blk_write_time double precision, OUT wal_records bigint, OUT wal_fpi bigint, OUT wal_bytes numeric, OUT jit_functions bigint, OUT jit_generation_time double precision, OUT jit_inlining_count bigint, OUT jit_inlining_time double precision, OUT jit_optimization_count bigint, OUT jit_optimization_time double precision, OUT jit_emission_count bigint, OUT jit_emission_time double precision) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pg_stat_statements(showtext boolean, OUT userid oid, OUT dbid oid, OUT toplevel boolean, OUT queryid bigint, OUT query text, OUT plans bigint, OUT total_plan_time double precision, OUT min_plan_time double precision, OUT max_plan_time double precision, OUT mean_plan_time double precision, OUT stddev_plan_time double precision, OUT calls bigint, OUT total_exec_time double precision, OUT min_exec_time double precision, OUT max_exec_time double precision, OUT mean_exec_time double precision, OUT stddev_exec_time double precision, OUT rows bigint, OUT shared_blks_hit bigint, OUT shared_blks_read bigint, OUT shared_blks_dirtied bigint, OUT shared_blks_written bigint, OUT local_blks_hit bigint, OUT local_blks_read bigint, OUT local_blks_dirtied bigint, OUT local_blks_written bigint, OUT temp_blks_read bigint, OUT temp_blks_written bigint, OUT blk_read_time double precision, OUT blk_write_time double precision, OUT temp_blk_read_time double precision, OUT temp_blk_write_time double precision, OUT wal_records bigint, OUT wal_fpi bigint, OUT wal_bytes numeric, OUT jit_functions bigint, OUT jit_generation_time double precision, OUT jit_inlining_count bigint, OUT jit_inlining_time double precision, OUT jit_optimization_count bigint, OUT jit_optimization_time double precision, OUT jit_emission_count bigint, OUT jit_emission_time double precision) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pg_stat_statements_info(OUT dealloc bigint, OUT stats_reset timestamp with time zone); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pg_stat_statements_info(OUT dealloc bigint, OUT stats_reset timestamp with time zone) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pg_stat_statements_info(OUT dealloc bigint, OUT stats_reset timestamp with time zone) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pg_stat_statements_reset(userid oid, dbid oid, queryid bigint); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pg_stat_statements_reset(userid oid, dbid oid, queryid bigint) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pg_stat_statements_reset(userid oid, dbid oid, queryid bigint) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_armor_headers(text, OUT key text, OUT value text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_armor_headers(text, OUT key text, OUT value text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_armor_headers(text, OUT key text, OUT value text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_key_id(bytea); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_key_id(bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_key_id(bytea) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_decrypt(bytea, bytea); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt(bytea, bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt(bytea, bytea) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_decrypt(bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt(bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt(bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_decrypt(bytea, bytea, text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt(bytea, bytea, text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt(bytea, bytea, text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_decrypt_bytea(bytea, bytea); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt_bytea(bytea, bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt_bytea(bytea, bytea) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_decrypt_bytea(bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt_bytea(bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt_bytea(bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_decrypt_bytea(bytea, bytea, text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt_bytea(bytea, bytea, text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_decrypt_bytea(bytea, bytea, text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_encrypt(text, bytea); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt(text, bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt(text, bytea) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_encrypt(text, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt(text, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt(text, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_encrypt_bytea(bytea, bytea); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt_bytea(bytea, bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt_bytea(bytea, bytea) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_pub_encrypt_bytea(bytea, bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt_bytea(bytea, bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_pub_encrypt_bytea(bytea, bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_decrypt(bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt(bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt(bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_decrypt(bytea, text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt(bytea, text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt(bytea, text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_decrypt_bytea(bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt_bytea(bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt_bytea(bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_decrypt_bytea(bytea, text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt_bytea(bytea, text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_decrypt_bytea(bytea, text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_encrypt(text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt(text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt(text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_encrypt(text, text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt(text, text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt(text, text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_encrypt_bytea(bytea, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt_bytea(bytea, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt_bytea(bytea, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgp_sym_encrypt_bytea(bytea, text, text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt_bytea(bytea, text, text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.pgp_sym_encrypt_bytea(bytea, text, text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION pgrst_ddl_watch(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgrst_ddl_watch() TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: FUNCTION pgrst_drop_watch(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.pgrst_drop_watch() TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: FUNCTION set_graphql_placeholder(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.set_graphql_placeholder() TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: FUNCTION sign(payload json, secret text, algorithm text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.sign(payload json, secret text, algorithm text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.sign(payload json, secret text, algorithm text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION try_cast_double(inp text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.try_cast_double(inp text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.try_cast_double(inp text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION url_decode(data text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.url_decode(data text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.url_decode(data text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION url_encode(data bytea); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.url_encode(data bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.url_encode(data bytea) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_generate_v1(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_generate_v1() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_generate_v1() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_generate_v1mc(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_generate_v1mc() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_generate_v1mc() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_generate_v3(namespace uuid, name text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_generate_v3(namespace uuid, name text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_generate_v3(namespace uuid, name text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_generate_v4(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_generate_v4() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_generate_v4() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_generate_v5(namespace uuid, name text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_generate_v5(namespace uuid, name text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_generate_v5(namespace uuid, name text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_nil(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_nil() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_nil() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_ns_dns(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_ns_dns() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_ns_dns() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_ns_oid(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_ns_oid() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_ns_oid() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_ns_url(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_ns_url() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_ns_url() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION uuid_ns_x500(); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.uuid_ns_x500() TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.uuid_ns_x500() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION verify(token text, secret text, algorithm text); Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION extensions.verify(token text, secret text, algorithm text) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION extensions.verify(token text, secret text, algorithm text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION graphql("operationName" text, query text, variables jsonb, extensions jsonb); Type: ACL; Schema: graphql_public; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION graphql_public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) TO postgres;
+GRANT ALL ON FUNCTION graphql_public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) TO anon;
+GRANT ALL ON FUNCTION graphql_public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) TO authenticated;
+GRANT ALL ON FUNCTION graphql_public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) TO service_role;
+
+
+--
+-- Name: FUNCTION get_auth(p_usename text); Type: ACL; Schema: pgbouncer; Owner: supabase_admin
+--
+
+REVOKE ALL ON FUNCTION pgbouncer.get_auth(p_usename text) FROM PUBLIC;
+GRANT ALL ON FUNCTION pgbouncer.get_auth(p_usename text) TO pgbouncer;
+GRANT ALL ON FUNCTION pgbouncer.get_auth(p_usename text) TO postgres;
+
+
+--
+-- Name: FUNCTION crypto_aead_det_decrypt(message bytea, additional bytea, key_uuid uuid, nonce bytea); Type: ACL; Schema: pgsodium; Owner: pgsodium_keymaker
+--
+
+GRANT ALL ON FUNCTION pgsodium.crypto_aead_det_decrypt(message bytea, additional bytea, key_uuid uuid, nonce bytea) TO service_role;
+
+
+--
+-- Name: FUNCTION crypto_aead_det_encrypt(message bytea, additional bytea, key_uuid uuid, nonce bytea); Type: ACL; Schema: pgsodium; Owner: pgsodium_keymaker
+--
+
+GRANT ALL ON FUNCTION pgsodium.crypto_aead_det_encrypt(message bytea, additional bytea, key_uuid uuid, nonce bytea) TO service_role;
+
+
+--
+-- Name: FUNCTION crypto_aead_det_keygen(); Type: ACL; Schema: pgsodium; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION pgsodium.crypto_aead_det_keygen() TO service_role;
+
+
+--
+-- Name: FUNCTION apply_rls(wal jsonb, max_record_bytes integer); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer) TO postgres;
+GRANT ALL ON FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer) TO anon;
+GRANT ALL ON FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer) TO authenticated;
+GRANT ALL ON FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer) TO service_role;
+GRANT ALL ON FUNCTION realtime.apply_rls(wal jsonb, max_record_bytes integer) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION broadcast_changes(topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.broadcast_changes(topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text) TO postgres;
+GRANT ALL ON FUNCTION realtime.broadcast_changes(topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) TO postgres;
+GRANT ALL ON FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) TO anon;
+GRANT ALL ON FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) TO authenticated;
+GRANT ALL ON FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) TO service_role;
+GRANT ALL ON FUNCTION realtime.build_prepared_statement_sql(prepared_statement_name text, entity regclass, columns realtime.wal_column[]) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION "cast"(val text, type_ regtype); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime."cast"(val text, type_ regtype) TO postgres;
+GRANT ALL ON FUNCTION realtime."cast"(val text, type_ regtype) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime."cast"(val text, type_ regtype) TO anon;
+GRANT ALL ON FUNCTION realtime."cast"(val text, type_ regtype) TO authenticated;
+GRANT ALL ON FUNCTION realtime."cast"(val text, type_ regtype) TO service_role;
+GRANT ALL ON FUNCTION realtime."cast"(val text, type_ regtype) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) TO postgres;
+GRANT ALL ON FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) TO anon;
+GRANT ALL ON FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) TO authenticated;
+GRANT ALL ON FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) TO service_role;
+GRANT ALL ON FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) TO postgres;
+GRANT ALL ON FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) TO anon;
+GRANT ALL ON FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) TO authenticated;
+GRANT ALL ON FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) TO service_role;
+GRANT ALL ON FUNCTION realtime.is_visible_through_filters(columns realtime.wal_column[], filters realtime.user_defined_filter[]) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) TO postgres;
+GRANT ALL ON FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) TO anon;
+GRANT ALL ON FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) TO authenticated;
+GRANT ALL ON FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) TO service_role;
+GRANT ALL ON FUNCTION realtime.list_changes(publication name, slot_name name, max_changes integer, max_record_bytes integer) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION quote_wal2json(entity regclass); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.quote_wal2json(entity regclass) TO postgres;
+GRANT ALL ON FUNCTION realtime.quote_wal2json(entity regclass) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.quote_wal2json(entity regclass) TO anon;
+GRANT ALL ON FUNCTION realtime.quote_wal2json(entity regclass) TO authenticated;
+GRANT ALL ON FUNCTION realtime.quote_wal2json(entity regclass) TO service_role;
+GRANT ALL ON FUNCTION realtime.quote_wal2json(entity regclass) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION send(payload jsonb, event text, topic text, private boolean); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.send(payload jsonb, event text, topic text, private boolean) TO postgres;
+GRANT ALL ON FUNCTION realtime.send(payload jsonb, event text, topic text, private boolean) TO dashboard_user;
+
+
+--
+-- Name: FUNCTION subscription_check_filters(); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.subscription_check_filters() TO postgres;
+GRANT ALL ON FUNCTION realtime.subscription_check_filters() TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.subscription_check_filters() TO anon;
+GRANT ALL ON FUNCTION realtime.subscription_check_filters() TO authenticated;
+GRANT ALL ON FUNCTION realtime.subscription_check_filters() TO service_role;
+GRANT ALL ON FUNCTION realtime.subscription_check_filters() TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION to_regrole(role_name text); Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION realtime.to_regrole(role_name text) TO postgres;
+GRANT ALL ON FUNCTION realtime.to_regrole(role_name text) TO dashboard_user;
+GRANT ALL ON FUNCTION realtime.to_regrole(role_name text) TO anon;
+GRANT ALL ON FUNCTION realtime.to_regrole(role_name text) TO authenticated;
+GRANT ALL ON FUNCTION realtime.to_regrole(role_name text) TO service_role;
+GRANT ALL ON FUNCTION realtime.to_regrole(role_name text) TO supabase_realtime_admin;
+
+
+--
+-- Name: FUNCTION topic(); Type: ACL; Schema: realtime; Owner: supabase_realtime_admin
+--
+
+GRANT ALL ON FUNCTION realtime.topic() TO postgres;
+GRANT ALL ON FUNCTION realtime.topic() TO dashboard_user;
+
+
+--
+-- Name: FUNCTION can_insert_object(bucketid text, name text, owner uuid, metadata jsonb); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.can_insert_object(bucketid text, name text, owner uuid, metadata jsonb) TO postgres;
+
+
+--
+-- Name: FUNCTION extension(name text); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.extension(name text) TO postgres;
+
+
+--
+-- Name: FUNCTION filename(name text); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.filename(name text) TO postgres;
+
+
+--
+-- Name: FUNCTION foldername(name text); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.foldername(name text) TO postgres;
+
+
+--
+-- Name: FUNCTION get_size_by_bucket(); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.get_size_by_bucket() TO postgres;
+
+
+--
+-- Name: FUNCTION list_multipart_uploads_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer, next_key_token text, next_upload_token text); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.list_multipart_uploads_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer, next_key_token text, next_upload_token text) TO postgres;
+
+
+--
+-- Name: FUNCTION list_objects_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer, start_after text, next_token text); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.list_objects_with_delimiter(bucket_id text, prefix_param text, delimiter_param text, max_keys integer, start_after text, next_token text) TO postgres;
+
+
+--
+-- Name: FUNCTION operation(); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.operation() TO postgres;
+
+
+--
+-- Name: FUNCTION search(prefix text, bucketname text, limits integer, levels integer, offsets integer, search text, sortcolumn text, sortorder text); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.search(prefix text, bucketname text, limits integer, levels integer, offsets integer, search text, sortcolumn text, sortorder text) TO postgres;
+
+
+--
+-- Name: FUNCTION update_updated_at_column(); Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON FUNCTION storage.update_updated_at_column() TO postgres;
+
+
+--
+-- Name: FUNCTION _crypto_aead_det_decrypt(message bytea, additional bytea, key_id bigint, context bytea, nonce bytea); Type: ACL; Schema: vault; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION vault._crypto_aead_det_decrypt(message bytea, additional bytea, key_id bigint, context bytea, nonce bytea) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION vault._crypto_aead_det_decrypt(message bytea, additional bytea, key_id bigint, context bytea, nonce bytea) TO service_role;
+
+
+--
+-- Name: FUNCTION create_secret(new_secret text, new_name text, new_description text, new_key_id uuid); Type: ACL; Schema: vault; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION vault.create_secret(new_secret text, new_name text, new_description text, new_key_id uuid) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION vault.create_secret(new_secret text, new_name text, new_description text, new_key_id uuid) TO service_role;
+
+
+--
+-- Name: FUNCTION update_secret(secret_id uuid, new_secret text, new_name text, new_description text, new_key_id uuid); Type: ACL; Schema: vault; Owner: supabase_admin
+--
+
+GRANT ALL ON FUNCTION vault.update_secret(secret_id uuid, new_secret text, new_name text, new_description text, new_key_id uuid) TO postgres WITH GRANT OPTION;
+GRANT ALL ON FUNCTION vault.update_secret(secret_id uuid, new_secret text, new_name text, new_description text, new_key_id uuid) TO service_role;
+
+
+--
+-- Name: TABLE audit_log_entries; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON TABLE auth.audit_log_entries TO dashboard_user;
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.audit_log_entries TO postgres;
+GRANT SELECT ON TABLE auth.audit_log_entries TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: TABLE flow_state; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.flow_state TO postgres;
+GRANT SELECT ON TABLE auth.flow_state TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.flow_state TO dashboard_user;
+
+
+--
+-- Name: TABLE identities; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.identities TO postgres;
+GRANT SELECT ON TABLE auth.identities TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.identities TO dashboard_user;
+
+
+--
+-- Name: TABLE instances; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON TABLE auth.instances TO dashboard_user;
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.instances TO postgres;
+GRANT SELECT ON TABLE auth.instances TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: TABLE mfa_amr_claims; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.mfa_amr_claims TO postgres;
+GRANT SELECT ON TABLE auth.mfa_amr_claims TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.mfa_amr_claims TO dashboard_user;
+
+
+--
+-- Name: TABLE mfa_challenges; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.mfa_challenges TO postgres;
+GRANT SELECT ON TABLE auth.mfa_challenges TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.mfa_challenges TO dashboard_user;
+
+
+--
+-- Name: TABLE mfa_factors; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.mfa_factors TO postgres;
+GRANT SELECT ON TABLE auth.mfa_factors TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.mfa_factors TO dashboard_user;
+
+
+--
+-- Name: TABLE one_time_tokens; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.one_time_tokens TO postgres;
+GRANT SELECT ON TABLE auth.one_time_tokens TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.one_time_tokens TO dashboard_user;
+
+
+--
+-- Name: TABLE refresh_tokens; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON TABLE auth.refresh_tokens TO dashboard_user;
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.refresh_tokens TO postgres;
+GRANT SELECT ON TABLE auth.refresh_tokens TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: SEQUENCE refresh_tokens_id_seq; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON SEQUENCE auth.refresh_tokens_id_seq TO dashboard_user;
+GRANT ALL ON SEQUENCE auth.refresh_tokens_id_seq TO postgres;
+
+
+--
+-- Name: TABLE saml_providers; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.saml_providers TO postgres;
+GRANT SELECT ON TABLE auth.saml_providers TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.saml_providers TO dashboard_user;
+
+
+--
+-- Name: TABLE saml_relay_states; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.saml_relay_states TO postgres;
+GRANT SELECT ON TABLE auth.saml_relay_states TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.saml_relay_states TO dashboard_user;
+
+
+--
+-- Name: TABLE sessions; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.sessions TO postgres;
+GRANT SELECT ON TABLE auth.sessions TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.sessions TO dashboard_user;
+
+
+--
+-- Name: TABLE sso_domains; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.sso_domains TO postgres;
+GRANT SELECT ON TABLE auth.sso_domains TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.sso_domains TO dashboard_user;
+
+
+--
+-- Name: TABLE sso_providers; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.sso_providers TO postgres;
+GRANT SELECT ON TABLE auth.sso_providers TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE auth.sso_providers TO dashboard_user;
+
+
+--
+-- Name: TABLE users; Type: ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+GRANT ALL ON TABLE auth.users TO dashboard_user;
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE auth.users TO postgres;
+GRANT SELECT ON TABLE auth.users TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: TABLE pg_stat_statements; Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON TABLE extensions.pg_stat_statements TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE extensions.pg_stat_statements TO dashboard_user;
+
+
+--
+-- Name: TABLE pg_stat_statements_info; Type: ACL; Schema: extensions; Owner: supabase_admin
+--
+
+GRANT ALL ON TABLE extensions.pg_stat_statements_info TO postgres WITH GRANT OPTION;
+GRANT ALL ON TABLE extensions.pg_stat_statements_info TO dashboard_user;
+
+
+--
+-- Name: TABLE decrypted_key; Type: ACL; Schema: pgsodium; Owner: supabase_admin
+--
+
+GRANT ALL ON TABLE pgsodium.decrypted_key TO pgsodium_keyholder;
+
+
+--
+-- Name: TABLE masking_rule; Type: ACL; Schema: pgsodium; Owner: supabase_admin
+--
+
+GRANT ALL ON TABLE pgsodium.masking_rule TO pgsodium_keyholder;
+
+
+--
+-- Name: TABLE mask_columns; Type: ACL; Schema: pgsodium; Owner: supabase_admin
+--
+
+GRANT ALL ON TABLE pgsodium.mask_columns TO pgsodium_keyholder;
+
+
+--
+-- Name: SEQUENCE idiom_examples_example_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.idiom_examples_example_id_seq TO anon;
+GRANT ALL ON SEQUENCE public.idiom_examples_example_id_seq TO authenticated;
+GRANT ALL ON SEQUENCE public.idiom_examples_example_id_seq TO service_role;
+
+
+--
+-- Name: TABLE idiom_examples; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.idiom_examples TO anon;
+GRANT ALL ON TABLE public.idiom_examples TO authenticated;
+GRANT ALL ON TABLE public.idiom_examples TO service_role;
+
+
+--
+-- Name: SEQUENCE idioms_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.idioms_id_seq TO anon;
+GRANT ALL ON SEQUENCE public.idioms_id_seq TO authenticated;
+GRANT ALL ON SEQUENCE public.idioms_id_seq TO service_role;
+
+
+--
+-- Name: TABLE idioms; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.idioms TO anon;
+GRANT ALL ON TABLE public.idioms TO authenticated;
+GRANT ALL ON TABLE public.idioms TO service_role;
+
+
+--
+-- Name: TABLE messages; Type: ACL; Schema: realtime; Owner: supabase_realtime_admin
+--
+
+GRANT ALL ON TABLE realtime.messages TO postgres;
+GRANT ALL ON TABLE realtime.messages TO dashboard_user;
+GRANT SELECT,INSERT,UPDATE ON TABLE realtime.messages TO anon;
+GRANT SELECT,INSERT,UPDATE ON TABLE realtime.messages TO authenticated;
+GRANT SELECT,INSERT,UPDATE ON TABLE realtime.messages TO service_role;
+
+
+--
+-- Name: TABLE schema_migrations; Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON TABLE realtime.schema_migrations TO postgres;
+GRANT ALL ON TABLE realtime.schema_migrations TO dashboard_user;
+GRANT SELECT ON TABLE realtime.schema_migrations TO anon;
+GRANT SELECT ON TABLE realtime.schema_migrations TO authenticated;
+GRANT SELECT ON TABLE realtime.schema_migrations TO service_role;
+GRANT ALL ON TABLE realtime.schema_migrations TO supabase_realtime_admin;
+
+
+--
+-- Name: TABLE subscription; Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON TABLE realtime.subscription TO postgres;
+GRANT ALL ON TABLE realtime.subscription TO dashboard_user;
+GRANT SELECT ON TABLE realtime.subscription TO anon;
+GRANT SELECT ON TABLE realtime.subscription TO authenticated;
+GRANT SELECT ON TABLE realtime.subscription TO service_role;
+GRANT ALL ON TABLE realtime.subscription TO supabase_realtime_admin;
+
+
+--
+-- Name: SEQUENCE subscription_id_seq; Type: ACL; Schema: realtime; Owner: supabase_admin
+--
+
+GRANT ALL ON SEQUENCE realtime.subscription_id_seq TO postgres;
+GRANT ALL ON SEQUENCE realtime.subscription_id_seq TO dashboard_user;
+GRANT USAGE ON SEQUENCE realtime.subscription_id_seq TO anon;
+GRANT USAGE ON SEQUENCE realtime.subscription_id_seq TO authenticated;
+GRANT USAGE ON SEQUENCE realtime.subscription_id_seq TO service_role;
+GRANT ALL ON SEQUENCE realtime.subscription_id_seq TO supabase_realtime_admin;
+
+
+--
+-- Name: TABLE buckets; Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON TABLE storage.buckets TO anon;
+GRANT ALL ON TABLE storage.buckets TO authenticated;
+GRANT ALL ON TABLE storage.buckets TO service_role;
+GRANT ALL ON TABLE storage.buckets TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: TABLE objects; Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON TABLE storage.objects TO anon;
+GRANT ALL ON TABLE storage.objects TO authenticated;
+GRANT ALL ON TABLE storage.objects TO service_role;
+GRANT ALL ON TABLE storage.objects TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: TABLE s3_multipart_uploads; Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON TABLE storage.s3_multipart_uploads TO service_role;
+GRANT SELECT ON TABLE storage.s3_multipart_uploads TO authenticated;
+GRANT SELECT ON TABLE storage.s3_multipart_uploads TO anon;
+GRANT ALL ON TABLE storage.s3_multipart_uploads TO postgres;
+
+
+--
+-- Name: TABLE s3_multipart_uploads_parts; Type: ACL; Schema: storage; Owner: supabase_storage_admin
+--
+
+GRANT ALL ON TABLE storage.s3_multipart_uploads_parts TO service_role;
+GRANT SELECT ON TABLE storage.s3_multipart_uploads_parts TO authenticated;
+GRANT SELECT ON TABLE storage.s3_multipart_uploads_parts TO anon;
+GRANT ALL ON TABLE storage.s3_multipart_uploads_parts TO postgres;
+
+
+--
+-- Name: TABLE secrets; Type: ACL; Schema: vault; Owner: supabase_admin
+--
+
+GRANT SELECT,REFERENCES,DELETE,TRUNCATE ON TABLE vault.secrets TO postgres WITH GRANT OPTION;
+GRANT SELECT,DELETE ON TABLE vault.secrets TO service_role;
+
+
+--
+-- Name: TABLE decrypted_secrets; Type: ACL; Schema: vault; Owner: supabase_admin
+--
+
+GRANT SELECT,REFERENCES,DELETE,TRUNCATE ON TABLE vault.decrypted_secrets TO postgres WITH GRANT OPTION;
+GRANT SELECT,DELETE ON TABLE vault.decrypted_secrets TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_auth_admin IN SCHEMA auth GRANT ALL ON SEQUENCES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_auth_admin IN SCHEMA auth GRANT ALL ON SEQUENCES  TO dashboard_user;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_auth_admin IN SCHEMA auth GRANT ALL ON FUNCTIONS  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_auth_admin IN SCHEMA auth GRANT ALL ON FUNCTIONS  TO dashboard_user;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: auth; Owner: supabase_auth_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_auth_admin IN SCHEMA auth GRANT ALL ON TABLES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_auth_admin IN SCHEMA auth GRANT ALL ON TABLES  TO dashboard_user;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: extensions; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA extensions GRANT ALL ON SEQUENCES  TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: extensions; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA extensions GRANT ALL ON FUNCTIONS  TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: extensions; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA extensions GRANT ALL ON TABLES  TO postgres WITH GRANT OPTION;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: graphql; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON SEQUENCES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON SEQUENCES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON SEQUENCES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON SEQUENCES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: graphql; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON FUNCTIONS  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON FUNCTIONS  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON FUNCTIONS  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON FUNCTIONS  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: graphql; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON TABLES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON TABLES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON TABLES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql GRANT ALL ON TABLES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: graphql_public; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON SEQUENCES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON SEQUENCES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON SEQUENCES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON SEQUENCES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: graphql_public; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON FUNCTIONS  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON FUNCTIONS  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON FUNCTIONS  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON FUNCTIONS  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: graphql_public; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON TABLES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON TABLES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON TABLES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA graphql_public GRANT ALL ON TABLES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: pgsodium; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA pgsodium GRANT ALL ON SEQUENCES  TO pgsodium_keyholder;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: pgsodium; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA pgsodium GRANT ALL ON TABLES  TO pgsodium_keyholder;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: pgsodium_masks; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA pgsodium_masks GRANT ALL ON SEQUENCES  TO pgsodium_keyiduser;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: pgsodium_masks; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA pgsodium_masks GRANT ALL ON FUNCTIONS  TO pgsodium_keyiduser;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: pgsodium_masks; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA pgsodium_masks GRANT ALL ON TABLES  TO pgsodium_keyiduser;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: realtime; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA realtime GRANT ALL ON SEQUENCES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA realtime GRANT ALL ON SEQUENCES  TO dashboard_user;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: realtime; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA realtime GRANT ALL ON FUNCTIONS  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA realtime GRANT ALL ON FUNCTIONS  TO dashboard_user;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: realtime; Owner: supabase_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA realtime GRANT ALL ON TABLES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA realtime GRANT ALL ON TABLES  TO dashboard_user;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: storage; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON SEQUENCES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON SEQUENCES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON SEQUENCES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON SEQUENCES  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: storage; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON FUNCTIONS  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON FUNCTIONS  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON FUNCTIONS  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON FUNCTIONS  TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: storage; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON TABLES  TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON TABLES  TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON TABLES  TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA storage GRANT ALL ON TABLES  TO service_role;
+
+
+--
+-- Name: issue_graphql_placeholder; Type: EVENT TRIGGER; Schema: -; Owner: supabase_admin
+--
+
+CREATE EVENT TRIGGER issue_graphql_placeholder ON sql_drop
+         WHEN TAG IN ('DROP EXTENSION')
+   EXECUTE FUNCTION extensions.set_graphql_placeholder();
+
+
+ALTER EVENT TRIGGER issue_graphql_placeholder OWNER TO supabase_admin;
+
+--
+-- Name: issue_pg_cron_access; Type: EVENT TRIGGER; Schema: -; Owner: supabase_admin
+--
+
+CREATE EVENT TRIGGER issue_pg_cron_access ON ddl_command_end
+         WHEN TAG IN ('CREATE EXTENSION')
+   EXECUTE FUNCTION extensions.grant_pg_cron_access();
+
+
+ALTER EVENT TRIGGER issue_pg_cron_access OWNER TO supabase_admin;
+
+--
+-- Name: issue_pg_graphql_access; Type: EVENT TRIGGER; Schema: -; Owner: supabase_admin
+--
+
+CREATE EVENT TRIGGER issue_pg_graphql_access ON ddl_command_end
+         WHEN TAG IN ('CREATE FUNCTION')
+   EXECUTE FUNCTION extensions.grant_pg_graphql_access();
+
+
+ALTER EVENT TRIGGER issue_pg_graphql_access OWNER TO supabase_admin;
+
+--
+-- Name: issue_pg_net_access; Type: EVENT TRIGGER; Schema: -; Owner: supabase_admin
+--
+
+CREATE EVENT TRIGGER issue_pg_net_access ON ddl_command_end
+         WHEN TAG IN ('CREATE EXTENSION')
+   EXECUTE FUNCTION extensions.grant_pg_net_access();
+
+
+ALTER EVENT TRIGGER issue_pg_net_access OWNER TO supabase_admin;
+
+--
+-- Name: pgrst_ddl_watch; Type: EVENT TRIGGER; Schema: -; Owner: supabase_admin
+--
+
+CREATE EVENT TRIGGER pgrst_ddl_watch ON ddl_command_end
+   EXECUTE FUNCTION extensions.pgrst_ddl_watch();
+
+
+ALTER EVENT TRIGGER pgrst_ddl_watch OWNER TO supabase_admin;
+
+--
+-- Name: pgrst_drop_watch; Type: EVENT TRIGGER; Schema: -; Owner: supabase_admin
+--
+
+CREATE EVENT TRIGGER pgrst_drop_watch ON sql_drop
+   EXECUTE FUNCTION extensions.pgrst_drop_watch();
+
+
+ALTER EVENT TRIGGER pgrst_drop_watch OWNER TO supabase_admin;
 
 --
 -- PostgreSQL database dump complete
