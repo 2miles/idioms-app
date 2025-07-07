@@ -24,7 +24,7 @@ vi.mock('@/apis/useAuthorizedIdiomFinder', () => ({
   default: vi.fn(),
 }));
 
-const mockAddIdioms = vi.fn(); // Fake function to simulate the context addIdioms()
+const mockAddIdiom = vi.fn(); // Fake function to simulate the context addIdiom()
 const mockClose = vi.fn(); // Fake onClose callback passed into AddIdiom props
 const mockPost = vi.fn(() =>
   // Fake API call that succeeds by default (but we can override it to fail)
@@ -54,12 +54,14 @@ const renderComponent = () =>
       value={{
         idioms: [],
         setIdioms: vi.fn(),
-        addIdioms: mockAddIdioms,
+        addIdiom: mockAddIdiom,
         updateIdiom: vi.fn(),
         deleteIdiom: vi.fn(),
         updateExamples: vi.fn(),
         addExampleToIdiom: vi.fn(),
         deleteExampleById: vi.fn(),
+        isLoading: false,
+        hasFetched: true, // Set hasFetched to true so the form renders
       }}
     >
       <AddIdiomForm onClose={mockClose} />
@@ -78,7 +80,7 @@ describe('AddIdiom', () => {
     });
 
     test('includes a timestamp string when user edits timestamp', async () => {
-      mockAddIdioms.mockResolvedValue({ id: 1, title: 'Test Idiom' });
+      mockAddIdiom.mockResolvedValue({ id: 1, title: 'Test Idiom' });
       renderComponent();
 
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
@@ -91,7 +93,7 @@ describe('AddIdiom', () => {
 
       const expectedTimestamp = new Date('2025-01-01T12:00:00').toISOString().split('.')[0] + 'Z';
       await waitFor(() => {
-        expect(mockAddIdioms).toHaveBeenCalledWith(
+        expect(mockAddIdiom).toHaveBeenCalledWith(
           expect.objectContaining({
             title: 'Test Idiom',
             timestamps: expectedTimestamp,
@@ -101,13 +103,13 @@ describe('AddIdiom', () => {
     });
 
     test('includes a timestamp string when user does not edit timestamp', async () => {
-      mockAddIdioms.mockResolvedValue({ id: 1, title: 'Test Idiom' });
+      mockAddIdiom.mockResolvedValue({ id: 1, title: 'Test Idiom' });
       renderComponent();
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
       fireEvent.click(screen.getByText(/add/i));
 
       await waitFor(() => {
-        expect(mockAddIdioms).toHaveBeenCalledWith(
+        expect(mockAddIdiom).toHaveBeenCalledWith(
           expect.objectContaining({
             title: 'Test Idiom',
             timestamps: expect.any(String),
@@ -117,7 +119,7 @@ describe('AddIdiom', () => {
     });
 
     test('does not close modal if Keep Open is checked', async () => {
-      mockAddIdioms.mockResolvedValue({ id: 1, title: 'This is a test idiom.' });
+      mockAddIdiom.mockResolvedValue({ id: 1, title: 'This is a test idiom.' });
       renderComponent();
 
       fireEvent.change(screen.getByLabelText('Title'), {
@@ -128,7 +130,7 @@ describe('AddIdiom', () => {
       fireEvent.click(screen.getByText(/add/i)); // Submit the form
 
       await waitFor(() => {
-        expect(mockAddIdioms).toHaveBeenCalled();
+        expect(mockAddIdiom).toHaveBeenCalled();
         expect(mockClose).not.toHaveBeenCalled(); // Should not close modal
       });
     });
@@ -148,15 +150,13 @@ describe('AddIdiom', () => {
 
   describe('Submission', () => {
     test('submits form with valid data', async () => {
-      mockAddIdioms.mockResolvedValue({ id: 1, title: 'Test idiom' });
+      mockAddIdiom.mockResolvedValue({ id: 1, title: 'Test idiom' });
       renderComponent();
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test idiom' } });
       fireEvent.click(screen.getByText(/add/i));
 
       await waitFor(() => {
-        expect(mockAddIdioms).toHaveBeenCalledWith(
-          expect.objectContaining({ title: 'Test idiom' }),
-        );
+        expect(mockAddIdiom).toHaveBeenCalledWith(expect.objectContaining({ title: 'Test idiom' }));
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
             title: 'Idiom Added!',
@@ -168,7 +168,7 @@ describe('AddIdiom', () => {
     });
 
     test('shows error alert when API request fails', async () => {
-      mockAddIdioms.mockResolvedValue(null);
+      mockAddIdiom.mockResolvedValue(null);
       renderComponent();
       fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test Idiom' } });
       fireEvent.click(screen.getByText(/add/i));
@@ -186,7 +186,7 @@ describe('AddIdiom', () => {
     });
 
     test('closes modal if Keep Open is not checked', async () => {
-      mockAddIdioms.mockResolvedValue({ id: 1, title: 'This is a test idiom.' });
+      mockAddIdiom.mockResolvedValue({ id: 1, title: 'This is a test idiom.' });
       renderComponent();
 
       fireEvent.change(screen.getByLabelText('Title'), {

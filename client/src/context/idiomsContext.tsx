@@ -6,23 +6,27 @@ import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
 type IdiomsContextType = {
   idioms: Idiom[];
   setIdioms: React.Dispatch<React.SetStateAction<Idiom[]>>;
-  addIdioms: (idiom: NewIdiomInput) => Promise<Idiom | null>;
+  addIdiom: (idiom: NewIdiomInput) => Promise<Idiom | null>;
   updateIdiom: (id: number, changes: UpdateIdiomInput) => Promise<Idiom | null>;
   deleteIdiom: (id: number) => Promise<void>;
   updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<Example[] | null>;
   deleteExampleById: (exampleId: number) => Promise<Example | null>;
   addExampleToIdiom: (idiomId: number, exampleText: string) => Promise<Example | null>;
+  isLoading: boolean;
+  hasFetched: boolean;
 };
 
 const defaultContext: IdiomsContextType = {
   idioms: [],
   setIdioms: () => {},
-  addIdioms: async () => null,
+  addIdiom: async () => null,
   updateIdiom: async () => null,
   deleteIdiom: async () => {},
   updateExamples: async () => null,
   deleteExampleById: async () => null,
   addExampleToIdiom: async () => null,
+  isLoading: true,
+  hasFetched: false,
 };
 
 type IdiomsContextProviderProps = {
@@ -33,49 +37,48 @@ export const IdiomsContext = createContext<IdiomsContextType>(defaultContext);
 
 export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) => {
   const [idioms, setIdioms] = useState<Idiom[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasFetched, setHasFetched] = useState(false);
   const getAuthorizedIdiomFinder = useAuthorizedIdiomFinder();
 
   const addPositionsToIdioms = (idioms: Idiom[]): Idiom[] => {
     const sorted = idioms.sort(
-      (a: Idiom, b: Idiom) => new Date(b.timestamps).getTime() - new Date(a.timestamps).getTime(),
+      (a, b) => new Date(b.timestamps).getTime() - new Date(a.timestamps).getTime(),
     );
     const total = sorted.length;
     return sorted.map((idiom, index) => ({ ...idiom, position: total - index }));
   };
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const response = await publicIdiomFinder.get('/');
       const fetchedIdioms = response.data.data.idioms;
       const fetchedExamples = response.data.data.examples;
       const idiomsWithExamples = fetchedIdioms.map((idiom: Idiom) => ({
         ...idiom,
-        examples: fetchedExamples
-          ? fetchedExamples.filter((example: Example) => example.idiom_id === idiom.id)
-          : [],
+        examples: fetchedExamples?.filter((ex: Example) => ex.idiom_id === idiom.id) || [],
       }));
       setIdioms(addPositionsToIdioms(idiomsWithExamples));
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch idioms:', err);
+    } finally {
+      setIsLoading(false);
+      setHasFetched(true);
     }
   };
 
   useEffect(() => {
-    if (idioms.length > 0) {
-      console.log('Data already fetched');
-      return;
-    }
     fetchData();
   }, []);
 
   // Add, update, and delete idioms (recalculate positions after each operation)
-  const addIdioms = async (idiom: NewIdiomInput): Promise<Idiom | null> => {
+  const addIdiom = async (idiom: NewIdiomInput): Promise<Idiom | null> => {
     try {
       const api = await getAuthorizedIdiomFinder();
       const response = await api.post('/', idiom);
       const newIdiom = response.data.data.idiom;
-      const updatedIdioms = addPositionsToIdioms([...idioms, newIdiom]);
-      setIdioms(updatedIdioms);
+      setIdioms((prev) => addPositionsToIdioms([...prev, newIdiom]));
       return newIdiom;
     } catch (err) {
       console.error('Failed to add idiom:', err);
@@ -83,21 +86,20 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     }
   };
 
-  const updateIdiom = async (id: number, changes: UpdateIdiomInput) => {
+  const updateIdiom = async (id: number, changes: UpdateIdiomInput): Promise<Idiom | null> => {
     try {
       const api = await getAuthorizedIdiomFinder();
       const response = await api.put(`/${id}`, changes);
-
       const updated = response.data.data.idiom;
-      const existing = idioms.find((i) => i.id === id);
-      const preservedExamples = existing?.examples ?? [];
+      const preservedExamples = idioms.find((i) => i.id === id)?.examples || [];
 
-      const updatedIdioms = addPositionsToIdioms(
-        idioms.map((idiom) =>
-          idiom.id === id ? { ...updated, examples: preservedExamples } : idiom,
+      setIdioms((prev) =>
+        addPositionsToIdioms(
+          prev.map((idiom) =>
+            idiom.id === id ? { ...updated, examples: preservedExamples } : idiom,
+          ),
         ),
       );
-      setIdioms(updatedIdioms);
       return updated;
     } catch (err) {
       console.error('Failed to update idiom:', err);
@@ -109,8 +111,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     try {
       const api = await getAuthorizedIdiomFinder();
       await api.delete(`/${id}`);
-      const updatedIdioms = addPositionsToIdioms(idioms.filter((idiom) => idiom.id !== id));
-      setIdioms(updatedIdioms);
+      setIdioms((prev) => addPositionsToIdioms(prev.filter((idiom) => idiom.id !== id)));
     } catch (err) {
       console.error('Failed to delete idiom:', err);
     }
@@ -123,13 +124,11 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     try {
       const api = await getAuthorizedIdiomFinder();
       const response = await api.put(`/${idiomId}/examples`, { examples: updatedExamples });
-
       const savedExamples = response.data?.examples ?? updatedExamples;
 
-      const updatedIdioms = idioms.map((idiom) =>
-        idiom.id === idiomId ? { ...idiom, examples: savedExamples } : idiom,
+      setIdioms((prev) =>
+        prev.map((idiom) => (idiom.id === idiomId ? { ...idiom, examples: savedExamples } : idiom)),
       );
-      setIdioms(updatedIdioms);
 
       return savedExamples;
     } catch (err) {
@@ -158,10 +157,10 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
       const response = await api.post(`/${idiomId}/examples`, {
         example: exampleText.trim() || null,
       });
-
       const savedExample = response.data.data.example;
-      setIdioms((prevIdioms) =>
-        prevIdioms.map((idiom) =>
+
+      setIdioms((prev) =>
+        prev.map((idiom) =>
           idiom.id === idiomId
             ? { ...idiom, examples: [...(idiom.examples || []), savedExample] }
             : idiom,
@@ -179,12 +178,14 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
       value={{
         idioms,
         setIdioms,
-        addIdioms,
+        addIdiom,
         updateIdiom,
         deleteIdiom,
         updateExamples,
         deleteExampleById,
         addExampleToIdiom,
+        isLoading,
+        hasFetched,
       }}
     >
       {children}

@@ -37,8 +37,8 @@ if (process.env.NODE_ENV === 'test') {
 // Returns the data and the number of idioms returned.
 app.get('/api/v1/idioms', async (_: Request, res: Response) => {
   try {
-    const idiomsQuery = `SELECT * FROM idioms_test ORDER BY timestamps`;
-    const examplesQuery = `SELECT * FROM idioms_examples_test`;
+    const idiomsQuery = `SELECT * FROM idioms ORDER BY timestamps`;
+    const examplesQuery = `SELECT * FROM idiom_examples`;
 
     const [idiomsResult, examplesResult] = await Promise.all([
       pool.query(idiomsQuery),
@@ -63,11 +63,11 @@ app.get('/api/v1/idioms', async (_: Request, res: Response) => {
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
     const idiomQuery = await pool.query(
-      ` SELECT * FROM idioms_test WHERE id = $1 `,
+      ` SELECT * FROM idioms WHERE id = $1 `,
       [req.params.id],
     );
     const examplesQuery = await pool.query(
-      `SELECT * FROM idioms_examples_test WHERE idiom_id = $1`,
+      `SELECT * FROM idiom_examples WHERE idiom_id = $1`,
       [req.params.id],
     );
 
@@ -92,8 +92,8 @@ app.post(
   async (req: Request, res: Response) => {
     try {
       const insertQuery = `
-      INSERT INTO idioms_test (title, title_general, definition, timestamps, contributor)
-      values ($1, $2, $3, $4, $5)
+      INSERT INTO idioms (title, title_general, definition, timestamps, contributor) 
+      values ($1, $2, $3, $4, $5) 
       returning *
     `;
       const result = await pool.query(insertQuery, [
@@ -124,8 +124,8 @@ app.put(
   async (req: Request, res: Response) => {
     try {
       const updateQuery = `
-      UPDATE idioms_test 
-      SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5
+      UPDATE idioms 
+      SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5 
       WHERE id = $6 
       returning *
     `;
@@ -158,8 +158,8 @@ app.delete(
     const { id } = req.params;
     try {
       const deleteQuery = `
-        DELETE FROM idioms_test 
-        WHERE id = $1
+        DELETE FROM idioms 
+        WHERE id = $1 
         RETURNING *
       `;
 
@@ -193,7 +193,7 @@ app.post(
 
     try {
       const insertQuery = `
-      INSERT INTO idioms_examples_test (idiom_id, example)
+      INSERT INTO idiom_examples (idiom_id, example)
       VALUES ($1, $2)
       RETURNING example_id, idiom_id, example
     `;
@@ -221,7 +221,7 @@ app.put(
 
     try {
       const updateQuery = `
-      UPDATE idioms_examples_test 
+      UPDATE idiom_examples 
       SET example = $1 
       WHERE example_id = $2 AND idiom_id = $3
     `;
@@ -252,7 +252,7 @@ app.delete(
       const { id } = req.params;
       const result = await pool.query(
         `
-      DELETE FROM idioms_examples_test
+      DELETE FROM idiom_examples 
       WHERE example_id = $1
       RETURNING *
       `,

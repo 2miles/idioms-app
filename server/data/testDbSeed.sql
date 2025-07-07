@@ -17,15 +17,15 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
-CREATE TABLE public.idioms_examples_test (
+CREATE TABLE public.idiom_examples (
     example_id integer NOT NULL,
     idiom_id integer NOT NULL,
     example text
 );
 
-ALTER TABLE public.idioms_examples_test OWNER TO postgres;
+ALTER TABLE public.idiom_examples OWNER TO postgres;
 
-CREATE SEQUENCE public.idioms_examples_test_example_id_seq
+CREATE SEQUENCE public.idiom_examples_example_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -33,19 +33,11 @@ CREATE SEQUENCE public.idioms_examples_test_example_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER TABLE public.idioms_examples_test_example_id_seq OWNER TO postgres;
+ALTER TABLE public.idiom_examples_example_id_seq OWNER TO postgres;
 
-ALTER SEQUENCE public.idioms_examples_test_example_id_seq OWNED BY public.idioms_examples_test.example_id;
+ALTER SEQUENCE public.idiom_examples_example_id_seq OWNED BY public.idiom_examples.example_id;
 
-CREATE TABLE public.idioms_origin_test (
-    origin_id integer NOT NULL,
-    idiom_id integer NOT NULL,
-    example text
-);
-
-ALTER TABLE public.idioms_origin_test OWNER TO postgres;
-
-CREATE SEQUENCE public.idioms_origin_test_origin_id_seq
+CREATE SEQUENCE public.idioms_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -53,22 +45,10 @@ CREATE SEQUENCE public.idioms_origin_test_origin_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER TABLE public.idioms_origin_test_origin_id_seq OWNER TO postgres;
+ALTER TABLE public.idioms_id_seq OWNER TO postgres;
 
-ALTER SEQUENCE public.idioms_origin_test_origin_id_seq OWNED BY public.idioms_origin_test.origin_id;
-
-CREATE SEQUENCE public.idioms_test_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER TABLE public.idioms_test_id_seq OWNER TO postgres;
-
-CREATE TABLE public.idioms_test (
-    id integer DEFAULT nextval('public.idioms_test_id_seq'::regclass) NOT NULL,
+CREATE TABLE public.idioms (
+    id integer DEFAULT nextval('public.idioms_id_seq'::regclass) NOT NULL,
     title character varying(255),
     title_general character varying(255),
     definition text,
@@ -76,7 +56,7 @@ CREATE TABLE public.idioms_test (
     timestamps timestamp with time zone
 );
 
-ALTER TABLE public.idioms_test OWNER TO postgres;
+ALTER TABLE public.idioms OWNER TO postgres;
 
 -- Tracks whether E2E tests are currently running (used for local locking)
 CREATE TABLE public.e2e_lock (
@@ -92,11 +72,9 @@ COPY public.e2e_lock (id, running, updated_at) FROM stdin;
 1	false	2025-01-01 00:00:00
 \.
 
-ALTER TABLE ONLY public.idioms_examples_test ALTER COLUMN example_id SET DEFAULT nextval('public.idioms_examples_test_example_id_seq'::regclass);
+ALTER TABLE ONLY public.idiom_examples ALTER COLUMN example_id SET DEFAULT nextval('public.idiom_examples_example_id_seq'::regclass);
 
-ALTER TABLE ONLY public.idioms_origin_test ALTER COLUMN origin_id SET DEFAULT nextval('public.idioms_origin_test_origin_id_seq'::regclass);
-
-COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
+COPY public.idiom_examples (example_id, idiom_id, example) FROM stdin;
 1	1	I didn’t want the after effects of involving myself in their drama at the time. Later, when things had calmed down, I told the chef that it was not my circus, not my monkeys. He laughed, and we went back to work.
 2	1	All this fuss going on at the moment about the lack of government funding for preschool childcare so mothers can work? Sorry, not my circus, not my monkeys
 3	2	The audience watched with bated breath as the magician performed his final trick.
@@ -772,10 +750,7 @@ COPY public.idioms_examples_test (example_id, idiom_id, example) FROM stdin;
 673	150	OK, if I did everything right, the engine should work right, but the proof will be in the pudding.
 \.
 
-COPY public.idioms_origin_test (origin_id, idiom_id, example) FROM stdin;
-\.
-
-COPY public.idioms_test (id, title, title_general, definition, contributor, timestamps) FROM stdin;
+COPY public.idioms (id, title, title_general, definition, contributor, timestamps) FROM stdin;
 1	Not my circus, not my monkeys	Not my circus, not my monkeys	This troublesome, burdensome, or volatile situation is none of my concern, and thus I refuse to get involved in it. A loan translation of the Polish idio.	Eve	2023-07-13 00:00:01-07
 2	Waiting with baited breath	Wait with bated breath	To remain in a state of eager anticipation (of or for something).	Eve	2023-07-13 00:00:02-07
 3	Don’t hold your breath	Don’t hold your breath	Don’t expect something to happen. (The idea being that one couldn’t hold one’s breath long enough for the unlikely thing to happen.)	\N	2023-07-13 00:00:03-07
@@ -928,29 +903,18 @@ COPY public.idioms_test (id, title, title_general, definition, contributor, time
 150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 00:23:00-07
 \.
 
-SELECT pg_catalog.setval('public.idioms_examples_test_example_id_seq', 674, true);
+SELECT pg_catalog.setval('public.idiom_examples_example_id_seq', 674, true);
 
-SELECT pg_catalog.setval('public.idioms_origin_test_origin_id_seq', 1, false);
+SELECT pg_catalog.setval('public.idioms_id_seq', 151, true);
 
-SELECT pg_catalog.setval('public.idioms_test_id_seq', 151, true);
+ALTER TABLE ONLY public.idiom_examples
+    ADD CONSTRAINT idiom_examples_pkey PRIMARY KEY (example_id);
 
-ALTER TABLE ONLY public.idioms_examples_test
-    ADD CONSTRAINT idioms_examples_test_pkey PRIMARY KEY (example_id);
+ALTER TABLE ONLY public.idioms
+    ADD CONSTRAINT idioms_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY public.idioms_origin_test
-    ADD CONSTRAINT idioms_origin_test_idiom_id_key UNIQUE (idiom_id);
-
-ALTER TABLE ONLY public.idioms_origin_test
-    ADD CONSTRAINT idioms_origin_test_pkey PRIMARY KEY (origin_id);
-
-ALTER TABLE ONLY public.idioms_test
-    ADD CONSTRAINT idioms_test_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY public.idioms_examples_test
-    ADD CONSTRAINT idioms_examples_test_idiom_id_fkey
+ALTER TABLE ONLY public.idiom_examples
+    ADD CONSTRAINT idiom_examples_idiom_id_fkey
     FOREIGN KEY (idiom_id)
-    REFERENCES public.idioms_test(id)
+    REFERENCES public.idioms(id)
     ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.idioms_origin_test
-    ADD CONSTRAINT idioms_origin_test_idiom_id_fkey FOREIGN KEY (idiom_id) REFERENCES public.idioms_test(id);
