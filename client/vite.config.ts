@@ -12,6 +12,13 @@ export default defineConfig({
   server: {
     host: '0.0.0.0', // This allows access from other devices on the local network
     port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://server:3001', // 👈 Docker service name for backend
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   test: {
     globals: true,

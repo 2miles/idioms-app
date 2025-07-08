@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, ColumnVisibility, ColumnAccessors } from '@/types';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Table from '@/components/Table/Table/Table';
@@ -49,11 +50,28 @@ const SearchBarWrapper = styled.div`
 `;
 
 const IdiomTableView = () => {
-  const { idioms } = useContext(IdiomsContext);
+  const [idioms, setIdioms] = useState<Idiom[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [filteredIdioms, setFilteredIdioms] = useState(idioms);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(20);
+  useEffect(() => {
+    const hasPage = searchParams.has('page');
+    const hasLimit = searchParams.has('limit');
+
+    if (!hasPage || !hasLimit) {
+      const params = new URLSearchParams(searchParams);
+      if (!hasPage) params.set('page', '1');
+      if (!hasLimit) params.set('limit', '20');
+      setSearchParams(params);
+    }
+  }, []);
+
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const initialLimit = parseInt(searchParams.get('limit') || '20', 10);
+
+  const [itemsPerPage, setItemsPerPage] = useState(initialLimit);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
     title: true,
@@ -62,35 +80,20 @@ const IdiomTableView = () => {
     contributor: false,
   });
 
+  const handleSearch = () => {};
+
   useEffect(() => {
-    setFilteredIdioms(idioms);
-    setCurrentPage(1); // Reset to the first page when idioms change
-  }, [idioms]);
-
-  // Updates filtered idioms when the search changes
-  const handleSearch = (filtered: Idiom[]) => {
-    setFilteredIdioms(filtered);
-    setCurrentPage(1);
-  };
-
-  /**
-   * Modifies the `filteredIdioms` state.
-   */
-  const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
-    if (!sortField) return; // Early return if no sort field is provided
-
-    const sorted = [...filteredIdioms].sort((a, b) => {
-      const aValue = a[sortField]?.toString() || ''; // Optional chaining and fallback to empty string
-      const bValue = b[sortField]?.toString() || '';
-
-      if (aValue === null || aValue === '') return 1; // Handle null and empty values
-      if (bValue === null || bValue === '') return -1;
-
-      return aValue.localeCompare(bValue, 'en', { numeric: true }) * (sortOrder === 'asc' ? 1 : -1);
-    });
-
-    setFilteredIdioms(sorted);
-  };
+    const fetchPage = async () => {
+      try {
+        const res = await axios.get(`/api/v1/idioms?page=${currentPage}&limit=${itemsPerPage}`);
+        setIdioms(res.data.data.idioms); // remove `.data`
+        setTotalCount(res.data.data.totalCount); // remove `.data`
+      } catch (err) {
+        console.error('Failed to fetch idioms:', err);
+      }
+    };
+    fetchPage();
+  }, [currentPage, itemsPerPage]);
 
   const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
     setColumnVisibility({
@@ -99,30 +102,40 @@ const IdiomTableView = () => {
     });
   };
 
-  const handleItemsPerPageChange = (itemsPerPage: number) => {
-    setItemsPerPage(itemsPerPage);
-    setCurrentPage(1);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', String(page));
+      return params;
+    });
   };
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const handleLimitChange = (newLimit: number) => {
+    setItemsPerPage(newLimit);
+    setCurrentPage(1); // Reset to first page when limit changes
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', '1');
+      params.set('limit', String(newLimit));
+      return params;
+    });
+  };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
+  const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
+    console.log(`Sort by ${sortField} ${sortOrder}`);
+  };
 
-  const idiomCount = filteredIdioms.length; // Derived value
+  const showingStart = (currentPage - 1) * itemsPerPage + 1;
+  const showingEnd = Math.min(currentPage * itemsPerPage, totalCount);
   const showingText =
-    idiomCount === 0
-      ? ''
-      : `Showing ${indexOfFirstItem + 1} - ${
-          indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
-        } of ${idiomCount} idioms`;
+    totalCount === 0 ? '' : `Showing ${showingStart} - ${showingEnd} of ${totalCount} idioms`;
 
   return (
     <TableSectionWrapper>
-      <SearchBarWrapper>
+      {/* <SearchBarWrapper>
         <SearchBar handleSearch={handleSearch} idioms={idioms} />
-      </SearchBarWrapper>
+      </SearchBarWrapper> */}
       <TableControls>
         <ShowingText>{showingText}</ShowingText>
         <RightControls>
@@ -130,25 +143,21 @@ const IdiomTableView = () => {
             columnVisibility={columnVisibility}
             handleColumnVisibilityChange={handleColumnVisibilityChange}
           />
-          <ItemsPerPageDropdown handleItemsPerPageChange={handleItemsPerPageChange} />
+          <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
           <Pagination
             itemsPerPage={itemsPerPage}
-            totalItems={idiomCount}
-            paginate={paginate}
+            totalItems={totalCount}
+            paginate={handlePageChange}
             currentPage={currentPage}
           />
         </RightControls>
       </TableControls>
-      <Table
-        tableData={currentItems}
-        handleSorting={handleSorting}
-        columnVisibility={columnVisibility}
-      />
+      <Table tableData={idioms} handleSorting={handleSorting} columnVisibility={columnVisibility} />
       <TableControls>
         <Pagination
           itemsPerPage={itemsPerPage}
-          totalItems={idiomCount}
-          paginate={paginate}
+          totalItems={totalCount}
+          paginate={handlePageChange}
           currentPage={currentPage}
         />
       </TableControls>

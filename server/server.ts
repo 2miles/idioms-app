@@ -33,31 +33,64 @@ if (process.env.NODE_ENV === 'test') {
   });
 }
 
-// Get all idioms and examples
-// Returns the data and the number of idioms returned.
-app.get('/api/v1/idioms', async (_: Request, res: Response) => {
-  try {
-    const idiomsQuery = `SELECT * FROM idioms ORDER BY timestamps`;
-    const examplesQuery = `SELECT * FROM idiom_examples`;
+app.get(
+  ['/api/v1/idioms', '/api/v1/idioms/'],
+  async (req: Request, res: Response) => {
+    try {
+      const page = parseInt((req.query.page as string) || '1', 10);
+      const limit = parseInt((req.query.limit as string) || '20', 10);
+      const offset = (page - 1) * limit;
 
-    const [idiomsResult, examplesResult] = await Promise.all([
-      pool.query(idiomsQuery),
-      pool.query(examplesQuery),
-    ]);
+      const search = (req.query.search as string) || '';
+      const searchPattern = `%${search}%`;
 
-    res.status(200).json({
-      status: 'success',
-      results: idiomsResult.rows.length,
-      data: {
-        idioms: idiomsResult.rows,
-        examples: examplesResult.rows,
-      },
-    });
-  } catch (error) {
-    console.error('Error executing query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      // Fetch a paginated list of idioms ordered by newest first (timestamps DESC),
+      // and assign each idiom a global position such that the newest idiom has the highest position.
+      // For example, if there are 1080 idioms, the newest idiom will have position 1080, next 1079, etc.
+      // This uses a CTE to first calculate the total number of idioms (with optional filtering via ILIKE),
+      // then assigns a row number and converts it into the descending global position.
+      const idiomsQuery = `
+      WITH total AS (
+        SELECT COUNT(*) AS total FROM idioms WHERE title ILIKE $3
+      ),
+      ranked AS (
+        SELECT *,
+          ROW_NUMBER() OVER (ORDER BY timestamps DESC) AS row_num
+        FROM idioms
+        WHERE title ILIKE $3
+      )
+      SELECT *,
+        (SELECT total FROM total) + 1 - row_num AS position
+      FROM ranked
+      ORDER BY timestamps DESC
+      LIMIT $1 OFFSET $2;
+      `;
+
+      const totalCountQuery = `
+      SELECT COUNT(*) AS total FROM idioms
+      WHERE title ILIKE $1
+    `;
+
+      const [idiomsResult, countResult] = await Promise.all([
+        pool.query(idiomsQuery, [limit, offset, searchPattern]),
+        pool.query(totalCountQuery, [searchPattern]),
+      ]);
+
+      const totalCount = parseInt(countResult.rows[0].total, 10);
+
+      res.status(200).json({
+        status: 'success',
+        data: {
+          idioms: idiomsResult.rows,
+          totalCount,
+        },
+      });
+    } catch (error) {
+      console.error('Error executing paginated idioms query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 // Get single idiom, and get examples for that idiom
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
