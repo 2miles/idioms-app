@@ -12,6 +12,7 @@ import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExam
 import DetailCard from '@/components/DetailCard/DetailCard';
 import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
+import axios from 'axios';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -22,7 +23,7 @@ const SpinnerWrapper = styled.div`
 
 const DetailPage = () => {
   const { id } = useParams();
-  const { idioms, deleteIdiom } = useContext(IdiomsContext);
+  const { deleteIdiom } = useContext(IdiomsContext);
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,14 +79,19 @@ const DetailPage = () => {
   }, []);
 
   useEffect(() => {
-    const idiomFromContext = idioms.find((idiom) => idiom.id === Number(id));
-    if (idiomFromContext) {
-      setSelectedIdiom(idiomFromContext);
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  }, [id, idioms]);
+    const fetchIdiom = async () => {
+      try {
+        const res = await axios.get(`/api/v1/idioms/${id}`);
+        const { idiom, examples } = res.data.data;
+        setSelectedIdiom({ ...idiom, examples: examples ?? [] });
+      } catch (err) {
+        console.error('Failed to fetch idiom detail:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchIdiom();
+  }, [id]);
 
   if (loading || !selectedIdiom) {
     return (
@@ -111,7 +117,7 @@ const DetailPage = () => {
         {typeof id !== 'undefined' && (
           <UpdateExamplesForm
             idiomId={Number(id)}
-            examples={selectedIdiom.examples}
+            examples={selectedIdiom.examples || []}
             onClose={closeExampleModal}
           />
         )}
