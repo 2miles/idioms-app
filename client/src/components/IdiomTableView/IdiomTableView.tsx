@@ -50,9 +50,33 @@ const SearchBarWrapper = styled.div`
 `;
 
 const IdiomTableView = () => {
+  // Hook for URL query parameters
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // State: idioms and total count
   const [idioms, setIdioms] = useState<Idiom[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
+
+  // State: pagination
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const initialLimit = parseInt(searchParams.get('limit') || '20', 10);
+  const [itemsPerPage, setItemsPerPage] = useState(initialLimit);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
+  // State: search input and search column
+  const initialSearch = searchParams.get('search') || '';
+  const initialColumn = (searchParams.get('column') as ColumnAccessors) || 'title';
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [searchColumn, setSearchColumn] = useState<ColumnAccessors>(initialColumn);
+
+  // State: column visibility
+  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
+    position: true,
+    title: true,
+    definition: true,
+    timestamps: false,
+    contributor: false,
+  });
 
   useEffect(() => {
     const hasPage = searchParams.has('page');
@@ -66,39 +90,53 @@ const IdiomTableView = () => {
     }
   }, []);
 
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const initialLimit = parseInt(searchParams.get('limit') || '20', 10);
-
-  const [itemsPerPage, setItemsPerPage] = useState(initialLimit);
-  const [currentPage, setCurrentPage] = useState(initialPage);
-
-  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
-    position: true,
-    title: true,
-    definition: true,
-    timestamps: false,
-    contributor: false,
-  });
-
-  const handleSearch = () => {};
+  useEffect(() => {
+    const paramColumn = searchParams.get('column') as ColumnAccessors;
+    if (paramColumn && paramColumn !== searchColumn) {
+      setSearchColumn(paramColumn);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        const res = await axios.get(`/api/v1/idioms?page=${currentPage}&limit=${itemsPerPage}`);
-        setIdioms(res.data.data.idioms); // remove `.data`
-        setTotalCount(res.data.data.totalCount); // remove `.data`
+        const res = await axios.get(`/api/v1/idioms`, {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            search: searchTerm,
+            column: searchColumn,
+          },
+        });
+
+        setIdioms(res.data.data.idioms);
+        setTotalCount(res.data.data.totalCount);
       } catch (err) {
         console.error('Failed to fetch idioms:', err);
       }
     };
     fetchPage();
-  }, [currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage, searchTerm, searchColumn]);
 
-  const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
-    setColumnVisibility({
-      ...columnVisibility,
-      [accessor]: !columnVisibility[accessor],
+  const onSearchTermChange = (term: string) => {
+    setSearchTerm(term);
+    setCurrentPage(1);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('search', term);
+      params.set('page', '1');
+      return params;
+    });
+  };
+
+  const onSearchColumnChange = (column: ColumnAccessors) => {
+    setSearchColumn(column);
+    setCurrentPage(1);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('column', column);
+      params.set('page', '1');
+      return params;
     });
   };
 
@@ -122,6 +160,13 @@ const IdiomTableView = () => {
     });
   };
 
+  const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
+    setColumnVisibility({
+      ...columnVisibility,
+      [accessor]: !columnVisibility[accessor],
+    });
+  };
+
   const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
     console.log(`Sort by ${sortField} ${sortOrder}`);
   };
@@ -133,9 +178,14 @@ const IdiomTableView = () => {
 
   return (
     <TableSectionWrapper>
-      {/* <SearchBarWrapper>
-        <SearchBar handleSearch={handleSearch} idioms={idioms} />
-      </SearchBarWrapper> */}
+      <SearchBarWrapper>
+        <SearchBar
+          searchTerm={searchTerm}
+          searchColumn={searchColumn}
+          onSearchTermChange={onSearchTermChange}
+          onSearchColumnChange={onSearchColumnChange}
+        />
+      </SearchBarWrapper>
       <TableControls>
         <ShowingText>{showingText}</ShowingText>
         <RightControls>

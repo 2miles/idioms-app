@@ -44,32 +44,52 @@ app.get(
       const search = (req.query.search as string) || '';
       const searchPattern = `%${search}%`;
 
-      // Fetch a paginated list of idioms ordered by newest first (timestamps DESC),
-      // and assign each idiom a global position such that the newest idiom has the highest position.
-      // For example, if there are 1080 idioms, the newest idiom will have position 1080, next 1079, etc.
-      // This uses a CTE to first calculate the total number of idioms (with optional filtering via ILIKE),
-      // then assigns a row number and converts it into the descending global position.
+      const allowedColumns = ['title', 'definition', 'contributor'];
+      const searchColumn = (req.query.column as string) || 'title';
+
+      if (!allowedColumns.includes(searchColumn)) {
+        res.status(400).json({ error: 'Invalid search column' });
+        return;
+      }
+
+      // This query fetches a paginated and optionally filtered list of idioms, ordered by newest first (timestamps DESC),
+      // while assigning each idiom its global position in the full dataset — even when a search filter is applied.
+      //
+      // Steps:
+      // 1. `global_total`: counts the total number of idioms in the table (unfiltered).
+      // 2. `ranked_all`: assigns a global row number to every idiom based on timestamp DESC.
+      // 3. `filtered`: filters the ranked idioms by a case-insensitive search on the selected column,
+      //    and computes a global `position` for each idiom using: (total + 1 - row_num).
+      // 4. The final SELECT returns a page of filtered idioms with their correct global positions.
+      //
+      // This ensures that when users filter the table, the position values still reflect the idioms' true order in the
+      // full dataset — not just within the filtered subset.
+
       const idiomsQuery = `
-      WITH total AS (
-        SELECT COUNT(*) AS total FROM idioms WHERE title ILIKE $3
-      ),
-      ranked AS (
-        SELECT *,
-          ROW_NUMBER() OVER (ORDER BY timestamps DESC) AS row_num
-        FROM idioms
-        WHERE title ILIKE $3
-      )
-      SELECT *,
-        (SELECT total FROM total) + 1 - row_num AS position
-      FROM ranked
-      ORDER BY timestamps DESC
-      LIMIT $1 OFFSET $2;
-      `;
+        WITH global_total AS (
+          SELECT COUNT(*) AS total FROM idioms
+        ),
+        ranked_all AS (
+          SELECT *,
+            ROW_NUMBER() OVER (ORDER BY timestamps DESC) AS row_num
+          FROM idioms
+        ),
+        filtered AS (
+          SELECT *,
+            (SELECT total FROM global_total) + 1 - row_num AS position
+          FROM ranked_all
+          WHERE ${searchColumn} ILIKE $3
+        )
+        SELECT *
+        FROM filtered
+        ORDER BY timestamps DESC
+        LIMIT $1 OFFSET $2;
+        `;
 
       const totalCountQuery = `
-      SELECT COUNT(*) AS total FROM idioms
-      WHERE title ILIKE $1
-    `;
+        SELECT COUNT(*) AS total FROM idioms
+        WHERE ${searchColumn} ILIKE $1
+        `;
 
       const [idiomsResult, countResult] = await Promise.all([
         pool.query(idiomsQuery, [limit, offset, searchPattern]),
