@@ -85,35 +85,38 @@ const IdiomTableView = () => {
   });
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    let updated = false;
+    const hasPage = searchParams.has('page');
+    const hasLimit = searchParams.has('limit');
+    const hasSortField = searchParams.has('sortField');
+    const hasSortOrder = searchParams.has('sortOrder');
 
-    if (!params.has('page')) {
-      params.set('page', '1');
-      updated = true;
+    if (!hasPage || !hasLimit || !hasSortField || !hasSortOrder) {
+      const params = new URLSearchParams(searchParams);
+      if (!hasPage) params.set('page', '1');
+      if (!hasLimit) params.set('limit', '20');
+      if (!hasSortField) params.set('sortField', 'timestamps');
+      if (!hasSortOrder) params.set('sortOrder', 'desc');
+      setSearchParams(params);
     }
-    if (!params.has('limit')) {
-      params.set('limit', '20');
-      updated = true;
-    }
-    if (!params.has('sortField')) {
-      params.set('sortField', 'timestamps');
-      updated = true;
-    }
-    if (!params.has('sortOrder')) {
-      params.set('sortOrder', 'desc');
-      updated = true;
-    }
-    if (!params.has('column')) {
-      params.set('column', 'title');
-      updated = true;
-    }
-
-    if (updated) {
-      setSearchParams(params, { replace: true }); // ✅ avoid pushing to history stack
-    }
-    // ✅ only run once, not when searchParams changes
   }, []);
+
+  useEffect(() => {
+    const paramColumn = searchParams.get('column') as ColumnAccessors;
+    const paramField = searchParams.get('sortField') as ColumnAccessors;
+    const paramOrder = searchParams.get('sortOrder') as 'asc' | 'desc';
+
+    if (paramColumn && paramColumn !== searchColumn) {
+      setSearchColumn(paramColumn);
+    }
+
+    if (paramField && paramField !== sortField) {
+      setSortField(paramField);
+    }
+
+    if (paramOrder && paramOrder !== sortOrder) {
+      setSortOrder(paramOrder);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchPage = async () => {
@@ -187,18 +190,27 @@ const IdiomTableView = () => {
     });
   };
 
-  const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
-    setSortField(field);
-    setSortOrder(order);
-    setCurrentPage(1);
+  // const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
+  //   setSortField(field);
+  //   setSortOrder(order);
+  //   setCurrentPage(1);
+  //   setSearchParams((prev) => {
+  //     const params = new URLSearchParams(prev);
+  //     params.set('sortField', field);
+  //     params.set('sortOrder', order);
+  //     params.set('page', '1');
+  //     return params;
+  //   });
+  // };
 
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-      params.set('sortField', field);
-      params.set('sortOrder', order);
-      params.set('page', '1');
-      return params;
-    });
+  const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
+    // setSearchParams((prev) => {
+    //   const params = new URLSearchParams(prev);
+    //   params.set('sortField', field);
+    //   params.set('sortOrder', order);
+    //   params.set('page', '1');
+    //   return params;
+    // });
   };
 
   const showingStart = (currentPage - 1) * itemsPerPage + 1;
