@@ -37,18 +37,36 @@ app.get(
   ['/api/v1/idioms', '/api/v1/idioms/'],
   async (req: Request, res: Response) => {
     try {
-      const page = parseInt((req.query.page as string) || '1', 10);
-      const limit = parseInt((req.query.limit as string) || '20', 10);
+      let page = parseInt((req.query.page as string) || '1', 10);
+      let limit = parseInt((req.query.limit as string) || '20', 10);
       const offset = (page - 1) * limit;
 
-      const search = (req.query.search as string) || '';
+      let search = (req.query.search as string) || '';
       const searchPattern = `%${search}%`;
 
       const allowedColumns = ['title', 'definition', 'contributor'];
       const searchColumn = (req.query.column as string) || 'title';
-
       if (!allowedColumns.includes(searchColumn)) {
         res.status(400).json({ error: 'Invalid search column' });
+        return;
+      }
+
+      const allowedSortFields = [
+        'position',
+        'timestamps',
+        'title',
+        'definition',
+        'contributor',
+      ];
+      let sortField = (req.query.sortField as string) || 'timestamps';
+      let sortOrder = (req.query.sortOrder as string) || 'desc';
+
+      if (!allowedSortFields.includes(sortField)) {
+        res.status(400).json({ error: 'Invalid sort field' });
+        return;
+      }
+      if (!['asc', 'desc'].includes(sortOrder)) {
+        res.status(400).json({ error: 'Invalid sort order' });
         return;
       }
 
@@ -82,7 +100,7 @@ app.get(
         )
         SELECT *
         FROM filtered
-        ORDER BY timestamps DESC
+        ORDER BY ${sortField} ${sortOrder}
         LIMIT $1 OFFSET $2;
         `;
 

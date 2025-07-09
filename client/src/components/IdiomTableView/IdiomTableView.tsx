@@ -10,6 +10,10 @@ import Pagination from '@/components/Pagination/Pagination';
 import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
 import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
 
+// TODO:
+// Make searchParams setup fully cleaned and abstracted
+//   — it might be worth extracting into a useQueryDefaults() hook eventually.
+
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
   background-color: transparent;
@@ -69,6 +73,11 @@ const IdiomTableView = () => {
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [searchColumn, setSearchColumn] = useState<ColumnAccessors>(initialColumn);
 
+  const initialSortField = (searchParams.get('sortField') as ColumnAccessors) || 'timestamps';
+  const initialSortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
+  const [sortField, setSortField] = useState<ColumnAccessors>(initialSortField);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
+
   // State: column visibility
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
@@ -78,23 +87,42 @@ const IdiomTableView = () => {
     contributor: false,
   });
 
+  // Set defaults in URL if missing
   useEffect(() => {
-    const hasPage = searchParams.has('page');
-    const hasLimit = searchParams.has('limit');
-
-    if (!hasPage || !hasLimit) {
-      const params = new URLSearchParams(searchParams);
-      if (!hasPage) params.set('page', '1');
-      if (!hasLimit) params.set('limit', '20');
-      setSearchParams(params);
+    const params = new URLSearchParams(searchParams);
+    let updated = false;
+    if (!params.has('page')) {
+      params.set('page', '1');
+      updated = true;
     }
+    if (!params.has('limit')) {
+      params.set('limit', '20');
+      updated = true;
+    }
+    if (!params.has('sortField')) {
+      params.set('sortField', 'timestamps');
+      updated = true;
+    }
+    if (!params.has('sortOrder')) {
+      params.set('sortOrder', 'desc');
+      updated = true;
+    }
+    if (!params.has('column')) {
+      params.set('column', 'title');
+      updated = true;
+    }
+
+    if (updated) setSearchParams(params);
   }, []);
 
+  // Sync local state from URL
   useEffect(() => {
-    const paramColumn = searchParams.get('column') as ColumnAccessors;
-    if (paramColumn && paramColumn !== searchColumn) {
-      setSearchColumn(paramColumn);
-    }
+    setCurrentPage(parseInt(searchParams.get('page') || '1', 10));
+    setItemsPerPage(parseInt(searchParams.get('limit') || '20', 10));
+    setSearchTerm(searchParams.get('search') || '');
+    setSearchColumn((searchParams.get('column') as ColumnAccessors) || 'title');
+    setSortField((searchParams.get('sortField') as ColumnAccessors) || 'timestamps');
+    setSortOrder((searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc');
   }, [searchParams]);
 
   useEffect(() => {
@@ -106,6 +134,8 @@ const IdiomTableView = () => {
             limit: itemsPerPage,
             search: searchTerm,
             column: searchColumn,
+            sortField,
+            sortOrder,
           },
         });
 
@@ -116,7 +146,7 @@ const IdiomTableView = () => {
       }
     };
     fetchPage();
-  }, [currentPage, itemsPerPage, searchTerm, searchColumn]);
+  }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder]);
 
   const onSearchTermChange = (term: string) => {
     setSearchTerm(term);
@@ -167,8 +197,18 @@ const IdiomTableView = () => {
     });
   };
 
-  const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
-    console.log(`Sort by ${sortField} ${sortOrder}`);
+  const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
+    setSortField(field);
+    setSortOrder(order);
+    setCurrentPage(1);
+
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('sortField', field);
+      params.set('sortOrder', order);
+      params.set('page', '1');
+      return params;
+    });
   };
 
   const showingStart = (currentPage - 1) * itemsPerPage + 1;
