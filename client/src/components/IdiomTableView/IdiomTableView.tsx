@@ -57,26 +57,17 @@ const IdiomTableView = () => {
   // Hook for URL query parameters
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // State: idioms and total count
   const [idioms, setIdioms] = useState<Idiom[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
-  // State: pagination
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const initialLimit = parseInt(searchParams.get('limit') || '20', 10);
-  const [itemsPerPage, setItemsPerPage] = useState(initialLimit);
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
-  // State: search input and search column
-  const initialSearch = searchParams.get('search') || '';
-  const initialColumn = (searchParams.get('column') as ColumnAccessors) || 'title';
-  const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [searchColumn, setSearchColumn] = useState<ColumnAccessors>(initialColumn);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchColumn, setSearchColumn] = useState<ColumnAccessors>('title');
 
-  const initialSortField = (searchParams.get('sortField') as ColumnAccessors) || 'timestamps';
-  const initialSortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
-  const [sortField, setSortField] = useState<ColumnAccessors>(initialSortField);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
+  const [sortField, setSortField] = useState<ColumnAccessors>('timestamps');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // State: column visibility
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
@@ -88,9 +79,25 @@ const IdiomTableView = () => {
   });
 
   // Set defaults in URL if missing
+  // useEffect(() => {
+  //   const requiredParams = ['page', 'limit', 'sortField', 'sortOrder', 'column'];
+  //   const hasAll = requiredParams.every((key) => searchParams.has(key));
+
+  //   if (!hasAll) {
+  //     const params = new URLSearchParams(searchParams);
+
+  //     if (!params.has('page')) params.set('page', '1');
+  //     if (!params.has('limit')) params.set('limit', '20');
+  //     if (!params.has('sortField')) params.set('sortField', 'timestamps');
+  //     if (!params.has('sortOrder')) params.set('sortOrder', 'desc');
+  //     if (!params.has('column')) params.set('column', 'title');
+  //     setSearchParams(params);
+  //   }
+  // }, [searchParams]);
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     let updated = false;
+
     if (!params.has('page')) {
       params.set('page', '1');
       updated = true;
@@ -112,10 +119,22 @@ const IdiomTableView = () => {
       updated = true;
     }
 
-    if (updated) setSearchParams(params);
+    if (updated) {
+      setSearchParams(params, { replace: true }); // ✅ avoid pushing to history stack
+    }
+    // ✅ only run once, not when searchParams changes
   }, []);
 
   // Sync local state from URL
+  // useEffect(() => {
+  //   setCurrentPage(parseInt(searchParams.get('page') || '1', 10));
+  //   setItemsPerPage(parseInt(searchParams.get('limit') || '20', 10));
+  //   setSearchTerm(searchParams.get('search') || '');
+  //   setSearchColumn((searchParams.get('column') as ColumnAccessors) || 'title');
+  //   setSortField((searchParams.get('sortField') as ColumnAccessors) || 'timestamps');
+  //   setSortOrder((searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc');
+  // }, [searchParams]);
+
   useEffect(() => {
     setCurrentPage(parseInt(searchParams.get('page') || '1', 10));
     setItemsPerPage(parseInt(searchParams.get('limit') || '20', 10));
@@ -123,7 +142,7 @@ const IdiomTableView = () => {
     setSearchColumn((searchParams.get('column') as ColumnAccessors) || 'title');
     setSortField((searchParams.get('sortField') as ColumnAccessors) || 'timestamps');
     setSortOrder((searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc');
-  }, [searchParams]);
+  }, [searchParams.toString()]); // ✅ force re-run when URL actually changes
 
   useEffect(() => {
     const fetchPage = async () => {
