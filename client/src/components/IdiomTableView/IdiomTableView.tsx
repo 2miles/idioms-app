@@ -147,7 +147,6 @@ const IdiomTableView = () => {
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set('search', term);
-      params.set('page', '1');
       return params;
     });
   };
@@ -174,7 +173,6 @@ const IdiomTableView = () => {
 
   const handleLimitChange = (newLimit: number) => {
     setItemsPerPage(newLimit);
-    setCurrentPage(1); // Reset to first page when limit changes
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set('page', '1');
@@ -190,28 +188,28 @@ const IdiomTableView = () => {
     });
   };
 
+  const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
+    setSortField(field);
+    setSortOrder(order);
+    // setCurrentPage(1);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('sortField', field);
+      params.set('sortOrder', order);
+      //params.set('page', '1');
+      return params;
+    });
+  };
+
   // const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
-  //   setSortField(field);
-  //   setSortOrder(order);
-  //   setCurrentPage(1);
   //   setSearchParams((prev) => {
   //     const params = new URLSearchParams(prev);
   //     params.set('sortField', field);
   //     params.set('sortOrder', order);
-  //     params.set('page', '1');
+  //     // params.set('page', '1');
   //     return params;
   //   });
   // };
-
-  const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
-    // setSearchParams((prev) => {
-    //   const params = new URLSearchParams(prev);
-    //   params.set('sortField', field);
-    //   params.set('sortOrder', order);
-    //   params.set('page', '1');
-    //   return params;
-    // });
-  };
 
   const showingStart = (currentPage - 1) * itemsPerPage + 1;
   const showingEnd = Math.min(currentPage * itemsPerPage, totalCount);
@@ -244,7 +242,13 @@ const IdiomTableView = () => {
           />
         </RightControls>
       </TableControls>
-      <Table tableData={idioms} handleSorting={handleSorting} columnVisibility={columnVisibility} />
+      <Table
+        tableData={idioms}
+        handleSorting={handleSorting}
+        columnVisibility={columnVisibility}
+        sortField={sortField}
+        sortOrder={sortOrder}
+      />
       <TableControls>
         <Pagination
           itemsPerPage={itemsPerPage}
