@@ -57,15 +57,20 @@ const TitleArea = styled.div`
 type UpdateExamplesProps = {
   idiomId: number;
   examples: Example[];
+  idiomTitle: string;
   onClose: () => void;
+  onUpdateSuccess?: () => void;
 };
 
-const UpdateExamplesForm = ({ idiomId, onClose }: UpdateExamplesProps) => {
-  const { idioms, updateExamples, deleteExampleById } = useContext(IdiomsContext);
-  const initialExamples = idioms.find((idiom) => idiom.id === idiomId)?.examples || [];
-  const [examples, setExamples] = useState<Example[]>(initialExamples);
-
-  const idiomTitle = idioms.find((idiom) => idiom.id === idiomId)?.title;
+const UpdateExamplesForm = ({
+  idiomId,
+  examples: initialExamples,
+  idiomTitle,
+  onClose,
+  onUpdateSuccess,
+}: UpdateExamplesProps) => {
+  const { updateExamples, deleteExampleById } = useContext(IdiomsContext);
+  const [examples, setExamples] = useState<Example[]>([...initialExamples]);
 
   const handleExampleChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const { value } = e.target;
@@ -92,7 +97,8 @@ const UpdateExamplesForm = ({ idiomId, onClose }: UpdateExamplesProps) => {
       if (deleted) {
         const updated = examples.filter((_, i) => i !== index);
         setExamples(updated);
-        updateExamples(idiomId, updated);
+        await updateExamples(idiomId, updated);
+        onUpdateSuccess?.();
         Swal.fire({
           title: 'Deleted!',
           text: 'The example has been successfully deleted.',
@@ -132,6 +138,7 @@ const UpdateExamplesForm = ({ idiomId, onClose }: UpdateExamplesProps) => {
     try {
       const savedExamples = await updateExamples(idiomId, examples);
       if (savedExamples) {
+        onUpdateSuccess?.();
         Swal.fire({
           title: 'Updated!',
           text: 'Examples have been successfully updated.',

@@ -31,6 +31,18 @@ const DetailPage = () => {
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
   const navigate = useNavigate();
 
+  const fetchIdiom = async () => {
+    try {
+      const res = await axios.get(`/api/v1/idioms/${id}`);
+      const { idiom, examples } = res.data.data;
+      setSelectedIdiom({ ...idiom, examples: examples ?? [] });
+    } catch (err) {
+      console.error('Failed to fetch idiom detail:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
@@ -79,17 +91,6 @@ const DetailPage = () => {
   }, []);
 
   useEffect(() => {
-    const fetchIdiom = async () => {
-      try {
-        const res = await axios.get(`/api/v1/idioms/${id}`);
-        const { idiom, examples } = res.data.data;
-        setSelectedIdiom({ ...idiom, examples: examples ?? [] });
-      } catch (err) {
-        console.error('Failed to fetch idiom detail:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchIdiom();
   }, [id]);
 
@@ -110,7 +111,12 @@ const DetailPage = () => {
   return (
     <PageContainer>
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
-        <UpdateIdiomForm idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
+        <UpdateIdiomForm
+          idiom={selectedIdiom}
+          onDelete={handleDelete}
+          onClose={closeModal}
+          onUpdateSuccess={fetchIdiom}
+        />
       </Modal>
 
       <Modal title='Edit Examples' isOpen={isExampleModalOpen} onClose={closeExampleModal}>
@@ -118,7 +124,9 @@ const DetailPage = () => {
           <UpdateExamplesForm
             idiomId={Number(id)}
             examples={selectedIdiom.examples || []}
+            idiomTitle={selectedIdiom.title}
             onClose={closeExampleModal}
+            onUpdateSuccess={fetchIdiom}
           />
         )}
       </Modal>
@@ -128,6 +136,7 @@ const DetailPage = () => {
             idiomId={Number(id)}
             idiomTitle={selectedIdiom.title}
             onClose={closeAddExampleModal}
+            onAddSuccess={fetchIdiom}
           />
         )}
       </Modal>
