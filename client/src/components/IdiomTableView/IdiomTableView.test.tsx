@@ -482,11 +482,6 @@ describe('IdiomTableView', () => {
       });
     });
 
-    //   test('updates showing text when search filters results', async () => {
-    //     const { user, searchBar, expectShowingText } = setup();
-    //     expectShowingText('1 - 2 of 2');
-    //     await user.type(searchBar, 'Break the ice');
-    //     expectShowingText('1 - 1 of 1');
     test.skip('updates showing text when search filters results', () => {
       // TODO: flaky test — app behavior verified manually, revisit later
     });
