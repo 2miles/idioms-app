@@ -14,6 +14,21 @@ import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown'
 // Make searchParams setup fully cleaned and abstracted
 //   — it might be worth extracting into a useQueryDefaults() hook eventually.
 
+// Create a reset Table button
+//   — this would reset all searchParams to their defaults, including pagination, search term,
+//       column visibility, and sorting.
+
+// const resetTable = () => {
+//   const defaults = new URLSearchParams();
+//   defaults.set('page', '1');
+//   defaults.set('limit', '20');
+//   defaults.set('search', '');
+//   defaults.set('column', 'title');
+//   defaults.set('sortField', 'timestamps');
+//   defaults.set('sortOrder', 'desc');
+//   setSearchParams(defaults);
+// };
+
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
   background-color: transparent;
@@ -201,16 +216,6 @@ const IdiomTableView = () => {
     });
   };
 
-  // const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
-  //   setSearchParams((prev) => {
-  //     const params = new URLSearchParams(prev);
-  //     params.set('sortField', field);
-  //     params.set('sortOrder', order);
-  //     // params.set('page', '1');
-  //     return params;
-  //   });
-  // };
-
   const showingStart = (currentPage - 1) * itemsPerPage + 1;
   const showingEnd = Math.min(currentPage * itemsPerPage, totalCount);
   const showingText =
@@ -229,6 +234,7 @@ const IdiomTableView = () => {
       <TableControls>
         <ShowingText>{showingText}</ShowingText>
         <RightControls>
+          {/* <button onClick={resetTable}>Reset Table</button> */}
           <ColumnDropdown
             columnVisibility={columnVisibility}
             handleColumnVisibilityChange={handleColumnVisibilityChange}
