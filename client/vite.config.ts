@@ -30,16 +30,61 @@
 //     },
 //   },
 // });
+
+///////////////////////////////////////////////////////////////////////////////
+// import { configDefaults, defineConfig } from 'vitest/config';
+// import { loadEnv } from 'vite';
+// import react from '@vitejs/plugin-react';
+// import { resolve } from 'path';
+
+// export default defineConfig(({ mode }) => {
+//   // Load env variables like VITE_APP_ENV
+//   const env = loadEnv(mode, process.cwd(), '');
+
+//   const isTest = env.VITE_APP_ENV === 'test';
+//   const isDev = env.VITE_APP_ENV === 'dev';
+
+//   return {
+//     plugins: [react()],
+//     resolve: {
+//       alias: {
+//         '@': resolve(__dirname, './src'),
+//       },
+//     },
+//     server: {
+//       host: '0.0.0.0',
+//       port: 5173,
+//       proxy: {
+//         '/api': {
+//           target: isDev
+//             ? 'http://localhost:3010' // ✅ GitHub Actions / test env
+//             : 'http://server:3001', // ✅ Docker / local dev
+//           changeOrigin: true,
+//           secure: false,
+//         },
+//       },
+//     },
+//     test: {
+//       globals: true,
+//       environment: 'jsdom',
+//       setupFiles: './src/setupTests.ts',
+//       exclude: [...configDefaults.exclude, '**/e2e/**'],
+//       coverage: {
+//         reportsDirectory: '../.test-output/coverage',
+//       },
+//     },
+//   };
+// });
+
 import { configDefaults, defineConfig } from 'vitest/config';
 import { loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 export default defineConfig(({ mode }) => {
-  // Load env variables like VITE_APP_ENV
+  // Load VITE_APP_ENV from environment
   const env = loadEnv(mode, process.cwd(), '');
 
-  const isTest = env.VITE_APP_ENV === 'test';
   const isDev = env.VITE_APP_ENV === 'dev';
 
   return {
@@ -54,9 +99,9 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       proxy: {
         '/api': {
-          target: isTest
-            ? 'http://localhost:3010' // ✅ GitHub Actions / test env
-            : 'http://server:3001', // ✅ Docker / local dev
+          target: isDev
+            ? 'http://server:3001' // Docker local dev
+            : 'http://localhost:3010', // GitHub Actions or test
           changeOrigin: true,
           secure: false,
         },
