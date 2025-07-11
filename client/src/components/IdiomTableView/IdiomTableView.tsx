@@ -154,7 +154,7 @@ const IdiomTableView = () => {
       }
     };
     fetchPage();
-  }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder]);
+  }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder, searchParams]);
 
   const onSearchTermChange = (term: string) => {
     setSearchTerm(term);
