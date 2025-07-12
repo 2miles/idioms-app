@@ -54,6 +54,11 @@ jobs:
         run: npm ci
         working-directory: server
 
+      - name: Reset and seed test DB
+        run: ./scripts/resetTestDB.ci.sh
+        env:
+          DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
+
       - name: Install client dependencies
         run: npm ci
         working-directory: client
