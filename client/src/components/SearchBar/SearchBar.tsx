@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { Idiom, ColumnAccessors } from '@/types';
+import { ColumnAccessors } from '@/types';
 import searchIcon from '@/images/search-icon-png-24.png';
 import SearchColumnDropdown from '@/components/Dropdown/SearchColumnDropdown/SearchColumnDropdown';
 
@@ -47,38 +46,18 @@ const DropdownWrapper = styled.div`
 `;
 
 type SearchBarProps = {
-  idioms: Idiom[];
-  handleSearch: (filtered: Idiom[]) => void;
+  searchTerm: string;
+  searchColumn: ColumnAccessors;
+  onSearchTermChange: (term: string) => void;
+  onSearchColumnChange: (column: ColumnAccessors) => void;
 };
 
-const SearchBar = ({ idioms, handleSearch }: SearchBarProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeSearchColumn, setActiveSearchColumn] = useState<ColumnAccessors>('title');
-
-  // Effect to update search results whenever the search column changes
-  useEffect(() => {
-    if (searchTerm === '') {
-      handleSearch(idioms); // Show all idioms if search is empty
-    } else {
-      const filtered = idioms.filter((idiom) => {
-        const columnData = idiom[activeSearchColumn];
-        if (typeof columnData === 'number') {
-          return columnData === Number(searchTerm);
-        }
-        return columnData?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-      });
-      handleSearch(filtered);
-    }
-  }, [searchTerm, activeSearchColumn, idioms]);
-
-  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleSearchColumnChange = (column: ColumnAccessors) => {
-    setActiveSearchColumn(column);
-  };
-
+const SearchBar = ({
+  searchTerm,
+  searchColumn,
+  onSearchTermChange,
+  onSearchColumnChange,
+}: SearchBarProps) => {
   return (
     <Container>
       <IconContainer>
@@ -89,12 +68,12 @@ const SearchBar = ({ idioms, handleSearch }: SearchBarProps) => {
         className='form-control'
         placeholder='Search...'
         value={searchTerm}
-        onChange={onSearch}
+        onChange={(e) => onSearchTermChange(e.target.value)}
       />
       <DropdownWrapper>
         <SearchColumnDropdown
-          activeColumn={activeSearchColumn}
-          handleColumnChange={handleSearchColumnChange}
+          activeColumn={searchColumn}
+          handleColumnChange={onSearchColumnChange}
         />
       </DropdownWrapper>
     </Container>

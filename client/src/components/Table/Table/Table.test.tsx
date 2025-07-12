@@ -20,6 +20,9 @@ const tableData: Idiom[] = [
 describe('Table', () => {
   const handleSorting = vi.fn();
 
+  const defaultSortField = 'position';
+  const defaultSortOrder = 'asc';
+
   test('renders only visible columns', () => {
     const columnVisibility: ColumnVisibility = {
       position: true,
@@ -35,6 +38,8 @@ describe('Table', () => {
           tableData={tableData}
           handleSorting={handleSorting}
           columnVisibility={columnVisibility}
+          sortField={defaultSortField}
+          sortOrder={defaultSortOrder}
         />
       </MemoryRouter>,
     );
@@ -62,6 +67,8 @@ describe('Table', () => {
           tableData={tableData}
           handleSorting={handleSorting}
           columnVisibility={columnVisibility}
+          sortField={defaultSortField}
+          sortOrder={defaultSortOrder}
         />
       </MemoryRouter>,
     );
@@ -82,7 +89,14 @@ describe('Table', () => {
 
     render(
       <MemoryRouter>
-        <Table tableData={[]} handleSorting={handleSorting} columnVisibility={columnVisibility} />,
+        <Table
+          tableData={[]}
+          handleSorting={handleSorting}
+          columnVisibility={columnVisibility}
+          sortField={defaultSortField}
+          sortOrder={defaultSortOrder}
+        />
+        ,
       </MemoryRouter>,
     );
 

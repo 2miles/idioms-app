@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { SuccessButton } from '@/components/ButtonStyles';
 import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
@@ -17,8 +18,18 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAdmin } = useUser();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  // Triggers IdiomTableView to rerun useEffect by changing search param
+  const refreshIdiomList = () => {
+    const url = new URLSearchParams(location.search);
+    url.set('refresh', Date.now().toString()); // triggers useEffect with a new value
+    navigate(`${location.pathname}?${url.toString()}`);
+  };
 
   return (
     <PageContainer>
@@ -31,7 +42,7 @@ const HomePage = () => {
       )}
       <IdiomTableView />
       <Modal title='Add Idiom' isOpen={isModalOpen} onClose={closeModal}>
-        <AddIdiomForm onClose={closeModal} />
+        <AddIdiomForm onClose={closeModal} onSucess={refreshIdiomList} />
       </Modal>
     </PageContainer>
   );

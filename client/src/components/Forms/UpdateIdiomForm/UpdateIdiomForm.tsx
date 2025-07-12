@@ -44,9 +44,10 @@ type UpdateIdiomProps = {
   idiom: Idiom | null;
   onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onClose: () => void;
+  onUpdateSuccess?: () => void;
 };
 
-const UpdateIdiomForm = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
+const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateIdiomProps) => {
   const { updateIdiom } = useContext(IdiomsContext);
   const [formData, setFormData] = useState({
     title: idiom?.title || '',
@@ -99,6 +100,7 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose }: UpdateIdiomProps) => {
           timer: 1500,
           showConfirmButton: false,
         });
+        onUpdateSuccess?.();
         onClose();
       } else {
         throw new Error('No idiom returned');

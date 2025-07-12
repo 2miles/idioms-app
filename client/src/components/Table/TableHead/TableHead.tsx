@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Column, ColumnAccessors } from '@/types';
@@ -8,6 +7,8 @@ import arrowDown from '@/images/icons8-down-arrow-30.png';
 type TableHeadProps = {
   columns: Column[];
   handleSorting: (sortField: ColumnAccessors, sortOrder: 'asc' | 'desc') => void;
+  sortField: ColumnAccessors;
+  sortOrder: 'asc' | 'desc'; // Use 'default
 };
 
 type StyledThProps = {
@@ -67,34 +68,24 @@ const StyledTh = styled.th<StyledThProps>`
   }
 `;
 
-const TableHead = ({ columns, handleSorting }: TableHeadProps) => {
-  const [sortField, setSortField] = useState<ColumnAccessors>('position');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-
-  // Call handleSorting initially to apply the default sorting
-  useEffect(() => {
-    handleSorting(sortField, sortOrder);
-  }, []);
-
+const TableHead = ({ columns, handleSorting, sortField, sortOrder }: TableHeadProps) => {
   const handleSortingChange = (accessor: ColumnAccessors) => {
     const newSortOrder = accessor === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
-    setSortField(accessor);
-    setSortOrder(newSortOrder);
     handleSorting(accessor, newSortOrder);
   };
   return (
     <thead>
       <tr>
         {columns.map(({ label, accessor }) => {
-          const currentSortOrder = sortField === accessor ? sortOrder : 'default'; // Use 'none' for non-sorted columns
-          const isSorted = sortField === accessor; // Check if this is the active column
+          const currentSortOrder = sortField === accessor ? sortOrder : 'default';
+          const isSorted = sortField === accessor;
 
           return (
             <StyledTh
               key={accessor}
               onClick={() => handleSortingChange(accessor)}
               $accessor={accessor}
-              $sortOrder={currentSortOrder} // Pass sortOrder only for the sorted column
+              $sortOrder={currentSortOrder}
               $isSorted={isSorted}
               data-testid={`table-header-${accessor}`}
             >

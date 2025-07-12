@@ -1,83 +1,60 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import SearchBar from './SearchBar';
-import { Idiom } from '@/types';
-
-const mockIdioms: Idiom[] = [
-  {
-    id: 1,
-    title: 'Break the ice',
-    position: 1,
-    definition: 'Start a conversation',
-    timestamps: '',
-    title_general: null,
-    contributor: null,
-    examples: [],
-  },
-  {
-    id: 2,
-    title: 'Hit the sack',
-    position: 2,
-    definition: 'Go to bed',
-    timestamps: '',
-    title_general: null,
-    contributor: null,
-    examples: [],
-  },
-];
+import { ColumnAccessors } from '@/types';
 
 describe('SearchBar', () => {
-  const mockHandleSearch = vi.fn();
+  const mockOnSearchTermChange = vi.fn();
+  const mockOnSearchColumnChange = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
+
   test('displays empty input by default', () => {
-    render(<SearchBar idioms={mockIdioms} handleSearch={mockHandleSearch} />);
+    render(
+      <SearchBar
+        searchTerm=''
+        searchColumn='title'
+        onSearchTermChange={mockOnSearchTermChange}
+        onSearchColumnChange={mockOnSearchColumnChange}
+      />,
+    );
 
     const input = screen.getByPlaceholderText('Search...');
     expect(input).toHaveValue('');
   });
 
-  test('filters idioms by title on input', () => {
-    render(<SearchBar idioms={mockIdioms} handleSearch={mockHandleSearch} />);
+  test('calls onSearchTermChange when user types', () => {
+    render(
+      <SearchBar
+        searchTerm=''
+        searchColumn='title'
+        onSearchTermChange={mockOnSearchTermChange}
+        onSearchColumnChange={mockOnSearchColumnChange}
+      />,
+    );
 
     const input = screen.getByPlaceholderText('Search...');
-    fireEvent.change(input, { target: { value: 'Break' } });
+    fireEvent.change(input, { target: { value: 'hello' } });
 
-    expect(mockHandleSearch).toHaveBeenLastCalledWith([mockIdioms[0]]);
+    expect(mockOnSearchTermChange).toHaveBeenCalledWith('hello');
   });
 
-  test('shows all idioms when input is cleared', () => {
-    render(<SearchBar idioms={mockIdioms} handleSearch={mockHandleSearch} />);
-
-    const input = screen.getByPlaceholderText('Search...');
-    fireEvent.change(input, { target: { value: '' } });
-
-    expect(mockHandleSearch).toHaveBeenLastCalledWith(mockIdioms);
-  });
-
-  test('updates search column and filters by new column', () => {
-    render(<SearchBar idioms={mockIdioms} handleSearch={mockHandleSearch} />);
+  test('calls onSearchColumnChange when dropdown is changed', () => {
+    render(
+      <SearchBar
+        searchTerm=''
+        searchColumn='title'
+        onSearchTermChange={mockOnSearchTermChange}
+        onSearchColumnChange={mockOnSearchColumnChange}
+      />,
+    );
 
     const button = screen.getByRole('button');
     fireEvent.click(button); // Open dropdown
-    fireEvent.click(screen.getByText(/Definition/i)); // Change to definition column
+    fireEvent.click(screen.getByText(/Definition/i)); // Select new column
 
-    const input = screen.getByPlaceholderText('Search...');
-    fireEvent.change(input, { target: { value: 'conversation' } });
-    expect(mockHandleSearch).toHaveBeenLastCalledWith([mockIdioms[0]]);
-  });
-
-  test('handles numeric search in position column', () => {
-    render(<SearchBar idioms={mockIdioms} handleSearch={mockHandleSearch} />);
-
-    const button = screen.getByRole('button');
-    fireEvent.click(button); // Open dropdown
-    fireEvent.click(screen.getByText(/Order/i)); // Change to position column
-
-    const input = screen.getByPlaceholderText('Search...');
-    fireEvent.change(input, { target: { value: '2' } });
-    expect(mockHandleSearch).toHaveBeenLastCalledWith([mockIdioms[1]]);
+    expect(mockOnSearchColumnChange).toHaveBeenCalledWith('definition' as ColumnAccessors);
   });
 });
