@@ -55,7 +55,7 @@ jobs:
         working-directory: server
 
       - name: Reset and seed test DB
-        run: ./scripts/resetTestDb.ci.sh
+        run: ./server/scripts/resetTestDb.ci.sh
         env:
           DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
 
