@@ -2,7 +2,7 @@
 
 set -e
 
-SEED_FILE=../data/testDbSeed.sql
+SEED_FILE=./server/data/testDbSeed.sql
 
 if [ -z "$DATABASE_URL_TEST" ]; then
   echo "DATABASE_URL_TEST is not set!"
