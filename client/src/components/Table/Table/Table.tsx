@@ -22,16 +22,29 @@ type TableProps = {
   tableData: Idiom[];
   handleSorting: (sortField: ColumnAccessors, sortOrder: 'asc' | 'desc') => void;
   columnVisibility: ColumnVisibility;
+  sortField: ColumnAccessors;
+  sortOrder: 'asc' | 'desc';
 };
 
-const Table = ({ tableData, handleSorting, columnVisibility }: TableProps) => {
+const Table = ({
+  tableData,
+  handleSorting,
+  columnVisibility,
+  sortField,
+  sortOrder,
+}: TableProps) => {
   const columns = Columns;
   const visibleColumns = columns.filter((col) => columnVisibility[col.accessor]);
 
   return (
     <>
       <StyledTable className='table'>
-        <TableHead columns={visibleColumns} handleSorting={handleSorting} />
+        <TableHead
+          columns={visibleColumns}
+          handleSorting={handleSorting}
+          sortField={sortField}
+          sortOrder={sortOrder}
+        />
         {tableData && <TableBody columns={visibleColumns} tableData={tableData} />}
       </StyledTable>
     </>

@@ -12,6 +12,7 @@ import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExam
 import DetailCard from '@/components/DetailCard/DetailCard';
 import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
+import axios from 'axios';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -22,13 +23,25 @@ const SpinnerWrapper = styled.div`
 
 const DetailPage = () => {
   const { id } = useParams();
-  const { idioms, deleteIdiom } = useContext(IdiomsContext);
+  const { deleteIdiom } = useContext(IdiomsContext);
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const fetchIdiom = async () => {
+    try {
+      const res = await axios.get(`/api/v1/idioms/${id}`);
+      const { idiom, examples } = res.data.data;
+      setSelectedIdiom({ ...idiom, examples: examples ?? [] });
+    } catch (err) {
+      console.error('Failed to fetch idiom detail:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -78,14 +91,8 @@ const DetailPage = () => {
   }, []);
 
   useEffect(() => {
-    const idiomFromContext = idioms.find((idiom) => idiom.id === Number(id));
-    if (idiomFromContext) {
-      setSelectedIdiom(idiomFromContext);
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  }, [id, idioms]);
+    fetchIdiom();
+  }, [id]);
 
   if (loading || !selectedIdiom) {
     return (
@@ -104,15 +111,22 @@ const DetailPage = () => {
   return (
     <PageContainer>
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
-        <UpdateIdiomForm idiom={selectedIdiom} onDelete={handleDelete} onClose={closeModal} />
+        <UpdateIdiomForm
+          idiom={selectedIdiom}
+          onDelete={handleDelete}
+          onClose={closeModal}
+          onUpdateSuccess={fetchIdiom}
+        />
       </Modal>
 
       <Modal title='Edit Examples' isOpen={isExampleModalOpen} onClose={closeExampleModal}>
         {typeof id !== 'undefined' && (
           <UpdateExamplesForm
             idiomId={Number(id)}
-            examples={selectedIdiom.examples}
+            examples={selectedIdiom.examples || []}
+            idiomTitle={selectedIdiom.title}
             onClose={closeExampleModal}
+            onUpdateSuccess={fetchIdiom}
           />
         )}
       </Modal>
@@ -122,6 +136,7 @@ const DetailPage = () => {
             idiomId={Number(id)}
             idiomTitle={selectedIdiom.title}
             onClose={closeAddExampleModal}
+            onAddSuccess={fetchIdiom}
           />
         )}
       </Modal>

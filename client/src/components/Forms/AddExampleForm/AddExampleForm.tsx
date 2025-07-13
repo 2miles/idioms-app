@@ -62,9 +62,10 @@ type AddExampleProps = {
   idiomId: number;
   idiomTitle: string;
   onClose: () => void;
+  onAddSuccess?: () => void;
 };
 
-const AddExampleForm = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
+const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExampleProps) => {
   const { addExampleToIdiom } = useContext(IdiomsContext);
   const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
@@ -81,11 +82,12 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose }: AddExampleProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValidated(true);
-    if (!formData.newExample.trim()) return; // Prevent form submission if title is empty
+    if (!formData.newExample.trim()) return;
     try {
       const newExample = await addExampleToIdiom(idiomId, formData.newExample);
       if (newExample) {
         clearFormFields();
+        onAddSuccess?.(); // Let DetailPage refresh examples
         Swal.fire({
           title: 'Example Added!',
           text: 'The example has been successfully added.',

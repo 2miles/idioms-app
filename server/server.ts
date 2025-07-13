@@ -33,31 +33,102 @@ if (process.env.NODE_ENV === 'test') {
   });
 }
 
-// Get all idioms and examples
-// Returns the data and the number of idioms returned.
-app.get('/api/v1/idioms', async (_: Request, res: Response) => {
-  try {
-    const idiomsQuery = `SELECT * FROM idioms ORDER BY timestamps`;
-    const examplesQuery = `SELECT * FROM idiom_examples`;
+app.get(
+  ['/api/v1/idioms', '/api/v1/idioms/'],
+  async (req: Request, res: Response) => {
+    try {
+      let page = parseInt((req.query.page as string) || '1', 10);
+      let limit = parseInt((req.query.limit as string) || '20', 10);
+      const offset = (page - 1) * limit;
 
-    const [idiomsResult, examplesResult] = await Promise.all([
-      pool.query(idiomsQuery),
-      pool.query(examplesQuery),
-    ]);
+      let search = (req.query.search as string) || '';
+      const searchPattern = `%${search}%`;
 
-    res.status(200).json({
-      status: 'success',
-      results: idiomsResult.rows.length,
-      data: {
-        idioms: idiomsResult.rows,
-        examples: examplesResult.rows,
-      },
-    });
-  } catch (error) {
-    console.error('Error executing query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+      const allowedColumns = ['title', 'definition', 'contributor'];
+      const searchColumn = (req.query.column as string) || 'title';
+      if (!allowedColumns.includes(searchColumn)) {
+        res.status(400).json({ error: 'Invalid search column' });
+        return;
+      }
+
+      const allowedSortFields = [
+        'position',
+        'timestamps',
+        'title',
+        'definition',
+        'contributor',
+      ];
+      let sortField = (req.query.sortField as string) || 'timestamps';
+      let sortOrder = (req.query.sortOrder as string) || 'desc';
+
+      if (!allowedSortFields.includes(sortField)) {
+        res.status(400).json({ error: 'Invalid sort field' });
+        return;
+      }
+      if (!['asc', 'desc'].includes(sortOrder)) {
+        res.status(400).json({ error: 'Invalid sort order' });
+        return;
+      }
+
+      // This query fetches a paginated and optionally filtered list of idioms, ordered by newest first (timestamps DESC),
+      // while assigning each idiom its global position in the full dataset — even when a search filter is applied.
+      //
+      // Steps:
+      // 1. `global_total`: counts the total number of idioms in the table (unfiltered).
+      // 2. `ranked_all`: assigns a global row number to every idiom based on timestamp DESC.
+      // 3. `filtered`: filters the ranked idioms by a case-insensitive search on the selected column,
+      //    and computes a global `position` for each idiom using: (total + 1 - row_num).
+      // 4. The final SELECT returns a page of filtered idioms with their correct global positions.
+      //
+      // This ensures that when users filter the table, the position values still reflect the idioms' true order in the
+      // full dataset — not just within the filtered subset.
+
+      const idiomsQuery = `
+        WITH global_total AS (
+          SELECT COUNT(*) AS total FROM idioms
+        ),
+        ranked_all AS (
+          SELECT *,
+            ROW_NUMBER() OVER (ORDER BY timestamps DESC) AS row_num
+          FROM idioms
+        ),
+        filtered AS (
+          SELECT *,
+            (SELECT total FROM global_total) + 1 - row_num AS position
+          FROM ranked_all
+          WHERE ${searchColumn} ILIKE $3
+        )
+        SELECT *
+        FROM filtered
+        ORDER BY ${sortField} ${sortOrder}
+        LIMIT $1 OFFSET $2;
+        `;
+
+      const totalCountQuery = `
+        SELECT COUNT(*) AS total FROM idioms
+        WHERE ${searchColumn} ILIKE $1
+        `;
+
+      const [idiomsResult, countResult] = await Promise.all([
+        pool.query(idiomsQuery, [limit, offset, searchPattern]),
+        pool.query(totalCountQuery, [searchPattern]),
+      ]);
+
+      const totalCount = parseInt(countResult.rows[0].total, 10);
+
+      res.status(200).json({
+        status: 'success',
+        data: {
+          idioms: idiomsResult.rows,
+          totalCount,
+        },
+      });
+    } catch (error) {
+      console.error('Error executing paginated idioms query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+);
 
 // Get single idiom, and get examples for that idiom
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {

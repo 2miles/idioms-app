@@ -54,12 +54,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     try {
       const response = await publicIdiomFinder.get('/');
       const fetchedIdioms = response.data.data.idioms;
-      const fetchedExamples = response.data.data.examples;
-      const idiomsWithExamples = fetchedIdioms.map((idiom: Idiom) => ({
-        ...idiom,
-        examples: fetchedExamples?.filter((ex: Example) => ex.idiom_id === idiom.id) || [],
-      }));
-      setIdioms(addPositionsToIdioms(idiomsWithExamples));
+      setIdioms(addPositionsToIdioms(fetchedIdioms));
     } catch (err) {
       console.error('Failed to fetch idioms:', err);
     } finally {
@@ -69,7 +64,7 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
   };
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, []);
 
   // Add, update, and delete idioms (recalculate positions after each operation)

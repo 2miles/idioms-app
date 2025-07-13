@@ -48,9 +48,10 @@ const FormControlsWrapper = styled.div`
 
 type AddIdiomProps = {
   onClose: () => void;
+  onSucess?: () => void;
 };
 
-const AddIdiomForm = ({ onClose }: AddIdiomProps) => {
+const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
   const { addIdiom } = useContext(IdiomsContext);
 
   const [validated, setValidated] = useState(false);
@@ -110,6 +111,9 @@ const AddIdiomForm = ({ onClose }: AddIdiomProps) => {
         timer: 1500,
         showConfirmButton: false,
       });
+      if (onSucess) {
+        onSucess();
+      }
 
       if (!keepOpen) {
         setTimeout(() => {

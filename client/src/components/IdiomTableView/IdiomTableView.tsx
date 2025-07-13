@@ -1,13 +1,33 @@
-import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, ColumnVisibility, ColumnAccessors } from '@/types';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Table from '@/components/Table/Table/Table';
 import Pagination from '@/components/Pagination/Pagination';
 import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
 import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
+
+// TODO:
+// Make searchParams setup fully cleaned and abstracted
+//   — it might be worth extracting into a useQueryDefaults() hook eventually.
+
+// Create a reset Table button
+//   — this would reset all searchParams to their defaults, including pagination, search term,
+//       column visibility, and sorting.
+
+// const resetTable = () => {
+//   const defaults = new URLSearchParams();
+//   defaults.set('page', '1');
+//   defaults.set('limit', '20');
+//   defaults.set('search', '');
+//   defaults.set('column', 'title');
+//   defaults.set('sortField', 'timestamps');
+//   defaults.set('sortOrder', 'desc');
+//   setSearchParams(defaults);
+// };
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
@@ -49,11 +69,28 @@ const SearchBarWrapper = styled.div`
 `;
 
 const IdiomTableView = () => {
-  const { idioms } = useContext(IdiomsContext);
+  // Hook for URL query parameters
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [filteredIdioms, setFilteredIdioms] = useState(idioms);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [idioms, setIdioms] = useState<Idiom[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // --- Initial state from URL (one-time only) ---
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const initialLimit = parseInt(searchParams.get('limit') || '20', 10);
+  const initialSearch = searchParams.get('search') || '';
+  const initialColumn = (searchParams.get('column') as ColumnAccessors) || 'title';
+  const initialSortField = (searchParams.get('sortField') as ColumnAccessors) || 'timestamps';
+  const initialSortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
+
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [itemsPerPage, setItemsPerPage] = useState(initialLimit);
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [searchColumn, setSearchColumn] = useState<ColumnAccessors>(initialColumn);
+  const [sortField, setSortField] = useState<ColumnAccessors>(initialSortField);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
+
+  // State: column visibility
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
     title: true,
@@ -63,33 +100,100 @@ const IdiomTableView = () => {
   });
 
   useEffect(() => {
-    setFilteredIdioms(idioms);
-    setCurrentPage(1); // Reset to the first page when idioms change
-  }, [idioms]);
+    const hasPage = searchParams.has('page');
+    const hasLimit = searchParams.has('limit');
+    const hasSortField = searchParams.has('sortField');
+    const hasSortOrder = searchParams.has('sortOrder');
 
-  // Updates filtered idioms when the search changes
-  const handleSearch = (filtered: Idiom[]) => {
-    setFilteredIdioms(filtered);
+    if (!hasPage || !hasLimit || !hasSortField || !hasSortOrder) {
+      const params = new URLSearchParams(searchParams);
+      if (!hasPage) params.set('page', '1');
+      if (!hasLimit) params.set('limit', '20');
+      if (!hasSortField) params.set('sortField', 'timestamps');
+      if (!hasSortOrder) params.set('sortOrder', 'desc');
+      setSearchParams(params);
+    }
+  }, []);
+
+  useEffect(() => {
+    const paramColumn = searchParams.get('column') as ColumnAccessors;
+    const paramField = searchParams.get('sortField') as ColumnAccessors;
+    const paramOrder = searchParams.get('sortOrder') as 'asc' | 'desc';
+
+    if (paramColumn && paramColumn !== searchColumn) {
+      setSearchColumn(paramColumn);
+    }
+
+    if (paramField && paramField !== sortField) {
+      setSortField(paramField);
+    }
+
+    if (paramOrder && paramOrder !== sortOrder) {
+      setSortOrder(paramOrder);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const fetchPage = async () => {
+      try {
+        const res = await axios.get(`/api/v1/idioms`, {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            search: searchTerm,
+            column: searchColumn,
+            sortField,
+            sortOrder,
+          },
+        });
+
+        setIdioms(res.data.data.idioms);
+        setTotalCount(res.data.data.totalCount);
+      } catch (err) {
+        console.error('Failed to fetch idioms:', err);
+      }
+    };
+    fetchPage();
+  }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder, searchParams]);
+
+  const onSearchTermChange = (term: string) => {
+    setSearchTerm(term);
     setCurrentPage(1);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('search', term);
+      return params;
+    });
   };
 
-  /**
-   * Modifies the `filteredIdioms` state.
-   */
-  const handleSorting = (sortField: ColumnAccessors, sortOrder: 'desc' | 'asc') => {
-    if (!sortField) return; // Early return if no sort field is provided
-
-    const sorted = [...filteredIdioms].sort((a, b) => {
-      const aValue = a[sortField]?.toString() || ''; // Optional chaining and fallback to empty string
-      const bValue = b[sortField]?.toString() || '';
-
-      if (aValue === null || aValue === '') return 1; // Handle null and empty values
-      if (bValue === null || bValue === '') return -1;
-
-      return aValue.localeCompare(bValue, 'en', { numeric: true }) * (sortOrder === 'asc' ? 1 : -1);
+  const onSearchColumnChange = (column: ColumnAccessors) => {
+    setSearchColumn(column);
+    setCurrentPage(1);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('column', column);
+      params.set('page', '1');
+      return params;
     });
+  };
 
-    setFilteredIdioms(sorted);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', String(page));
+      return params;
+    });
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setItemsPerPage(newLimit);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', '1');
+      params.set('limit', String(newLimit));
+      return params;
+    });
   };
 
   const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
@@ -99,56 +203,63 @@ const IdiomTableView = () => {
     });
   };
 
-  const handleItemsPerPageChange = (itemsPerPage: number) => {
-    setItemsPerPage(itemsPerPage);
-    setCurrentPage(1);
+  const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
+    setSortField(field);
+    setSortOrder(order);
+    // setCurrentPage(1);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('sortField', field);
+      params.set('sortOrder', order);
+      //params.set('page', '1');
+      return params;
+    });
   };
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredIdioms.slice(indexOfFirstItem, indexOfLastItem);
-
-  const idiomCount = filteredIdioms.length; // Derived value
+  const showingStart = (currentPage - 1) * itemsPerPage + 1;
+  const showingEnd = Math.min(currentPage * itemsPerPage, totalCount);
   const showingText =
-    idiomCount === 0
-      ? ''
-      : `Showing ${indexOfFirstItem + 1} - ${
-          indexOfLastItem > idiomCount ? idiomCount : indexOfLastItem
-        } of ${idiomCount} idioms`;
+    totalCount === 0 ? '' : `Showing ${showingStart} - ${showingEnd} of ${totalCount} idioms`;
 
   return (
     <TableSectionWrapper>
       <SearchBarWrapper>
-        <SearchBar handleSearch={handleSearch} idioms={idioms} />
+        <SearchBar
+          searchTerm={searchTerm}
+          searchColumn={searchColumn}
+          onSearchTermChange={onSearchTermChange}
+          onSearchColumnChange={onSearchColumnChange}
+        />
       </SearchBarWrapper>
       <TableControls>
         <ShowingText>{showingText}</ShowingText>
         <RightControls>
+          {/* <button onClick={resetTable}>Reset Table</button> */}
           <ColumnDropdown
             columnVisibility={columnVisibility}
             handleColumnVisibilityChange={handleColumnVisibilityChange}
           />
-          <ItemsPerPageDropdown handleItemsPerPageChange={handleItemsPerPageChange} />
+          <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
           <Pagination
             itemsPerPage={itemsPerPage}
-            totalItems={idiomCount}
-            paginate={paginate}
+            totalItems={totalCount}
+            paginate={handlePageChange}
             currentPage={currentPage}
           />
         </RightControls>
       </TableControls>
       <Table
-        tableData={currentItems}
+        tableData={idioms}
         handleSorting={handleSorting}
         columnVisibility={columnVisibility}
+        sortField={sortField}
+        sortOrder={sortOrder}
       />
       <TableControls>
         <Pagination
           itemsPerPage={itemsPerPage}
-          totalItems={idiomCount}
-          paginate={paginate}
+          totalItems={totalCount}
+          paginate={handlePageChange}
           currentPage={currentPage}
         />
       </TableControls>

@@ -6,7 +6,7 @@ export type Idiom = {
   definition: string | null;
   contributor: string | null;
   position: number | null;
-  examples: Example[];
+  examples?: Example[];
 };
 
 export type NewIdiomInput = {
