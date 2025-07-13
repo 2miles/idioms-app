@@ -76,7 +76,7 @@ export default defineConfig(({ mode }) => {
   const isDev = viteEnv === 'dev';
 
   const proxyTarget = isTest
-    ? 'http://localhost:3010' // GitHub Actions or E2E test script
+    ? 'http://127.0.0.1:3010'
     : isDev
     ? 'http://server:3001' // Docker service name in dev
     : undefined;
