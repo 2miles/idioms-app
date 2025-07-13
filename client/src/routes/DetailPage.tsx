@@ -12,7 +12,7 @@ import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExam
 import DetailCard from '@/components/DetailCard/DetailCard';
 import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
-import axios from 'axios';
+import { publicIdiomFinder } from '@/apis/idiomFinder';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const DetailPage = () => {
 
   const fetchIdiom = async () => {
     try {
-      const res = await axios.get(`/api/v1/idioms/${id}`);
+      const res = await publicIdiomFinder.get(`/${id}`);
       const { idiom, examples } = res.data.data;
       setSelectedIdiom({ ...idiom, examples: examples ?? [] });
     } catch (err) {
