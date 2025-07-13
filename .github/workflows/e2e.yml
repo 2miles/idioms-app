@@ -39,7 +39,10 @@ jobs:
 
       - name: Create client .env.test
         run: |
-          echo "VITE_API_BASE_URL=http://localhost:3010" > client/.env.test
+          cat <<EOF > client/.env.test
+          VITE_APP_ENV=test
+          VITE_API_BASE_URL=http://localhost:3010
+          EOF
 
       - name: Create client e2e .env
         run: |
