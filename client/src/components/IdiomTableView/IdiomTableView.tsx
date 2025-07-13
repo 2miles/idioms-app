@@ -9,6 +9,7 @@ import Table from '@/components/Table/Table/Table';
 import Pagination from '@/components/Pagination/Pagination';
 import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
 import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
+import { publicIdiomFinder } from '@/apis/idiomFinder';
 
 // TODO:
 // Make searchParams setup fully cleaned and abstracted
@@ -136,7 +137,7 @@ const IdiomTableView = () => {
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        const res = await axios.get(`/api/v1/idioms`, {
+        const res = await publicIdiomFinder.get('/', {
           params: {
             page: currentPage,
             limit: itemsPerPage,
