@@ -24,6 +24,7 @@ const ItemsPerPageDropdown = ({ handleItemsPerPageChange }: ItemsPerPageDropdown
       onOptionClick={handleOptionClick}
       closeOnSelect={true}
       hideOnSmallScreen={false}
+      ariaLabel='Items per page'
     />
   );
 };

@@ -23,7 +23,7 @@ describe('ColumnDropdown', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }));
+    fireEvent.click(screen.getByLabelText('Column Visibility'));
     const listbox = screen.getByRole('listbox');
 
     for (const col of Columns) {
@@ -42,7 +42,7 @@ describe('ColumnDropdown', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }));
+    fireEvent.click(screen.getByLabelText('Column Visibility'));
     const listbox = screen.getByRole('listbox');
 
     const checkbox = within(listbox).getAllByRole('checkbox')[0];
@@ -60,7 +60,8 @@ describe('ColumnDropdown', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }));
+    fireEvent.click(screen.getByLabelText('Column Visibility'));
+
     const listbox = screen.getByRole('listbox');
 
     const checkbox = within(listbox).getAllByRole('checkbox')[0];
@@ -78,7 +79,7 @@ describe('ColumnDropdown', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }));
+    fireEvent.click(screen.getByLabelText('Column Visibility'));
     const listbox = screen.getByRole('listbox');
 
     const checkboxes = within(listbox).getAllByRole('checkbox');

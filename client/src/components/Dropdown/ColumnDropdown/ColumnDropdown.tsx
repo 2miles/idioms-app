@@ -56,7 +56,13 @@ const ColumnDropdown = ({
   ));
 
   return (
-    <Dropdown label='Columns' options={options} closeOnSelect={false} hideOnSmallScreen={true} />
+    <Dropdown
+      label='Columns'
+      options={options}
+      closeOnSelect={false}
+      hideOnSmallScreen={true}
+      ariaLabel='Column Visibility'
+    />
   );
 };
 

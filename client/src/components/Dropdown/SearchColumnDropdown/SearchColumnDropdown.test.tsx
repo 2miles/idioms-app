@@ -14,8 +14,8 @@ describe('SearchColumnDropdown', () => {
     const label = Columns.find((col) => col.accessor === 'title')?.label!;
     render(<SearchColumnDropdown activeColumn='title' handleColumnChange={vi.fn()} />);
 
-    const button = screen.getByRole('button');
-    expect(button).toHaveTextContent(label); // ✅ assert the label shown is correct
+    const button = screen.getByRole('button', { name: 'Search Column' });
+    expect(button).toHaveTextContent(label); // ✅ Should match whatever label is mapped to 'title'
   });
 
   test('opens dropdown and displays options on click', () => {
@@ -23,8 +23,7 @@ describe('SearchColumnDropdown', () => {
       <SearchColumnDropdown activeColumn='title' handleColumnChange={mockHandleColumnChange} />,
     );
 
-    const label = Columns.find((col) => col.accessor === 'title')?.label!;
-    const button = screen.getByRole('button', { name: label });
+    const button = screen.getByLabelText('Search Column');
     fireEvent.click(button);
 
     const listbox = screen.getByRole('listbox');
@@ -39,7 +38,7 @@ describe('SearchColumnDropdown', () => {
       <SearchColumnDropdown activeColumn='title' handleColumnChange={mockHandleColumnChange} />,
     );
 
-    const button = screen.getByRole('button', { name: 'Idiom' });
+    const button = screen.getByLabelText('Search Column');
     fireEvent.click(button);
 
     const listbox = screen.getByRole('listbox');
@@ -54,8 +53,7 @@ describe('SearchColumnDropdown', () => {
       <SearchColumnDropdown activeColumn='title' handleColumnChange={mockHandleColumnChange} />,
     );
 
-    const label = Columns.find((col) => col.accessor === 'title')?.label!;
-    const button = screen.getByRole('button', { name: label });
+    const button = screen.getByLabelText('Search Column');
     fireEvent.click(button);
 
     const targetLabel = Columns.find((c) => c.accessor === 'definition')?.label!;

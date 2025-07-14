@@ -25,6 +25,7 @@ const SearchColumnDropdown = ({ activeColumn, handleColumnChange }: SearchColumn
       onOptionClick={handleOptionClick}
       closeOnSelect={true}
       variant='searchColumn'
+      ariaLabel='Search Column'
     />
   );
 };
