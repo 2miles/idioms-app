@@ -104,6 +104,7 @@ type DropdownProps = {
   closeOnSelect?: boolean;
   onOptionClick?: (option: string | JSX.Element) => void;
   variant?: DropdownVariantType;
+  ariaLabel?: string;
 };
 
 const Dropdown = ({
@@ -113,6 +114,7 @@ const Dropdown = ({
   closeOnSelect = false,
   onOptionClick,
   variant,
+  ariaLabel,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -147,6 +149,7 @@ const Dropdown = ({
         onClick={handleLabelClick}
         aria-expanded={isOpen}
         aria-haspopup='listbox'
+        aria-label={ariaLabel}
       >
         {label}
       </Anchor>
