@@ -1,4 +1,3 @@
-import axios from 'axios';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -207,12 +206,10 @@ const IdiomTableView = () => {
   const handleSorting = (field: ColumnAccessors, order: 'desc' | 'asc') => {
     setSortField(field);
     setSortOrder(order);
-    // setCurrentPage(1);
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set('sortField', field);
       params.set('sortOrder', order);
-      //params.set('page', '1');
       return params;
     });
   };
