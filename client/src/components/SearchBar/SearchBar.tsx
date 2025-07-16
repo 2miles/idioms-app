@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { ColumnAccessors } from '@/types';
-import searchIcon from '@/images/search-icon-png-24.png';
+import searchIcon from '@/images/search.svg?react';
 import SearchColumnDropdown from '@/components/Dropdown/SearchColumnDropdown/SearchColumnDropdown';
 
 const Container = styled.div`
@@ -23,9 +23,10 @@ const IconContainer = styled.span`
   z-index: 1;
 `;
 
-const Icon = styled.img`
+const Icon = styled(searchIcon)`
   width: 16px;
   height: 16px;
+  color: var(--color-test-primary);
 `;
 
 const Input = styled.input`
@@ -61,7 +62,7 @@ const SearchBar = ({
   return (
     <Container>
       <IconContainer>
-        <Icon src={searchIcon} alt='search' />
+        <Icon />
       </IconContainer>
       <Input
         type='text'
