@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import Avatar from '@/components/Avatar';
+import HamburgerIcon from '@/images/hamburger.svg?react';
 import LoginButton from '@/components/LoginButton';
 import LogoutButton from '@/components/LogoutButton';
 import { useUser } from '@/context/userContext';
@@ -55,23 +56,23 @@ const NavbarLinks = styled.div<NavbarLinksProps>`
 
 const Hamburger = styled.button`
   display: none;
-  flex-direction: column;
-  gap: 8px;
   cursor: pointer;
   margin-right: var(--space-xxl);
   background: none;
   border: none;
 
-  .bar {
-    width: 32px;
-    height: 4px;
-    background-color: var(--color-text-inverted);
+  svg {
+    width: 48px;
+    height: 48px;
+    color: var(--color-text-inverted);
   }
 
   @media (max-width: 770px) {
     display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  /* Make always visible in test environment */
+
   ${process.env.NODE_ENV === 'test' &&
   `
     display: flex !important;
@@ -125,9 +126,7 @@ const NavBar = () => {
           aria-label='Toggle navigation'
           data-testid='navbar-hamburger'
         >
-          <div className='bar'></div>
-          <div className='bar'></div>
-          <div className='bar'></div>
+          <HamburgerIcon />
         </Hamburger>
         <div className='navbar-brand'>
           <Link to='/' onClick={closeMenu}>
