@@ -359,11 +359,13 @@ describe('IdiomTableView', () => {
       });
 
       // Open the items-per-page dropdown
-      const dropdownTrigger = screen.getByLabelText(/items per page/i);
-      await user.click(dropdownTrigger);
+      // The dropdown is rendered twice (once for desktop, once for mobile) and hidden via CSS media queries.
+      // We interact with the first instance since only one is visible at a time in test environments.
+      const triggers = screen.getAllByLabelText(/items per page/i);
+      await user.click(triggers[0]); // or [1] depending on layout
 
-      // Select a new limit value
-      await user.click(screen.getByText('10'));
+      // Likewise, '10' appears in both dropdowns. Click the first instance.
+      await user.click(screen.getAllByText('10')[0]);
 
       // Wait for both idioms to be visible
       await waitFor(() => {
@@ -411,7 +413,8 @@ describe('IdiomTableView', () => {
 
       // Wait for showing text to match first page of 1 result
       await waitFor(() => {
-        expect(screen.getByText('Showing 1 - 1 of 2 idioms')).toBeInTheDocument();
+        //en-dash instead of hyphen
+        expect(screen.getByText('1–1 of 2 idioms')).toBeInTheDocument();
       });
 
       // Update mock: limit=10, show both idioms
@@ -420,15 +423,19 @@ describe('IdiomTableView', () => {
       });
 
       // Open the items-per-page dropdown
-      const dropdownTrigger = screen.getByLabelText(/items per page/i);
-      await user.click(dropdownTrigger);
+      // Open the items-per-page dropdown
+      // The dropdown is rendered twice (once for desktop, once for mobile) and hidden via CSS media queries.
+      // We interact with the first instance since only one is visible at a time in test environments.
+      const triggers = screen.getAllByLabelText(/items per page/i);
+      await user.click(triggers[0]);
 
-      // Select "10" from the dropdown options
-      await user.click(screen.getByText('10'));
+      // Likewise, '10' appears in both dropdowns. Click the first instance.
+      await user.click(screen.getAllByText('10')[0]);
 
       // Wait for updated showing text to reflect 2 results
       await waitFor(() => {
-        expect(screen.getByText('Showing 1 - 2 of 2 idioms')).toBeInTheDocument();
+        //en-dash instead of hyphen
+        expect(screen.getByText('1–2 of 2 idioms')).toBeInTheDocument();
       });
     });
 
@@ -470,7 +477,8 @@ describe('IdiomTableView', () => {
 
       // Wait for showing text on page 1 to appear
       await waitFor(() => {
-        expect(screen.getByText('Showing 1 - 1 of 2 idioms')).toBeInTheDocument();
+        //en-dash instead of hyphen
+        expect(screen.getByText('1–1 of 2 idioms')).toBeInTheDocument();
       });
 
       // Page 2: return the second idiom
@@ -485,10 +493,12 @@ describe('IdiomTableView', () => {
 
       // Wait for showing text on page 2 to appear
       await waitFor(() => {
-        expect(screen.getByText('Showing 2 - 2 of 2 idioms')).toBeInTheDocument();
+        //en-dash instead of hyphen
+        expect(screen.getByText('2–2 of 2 idioms')).toBeInTheDocument();
       });
     });
 
+    // FIXME: This test checks that the showing text is hidden. False Positive.
     test('hides showing text when no idioms match the search', async () => {
       // Render component and grab user + searchBar utilities
       const { user, searchBar } = setup();
@@ -548,7 +558,8 @@ describe('IdiomTableView', () => {
       await waitFor(() => {
         expect(screen.getByText('Break the ice')).toBeInTheDocument();
         expect(screen.getByText('Hit the sack')).toBeInTheDocument();
-        expect(screen.getByText('Showing 1 - 2 of 2 idioms')).toBeInTheDocument();
+        //en-dash instead of hyphen
+        expect(screen.getByText('1–2 of 2 idioms')).toBeInTheDocument();
       });
 
       // Simulate search input that triggers a backend filter
@@ -559,7 +570,8 @@ describe('IdiomTableView', () => {
       await waitFor(() => {
         expect(screen.getByText('Break the ice')).toBeInTheDocument();
         expect(screen.queryByText('Hit the sack')).not.toBeInTheDocument();
-        expect(screen.getByText('Showing 1 - 1 of 1 idioms')).toBeInTheDocument();
+        //en-dash instead of hyphen
+        expect(screen.getByText('1–1 of 1 idioms')).toBeInTheDocument();
       });
     });
   });
