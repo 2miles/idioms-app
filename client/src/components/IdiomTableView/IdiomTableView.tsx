@@ -66,7 +66,7 @@ const TableControls = styled.div`
     }
 
     .bottom-right {
-  flex-wrap: wrap;
+      flex-wrap: wrap;
     }
 
     .bottom-right > :first-child {
@@ -143,6 +143,8 @@ const IdiomTableView = () => {
   const [searchColumn, setSearchColumn] = useState<ColumnAccessors>(initialColumn);
   const [sortField, setSortField] = useState<ColumnAccessors>(initialSortField);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
+
+  const isSmallScreen = window.innerWidth < 660;
 
   // State: column visibility
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
@@ -303,7 +305,7 @@ const IdiomTableView = () => {
 
       <TableControls>
         <div className='top-row'>
-        <ShowingText>{showingText}</ShowingText>
+          <ShowingText>{showingText}</ShowingText>
           <div className='top-right'>
             <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
           </div>
@@ -315,18 +317,19 @@ const IdiomTableView = () => {
             </SecondaryButton>
           </div>
           <div className='bottom-right'>
-          <ColumnDropdown
-            columnVisibility={columnVisibility}
-            handleColumnVisibilityChange={handleColumnVisibilityChange}
-          />
-          <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
+            <ColumnDropdown
+              columnVisibility={columnVisibility}
+              handleColumnVisibilityChange={handleColumnVisibilityChange}
+            />
+            <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
             <PaginationWrapper>
-          <Pagination
-            itemsPerPage={itemsPerPage}
-            totalItems={totalCount}
-            paginate={handlePageChange}
-            currentPage={currentPage}
-          />
+              <Pagination
+                itemsPerPage={itemsPerPage}
+                totalItems={totalCount}
+                paginate={handlePageChange}
+                currentPage={currentPage}
+                isCompact={isSmallScreen}
+              />
             </PaginationWrapper>
           </div>
         </div>
@@ -344,6 +347,7 @@ const IdiomTableView = () => {
           totalItems={totalCount}
           paginate={handlePageChange}
           currentPage={currentPage}
+          isCompact={isSmallScreen}
         />
       </TableControls>
     </TableSectionWrapper>

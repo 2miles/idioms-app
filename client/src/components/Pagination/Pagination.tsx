@@ -44,6 +44,17 @@ const PageItem = styled.li`
     border-top-right-radius: var(--radius-sm) !important;
     border-bottom-right-radius: var(--radius-sm) !important;
   }
+  &.thin-gap .page-link {
+    width: 10px;
+    height: 42px; /* Match the height of regular pagination */
+    display: inline-block;
+    background-color: var(--color-ui-primary);
+    border: 1px solid var(--color-ui-border);
+    pointer-events: none;
+    padding: 0;
+    margin: 0;
+    border-left: none !important;
+  }
 `;
 
 type PaginationProps = {
@@ -51,13 +62,30 @@ type PaginationProps = {
   totalItems: number;
   currentPage: number;
   paginate: (pageNumber: number) => void;
+  isCompact: boolean;
 };
 
-const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: PaginationProps) => {
+const Pagination = ({
+  itemsPerPage,
+  totalItems,
+  paginate,
+  currentPage,
+  isCompact,
+}: PaginationProps) => {
   const pageNumbers = [];
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const maxPageNumbersToShow = 3;
-  const halfMaxPages = Math.floor(maxPageNumbersToShow / 2);
+  const maxPageNumbersToShow = isCompact ? 1 : 3;
+  let actualMax = maxPageNumbersToShow;
+
+  if (currentPage === 1 || currentPage === totalPages) {
+    actualMax += 1;
+  } else if (currentPage === 2 || currentPage === totalPages - 1) {
+    actualMax += 1;
+  } else if (currentPage === 3 || currentPage === totalPages - 2) {
+    actualMax += 0;
+  }
+
+  const halfMaxPages = Math.floor(actualMax / 2);
 
   const addPageNumber = (page: number) => {
     const isActive = currentPage === page;
@@ -70,7 +98,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: Paginat
     );
   };
 
-  if (totalPages <= maxPageNumbersToShow) {
+  if (totalPages <= actualMax) {
     for (let i = 1; i <= totalPages; i++) {
       addPageNumber(i);
     }
@@ -79,18 +107,25 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: Paginat
     let endPage = Math.min(currentPage + halfMaxPages, totalPages);
 
     if (currentPage - 1 <= halfMaxPages) {
-      endPage = maxPageNumbersToShow;
+      endPage = actualMax;
     }
     if (totalPages - currentPage <= halfMaxPages) {
-      startPage = totalPages - maxPageNumbersToShow + 1;
+      startPage = totalPages - actualMax + 1;
     }
 
     if (startPage > 1) {
       addPageNumber(1);
       if (startPage > 2) {
         pageNumbers.push(
-          <PageItem key='start-ellipsis' className='page-item disabled'>
-            <span className='page-link'>...</span>
+          <PageItem key='start-spacer' className='page-item thin-gap disabled'>
+            <span className='page-link'></span>
+          </PageItem>,
+        );
+      }
+      if (startPage > totalPages - actualMax - 1) {
+        pageNumbers.push(
+          <PageItem key='end-spacer' className='page-item thin-gap disabled'>
+            <span className='page-link'></span>
           </PageItem>,
         );
       }
@@ -103,8 +138,15 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: Paginat
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pageNumbers.push(
-          <PageItem key='end-ellipsis' className='page-item disabled'>
-            <span className='page-link'>...</span>
+          <PageItem key='end-spacer' className='page-item thin-gap disabled'>
+            <span className='page-link'></span>
+          </PageItem>,
+        );
+      }
+      if (currentPage < actualMax + 1) {
+        pageNumbers.push(
+          <PageItem key='start-spacer' className='page-item thin-gap disabled'>
+            <span className='page-link'></span>
           </PageItem>,
         );
       }
