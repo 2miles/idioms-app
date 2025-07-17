@@ -134,12 +134,12 @@ const TableHead = ({ columns, handleSorting, sortField, sortOrder }: TableHeadPr
               <SortIconWrapper>
                 {isSorted ? (
                   currentSortOrder === 'asc' ? (
-                    <StyledArrowUp />
+                    <StyledArrowUp data-testid='sort-icon-up' />
                   ) : (
-                    <StyledArrowDown />
+                    <StyledArrowDown data-testid='sort-icon-down' />
                   )
                 ) : (
-                  <StyledArrowNeutral />
+                  <StyledArrowNeutral data-testid='sort-icon-neutral' />
                 )}
               </SortIconWrapper>
             </StyledTh>
