@@ -6,28 +6,21 @@ import { Idiom, ColumnVisibility, ColumnAccessors } from '@/types';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Table from '@/components/Table/Table/Table';
 import Pagination from '@/components/Pagination/Pagination';
+import RestoreIcon from '@/images/arrow-restore.svg?react';
 import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
 import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
+import { SecondaryButton } from '../ButtonStyles';
 
 // TODO:
 // Make searchParams setup fully cleaned and abstracted
 //   — it might be worth extracting into a useQueryDefaults() hook eventually.
 
-// Create a reset Table button
-//   — this would reset all searchParams to their defaults, including pagination, search term,
-//       column visibility, and sorting.
-
-// const resetTable = () => {
-//   const defaults = new URLSearchParams();
-//   defaults.set('page', '1');
-//   defaults.set('limit', '20');
-//   defaults.set('search', '');
-//   defaults.set('column', 'title');
-//   defaults.set('sortField', 'timestamps');
-//   defaults.set('sortOrder', 'desc');
-//   setSearchParams(defaults);
-// };
+const StyledRestoreIcon = styled(RestoreIcon)`
+  width: 22px;
+  height: 22px;
+  margin: 2px;
+`;
 
 const TableSectionWrapper = styled.div`
   margin: var(--margin-md) auto var(--margin-xxl);
@@ -38,27 +31,88 @@ const TableSectionWrapper = styled.div`
 
 const TableControls = styled.div`
   display: flex;
-  justify-content: right;
-  align-items: end;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--gap-sm);
 
-  @media (max-width: 660px) {
-    flex-direction: column;
-    align-items: flex-end;
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .top-right {
+    display: none;
+  }
+
+  .bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .bottom-right {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 770px) {
+    .top-right {
+      display: flex;
+    }
+
+    .bottom-right {
+  flex-wrap: wrap;
+    }
+
+    .bottom-right > :first-child {
+      display: none; /* hide column dropdown */
+    }
+
+    .bottom-right > :nth-child(2) {
+      display: none; /* hide duplicate ItemsPerPage */
+    }
+  }
+  .bottom-right > :nth-child(3) {
+    margin-left: var(--margin-md);
+  }
+
+  @media (min-width: 770px) {
+    .top-right {
+      display: none;
+    }
+
+    .bottom-right > :first-child {
+      display: inline-flex; /* show column dropdown */
+    }
+
+    .bottom-right > :nth-child(2) {
+      display: inline-flex; /* show items per page */
+    }
   }
 `;
 
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  @media (min-width: 661px) {
+    width: auto;
+  }
+`;
 const ShowingText = styled.p`
   margin-right: auto;
   white-space: nowrap;
   font-size: var(--font-md);
+  font-weight: 500;
   margin-bottom: var(--margin-sm);
   padding-bottom: var(--padding-sm);
   color: var(--color-text-primary);
-`;
-
-const RightControls = styled.div`
-  display: flex;
+  opacity: 0.8;
 `;
 
 const SearchBarWrapper = styled.div`
@@ -214,10 +268,27 @@ const IdiomTableView = () => {
     });
   };
 
+  const restoreTable = () => {
+    setSearchParams({
+      page: '1',
+      limit: '20',
+      search: '',
+      column: 'title',
+      sortField: 'timestamps',
+      sortOrder: 'desc',
+    });
+    setCurrentPage(1);
+    setItemsPerPage(20);
+    setSearchTerm('');
+    setSearchColumn('title');
+    setSortField('timestamps');
+    setSortOrder('desc');
+  };
+
   const showingStart = (currentPage - 1) * itemsPerPage + 1;
   const showingEnd = Math.min(currentPage * itemsPerPage, totalCount);
   const showingText =
-    totalCount === 0 ? '' : `Showing ${showingStart} - ${showingEnd} of ${totalCount} idioms`;
+    totalCount === 0 ? '' : `${showingStart}\u2013${showingEnd} of ${totalCount} idioms`;
 
   return (
     <TableSectionWrapper>
@@ -229,22 +300,36 @@ const IdiomTableView = () => {
           onSearchColumnChange={onSearchColumnChange}
         />
       </SearchBarWrapper>
+
       <TableControls>
+        <div className='top-row'>
         <ShowingText>{showingText}</ShowingText>
-        <RightControls>
-          {/* <button onClick={resetTable}>Reset Table</button> */}
+          <div className='top-right'>
+            <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
+          </div>
+        </div>
+        <div className='bottom-row'>
+          <div className='reset-wrapper'>
+            <SecondaryButton onClick={restoreTable} className='btn btn-secondary'>
+              <StyledRestoreIcon />
+            </SecondaryButton>
+          </div>
+          <div className='bottom-right'>
           <ColumnDropdown
             columnVisibility={columnVisibility}
             handleColumnVisibilityChange={handleColumnVisibilityChange}
           />
           <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
+            <PaginationWrapper>
           <Pagination
             itemsPerPage={itemsPerPage}
             totalItems={totalCount}
             paginate={handlePageChange}
             currentPage={currentPage}
           />
-        </RightControls>
+            </PaginationWrapper>
+          </div>
+        </div>
       </TableControls>
       <Table
         tableData={idioms}

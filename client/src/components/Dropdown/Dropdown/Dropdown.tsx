@@ -19,7 +19,7 @@ const DropdownContainer = styled.div<StyleProps>`
   border: 1px solid var(--color-ui-border);
   background-color: var(--color-ui-primary);
   border-radius: var(--radius-sm);
-  margin-right: var(--margin-md);
+  margin-left: var(--margin-md);
   margin-bottom: var(--margin-md);
   padding: 0px var(--padding-ms);
   padding-right: var(--padding-sm);
@@ -56,7 +56,7 @@ const Anchor = styled.button`
   display: flex;
   align-items: center;
   cursor: pointer;
-  height: 32px;
+  height: 38px;
 `;
 
 const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
