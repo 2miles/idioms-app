@@ -3,6 +3,10 @@ import styled from 'styled-components';
 // Base button styles
 const ButtonBase = styled.button`
   max-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 6px; // spacing between icon and text
+  padding: 6px 12px; // optional: define consistent padding
 `;
 
 // Success button
@@ -10,6 +14,8 @@ export const SuccessButton = styled(ButtonBase)`
   background-color: var(--button-success-bg);
   border: 1.5px solid;
   border-color: var(--button-success-border);
+  padding-top: 6px;
+  margin: 0px;
   &:hover {
     border-color: var(--button-success-border-hover);
     background-color: var(--button-success-bg-hover);

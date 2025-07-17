@@ -16,6 +16,7 @@ export const StyledTable = styled.table`
   border-spacing: 0;
   border-right: 1px solid var(--color-ui-border) !important;
   border-left: 1px solid var(--color-ui-border) !important;
+  margin-bottom: var(--margin-md);
 `;
 
 type TableProps = {
@@ -38,7 +39,7 @@ const Table = ({
 
   return (
     <>
-      <StyledTable className='table'>
+      <StyledTable>
         <TableHead
           columns={visibleColumns}
           handleSorting={handleSorting}

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import TableHead from './TableHead';
 import { ColumnAccessors, Columns } from '@/types';
@@ -81,7 +81,7 @@ describe('TableHead', () => {
         />
       </table>,
     );
-    const titleHeader = screen.getByText('Idiom');
-    expect(titleHeader).toHaveStyle(`background-image: url(/src/images/icons8-down-arrow-30.png)`);
+    const titleHeader = screen.getByTestId('table-header-title');
+    expect(within(titleHeader).getByTestId('sort-icon-down')).toBeInTheDocument();
   });
 });

@@ -2,16 +2,25 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { SuccessButton } from '@/components/ButtonStyles';
+import AddIcon from '@/images/add.svg?react';
 import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
 import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
 import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
+import { SuccessButton } from '@/components/ButtonStyles';
 import { useUser } from '@/context/userContext';
 
 const AddIdiomContainer = styled.div`
   margin-top: var(--margin-lg);
   margin-bottom: var(--margin-lg);
+`;
+
+const StyledAddIcon = styled(AddIcon)`
+  width: 28px;
+  height: 28px;
+`;
+const CustomSuccessButton = styled(SuccessButton)`
+  padding-left: 5px !important;
 `;
 
 const HomePage = () => {
@@ -35,9 +44,10 @@ const HomePage = () => {
     <PageContainer>
       {isAdmin && (
         <AddIdiomContainer>
-          <SuccessButton onClick={openModal} className='btn btn-success'>
-            + Add Idiom
-          </SuccessButton>
+          <CustomSuccessButton onClick={openModal} className='btn btn-success'>
+            <StyledAddIcon />
+            Add Idiom
+          </CustomSuccessButton>
         </AddIdiomContainer>
       )}
       <IdiomTableView />

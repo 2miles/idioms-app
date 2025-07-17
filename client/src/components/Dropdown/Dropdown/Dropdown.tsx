@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
+import ArrowUpIcon from '@/images/arrow-up.svg?react';
+import ArrowDownIcon from '@/images/arrow-down.svg?react';
+
 type DropdownVariantType = 'searchColumn';
 
 type StyleProps = {
@@ -16,9 +19,10 @@ const DropdownContainer = styled.div<StyleProps>`
   border: 1px solid var(--color-ui-border);
   background-color: var(--color-ui-primary);
   border-radius: var(--radius-sm);
-  margin-right: var(--margin-lg);
+  margin-right: var(--margin-md);
   margin-bottom: var(--margin-md);
   padding: 0px var(--padding-ms);
+  padding-right: var(--padding-sm);
   align-items: center;
 
   @media (max-width: 780px) {
@@ -47,32 +51,12 @@ const DropdownContainer = styled.div<StyleProps>`
   }
 `;
 
-const Anchor = styled.button<StyleProps>`
+const Anchor = styled.button`
   all: unset;
   display: flex;
   align-items: center;
   cursor: pointer;
   height: 32px;
-
-  &::after {
-    content: '';
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid var(--color-text-primary);
-    margin-left: var(--margin-ms);
-    transition: border-top 0.3s ease, border-bottom 0.3s ease;
-  }
-
-  ${(props) =>
-    props.$visible &&
-    css`
-      &::after {
-        border-top: none;
-        border-bottom: 6px solid var(--color-text-primary);
-      }
-    `}
 `;
 
 const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
@@ -94,6 +78,19 @@ const Option = styled.li.attrs({ role: 'option' })`
 
   &:hover {
     background-color: var(--hilite-ui-primary);
+  }
+`;
+
+const IconWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--margin-sm);
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-primary);
   }
 `;
 
@@ -145,13 +142,13 @@ const Dropdown = ({
   return (
     <DropdownContainer $hideOnSmallScreen={hideOnSmallScreen} ref={dropdownRef} $variant={variant}>
       <Anchor
-        $visible={isOpen}
         onClick={handleLabelClick}
         aria-expanded={isOpen}
         aria-haspopup='listbox'
         aria-label={ariaLabel}
       >
         {label}
+        <IconWrapper>{isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}</IconWrapper>
       </Anchor>
       <Options $visible={isOpen}>
         {options.map((option, index) => (
