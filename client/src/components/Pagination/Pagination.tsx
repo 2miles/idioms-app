@@ -4,6 +4,8 @@ import styled from 'styled-components';
 const PageItem = styled.li`
   .page-link {
     padding: var(--padding-sm) var(--padding-xs);
+    margin-top: 4px;
+
     background-color: var(--color-ui-primary);
     color: var(--color-text-primary);
     border: 1px solid var(--color-ui-border) !important;
@@ -44,6 +46,19 @@ const PageItem = styled.li`
     border-top-right-radius: var(--radius-sm) !important;
     border-bottom-right-radius: var(--radius-sm) !important;
   }
+  &.thin-gap .page-link {
+    width: 10px;
+    height: 42px; /* Match the height of regular pagination */
+    display: inline-block;
+    background-color: var(--color-ui-primary);
+    border: 1px solid var(--color-ui-border);
+    pointer-events: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 4px;
+    border-left: none !important;
+    border-right: none !important;
+  }
 `;
 
 type PaginationProps = {
@@ -51,26 +66,61 @@ type PaginationProps = {
   totalItems: number;
   currentPage: number;
   paginate: (pageNumber: number) => void;
+  isCompact: boolean;
 };
 
-const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: PaginationProps) => {
-  const pageNumbers = [];
+const Pagination = ({
+  itemsPerPage,
+  totalItems,
+  paginate,
+  currentPage,
+  isCompact,
+}: PaginationProps) => {
+  const pageNumbers: JSX.Element[] = [];
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const maxPageNumbersToShow = 3;
-  const halfMaxPages = Math.floor(maxPageNumbersToShow / 2);
+  const maxPageNumbersToShow = isCompact ? 1 : 3;
+  let actualMax = maxPageNumbersToShow;
+
+  // if (currentPage <= 3 || currentPage >= totalPages - 2) {
+  //   actualMax += 1;
+  // }
+
+  if (currentPage === 1 || currentPage === totalPages) {
+    actualMax += 1;
+  } else if (currentPage === 2 || currentPage === totalPages - 1) {
+    actualMax += 1;
+  } else if (currentPage === 3 || currentPage === totalPages - 2) {
+    actualMax += 0;
+  }
+
+  const halfMaxPages = Math.floor(actualMax / 2);
 
   const addPageNumber = (page: number) => {
     const isActive = currentPage === page;
     pageNumbers.push(
       <PageItem key={page} className={`page-item ${isActive ? 'active' : ''}`}>
-        <a onClick={() => paginate(page)} href='#' className='page-link'>
+        <a
+          onClick={() => paginate(page)}
+          href='#'
+          className='page-link'
+          aria-label={`Go to page ${page}`}
+        >
           {page}
         </a>
       </PageItem>,
     );
   };
 
-  if (totalPages <= maxPageNumbersToShow) {
+  let spacerCount = 0;
+  const addSpacer = () => {
+    pageNumbers.push(
+      <PageItem key={`spacer-${spacerCount++}`} className='page-item thin-gap disabled'>
+        <span className='page-link' aria-hidden='true'></span>
+      </PageItem>,
+    );
+  };
+
+  if (totalPages <= actualMax) {
     for (let i = 1; i <= totalPages; i++) {
       addPageNumber(i);
     }
@@ -79,20 +129,19 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: Paginat
     let endPage = Math.min(currentPage + halfMaxPages, totalPages);
 
     if (currentPage - 1 <= halfMaxPages) {
-      endPage = maxPageNumbersToShow;
+      endPage = actualMax;
     }
     if (totalPages - currentPage <= halfMaxPages) {
-      startPage = totalPages - maxPageNumbersToShow + 1;
+      startPage = totalPages - actualMax + 1;
     }
 
     if (startPage > 1) {
       addPageNumber(1);
       if (startPage > 2) {
-        pageNumbers.push(
-          <PageItem key='start-ellipsis' className='page-item disabled'>
-            <span className='page-link'>...</span>
-          </PageItem>,
-        );
+        addSpacer();
+      }
+      if (startPage > totalPages - actualMax - 1) {
+        addSpacer();
       }
     }
 
@@ -102,11 +151,10 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: Paginat
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
-        pageNumbers.push(
-          <PageItem key='end-ellipsis' className='page-item disabled'>
-            <span className='page-link'>...</span>
-          </PageItem>,
-        );
+        addSpacer();
+      }
+      if (currentPage < actualMax + 1) {
+        addSpacer();
       }
       addPageNumber(totalPages);
     }
@@ -116,13 +164,23 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }: Paginat
     <nav aria-label='Pagination'>
       <ul className='pagination'>
         <PageItem className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-          <a onClick={() => paginate(currentPage - 1)} href='#' className='page-link'>
+          <a
+            onClick={() => paginate(currentPage - 1)}
+            href='#'
+            className='page-link'
+            aria-label='Previous page'
+          >
             &lt;
           </a>
         </PageItem>
         {pageNumbers}
         <PageItem className={`page-item ${currentPage >= totalPages ? 'disabled' : ''}`}>
-          <a onClick={() => paginate(currentPage + 1)} href='#' className='page-link'>
+          <a
+            onClick={() => paginate(currentPage + 1)}
+            href='#'
+            className='page-link'
+            aria-label='Next page'
+          >
             &gt;
           </a>
         </PageItem>

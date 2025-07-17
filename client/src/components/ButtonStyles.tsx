@@ -55,6 +55,7 @@ export const SecondaryButton = styled(ButtonBase)`
   background-color: var(--color-ui-primary);
   color: var(--color-text-primary);
   border-color: var(--color-ui-border);
+  margin-bottom: var(--margin-md) !important;
 
   &:hover {
     background-color: var(--hilite-ui-primary);
