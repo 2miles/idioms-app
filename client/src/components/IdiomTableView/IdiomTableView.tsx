@@ -99,6 +99,7 @@ const TableControls = styled.div`
 const PaginationWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin-left: var(--space-xxxl) !important;
 
   @media (min-width: 661px) {
     width: auto;
@@ -342,13 +343,15 @@ const IdiomTableView = () => {
         sortOrder={sortOrder}
       />
       <TableControls>
-        <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={totalCount}
-          paginate={handlePageChange}
-          currentPage={currentPage}
-          isCompact={isSmallScreen}
-        />
+        <PaginationWrapper>
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={totalCount}
+            paginate={handlePageChange}
+            currentPage={currentPage}
+            isCompact={isSmallScreen}
+          />
+        </PaginationWrapper>
       </TableControls>
     </TableSectionWrapper>
   );

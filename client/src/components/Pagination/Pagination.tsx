@@ -4,6 +4,8 @@ import styled from 'styled-components';
 const PageItem = styled.li`
   .page-link {
     padding: var(--padding-sm) var(--padding-xs);
+    margin-top: 4px;
+
     background-color: var(--color-ui-primary);
     color: var(--color-text-primary);
     border: 1px solid var(--color-ui-border) !important;
@@ -53,7 +55,9 @@ const PageItem = styled.li`
     pointer-events: none;
     padding: 0;
     margin: 0;
+    margin-top: 4px;
     border-left: none !important;
+    border-right: none !important;
   }
 `;
 
@@ -72,10 +76,14 @@ const Pagination = ({
   currentPage,
   isCompact,
 }: PaginationProps) => {
-  const pageNumbers = [];
+  const pageNumbers: JSX.Element[] = [];
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const maxPageNumbersToShow = isCompact ? 1 : 3;
   let actualMax = maxPageNumbersToShow;
+
+  // if (currentPage <= 3 || currentPage >= totalPages - 2) {
+  //   actualMax += 1;
+  // }
 
   if (currentPage === 1 || currentPage === totalPages) {
     actualMax += 1;
@@ -91,9 +99,23 @@ const Pagination = ({
     const isActive = currentPage === page;
     pageNumbers.push(
       <PageItem key={page} className={`page-item ${isActive ? 'active' : ''}`}>
-        <a onClick={() => paginate(page)} href='#' className='page-link'>
+        <a
+          onClick={() => paginate(page)}
+          href='#'
+          className='page-link'
+          aria-label={`Go to page ${page}`}
+        >
           {page}
         </a>
+      </PageItem>,
+    );
+  };
+
+  let spacerCount = 0;
+  const addSpacer = () => {
+    pageNumbers.push(
+      <PageItem key={`spacer-${spacerCount++}`} className='page-item thin-gap disabled'>
+        <span className='page-link' aria-hidden='true'></span>
       </PageItem>,
     );
   };
@@ -116,18 +138,10 @@ const Pagination = ({
     if (startPage > 1) {
       addPageNumber(1);
       if (startPage > 2) {
-        pageNumbers.push(
-          <PageItem key='start-spacer' className='page-item thin-gap disabled'>
-            <span className='page-link'></span>
-          </PageItem>,
-        );
+        addSpacer();
       }
       if (startPage > totalPages - actualMax - 1) {
-        pageNumbers.push(
-          <PageItem key='end-spacer' className='page-item thin-gap disabled'>
-            <span className='page-link'></span>
-          </PageItem>,
-        );
+        addSpacer();
       }
     }
 
@@ -137,18 +151,10 @@ const Pagination = ({
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
-        pageNumbers.push(
-          <PageItem key='end-spacer' className='page-item thin-gap disabled'>
-            <span className='page-link'></span>
-          </PageItem>,
-        );
+        addSpacer();
       }
       if (currentPage < actualMax + 1) {
-        pageNumbers.push(
-          <PageItem key='start-spacer' className='page-item thin-gap disabled'>
-            <span className='page-link'></span>
-          </PageItem>,
-        );
+        addSpacer();
       }
       addPageNumber(totalPages);
     }
@@ -158,13 +164,23 @@ const Pagination = ({
     <nav aria-label='Pagination'>
       <ul className='pagination'>
         <PageItem className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-          <a onClick={() => paginate(currentPage - 1)} href='#' className='page-link'>
+          <a
+            onClick={() => paginate(currentPage - 1)}
+            href='#'
+            className='page-link'
+            aria-label='Previous page'
+          >
             &lt;
           </a>
         </PageItem>
         {pageNumbers}
         <PageItem className={`page-item ${currentPage >= totalPages ? 'disabled' : ''}`}>
-          <a onClick={() => paginate(currentPage + 1)} href='#' className='page-link'>
+          <a
+            onClick={() => paginate(currentPage + 1)}
+            href='#'
+            className='page-link'
+            aria-label='Next page'
+          >
             &gt;
           </a>
         </PageItem>
