@@ -121,19 +121,19 @@ const NavBar = () => {
   return (
     <NavBarWrapper ref={navRef} className='navbar navbar-expand-lg'>
       <div className='d-flex align-items-center'>
-        <Hamburger
+        {/* <Hamburger
           onClick={toggleMenu}
           aria-label='Toggle navigation'
           data-testid='navbar-hamburger'
         >
           <HamburgerIcon />
-        </Hamburger>
+        </Hamburger> */}
         <div className='navbar-brand'>
           <Link to='/' onClick={closeMenu}>
             IdiomVault
           </Link>
         </div>
-        <NavbarLinks className={`navbar-collapse ${isOpen ? 'open' : ''}`} $isOpen={isOpen}>
+        {/* <NavbarLinks className={`navbar-collapse ${isOpen ? 'open' : ''}`} $isOpen={isOpen}>
           <Link to='/' onClick={closeMenu} className='nav-link'>
             Home
           </Link>
@@ -143,7 +143,7 @@ const NavBar = () => {
           <Link to='/list' onClick={closeMenu} className='nav-link'>
             List
           </Link>
-        </NavbarLinks>
+        </NavbarLinks> */}
       </div>
       <NavbarLogin>
         <div>
