@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import SearchColumnDropdown from './SearchColumnDropdown';
-import { Columns } from '@/types';
+import { Columns, SearchColumns } from '@/types';
 
 describe('SearchColumnDropdown', () => {
   const mockHandleColumnChange = vi.fn();
@@ -27,7 +27,7 @@ describe('SearchColumnDropdown', () => {
     fireEvent.click(button);
 
     const listbox = screen.getByRole('listbox');
-    for (const col of Columns) {
+    for (const col of SearchColumns) {
       const item = within(listbox).getByText(col.label);
       expect(item).toBeVisible();
     }
@@ -42,7 +42,7 @@ describe('SearchColumnDropdown', () => {
     fireEvent.click(button);
 
     const listbox = screen.getByRole('listbox');
-    const option = within(listbox).getByText('Definition');
+    const option = within(listbox).getByText('General');
     fireEvent.click(option);
 
     expect(listbox).not.toBeVisible(); // or use queryByRole('listbox') and expect null
@@ -56,9 +56,9 @@ describe('SearchColumnDropdown', () => {
     const button = screen.getByLabelText('Search Column');
     fireEvent.click(button);
 
-    const targetLabel = Columns.find((c) => c.accessor === 'definition')?.label!;
+    const targetLabel = SearchColumns.find((c) => c.accessor === 'general')?.label!;
     fireEvent.click(screen.getByText(targetLabel));
 
-    expect(mockHandleColumnChange).toHaveBeenCalledWith('definition');
+    expect(mockHandleColumnChange).toHaveBeenCalledWith('general');
   });
 });

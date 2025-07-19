@@ -54,14 +54,16 @@ describe('NavBar', () => {
     expect(brandLink).toHaveAttribute('href', '/');
   });
 
-  test('renders navigation menu links', () => {
+  // TODO: Re-implement when links are re-added to NavBar
+  test.skip('renders navigation menu links', () => {
     setup();
     expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /about/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /list/i })).toBeInTheDocument();
   });
 
-  test('toggles menu when clicking hamburger', async () => {
+  // TODO: Re-implement when hamburger is re-added to NavBar
+  test.skip('toggles menu when clicking hamburger', async () => {
     const user = userEvent.setup();
     setup();
 
@@ -77,7 +79,8 @@ describe('NavBar', () => {
     expect(menuLinksContainer).not.toHaveClass('open');
   });
 
-  test('closes the menu when clicking outside', async () => {
+  // TODO: Re-implement when nav menu is re-added to NavBar
+  test.skip('closes the menu when clicking outside', async () => {
     const user = userEvent.setup();
     setup();
 
