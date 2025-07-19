@@ -423,7 +423,6 @@ describe('IdiomTableView', () => {
       });
 
       // Open the items-per-page dropdown
-      // Open the items-per-page dropdown
       // The dropdown is rendered twice (once for desktop, once for mobile) and hidden via CSS media queries.
       // We interact with the first instance since only one is visible at a time in test environments.
       const triggers = screen.getAllByLabelText(/items per page/i);

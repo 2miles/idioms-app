@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import SearchBar from './SearchBar';
-import { ColumnAccessors } from '@/types';
+import { ColumnAccessors, SearchColumnAccessors } from '@/types';
 
 describe('SearchBar', () => {
   const mockOnSearchTermChange = vi.fn();
@@ -53,8 +53,8 @@ describe('SearchBar', () => {
 
     const button = screen.getByRole('button');
     fireEvent.click(button); // Open dropdown
-    fireEvent.click(screen.getByText(/Definition/i)); // Select new column
+    fireEvent.click(screen.getByText(/General/i)); // Select new column
 
-    expect(mockOnSearchColumnChange).toHaveBeenCalledWith('definition' as ColumnAccessors);
+    expect(mockOnSearchColumnChange).toHaveBeenCalledWith('general' as SearchColumnAccessors);
   });
 });
