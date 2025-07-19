@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ColumnAccessors } from '@/types';
+import { SearchColumnAccessors } from '@/types';
 import searchIcon from '@/images/search.svg?react';
 import SearchColumnDropdown from '@/components/Dropdown/SearchColumnDropdown/SearchColumnDropdown';
 
@@ -48,9 +48,9 @@ const DropdownWrapper = styled.div`
 
 type SearchBarProps = {
   searchTerm: string;
-  searchColumn: ColumnAccessors;
+  searchColumn: SearchColumnAccessors;
   onSearchTermChange: (term: string) => void;
-  onSearchColumnChange: (column: ColumnAccessors) => void;
+  onSearchColumnChange: (column: SearchColumnAccessors) => void;
 };
 
 const SearchBar = ({

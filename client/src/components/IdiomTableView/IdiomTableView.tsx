@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { Idiom, ColumnVisibility, ColumnAccessors } from '@/types';
+import { Idiom, ColumnVisibility, ColumnAccessors, SearchColumnAccessors } from '@/types';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Table from '@/components/Table/Table/Table';
 import Pagination from '@/components/Pagination/Pagination';
@@ -134,14 +134,15 @@ const IdiomTableView = () => {
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const initialLimit = parseInt(searchParams.get('limit') || '20', 10);
   const initialSearch = searchParams.get('search') || '';
-  const initialColumn = (searchParams.get('column') as ColumnAccessors) || 'title';
+  const initialSearchColumn =
+    (searchParams.get('searchColumn') as SearchColumnAccessors) || 'title';
   const initialSortField = (searchParams.get('sortField') as ColumnAccessors) || 'timestamps';
   const initialSortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
 
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [itemsPerPage, setItemsPerPage] = useState(initialLimit);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [searchColumn, setSearchColumn] = useState<ColumnAccessors>(initialColumn);
+  const [searchColumn, setSearchColumn] = useState<SearchColumnAccessors>(initialSearchColumn);
   const [sortField, setSortField] = useState<ColumnAccessors>(initialSortField);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
 
@@ -173,7 +174,7 @@ const IdiomTableView = () => {
   }, []);
 
   useEffect(() => {
-    const paramColumn = searchParams.get('column') as ColumnAccessors;
+    const paramColumn = searchParams.get('searchColumn') as SearchColumnAccessors; //////////////////////this was 'column'
     const paramField = searchParams.get('sortField') as ColumnAccessors;
     const paramOrder = searchParams.get('sortOrder') as 'asc' | 'desc';
 
@@ -198,7 +199,7 @@ const IdiomTableView = () => {
             page: currentPage,
             limit: itemsPerPage,
             search: searchTerm,
-            column: searchColumn,
+            searchColumn: searchColumn,
             sortField,
             sortOrder,
           },
@@ -223,12 +224,12 @@ const IdiomTableView = () => {
     });
   };
 
-  const onSearchColumnChange = (column: ColumnAccessors) => {
+  const onSearchColumnChange = (column: SearchColumnAccessors) => {
     setSearchColumn(column);
     setCurrentPage(1);
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
-      params.set('column', column);
+      params.set('searchColumn', column);
       params.set('page', '1');
       return params;
     });
@@ -276,7 +277,7 @@ const IdiomTableView = () => {
       page: '1',
       limit: '20',
       search: '',
-      column: 'title',
+      searchColumn: 'title',
       sortField: 'timestamps',
       sortOrder: 'desc',
     });

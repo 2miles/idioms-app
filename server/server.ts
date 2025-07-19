@@ -44,11 +44,26 @@ app.get(
       let search = (req.query.search as string) || '';
       const searchPattern = `%${search}%`;
 
-      const allowedColumns = ['title', 'definition', 'contributor'];
-      const searchColumn = (req.query.column as string) || 'title';
+      const allowedColumns = ['title', 'contributor', 'general'];
+      const searchColumn = (req.query.searchColumn as string) || 'title';
+
       if (!allowedColumns.includes(searchColumn)) {
         res.status(400).json({ error: 'Invalid search column' });
         return;
+      }
+
+      let whereClause = '';
+      if (searchColumn === 'general') {
+        whereClause = `(title ILIKE $3 OR definition ILIKE $3)`;
+      } else {
+        whereClause = `${searchColumn} ILIKE $3`;
+      }
+
+      let totalWhereClause = '';
+      if (searchColumn === 'general') {
+        totalWhereClause = `(title ILIKE $1 OR definition ILIKE $1)`;
+      } else {
+        totalWhereClause = `${searchColumn} ILIKE $1`;
       }
 
       const allowedSortFields = [
@@ -96,7 +111,7 @@ app.get(
           SELECT *,
             (SELECT total FROM global_total) + 1 - row_num AS position
           FROM ranked_all
-          WHERE ${searchColumn} ILIKE $3
+          WHERE ${whereClause}
         )
         SELECT *
         FROM filtered
@@ -106,7 +121,7 @@ app.get(
 
       const totalCountQuery = `
         SELECT COUNT(*) AS total FROM idioms
-        WHERE ${searchColumn} ILIKE $1
+        WHERE ${totalWhereClause}
         `;
 
       const [idiomsResult, countResult] = await Promise.all([
