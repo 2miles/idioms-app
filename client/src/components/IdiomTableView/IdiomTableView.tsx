@@ -11,6 +11,7 @@ import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/Ite
 import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import { SecondaryButton } from '../ButtonStyles';
+import { useDebounce } from '@/hooks/useDebounce';
 
 // TODO:
 // Make searchParams setup fully cleaned and abstracted
@@ -146,6 +147,9 @@ const IdiomTableView = () => {
   const [sortField, setSortField] = useState<ColumnAccessors>(initialSortField);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
 
+  const [inputValue, setInputValue] = useState(searchTerm);
+  const debouncedSearchTerm = useDebounce(inputValue, 500);
+
   const isSmallScreen = window.innerWidth < 660;
 
   // State: column visibility
@@ -156,6 +160,10 @@ const IdiomTableView = () => {
     timestamps: false,
     contributor: false,
   });
+
+  useEffect(() => {
+    onSearchTermChange(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
 
   useEffect(() => {
     const hasPage = searchParams.has('page');
@@ -216,12 +224,12 @@ const IdiomTableView = () => {
 
   const onSearchTermChange = (term: string) => {
     setSearchTerm(term);
-    setCurrentPage(1);
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set('search', term);
       return params;
     });
+    setCurrentPage(1);
   };
 
   const onSearchColumnChange = (column: SearchColumnAccessors) => {
@@ -287,6 +295,7 @@ const IdiomTableView = () => {
     setSearchColumn('title');
     setSortField('timestamps');
     setSortOrder('desc');
+    setInputValue('');
   };
 
   const showingStart = (currentPage - 1) * itemsPerPage + 1;
@@ -298,10 +307,14 @@ const IdiomTableView = () => {
     <TableSectionWrapper>
       <SearchBarWrapper>
         <SearchBar
-          searchTerm={searchTerm}
+          searchTerm={inputValue}
           searchColumn={searchColumn}
-          onSearchTermChange={onSearchTermChange}
+          onSearchTermChange={setInputValue}
           onSearchColumnChange={onSearchColumnChange}
+          onImmediateSearch={(term) => {
+            setInputValue(term);
+            onSearchTermChange(term);
+          }}
         />
       </SearchBarWrapper>
 

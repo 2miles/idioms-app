@@ -1,8 +1,9 @@
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 
-import { SearchColumnAccessors } from '@/types';
 import searchIcon from '@/images/search.svg?react';
 import SearchColumnDropdown from '@/components/Dropdown/SearchColumnDropdown/SearchColumnDropdown';
+import { SearchColumnAccessors } from '@/types';
 
 const Container = styled.div`
   position: relative;
@@ -51,6 +52,7 @@ type SearchBarProps = {
   searchColumn: SearchColumnAccessors;
   onSearchTermChange: (term: string) => void;
   onSearchColumnChange: (column: SearchColumnAccessors) => void;
+  onImmediateSearch?: (term: string) => void;
 };
 
 const SearchBar = ({
@@ -58,7 +60,26 @@ const SearchBar = ({
   searchColumn,
   onSearchTermChange,
   onSearchColumnChange,
+  onImmediateSearch,
 }: SearchBarProps) => {
+  const [localValue, setLocalValue] = useState(searchTerm);
+
+  useEffect(() => {
+    setLocalValue(searchTerm);
+  }, [searchTerm]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
+    onSearchTermChange(newValue);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onImmediateSearch?.(localValue);
+    }
+  };
+
   return (
     <Container>
       <IconContainer>
@@ -68,8 +89,9 @@ const SearchBar = ({
         type='text'
         className='form-control'
         placeholder='Search...'
-        value={searchTerm}
-        onChange={(e) => onSearchTermChange(e.target.value)}
+        value={localValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
       />
       <DropdownWrapper>
         <SearchColumnDropdown
