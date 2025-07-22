@@ -11,3 +11,9 @@ vi.spyOn(console, 'warn').mockImplementation((msg) => {
   }
   console.warn(msg);
 });
+
+vi.mock('@/apis/idiomFinder', () => ({
+  publicIdiomFinder: {
+    get: vi.fn(),
+  },
+}));
