@@ -81,10 +81,6 @@ const Pagination = ({
   const maxPageNumbersToShow = isCompact ? 1 : 3;
   let actualMax = maxPageNumbersToShow;
 
-  // if (currentPage <= 3 || currentPage >= totalPages - 2) {
-  //   actualMax += 1;
-  // }
-
   if (currentPage === 1 || currentPage === totalPages) {
     actualMax += 1;
   } else if (currentPage === 2 || currentPage === totalPages - 1) {
