@@ -46,6 +46,15 @@ const FormControlsWrapper = styled.div`
   }
 `;
 
+const ButtonsWrapper = styled.div`
+  display: flex;
+  margin-left: var(--margin-lg);
+  margin-top: var(--margin-lg);
+  margin-bottom: var(--margin-md);
+  max-height: 40px;
+  align-items: center;
+`;
+
 type AddIdiomProps = {
   onClose: () => void;
   onSucess?: () => void;
@@ -184,22 +193,24 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
           onChange={handleInputChange}
         />
         <FormControlsWrapper>
-          <SuccessButton type='submit' className='btn btn-success'>
-            Add
-          </SuccessButton>
-          <div className='form-check'>
-            <input
-              id='flexCheckDefault'
-              type='checkbox'
-              value=''
-              className='form-check-input'
-              checked={keepOpen}
-              onChange={(e) => setKeepOpen(e.target.checked)}
-            />
-            <label className='form-check-label' htmlFor='flexCheckDefault'>
-              Keep Open
-            </label>
-          </div>
+          <ButtonsWrapper>
+            <SuccessButton type='submit' className='btn btn-success'>
+              Add
+            </SuccessButton>
+            <div className='form-check'>
+              <input
+                id='flexCheckDefault'
+                type='checkbox'
+                value=''
+                className='form-check-input'
+                checked={keepOpen}
+                onChange={(e) => setKeepOpen(e.target.checked)}
+              />
+              <label className='form-check-label' htmlFor='flexCheckDefault'>
+                Keep Open
+              </label>
+            </div>
+          </ButtonsWrapper>
         </FormControlsWrapper>
       </form>
     </FormContainer>

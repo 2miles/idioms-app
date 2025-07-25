@@ -7,6 +7,7 @@
   --color-brand-primary: #97ffa8;
   /* Text Colors */
   --color-text-primary: #383f4d;
+  --color-text-secondary: #555a62;
   --color-text-inverted: #e2e3e6;
   /* UI Colors */
   --color-ui-border: #bbb;
@@ -102,3 +103,44 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --color-black: #eee;
+    --color-canvas: #121212;
+
+    --color-brand-primary: #60ff7e;
+
+    --color-text-primary: #e0e0e0;
+    --color-text-inverted: #222;
+
+    --color-ui-border: #555;
+    --color-ui-primary: #1e1e1e;
+
+    --hilite-ui-primary: #2a2a2a;
+
+    --dim-text-primary: #999;
+    --dim-text-secondary: #666;
+
+    --button-success-bg: #197d57;
+    --button-success-bg-hover: #23a36c;
+    --button-success-border: #33c684;
+    --button-success-border-hover: #47e6a0;
+
+    --button-danger-bg: #993030;
+    --button-danger-bg-hover: #c53030;
+    --button-danger-border: #ff7070;
+    --button-danger-border-hover: #ffa0a0;
+
+    --button-primary-bg: #255ab0;
+    --button-primary-bg-hover: #2c6cf1;
+    --button-primary-border: #5b9bff;
+    --button-primary-border-hover: #89bfff;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    background-image: none;
+    color: var(--color-text-primary);
+  }
+} */
