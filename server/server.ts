@@ -148,10 +148,28 @@ app.get(
 // Get single idiom, and get examples for that idiom
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
   try {
-    const idiomQuery = await pool.query(
-      ` SELECT * FROM idioms WHERE id = $1 `,
-      [req.params.id],
-    );
+    const idiomWithPositionQuery = `
+      WITH ranked_idioms AS (
+        SELECT id,
+              ROW_NUMBER() OVER (ORDER BY timestamps DESC) AS row_num
+        FROM idioms
+      ),
+      total_count AS (
+        SELECT COUNT(*) AS total FROM idioms
+      ),
+      positioned_idiom AS (
+        SELECT i.*, (t.total + 1 - r.row_num) AS position
+        FROM idioms i
+        JOIN ranked_idioms r ON i.id = r.id
+        CROSS JOIN total_count t
+        WHERE i.id = $1
+      )
+      SELECT * FROM positioned_idiom;
+    `;
+
+    const idiomQuery = await pool.query(idiomWithPositionQuery, [
+      req.params.id,
+    ]);
     const examplesQuery = await pool.query(
       `SELECT * FROM idiom_examples WHERE idiom_id = $1`,
       [req.params.id],
