@@ -2,14 +2,15 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import { Idiom } from '@/types';
-import { SecondaryButton } from '@/components/ButtonStyles';
+import { PrimaryButton, SecondaryButton, SuccessButton } from '@/components/ButtonStyles';
 import { useUser } from '@/context/userContext';
 
 const Card = styled.div`
+  font-size: var(--font-lg);
   &.card {
     background: var(--color-ui-primary);
     border: 1px solid var(--color-ui-border);
-    font-family: 'Times New Roman', Times, serif;
+    // font-family: 'Times New Roman', Times, serif;
     overflow: hidden;
     margin-top: var(--margin-xxl);
   }
@@ -17,84 +18,71 @@ const Card = styled.div`
 
 const CardHeader = styled.div`
   background-color: var(--color-ui-primary);
+  background-color: #eee;
+
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-ui-border);
 
   h1 {
-    font-size: var(--font-xxl);
+    // font-size: var(--font-xxl);
+    font-size: var(2.25rem);
+    font-weight: 700;
     margin: 0;
-    padding: var(--padding-lg);
-    font-style: italic;
-    font-weight: normal;
-  }
-
-  h2 {
-    font-size: var(--font-xl);
-    margin: 0;
-    font-style: italic;
-    font-weight: normal;
+    padding: var(--padding-md);
+    font-weight: bold;
+    text-align: center;
   }
 `;
 
 const CardBody = styled.div`
-  font-size: var(--font-lg);
-
   padding-left: var(--padding-xxl);
   padding-right: var(--padding-xxl);
 
   h3 {
-    margin-top: var(--margin-xxl);
+    margin: 0 !important;
+    padding: 0 !important;
+    text-transform: uppercase;
   }
 
   p {
-    margin: var(--margin-md) 0;
   }
 
   li {
-    padding-top: var(--padding-sm);
-    padding-bottom: var(--padding-sm);
+    padding-bottom: var(--padding-md);
+    line-height: 1.6;
+    font-size: 1.1rem;
+    font-style: italic;
+  }
+
+  li::marker {
+    color: var(--color-text-secondary);
+  }
+  li {
+    padding-left: var(--padding-lg) !important;
   }
 
   @media (max-width: 770px) {
     padding-left: var(--padding-lg);
     padding-right: var(--padding-lg);
   }
-  /* Remove top margin from the first ExampleHeader */
-  > div:first-child {
-    margin-top: 0 !important;
-  }
 `;
 
 const IdiomInfo = styled.div`
-  display: flex;
-  /* flex-direction: column; */
-
-  padding-left: var(--padding-lg);
   padding-right: var(--padding-lg);
   padding-top: var(--padding-sm);
   padding-bottom: var(--padding-sm);
-
   background-color: var(--color-ui-primary);
+  font-size: 1rem;
+  border-bottom: 1px solid var(--color-ui-border);
 `;
 
-const Position = styled.span`
-  margin: 0;
-  padding-right: var(--padding-lg);
-  font-size: var(--font-lg);
-  color: var(--color-text-primary);
-  align-self: flex-start;
-
-  border-radius: var(--radius-sm);
+const InfoElement = styled.p`
+  margin-bottom: var(--margin-sm);
 `;
-
-const Contributor = styled.p`
-  margin: 0;
-  font-size: var(--font-lg);
-  color: var(--color-text-primary);
-  /* align-self: flex-end; */
-  span {
-    padding-left: var(--padding-md);
-  }
+const InfoElementKey = styled.span`
+  margin-right: var(--margin-sm);
+  font-weight: bold;
+  color: var(--color-text-secondary);
 `;
 
 const ExampleItem = styled.li`
@@ -106,16 +94,29 @@ const ExampleList = styled.ul`
 `;
 
 const UpdateExampleButtons = styled.div`
+  display: flex;
+  justify-content: right;
+  margin-top: var(--margin-lg);
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
   button {
     margin-left: var(--margin-lg);
+    margin-bottom: 0 !important;
   }
 `;
 
-const ExampleHeader = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  margin-top: 80px !important;
+const SectionHeader = styled.div`
+  margin-bottom: var(--margin-md);
+  margin-top: var(--margin-xl);
+  h3 {
+    color: var(--color-text-secondary);
+  }
+`;
+
+const SectionGroup = styled.div`
+  p {
+    margin-bottom: var(--margin-xxl);
+  }
 `;
 
 type DetailCardProps = {
@@ -137,54 +138,65 @@ const DetailCard = ({
     <Card className='card'>
       <CardHeader className='card-header'>
         <h1 data-testid='displaytitle'>
-          &quot;
           {idiom.title_general && idiom.title_general.trim() !== ''
             ? idiom.title_general
             : idiom.title}
-          &quot;
         </h1>
       </CardHeader>
-      <IdiomInfo>
-        <Position>{`Idiom: ${idiom.position}`}</Position>
-        <Contributor>
-          <span data-testid='timestamp'>Added: {moment(idiom.timestamps).format('MM-DD-YY')}</span>
-          {idiom.contributor && (
-            <>
-              <span data-testid='contributor'>by {idiom.contributor}</span>
-            </>
-          )}
-        </Contributor>
-      </IdiomInfo>
+
       <CardBody className='card-body'>
-        <ExampleHeader>
-          <h3>Meaning:</h3>
-          {isAdmin && (
+        <IdiomInfo>
+          <InfoElement>
+            <InfoElementKey>Idiom #:</InfoElementKey>
+            {idiom.position}
+          </InfoElement>
+          <InfoElement data-testid='timestamp'>
+            <InfoElementKey>Added on:</InfoElementKey>
+            {moment(idiom.timestamps).format('MM-DD-YY')}
+          </InfoElement>
+          {idiom.contributor && (
+            <InfoElement data-testid='contributor'>
+              <InfoElementKey>Added by:</InfoElementKey>
+              {idiom.contributor}
+            </InfoElement>
+          )}
+        </IdiomInfo>
+
+        {isAdmin && (
+          <UpdateExampleButtons>
             <SecondaryButton className='btn btn-secondary' onClick={openModal}>
               Edit Idiom
             </SecondaryButton>
-          )}
-        </ExampleHeader>
-        <p data-testid='definition'>{idiom.definition}</p>
-        <ExampleHeader>
-          <h3>Examples:</h3>
-          {isAdmin && (
-            <UpdateExampleButtons>
-              <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
-                Add Example
+            {idiom.examples && idiom.examples.length > 0 && (
+              <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
+                Edit Ex.
               </SecondaryButton>
-              {idiom.examples && idiom.examples.length > 0 && (
-                <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
-                  Edit Example
-                </SecondaryButton>
-              )}
-            </UpdateExampleButtons>
+            )}
+            <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
+              Add Ex.
+            </SecondaryButton>
+          </UpdateExampleButtons>
+        )}
+
+        <SectionGroup>
+          {idiom.definition && (
+            <SectionHeader>
+              <h3>Meaning:</h3>
+            </SectionHeader>
           )}
-        </ExampleHeader>
-        <ExampleList data-testid='examples'>
-          {examples.map((example) => (
-            <ExampleItem key={example.example_id}>{example.example}</ExampleItem>
-          ))}
-        </ExampleList>
+          <p data-testid='definition'>{idiom.definition}</p>
+
+          {idiom.examples && idiom.examples.length > 0 && (
+            <SectionHeader>
+              <h3>Examples:</h3>
+            </SectionHeader>
+          )}
+          <ExampleList data-testid='examples'>
+            {examples.map((example) => (
+              <ExampleItem key={example.example_id}>{example.example}</ExampleItem>
+            ))}
+          </ExampleList>
+        </SectionGroup>
       </CardBody>
     </Card>
   );

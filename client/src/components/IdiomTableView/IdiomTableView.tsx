@@ -182,20 +182,22 @@ const IdiomTableView = () => {
   }, []);
 
   useEffect(() => {
-    const paramColumn = searchParams.get('searchColumn') as SearchColumnAccessors; //////////////////////this was 'column'
+    const paramColumn = searchParams.get('searchColumn') as SearchColumnAccessors;
     const paramField = searchParams.get('sortField') as ColumnAccessors;
     const paramOrder = searchParams.get('sortOrder') as 'asc' | 'desc';
+    const paramPage = parseInt(searchParams.get('page') || '1', 10);
 
     if (paramColumn && paramColumn !== searchColumn) {
       setSearchColumn(paramColumn);
     }
-
     if (paramField && paramField !== sortField) {
       setSortField(paramField);
     }
-
     if (paramOrder && paramOrder !== sortOrder) {
       setSortOrder(paramOrder);
+    }
+    if (!Number.isNaN(paramPage)) {
+      setCurrentPage(paramPage);
     }
   }, [searchParams]);
 

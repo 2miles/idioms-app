@@ -7,6 +7,7 @@ const ButtonBase = styled.button`
   align-items: center;
   gap: 6px; // spacing between icon and text
   padding: 6px 12px; // optional: define consistent padding
+  border-radius: 8px !important; // optional: define border radius
 `;
 
 // Success button

@@ -22,8 +22,8 @@ export class DetailPage {
     this.examples = page.getByTestId('examples');
 
     this.editIdiomButton = page.getByRole('button', { name: /edit idiom/i });
-    this.addExampleButton = page.getByRole('button', { name: /add example/i });
-    this.editExampleButton = page.getByRole('button', { name: /edit example/i });
+    this.addExampleButton = page.getByRole('button', { name: /add ex./i });
+    this.editExampleButton = page.getByRole('button', { name: /edit ex./i });
   }
 
   async goto(id: number | string) {
