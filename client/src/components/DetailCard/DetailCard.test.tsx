@@ -41,8 +41,8 @@ function setup(idiom: Idiom = dummyIdiom, roles: string[] = []) {
     mockOpenAddExampleModal,
     mockOpenExampleModal,
     editIdiomButton: screen.queryByRole('button', { name: /edit idiom/i }),
-    addExampleButton: screen.queryByRole('button', { name: /add example/i }),
-    editExampleButton: screen.queryByRole('button', { name: /edit example/i }),
+    addExampleButton: screen.queryByRole('button', { name: /add ex./i }),
+    editExampleButton: screen.queryByRole('button', { name: /edit ex./i }),
     timestamp: screen.getByTestId('timestamp'),
     contributor: screen.getByTestId('contributor'),
     exampleList: screen.queryAllByRole('listitem'),
@@ -57,7 +57,7 @@ describe('DetailCard', () => {
   describe('Idiom content', () => {
     test('renders idiom.title when title_general is null or empty', () => {
       setup({ ...dummyIdiom, title_general: null });
-      expect(screen.getByText(/"Break the ice"/)).toBeInTheDocument();
+      expect(screen.getByText(/Break the ice/)).toBeInTheDocument();
     });
 
     test('renders title_general if present and non-empty', () => {
@@ -67,12 +67,12 @@ describe('DetailCard', () => {
 
     test('renders formatted timestamp', () => {
       const { timestamp } = setup();
-      expect(timestamp).toHaveTextContent('Added: 05-01-24');
+      expect(timestamp).toHaveTextContent('Added on:05-01-24');
     });
 
     test('renders contributor if available', () => {
       const { contributor } = setup();
-      expect(contributor).toHaveTextContent('by John Doe');
+      expect(contributor).toHaveTextContent('Added by:John Doe');
     });
 
     test('renders definition if available', () => {
