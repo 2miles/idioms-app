@@ -33,72 +33,80 @@ if (process.env.NODE_ENV === 'test') {
   });
 }
 
-app.get(
-  ['/api/v1/idioms', '/api/v1/idioms/'],
-  async (req: Request, res: Response) => {
-    try {
-      let page = parseInt((req.query.page as string) || '1', 10);
-      let limit = parseInt((req.query.limit as string) || '20', 10);
-      const offset = (page - 1) * limit;
+app.get(['/api/v1/idioms', '/api/v1/idioms/'], async (req: Request, res: Response) => {
+  try {
+    let page = parseInt((req.query.page as string) || '1', 10);
+    let limit = parseInt((req.query.limit as string) || '20', 10);
+    const offset = (page - 1) * limit;
 
-      let search = (req.query.search as string) || '';
-      const searchPattern = `%${search}%`;
+    const allowedColumns = ['title', 'contributor', 'general'];
+    const searchColumn = (req.query.searchColumn as string) || 'title';
 
-      const allowedColumns = ['title', 'contributor', 'general'];
-      const searchColumn = (req.query.searchColumn as string) || 'title';
+    if (!allowedColumns.includes(searchColumn)) {
+      res.status(400).json({ error: 'Invalid search column' });
+      return;
+    }
 
-      if (!allowedColumns.includes(searchColumn)) {
-        res.status(400).json({ error: 'Invalid search column' });
-        return;
-      }
+    let search = (req.query.search as string) || '';
 
-      let whereClause = '';
-      if (searchColumn === 'general') {
-        whereClause = `(title ILIKE $3 OR definition ILIKE $3)`;
-      } else {
-        whereClause = `${searchColumn} ILIKE $3`;
-      }
+    // Parse the search string into individual words
+    const searchWords = search
+      .split(/\s+/)
+      .map((w) => w.trim())
+      .filter((w) => w.length > 0);
+    //const searchPattern = `%${search}%`;
 
-      let totalWhereClause = '';
-      if (searchColumn === 'general') {
-        totalWhereClause = `(title ILIKE $1 OR definition ILIKE $1)`;
-      } else {
-        totalWhereClause = `${searchColumn} ILIKE $1`;
-      }
+    // This builds safe parameterized queries that look like:
+    // ... WHERE title ILIKE $3 AND title ILIKE $4 ...
 
-      const allowedSortFields = [
-        'position',
-        'timestamps',
-        'title',
-        'definition',
-        'contributor',
-      ];
-      let sortField = (req.query.sortField as string) || 'timestamps';
-      let sortOrder = (req.query.sortOrder as string) || 'desc';
+    let whereClause = '';
+    let totalWhereClause = '';
+    const whereValues: string[] = [];
 
-      if (!allowedSortFields.includes(sortField)) {
-        res.status(400).json({ error: 'Invalid sort field' });
-        return;
-      }
-      if (!['asc', 'desc'].includes(sortOrder)) {
-        res.status(400).json({ error: 'Invalid sort order' });
-        return;
-      }
+    if (searchColumn === 'general') {
+      whereClause = searchWords
+        .map((_, i) => `(title ILIKE $${i + 3} OR definition ILIKE $${i + 3})`)
+        .join(' AND ');
 
-      // This query fetches a paginated and optionally filtered list of idioms, ordered by newest first (timestamps DESC),
-      // while assigning each idiom its global position in the full dataset — even when a search filter is applied.
-      //
-      // Steps:
-      // 1. `global_total`: counts the total number of idioms in the table (unfiltered).
-      // 2. `ranked_all`: assigns a global row number to every idiom based on timestamp DESC.
-      // 3. `filtered`: filters the ranked idioms by a case-insensitive search on the selected column,
-      //    and computes a global `position` for each idiom using: (total + 1 - row_num).
-      // 4. The final SELECT returns a page of filtered idioms with their correct global positions.
-      //
-      // This ensures that when users filter the table, the position values still reflect the idioms' true order in the
-      // full dataset — not just within the filtered subset.
+      totalWhereClause = searchWords
+        .map((_, i) => `(title ILIKE $${i + 1} OR definition ILIKE $${i + 1})`)
+        .join(' AND ');
+    } else {
+      whereClause = searchWords.map((_, i) => `${searchColumn} ILIKE $${i + 3}`).join(' AND ');
 
-      const idiomsQuery = `
+      totalWhereClause = searchWords.map((_, i) => `${searchColumn} ILIKE $${i + 1}`).join(' AND ');
+    }
+    whereValues.push(...searchWords.map((word) => `%${word}%`));
+
+    const allowedSortFields = ['position', 'timestamps', 'title', 'definition', 'contributor'];
+    let sortField = (req.query.sortField as string) || 'timestamps';
+    let sortOrder = (req.query.sortOrder as string) || 'desc';
+
+    if (!allowedSortFields.includes(sortField)) {
+      res.status(400).json({ error: 'Invalid sort field' });
+      return;
+    }
+    if (!['asc', 'desc'].includes(sortOrder)) {
+      res.status(400).json({ error: 'Invalid sort order' });
+      return;
+    }
+
+    // This query fetches a paginated and optionally filtered list of idioms, ordered by newest first (timestamps DESC),
+    // while assigning each idiom its global position in the full dataset — even when a search filter is applied.
+    //
+    // Steps:
+    // 1. `global_total`: counts the total number of idioms in the table (unfiltered).
+    // 2. `ranked_all`: assigns a global row number to every idiom based on timestamp DESC.
+    // 3. `filtered`: filters the ranked idioms by a case-insensitive search on the selected column,
+    //    and computes a global `position` for each idiom using: (total + 1 - row_num).
+    // 4. The final SELECT returns a page of filtered idioms with their correct global positions.
+    //
+    // This ensures that when users filter the table, the position values still reflect the idioms' true order in the
+    // full dataset — not just within the filtered subset.
+
+    const hasSearch = searchWords.length > 0;
+
+    const idiomsQuery = `
         WITH global_total AS (
           SELECT COUNT(*) AS total FROM idioms
         ),
@@ -111,39 +119,35 @@ app.get(
           SELECT *,
             (SELECT total FROM global_total) + 1 - row_num AS position
           FROM ranked_all
-          WHERE ${whereClause}
+          ${hasSearch ? `WHERE ${whereClause}` : ''}
         )
         SELECT *
         FROM filtered
         ORDER BY ${sortField} ${sortOrder}
         LIMIT $1 OFFSET $2;
-        `;
+      `;
 
-      const totalCountQuery = `
-        SELECT COUNT(*) AS total FROM idioms
-        WHERE ${totalWhereClause}
-        `;
+    const totalCountQuery = hasSearch
+      ? `SELECT COUNT(*) AS total FROM idioms WHERE ${totalWhereClause}`
+      : `SELECT COUNT(*) AS total FROM idioms`;
 
-      const [idiomsResult, countResult] = await Promise.all([
-        pool.query(idiomsQuery, [limit, offset, searchPattern]),
-        pool.query(totalCountQuery, [searchPattern]),
-      ]);
+    const idiomsResult = await pool.query(idiomsQuery, [limit, offset, ...whereValues]);
+    const countResult = await pool.query(totalCountQuery, [...whereValues]);
 
-      const totalCount = parseInt(countResult.rows[0].total, 10);
+    const totalCount = parseInt(countResult.rows[0].total, 10);
 
-      res.status(200).json({
-        status: 'success',
-        data: {
-          idioms: idiomsResult.rows,
-          totalCount,
-        },
-      });
-    } catch (error) {
-      console.error('Error executing paginated idioms query:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  },
-);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        idioms: idiomsResult.rows,
+        totalCount,
+      },
+    });
+  } catch (error) {
+    console.error('Error executing paginated idioms query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Get single idiom, and get examples for that idiom
 app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
@@ -167,13 +171,10 @@ app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
       SELECT * FROM positioned_idiom;
     `;
 
-    const idiomQuery = await pool.query(idiomWithPositionQuery, [
+    const idiomQuery = await pool.query(idiomWithPositionQuery, [req.params.id]);
+    const examplesQuery = await pool.query(`SELECT * FROM idiom_examples WHERE idiom_id = $1`, [
       req.params.id,
     ]);
-    const examplesQuery = await pool.query(
-      `SELECT * FROM idiom_examples WHERE idiom_id = $1`,
-      [req.params.id],
-    );
 
     res.status(200).json({
       status: 'success',
@@ -189,70 +190,60 @@ app.get('/api/v1/idioms/:id', async (req: Request, res: Response) => {
 });
 
 // Create an idiom
-app.post(
-  '/api/v1/idioms/',
-  jwtCheck,
-  checkRole('Admin'),
-  async (req: Request, res: Response) => {
-    try {
-      const insertQuery = `
+app.post('/api/v1/idioms/', jwtCheck, checkRole('Admin'), async (req: Request, res: Response) => {
+  try {
+    const insertQuery = `
       INSERT INTO idioms (title, title_general, definition, timestamps, contributor) 
       values ($1, $2, $3, $4, $5) 
       returning *
     `;
-      const result = await pool.query(insertQuery, [
-        req.body.title,
-        req.body.title_general,
-        req.body.definition,
-        req.body.timestamps,
-        req.body.contributor,
-      ]);
-      res.status(200).json({
-        status: 'success',
-        data: {
-          idiom: result.rows[0],
-        },
-      });
-    } catch (error) {
-      console.error('Error executing query:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  },
-);
+    const result = await pool.query(insertQuery, [
+      req.body.title,
+      req.body.title_general,
+      req.body.definition,
+      req.body.timestamps,
+      req.body.contributor,
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        idiom: result.rows[0],
+      },
+    });
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Update an idiom
-app.put(
-  '/api/v1/idioms/:id',
-  jwtCheck,
-  checkRole('Admin'),
-  async (req: Request, res: Response) => {
-    try {
-      const updateQuery = `
+app.put('/api/v1/idioms/:id', jwtCheck, checkRole('Admin'), async (req: Request, res: Response) => {
+  try {
+    const updateQuery = `
       UPDATE idioms 
       SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5 
       WHERE id = $6 
       returning *
     `;
-      const result = await pool.query(updateQuery, [
-        req.body.title,
-        req.body.title_general,
-        req.body.definition,
-        req.body.timestamps,
-        req.body.contributor,
-        req.params.id,
-      ]);
-      res.status(200).json({
-        status: 'success',
-        data: {
-          idiom: result.rows[0],
-        },
-      });
-    } catch (error) {
-      console.error('Error executing query:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  },
-);
+    const result = await pool.query(updateQuery, [
+      req.body.title,
+      req.body.title_general,
+      req.body.definition,
+      req.body.timestamps,
+      req.body.contributor,
+      req.params.id,
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        idiom: result.rows[0],
+      },
+    });
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.delete(
   '/api/v1/idioms/:id',
