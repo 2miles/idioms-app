@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
 
     /* Linting */
     "strict": true,
@@ -22,7 +23,7 @@
     "forceConsistentCasingInFileNames": true,
 
     /* Other */
-    "noEmit": false,
+    "noEmit": true,
     "isolatedModules": true,
     "outDir": "dist",
     "rootDir": "./"
