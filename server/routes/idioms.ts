@@ -8,9 +8,9 @@ import {
   createExample,
   updateExamples,
   deleteExample,
-} from '../controllers/idiomsController.ts';
+} from '../controllers/idiomsController.js';
 
-import { jwtCheck, checkRole } from '../authMiddleware.ts';
+import { jwtCheck, checkRole } from '../authMiddleware.js';
 
 const router = express.Router();
 

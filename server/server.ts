@@ -2,7 +2,7 @@ import express, { Response } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan'; // HTTP request logger
 import cors from 'cors';
-import router from './routes/idioms.ts';
+import router from './routes/idioms.js';
 
 dotenv.config();
 const app = express();
