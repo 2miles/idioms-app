@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import pool from '../db/index.ts';
+import pool from '../db/index.js';
 import {
   buildIdiomsQuery,
   buildIdiomWithPositionQuery,
   buildTotalCountQuery,
-} from '../queries/idioms.ts';
-import { getSearchClauses } from '../utils/searchUtils.ts';
+} from '../queries/idioms.js';
+import { getSearchClauses } from '../utils/searchUtils.js';
 
 export async function getAllIdioms(req: Request, res: Response): Promise<void> {
   try {
