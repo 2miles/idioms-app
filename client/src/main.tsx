@@ -21,9 +21,8 @@ if (!container) {
         authorizationParams={{
           redirect_uri: window.location.origin,
           audience: 'https://api.idiomvault.com',
+          scope: 'openid profile email',
         }}
-        cacheLocation='localstorage'
-        useRefreshTokens={true}
       >
         <UserProvider>
           <IdiomsContextProvider>

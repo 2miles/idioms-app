@@ -7,6 +7,10 @@ interface TokenPayload {
   'https://api.idiomvault.com/roles'?: string[];
   [key: string]: any;
 }
+
+const audience = 'https://api.idiomvault.com';
+const scope = 'openid profile email';
+
 // Hook to fetch and manage the Auth0 access token.
 const useAuthToken = () => {
   const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
@@ -26,17 +30,23 @@ const useAuthToken = () => {
       }
 
       try {
-        // Fetches the token without requiring the user to re-login.
-        const fetchedToken = await getAccessTokenSilently();
+        const fetchedToken = await getAccessTokenSilently({
+          authorizationParams: { audience, scope }, // ← match provider
+        });
         setToken(fetchedToken || null);
 
         if (fetchedToken) {
-          const decodedToken = jwtDecode<TokenPayload>(fetchedToken);
-          const extractedRoles = decodedToken['https://api.idiomvault.com/roles'] || null;
-          setRoles(extractedRoles);
+          const decoded = jwtDecode<TokenPayload>(fetchedToken);
+          setRoles(decoded['https://api.idiomvault.com/roles'] ?? null);
+        } else {
+          setRoles(null);
         }
-      } catch (error) {
-        console.error('Failed to fetch access token:', error);
+      } catch (e: any) {
+        // Ignore common silent-auth cases; user just isn't eligible silently
+        const ignorable = ['login_required', 'consent_required', 'interaction_required'];
+        if (!ignorable.includes(e?.error)) {
+          console.error('Failed to fetch access token:', e);
+        }
         setToken(null);
         setRoles(null);
       } finally {
