@@ -12,19 +12,19 @@ import {
 
 import { jwtCheck, checkRole } from '../authMiddleware.js';
 
-const router = express.Router();
+const idiomsRouter = express.Router();
 
 // Public
-router.get('/', getAllIdioms);
-router.get('/:id', getSingleIdiomWithExamples);
+idiomsRouter.get('/', getAllIdioms);
+idiomsRouter.get('/:id', getSingleIdiomWithExamples);
 
 // // Protected
-router.post('/', jwtCheck, checkRole('Admin'), createIdiom);
-router.put('/:id', jwtCheck, checkRole('Admin'), updateIdiom);
-router.delete('/:id', jwtCheck, checkRole('Admin'), deleteIdiom);
+idiomsRouter.post('/', jwtCheck, checkRole('Admin'), createIdiom);
+idiomsRouter.put('/:id', jwtCheck, checkRole('Admin'), updateIdiom);
+idiomsRouter.delete('/:id', jwtCheck, checkRole('Admin'), deleteIdiom);
 
-router.post('/:id/examples', jwtCheck, checkRole('Admin'), createExample);
-router.put('/:id/examples', jwtCheck, checkRole('Admin'), updateExamples);
-router.delete('/examples/:id', jwtCheck, checkRole('Admin'), deleteExample);
+idiomsRouter.post('/:id/examples', jwtCheck, checkRole('Admin'), createExample);
+idiomsRouter.put('/:id/examples', jwtCheck, checkRole('Admin'), updateExamples);
+idiomsRouter.delete('/examples/:id', jwtCheck, checkRole('Admin'), deleteExample);
 
-export default router;
+export default idiomsRouter;
