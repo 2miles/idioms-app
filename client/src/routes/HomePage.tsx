@@ -9,6 +9,7 @@ import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
 import { SuccessButton } from '@/components/ButtonStyles';
 import { useUser } from '@/context/userContext';
+import ThemeToggle from '@/components/themeToggle';
 
 const AddIdiomContainer = styled.div`
   margin-top: var(--margin-lg);
@@ -50,6 +51,7 @@ const HomePage = () => {
           </CustomSuccessButton>
         </AddIdiomContainer>
       )}
+      <ThemeToggle />
       <IdiomTableView />
       <Modal title='Add Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <AddIdiomForm onClose={closeModal} onSucess={refreshIdiomList} />
