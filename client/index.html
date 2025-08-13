@@ -8,18 +8,18 @@
 
     <script>
       (function () {
-        // Single source of truth for applying the theme
-        window.__applyTheme = function (effective /* 'light' | 'dark' */) {
+        // one helper everyone calls
+        window.__applyTheme = function (effective /* 'light'|'dark' */) {
           const root = document.documentElement;
           root.classList.remove('theme-light', 'theme-dark');
           root.classList.add(`theme-${effective}`);
           root.style.colorScheme = effective;
-          localStorage.setItem('theme', effective); // store applied for first paint next load
+          localStorage.setItem('theme', effective);
         };
 
-        // Resolve effective theme from saved choice (or system)
-        const choice = localStorage.getItem('theme-choice'); // 'light' | 'dark' | 'system' | null
-        const effective =
+        // first paint: use saved choice if any, else system
+        const choice = localStorage.getItem('theme-choice'); // 'light'|'dark'|'system'|null
+        const eff =
           choice === 'light'
             ? 'light'
             : choice === 'dark'
@@ -28,24 +28,7 @@
             ? 'dark'
             : 'light';
 
-        // Apply immediately (prevents flash)
-        window.__applyTheme(effective);
-
-        // Optional: keep in sync across tabs if theme-choice changes elsewhere
-        window.addEventListener('storage', (e) => {
-          if (e.key === 'theme-choice') {
-            const t = e.newValue;
-            const eff =
-              t === 'light'
-                ? 'light'
-                : t === 'dark'
-                ? 'dark'
-                : matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light';
-            window.__applyTheme(eff);
-          }
-        });
+        window.__applyTheme(eff);
       })();
     </script>
 
