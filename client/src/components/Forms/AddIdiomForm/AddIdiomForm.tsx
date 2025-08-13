@@ -11,7 +11,7 @@ import { NewIdiomInput } from '@/types';
 import { SuccessButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
-  background-color: var(--color-canvas);
+  background-color: var(--bg-dark);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
   padding-left: var(--padding-lg);

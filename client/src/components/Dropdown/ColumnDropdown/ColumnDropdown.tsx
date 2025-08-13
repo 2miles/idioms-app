@@ -12,8 +12,8 @@ const ToggleSwitch = styled.label`
     width: 2rem;
     height: 1rem;
     border-radius: 1rem;
-    background-color: var(--color-ui-primary);
-    border: 1px solid var(--color-ui-border);
+    background-color: var(--bg-lightest);
+    border: 1px solid var(--color-border);
     transition: background-color 0.2s, border-color 0.2s;
 
     &:checked {

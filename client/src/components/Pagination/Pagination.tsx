@@ -6,16 +6,16 @@ const PageItem = styled.li`
     padding: var(--padding-sm) var(--padding-xs);
     margin-top: 4px;
 
-    background-color: var(--color-ui-primary);
+    background-color: var(--bg-dark);
     color: var(--color-text-primary);
-    border: 1px solid var(--color-ui-border) !important;
+    border: 1px solid var(--color-border) !important;
     cursor: pointer;
     width: var(--space-xxxl);
     text-align: center;
     border: none;
 
     &:hover {
-      background-color: var(--hilite-ui-primary);
+      background-color: var(--bg-medium);
     }
 
     &:focus {
@@ -29,12 +29,13 @@ const PageItem = styled.li`
   }
 
   &.active .page-link {
-    background-color: var(--color-brand-primary);
+    background-color: var(--color-active-pagination-bg) !important;
+    border-color: var(--color-active-pagination-border) !important;
     color: var(--color-text-primary);
   }
 
   &.active .page-link:hover {
-    background-color: var(--color-brand-primary);
+    background-color: var(--bg-lightest);
   }
   /* 👇 First and last child selectors */
   &:first-child .page-link {
@@ -50,8 +51,8 @@ const PageItem = styled.li`
     width: 10px;
     height: 42px; /* Match the height of regular pagination */
     display: inline-block;
-    background-color: var(--color-ui-primary);
-    border: 1px solid var(--color-ui-border);
+    background-color: var(--bg-dark);
+    border: 1px solid var(--color-border);
     pointer-events: none;
     padding: 0;
     margin: 0;

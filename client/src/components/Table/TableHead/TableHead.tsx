@@ -19,8 +19,8 @@ type StyledThProps = {
 };
 
 const StyledTh = styled.th<StyledThProps>`
-  background-color: var(--color-ui-primary);
-  border: 1px solid var(--color-ui-border);
+  background-color: var(--bg-dark);
+  border: 1px solid var(--color-border);
   border-left: none !important;
   border-right: none !important;
   color: var(--color-text-primary) !important;
@@ -36,7 +36,7 @@ const StyledTh = styled.th<StyledThProps>`
   font-size: var(--font-md);
 
   &:hover {
-    background-color: var(--hilite-ui-primary);
+    background-color: var(--bg-medium);
   }
 
   width: ${(props) => {
@@ -106,7 +106,7 @@ const StyledArrowDown = styled(ArrowDownIcon)`
 const StyledArrowNeutral = styled(ArrowNeutralIcon)`
   width: 18px;
   height: 18px;
-  fill: var(--color-ui-border) !important;
+  fill: var(--color-text-dim) !important;
 `;
 
 const TableHead = ({ columns, handleSorting, sortField, sortOrder }: TableHeadProps) => {

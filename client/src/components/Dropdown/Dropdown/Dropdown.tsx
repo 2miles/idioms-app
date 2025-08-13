@@ -16,8 +16,8 @@ const DropdownContainer = styled.div<StyleProps>`
   position: relative;
   display: flex;
   user-select: none;
-  border: 1px solid var(--color-ui-border);
-  background-color: var(--color-ui-primary);
+  border: 1px solid var(--color-border);
+  background-color: var(--bg-dark);
   border-radius: var(--radius-sm);
   margin-left: var(--margin-md);
   margin-bottom: var(--margin-md);
@@ -32,22 +32,22 @@ const DropdownContainer = styled.div<StyleProps>`
   ${(props) =>
     props.$variant === 'searchColumn' &&
     css`
-      border: 1px solid var(--color-ui-border) !important;
+      border: 1px solid var(--color-border) !important;
       border-radius: 0px;
       border-bottom-left-radius: 0px;
       border-top-left-radius: 0px;
       border-top-right-radius: var(--radius-xl);
       border-bottom-right-radius: var(--radius-xl);
-      background-color: var(--color-ui-primary);
+      background-color: var(--bg-dark);
       height: 100%;
       margin-right: 0px;
       border-top: none !important;
       border-right: none !important;
       border-bottom: none !important;
-      border-left: 2px solid var(--color-ui-border);
+      border-left: 2px solid var(--color-border);
     `}
   &:active {
-    background-color: var(--hilite-ui-primary);
+    background-color: var(--bg-light);
   }
 `;
 
@@ -59,17 +59,41 @@ const Anchor = styled.button`
   height: 38px;
 `;
 
+// const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
+//   border: 1px solid var(--color-ui-border) !important;
+//   display: ${(props) => (props.$visible ? 'block' : 'none')};
+//   position: absolute;
+//   top: calc(100% + 5px);
+//   right: 0;
+//   background-color: var(--color-ui-primary);
+//   border-radius: var(--radius-sm);
+//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+//   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 4px 10px rgba(0, 0, 0, 0.12);
+//   z-index: 4;
+//   padding: 0;
+//   list-style: none;
+// `;
 const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
+  border: 1px solid var(--color-border) !important;
   display: ${(props) => (props.$visible ? 'block' : 'none')};
   position: absolute;
   top: calc(100% + 5px);
   right: 0;
-  background-color: var(--color-ui-primary);
+  background-color: var(--bg-medium);
   border-radius: var(--radius-sm);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  /* Default light mode shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.156), 0 2px 5px rgba(0, 0, 0, 0.101);
+
   z-index: 4;
   padding: 0;
   list-style: none;
+
+  /* Dark mode override */
+  .theme-dark & {
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.06), /* light glow */ 0 2px 4px rgba(0, 0, 0, 0.3); /* deeper dark edge */
+  }
 `;
 
 const Option = styled.li.attrs({ role: 'option' })`
@@ -77,7 +101,7 @@ const Option = styled.li.attrs({ role: 'option' })`
   cursor: pointer;
 
   &:hover {
-    background-color: var(--hilite-ui-primary);
+    background-color: var(--bg-light);
   }
 `;
 

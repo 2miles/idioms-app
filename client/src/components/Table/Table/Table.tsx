@@ -14,8 +14,8 @@ export const StyledTable = styled.table`
   overflow: hidden !important;
   border-collapse: separate;
   border-spacing: 0;
-  border-right: 1px solid var(--color-ui-border) !important;
-  border-left: 1px solid var(--color-ui-border) !important;
+  border-right: 1px solid var(--color-border) !important;
+  border-left: 1px solid var(--color-border) !important;
   margin-bottom: var(--margin-md);
 `;
 

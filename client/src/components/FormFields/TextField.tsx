@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 
 const StyledInput = styled.input`
+  border-color: var(--color-border) !important;
+  background-color: var(--bg-medium) !important;
+  color: var(--color-text-primary) !important;
   &::placeholder {
-    color: var(--dim-text-secondary);
+    color: var(--color-text-dim);
   }
 `;
 
