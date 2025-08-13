@@ -9,16 +9,44 @@ declare global {
   }
 }
 
+const decodeSub = (jwt?: string | null) => {
+  if (!jwt) return null;
+  try {
+    return JSON.parse(atob(jwt.split('.')[1]))?.sub ?? null;
+  } catch {
+    return null;
+  }
+};
+
 export function useTheme({ token, apiBase }: UseThemeOpts) {
   const [theme, setThemeState] = useState<Theme>(() => getLocalChoice());
   const [loading, setLoading] = useState(false);
 
-  // Apply whenever local choice changes
+  // On login, apply locally cached theme for this user immediately
+  // to prevent a flash of the default theme before server settings load.
+  useEffect(() => {
+    if (!token) return;
+
+    const sub = decodeSub(token);
+    if (!sub) return;
+
+    const nsKey = `theme-choice:${sub}`;
+    const cached = localStorage.getItem(nsKey) as Theme | null;
+
+    if (cached === 'light' || cached === 'dark' || cached === 'system') {
+      setThemeState(cached);
+      applyTheme(cached);
+      localStorage.setItem('theme-choice', cached);
+    }
+  }, [token]);
+
+  // Apply the current theme choice to the document whenever it changes.
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
-  // Hydrate from server if we have a token
+  // Fetch saved theme from the server after login.
+  // If successful, update both state and localStorage.
   useEffect(() => {
     if (!token || !apiBase) return;
     let cancelled = false;
@@ -49,7 +77,7 @@ export function useTheme({ token, apiBase }: UseThemeOpts) {
     };
   }, [token, apiBase]);
 
-  // Public setter: local + apply + (optional) server persist
+  // Update theme locally and persist to server if logged in.
   const setTheme = useCallback(
     (t: Theme) => {
       setLocalChoice(t);
