@@ -61,6 +61,7 @@ const ColumnDropdown = ({
       options={options}
       closeOnSelect={false}
       hideOnSmallScreen={true}
+      hideOnSmallestScreen={true}
       ariaLabel='Column Visibility'
     />
   );

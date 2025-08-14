@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import ArrowUpIcon from '@/images/arrow-up.svg?react';
@@ -8,13 +8,15 @@ type DropdownVariantType = 'searchColumn';
 
 type StyleProps = {
   $hideOnSmallScreen?: boolean;
+  $hideOnSmallestScreen?: boolean;
   $variant?: DropdownVariantType;
   $visible?: boolean;
 };
 
 const DropdownContainer = styled.div<StyleProps>`
   position: relative;
-  display: flex;
+  // display: flex;
+  display: inline-flex;
   user-select: none;
   border: 1px solid var(--color-border);
   background-color: var(--bg-dark);
@@ -24,9 +26,13 @@ const DropdownContainer = styled.div<StyleProps>`
   padding: 0px var(--padding-ms);
   padding-right: var(--padding-sm);
   align-items: center;
+  height: 41px;
 
   @media (max-width: 780px) {
-    display: ${(props) => (props.$hideOnSmallScreen ? 'none' : 'flex')};
+    display: ${(props) => (props.$hideOnSmallScreen ? 'none' : 'inline-flex')};
+  }
+  @media (max-width: 390px) {
+    display: ${(props) => (props.$hideOnSmallestScreen ? 'none' : 'inline-flex')};
   }
 
   ${(props) =>
@@ -119,8 +125,9 @@ const IconWrapper = styled.span`
 `;
 
 type DropdownProps = {
-  label: string;
+  label: ReactNode;
   hideOnSmallScreen?: boolean;
+  hideOnSmallestScreen?: boolean;
   options: (string | JSX.Element)[];
   closeOnSelect?: boolean;
   onOptionClick?: (option: string | JSX.Element) => void;
@@ -130,7 +137,8 @@ type DropdownProps = {
 
 const Dropdown = ({
   label,
-  hideOnSmallScreen,
+  hideOnSmallScreen = false,
+  hideOnSmallestScreen = false,
   options,
   closeOnSelect = false,
   onOptionClick,
@@ -164,7 +172,12 @@ const Dropdown = ({
   const handleLabelClick = () => setIsOpen((prev) => !prev);
 
   return (
-    <DropdownContainer $hideOnSmallScreen={hideOnSmallScreen} ref={dropdownRef} $variant={variant}>
+    <DropdownContainer
+      $hideOnSmallScreen={hideOnSmallScreen}
+      $hideOnSmallestScreen={hideOnSmallestScreen}
+      ref={dropdownRef}
+      $variant={variant}
+    >
       <Anchor
         onClick={handleLabelClick}
         aria-expanded={isOpen}
