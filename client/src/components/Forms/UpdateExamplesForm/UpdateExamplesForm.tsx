@@ -8,7 +8,7 @@ import TextAreaField from '@/components/FormFields/TextAreaField';
 import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
-  background-color: var(--color-canvas);
+  background-color: var(--bg-dark);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
   padding-right: var(--padding-lg);

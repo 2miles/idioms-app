@@ -10,8 +10,7 @@ import LogoutButton from '@/components/LogoutButton';
 import { useUser } from '@/context/userContext';
 
 const NavBarWrapper = styled.nav`
-  background-color: var(--color-black);
-  color: var(--color-text-inverted);
+  background-color: var(--bg-nav);
   padding: var(--padding-xs) var(--padding-md);
   width: 100%;
   z-index: 1000;
@@ -42,14 +41,14 @@ const NavbarLinks = styled.div<NavbarLinksProps>`
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: var(--color-black);
+    background-color: var(--bg-nav);
     flex-direction: column;
     width: 100%;
     display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
     gap: 0;
     a {
       padding: 1rem;
-      border-bottom: 1px solid var(--color-ui-border);
+      border-bottom: 1px solid var(--color-border);
     }
   }
 `;

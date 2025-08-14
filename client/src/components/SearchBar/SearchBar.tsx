@@ -27,7 +27,7 @@ const IconContainer = styled.span`
 const Icon = styled(searchIcon)`
   width: 16px;
   height: 16px;
-  color: var(--color-test-primary);
+  color: var(--color-text-primary);
 `;
 
 const Input = styled.input`
@@ -35,7 +35,14 @@ const Input = styled.input`
   padding-left: var(--padding-xxl);
   width: 100%;
   border-radius: var(--radius-xl);
-  border: 1px solid var(--color-ui-border) !important;
+  border: 1px solid var(--color-border) !important;
+  border-color: var(--color-border) !important;
+  background-color: var(--bg-dark) !important;
+  color: var(--color-text-primary) !important;
+
+  &::placeholder {
+    color: var(--color-text-dim);
+  }
 `;
 
 const DropdownWrapper = styled.div`

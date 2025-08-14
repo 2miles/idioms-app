@@ -23,7 +23,7 @@ const ItemsPerPageDropdown = ({ handleItemsPerPageChange }: ItemsPerPageDropdown
       options={options}
       onOptionClick={handleOptionClick}
       closeOnSelect={true}
-      hideOnSmallScreen={false}
+      hideOnSmallestScreen={true}
       ariaLabel='Items per page'
     />
   );

@@ -20,7 +20,10 @@ import { useDebounce } from '@/hooks/useDebounce';
 const StyledRestoreIcon = styled(RestoreIcon)`
   width: 22px;
   height: 22px;
-  margin: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 0px;
+  margin-right: 0px;
 `;
 
 const TableSectionWrapper = styled.div`
@@ -42,65 +45,22 @@ const TableControls = styled.div`
     flex-wrap: wrap;
   }
 
-  .top-right {
-    display: none;
-  }
-
   .bottom-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .bottom-right {
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
     flex-wrap: wrap;
-    justify-content: flex-end;
   }
 
-  @media (max-width: 770px) {
-    .top-right {
-      display: flex;
-    }
-
-    .bottom-right {
-      flex-wrap: wrap;
-    }
-
-    .bottom-right > :first-child {
-      display: none; /* hide column dropdown */
-    }
-
-    .bottom-right > :nth-child(2) {
-      display: none; /* hide duplicate ItemsPerPage */
-    }
-  }
-  .bottom-right > :nth-child(3) {
-    margin-left: var(--margin-md);
-  }
-
-  @media (min-width: 770px) {
-    .top-right {
-      display: none;
-    }
-
-    .bottom-right > :first-child {
-      display: inline-flex; /* show column dropdown */
-    }
-
-    .bottom-right > :nth-child(2) {
-      display: inline-flex; /* show items per page */
-    }
+  .spacer {
+    flex: 1 1 auto;
   }
 `;
 
 const PaginationWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-left: var(--space-xxxl) !important;
+  margin-left: var(--space-md) !important;
 
   @media (min-width: 661px) {
     width: auto;
@@ -122,6 +82,19 @@ const SearchBarWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: var(--margin-sm);
+`;
+
+const RightGroup = styled.div`
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--gap-sm);
+  margin-left: 'auto';
+`;
+
+const LeftGroup = styled.div`
+  display: 'inline-flex';
+  gap: 'var(--gap-sm)';
 `;
 
 const IdiomTableView = () => {
@@ -323,17 +296,17 @@ const IdiomTableView = () => {
       <TableControls>
         <div className='top-row'>
           <ShowingText>{showingText}</ShowingText>
-          <div className='top-right'>
-            <ItemsPerPageDropdown handleItemsPerPageChange={handleLimitChange} />
-          </div>
         </div>
         <div className='bottom-row'>
-          <div className='reset-wrapper'>
-            <SecondaryButton onClick={restoreTable} className='btn btn-secondary'>
-              <StyledRestoreIcon />
-            </SecondaryButton>
-          </div>
-          <div className='bottom-right'>
+          <LeftGroup>
+            <div className='reset-wrapper'>
+              <SecondaryButton onClick={restoreTable} className='btn btn-secondary'>
+                <StyledRestoreIcon />
+              </SecondaryButton>
+            </div>
+          </LeftGroup>
+          <div className='spacer' />
+          <RightGroup>
             <ColumnDropdown
               columnVisibility={columnVisibility}
               handleColumnVisibilityChange={handleColumnVisibilityChange}
@@ -348,7 +321,7 @@ const IdiomTableView = () => {
                 isCompact={isSmallScreen}
               />
             </PaginationWrapper>
-          </div>
+          </RightGroup>
         </div>
       </TableControls>
       <Table

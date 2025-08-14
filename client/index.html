@@ -6,6 +6,32 @@
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Web site created using Vite + React" />
 
+    <script>
+      (function () {
+        // one helper everyone calls
+        window.__applyTheme = function (effective /* 'light'|'dark' */) {
+          const root = document.documentElement;
+          root.classList.remove('theme-light', 'theme-dark');
+          root.classList.add(`theme-${effective}`);
+          root.style.colorScheme = effective;
+          localStorage.setItem('theme', effective);
+        };
+
+        // first paint: use saved choice if any, else system
+        const choice = localStorage.getItem('theme-choice'); // 'light'|'dark'|'system'|null
+        const eff =
+          choice === 'light'
+            ? 'light'
+            : choice === 'dark'
+            ? 'dark'
+            : matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+
+        window.__applyTheme(eff);
+      })();
+    </script>
+
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />

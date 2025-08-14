@@ -8,8 +8,8 @@ import { useUser } from '@/context/userContext';
 const Card = styled.div`
   font-size: var(--font-lg);
   &.card {
-    background: var(--color-ui-primary);
-    border: 1px solid var(--color-ui-border);
+    background: var(--bg-dark);
+    border: 1px solid var(--color-border);
     // font-family: 'Times New Roman', Times, serif;
     overflow: hidden;
     margin-top: var(--margin-xxl);
@@ -17,11 +17,10 @@ const Card = styled.div`
 `;
 
 const CardHeader = styled.div`
-  background-color: var(--color-ui-primary);
-  background-color: #eee;
+  background-color: var(--bg-medium);
 
   color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-ui-border);
+  border-bottom: 1px solid var(--color-border);
 
   h1 {
     // font-size: var(--font-xxl);
@@ -31,10 +30,12 @@ const CardHeader = styled.div`
     padding: var(--padding-md);
     font-weight: bold;
     text-align: center;
+    color: var(--color-text-primary);
   }
 `;
 
 const CardBody = styled.div`
+  color: var(--color-text-secondary);
   padding-left: var(--padding-xxl);
   padding-right: var(--padding-xxl);
 
@@ -71,9 +72,9 @@ const IdiomInfo = styled.div`
   padding-right: var(--padding-lg);
   padding-top: var(--padding-sm);
   padding-bottom: var(--padding-sm);
-  background-color: var(--color-ui-primary);
+  background-color: var(--bg-dark);
   font-size: 1rem;
-  border-bottom: 1px solid var(--color-ui-border);
+  border-bottom: 1px solid var(--color-border);
 `;
 
 const InfoElement = styled.p`
@@ -82,7 +83,7 @@ const InfoElement = styled.p`
 const InfoElementKey = styled.span`
   margin-right: var(--margin-sm);
   font-weight: bold;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 `;
 
 const ExampleItem = styled.li`
@@ -100,8 +101,13 @@ const UpdateExampleButtons = styled.div`
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
   button {
+    background-color: var(--bg-medium);
     margin-left: var(--margin-lg);
     margin-bottom: 0 !important;
+
+    &:hover {
+      background-color: var(--bg-light) !important;
+    }
   }
 `;
 
@@ -109,7 +115,7 @@ const SectionHeader = styled.div`
   margin-bottom: var(--margin-md);
   margin-top: var(--margin-xl);
   h3 {
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
   }
 `;
 

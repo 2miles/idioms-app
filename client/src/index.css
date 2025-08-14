@@ -1,39 +1,4 @@
 :root {
-  /* Base Colors */
-  --color-black: #222;
-  /* Background Colors */
-  --color-canvas: #f2f2f2;
-  /* Brand Colors */
-  --color-brand-primary: #97ffa8;
-  /* Text Colors */
-  --color-text-primary: #383f4d;
-  --color-text-secondary: #555a62;
-  --color-text-inverted: #e2e3e6;
-  /* UI Colors */
-  --color-ui-border: #bbb;
-  --color-ui-primary: #fff;
-  /* Active states */
-  --hilite-ui-primary: #eee;
-  /* Inactive states */
-  --dim-text-primary: #a9b1b9;
-  --dim-text-secondary: #cdd6e0;
-
-  --button-success-bg: #28995f;
-  --button-success-bg-hover: #33bd76;
-  --button-success-border: #4ac786;
-  --button-success-border-hover: #58e99e;
-
-  --button-danger-bg: #b73535;
-  --button-danger-bg-hover: #ed3333;
-  --button-danger-border: #fb7c7c;
-  --button-danger-border-hover: #ff9a9a;
-
-  --button-primary-bg: #2a6bc0;
-  --button-primary-bg-hover: #2b81f1;
-  --button-primary-border: #6babff;
-  --button-primary-border-hover: #97c4ff;
-
-  /* Spacing scale (multiples of base space unit) */
   --space-xxs: 4px;
   --space-xs: 8px;
   --space-sm: 12px;
@@ -43,7 +8,6 @@
   --space-xxl: 32px;
   --space-xxxl: 40px;
 
-  /* Font sizes (modular scale) */
   --font-xs: 0.75rem; /* 12px */
   --font-sm: 0.875rem; /* 14px */
   --font-md: 1rem; /* 16px */
@@ -52,13 +16,11 @@
   --font-xxl: 2rem; /* 32px */
   --font-xxxl: 2.5rem; /* 40px */
 
-  /* Border Radius */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 20px;
 
-  /* Padding and Margin scale */
   --padding-xs: 4px;
   --padding-sm: 8px;
   --padding-ms: 12px;
@@ -76,6 +38,74 @@
   --margin-xxl: 32px;
 }
 
+:root.theme-light {
+  --bg-darkest: hsla(0, 0%, 88%);
+  --bg-dark: hsla(0, 0%, 93%);
+  --bg-medium: hsla(0, 0%, 95%);
+  --bg-light: hsla(0, 0%, 98%);
+  --bg-nav: hsla(0, 0%, 20%);
+
+  --color-border: hsla(0, 0%, 80%);
+
+  --color-brand-primary: #74bacb;
+
+  --color-active-pagination-bg: var(--color-brand-primary);
+  --color-active-pagination-border: var(--color-border);
+
+  --color-text-primary: hsla(0, 0%, 10%);
+  --color-text-secondary: hsla(0, 0%, 30%);
+  --color-text-dim: hsla(0, 0%, 60%);
+
+  --button-success-bg: hsla(154, 50%, 40%);
+  --button-success-bg-hover: hsla(154, 50%, 50%);
+  --button-success-border: hsla(154, 50%, 60%);
+  --button-success-border-hover: hsla(154, 50%, 70%);
+
+  --button-danger-bg: hsla(0, 50%, 40%);
+  --button-danger-bg-hover: hsla(0, 50%, 50%);
+  --button-danger-border: hsla(0, 50%, 60%);
+  --button-danger-border-hover: hsla(0, 50%, 70%);
+
+  --button-primary-bg: hsl(214, 50%, 40%);
+  --button-primary-bg-hover: hsl(214, 50%, 50%);
+  --button-primary-border: hsl(214, 50%, 60%);
+  --button-primary-border-hover: hsl(214, 50%, 70%);
+}
+
+:root.theme-dark {
+  --bg-darkest: hsla(0, 0%, 0%);
+  --bg-dark: hsla(0, 0%, 9%);
+  --bg-medium: hsla(0, 0%, 14%);
+  --bg-light: hsla(0, 0%, 19%);
+  --bg-nav: hsla(0, 0%, 20%);
+
+  --color-border: hsla(0, 0%, 20%);
+
+  --color-brand-primary: #a3d4e0;
+
+  --color-active-pagination-bg: var(--bg-light);
+  --color-active-pagination-border: var(--color-brand-primary);
+
+  --color-text-primary: hsla(0, 0%, 95%);
+  --color-text-secondary: hsla(0, 0%, 75%);
+  --color-text-dim: hsla(0, 0%, 40%);
+
+  --button-success-bg: hsla(154, 50%, 20%);
+  --button-success-bg-hover: hsla(154, 50%, 25%);
+  --button-success-border: hsla(154, 50%, 30%);
+  --button-success-border-hover: hsla(154, 50%, 35%);
+
+  --button-danger-bg: hsla(0, 50%, 20%);
+  --button-danger-bg-hover: hsla(0, 50%, 25%);
+  --button-danger-border: hsla(0, 50%, 30%);
+  --button-danger-border-hover: hsla(0, 50%, 35%);
+
+  --button-primary-bg: hsl(214, 50%, 20%);
+  --button-primary-bg-hover: hsl(214, 50%, 25%);
+  --button-primary-border: hsl(214, 50%, 30%);
+  --button-primary-border-hover: hsl(214, 50%, 35%);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -87,8 +117,12 @@ body {
 }
 
 body {
-  background-color: var(--color-canvas);
-  background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+  background-color: var(--bg-darkest);
+  /* background-image: linear-gradient(
+    45deg,
+    var(--bg-darkest) 0%,
+    var(--color-brand-primary-dark) 100%
+  ); */
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -103,44 +137,3 @@ body {
   display: flex;
   flex-direction: column;
 }
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --color-black: #eee;
-    --color-canvas: #121212;
-
-    --color-brand-primary: #60ff7e;
-
-    --color-text-primary: #e0e0e0;
-    --color-text-inverted: #222;
-
-    --color-ui-border: #555;
-    --color-ui-primary: #1e1e1e;
-
-    --hilite-ui-primary: #2a2a2a;
-
-    --dim-text-primary: #999;
-    --dim-text-secondary: #666;
-
-    --button-success-bg: #197d57;
-    --button-success-bg-hover: #23a36c;
-    --button-success-border: #33c684;
-    --button-success-border-hover: #47e6a0;
-
-    --button-danger-bg: #993030;
-    --button-danger-bg-hover: #c53030;
-    --button-danger-border: #ff7070;
-    --button-danger-border-hover: #ffa0a0;
-
-    --button-primary-bg: #255ab0;
-    --button-primary-bg-hover: #2c6cf1;
-    --button-primary-border: #5b9bff;
-    --button-primary-border-hover: #89bfff;
-  }
-
-  body {
-    background-color: var(--color-canvas);
-    background-image: none;
-    color: var(--color-text-primary);
-  }
-} */

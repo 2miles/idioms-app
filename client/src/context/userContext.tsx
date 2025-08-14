@@ -1,21 +1,30 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import useAuthToken from '@/hooks/useAuthToken';
+import { useTheme } from '@/hooks/useTheme';
+import { Theme } from '@/utils/theme';
+
 interface UserContextType {
   roles: string[] | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  theme: Theme;
+  setTheme: (t: Theme) => void;
+  toggleTheme: () => void;
+  loadingTheme: boolean;
 }
 
-const defaultContext: UserContextType = {
+const UserContext = createContext<UserContextType>({
   roles: null,
   isAuthenticated: false,
   isAdmin: false,
-};
-
-const UserContext = createContext<UserContextType>(defaultContext);
+  theme: 'system',
+  setTheme: () => {},
+  toggleTheme: () => {},
+  loadingTheme: false,
+});
 export { UserContext };
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
+export function UserProvider({ children }: { children: ReactNode }) {
   const { roles, token } = useAuthToken();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -28,12 +37,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsAdmin(isAuthenticated && roles?.includes('Admin') === true);
   }, [isAuthenticated, roles]);
 
+  const { theme, setTheme, toggleTheme, loading } = useTheme({
+    token,
+    apiBase: import.meta.env.VITE_API_BASE_URL,
+  });
+
   return (
-    <UserContext.Provider value={{ roles, isAuthenticated, isAdmin }}>
+    <UserContext.Provider
+      value={{
+        roles,
+        isAuthenticated,
+        isAdmin,
+        theme,
+        setTheme,
+        toggleTheme,
+        loadingTheme: loading,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
-};
+}
 
-// Custom hook to use the user context data
 export const useUser = () => useContext(UserContext);

@@ -16,28 +16,22 @@ type StyleProps = {
   $accessor: string;
 };
 
-// const StyledTr = styled.tr`
-//   cursor: pointer;
-//   &:hover > td {
-//     background-color: var(--hilite-ui-primary);
-//   }
-// `;
 const StyledTr = styled.tr`
   cursor: pointer;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover > td {
-      background-color: var(--hilite-ui-primary);
+      background-color: var(--bg-medium);
     }
   }
 `;
 
 const StyledTd = styled.td<StyleProps>`
   padding: var(--padding-lg) var(--padding-lg) !important;
-  border-bottom: 1px solid var(--color-ui-border) !important;
+  border-bottom: 1px solid var(--color-border) !important;
   border-left: none !important;
   border-right: none !important;
-  background: var(--color-ui-primary);
+  background: var(--bg-dark);
   color: var(--color-text-primary) !important;
 
   ${(props) =>

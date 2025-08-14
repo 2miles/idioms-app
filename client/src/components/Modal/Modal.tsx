@@ -15,7 +15,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: var(--color-ui-primary);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
@@ -33,20 +33,24 @@ const ModalBody = styled.div`
 `;
 
 const ModalHeader = styled.div`
-  background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+  /* background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+  background-image: linear-gradient(
+    45deg,
+    var(--bg-gradient-start) 0%,
+    var(--bg-gradient-end) 100%
+  ); */
   padding: var(--padding-md);
-  border-bottom: 1px solid var(--color-ui-border);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--bg-medium);
   border-top-left-radius: var(--radius-sm);
   border-top-right-radius: var(--radius-sm);
-  background-color: var(--color-canvas);
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   position: relative;
 `;
 
 const ModalTitle = styled.div`
   padding: 0px var(--padding-sm);
-  margin-right: auto;
   color: var(--color-text-primary);
   font-weight: 500;
   font-size: var(--font-xl);
@@ -54,14 +58,14 @@ const ModalTitle = styled.div`
 
 const CloseButton = styled.button`
   padding: 0 var(--padding-md);
-  background: var(--color-ui-primary);
-  color: var(--color-ui-border);
-  border: 1px solid var(--color-ui-border);
+  background: var(--bg-medium);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-size: var(--font-lg);
   cursor: pointer;
   &:hover {
-    background: var(--hilite-ui-primary);
+    background: var(--bg-light);
   }
 `;
 

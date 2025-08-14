@@ -53,19 +53,19 @@ export const DangerButton = styled(ButtonBase)`
 
 // Secondary button
 export const SecondaryButton = styled(ButtonBase)`
-  background-color: var(--color-ui-primary);
+  background-color: var(--bg-dark);
   color: var(--color-text-primary);
-  border-color: var(--color-ui-border);
+  border-color: var(--color-border);
   margin-bottom: var(--margin-md) !important;
 
   &:hover {
-    background-color: var(--hilite-ui-primary);
-    border-color: var(--color-ui-border);
+    background-color: var(--bg-medium) !important;
+    border-color: var(--color-border);
     color: var(--color-text-primary);
   }
   &:active {
-    background-color: var(--hilite-ui-primary) !important;
-    border-color: var(--color-ui-border) !important;
+    background-color: var(--bg-light) !important;
+    border-color: var(--color-border) !important;
     color: var(--color-text-primary) !important;
   }
 `;

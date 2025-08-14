@@ -17,6 +17,19 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+-- Stores per-user preferences such as dark mode
+CREATE TABLE IF NOT EXISTS public.user_settings (
+    user_id text PRIMARY KEY,
+    theme text NOT NULL CHECK (theme IN ('light','dark','system'))
+);
+
+ALTER TABLE public.user_settings OWNER TO postgres;
+
+-- Optional: seed a test user setting
+-- COPY public.user_settings (user_id, theme) FROM stdin;
+-- auth0|testuserid   dark
+-- \.
+
 CREATE TABLE public.idiom_examples (
     example_id integer NOT NULL,
     idiom_id integer NOT NULL,
