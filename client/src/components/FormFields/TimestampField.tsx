@@ -30,7 +30,7 @@ const StyledDatetime = styled(Datetime)`
   }
 
   .rdtPicker {
-    background-color: var(--bg-light);
+    background-color: var(--bg-medium);
     border: 1px solid var(--color-border);
   }
 
@@ -38,15 +38,19 @@ const StyledDatetime = styled(Datetime)`
     color: var(--color-text-primary);
   }
 
+  /* active selected day */
   .rdtPicker td.rdtActive,
   .rdtPicker td.rdtActive:hover {
     background-color: var(--color-brand-primary);
+    color: var(--color-text-primary);
   }
-  .rdtPicker td:hover,
+
+  /* HOVER: use a darker/lighter surface than the picker bg */
+  .rdtPicker td:hover:not(.rdtActive),
   .rdtPicker .rdtSwitch:hover,
   .rdtPicker .rdtNext:hover,
   .rdtPicker .rdtPrev:hover {
-    background-color: var(--bg-lightest);
+    background-color: var(--bg-light);
     color: var(--color-text-primary);
   }
 `;

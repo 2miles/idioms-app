@@ -114,8 +114,6 @@
   --button-primary-bg-hover: hsl(214, 50%, 25%);
   --button-primary-border: hsl(214, 50%, 30%);
   --button-primary-border-hover: hsl(214, 50%, 35%);
-
-  --link: #8ab4ff;
 }
 
 /* ====== Base / resets ===================================================== */
@@ -153,28 +151,18 @@ body {
   background-attachment: fixed;
 }
 
-/* Links */
-a {
-  color: var(--link) !important;
-}
-
-/* Selection color (nice UX) */
-::selection {
-  background: color-mix(in oklab, var(--color-brand-primary) 35%, transparent);
-}
-
 /* ====== Controls & shells (defensive) ==================================== */
 /* Inputs / buttons / selects / textareas */
-:root.theme-light :where(input, textarea, select, button),
-:root.theme-dark :where(input, textarea, select, button) {
+:root.theme-light :where(input, textarea, select),
+:root.theme-dark :where(input, textarea, select) {
   background-color: var(--bg-medium) !important;
   color: var(--color-text-primary) !important;
   border-color: var(--color-border) !important;
 }
 
 /* Common bordered containers */
-:root.theme-light :where(.form-control, .btn, .card, .dropdown, .rdtPicker),
-:root.theme-dark :where(.form-control, .btn, .card, .dropdown, .rdtPicker) {
+:root.theme-light :where(.form-control, .card, .dropdown, .rdtPicker),
+:root.theme-dark :where(.form-control, .card, .dropdown, .rdtPicker) {
   border-color: var(--color-border) !important;
 }
 
@@ -182,16 +170,6 @@ a {
 :root.theme-light .dropdown,
 :root.theme-dark .dropdown {
   background-color: var(--bg-medium) !important;
-}
-
-/* Focus ring (accessible, theme-aware) */
-:root.theme-light :where(input, textarea, select, button):focus {
-  outline: 2px solid color-mix(in oklab, var(--color-brand-primary) 65%, white);
-  outline-offset: 2px;
-}
-:root.theme-dark :where(input, textarea, select, button):focus {
-  outline: 2px solid color-mix(in oklab, var(--color-brand-primary) 75%, black);
-  outline-offset: 2px;
 }
 
 /* Optional: DateTime picker hover harmonize (you added similar already) */
