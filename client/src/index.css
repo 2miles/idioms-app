@@ -1,6 +1,4 @@
-/* ====== Design scales ===================================================== */
 :root {
-  /* Spacing */
   --space-xxs: 4px;
   --space-xs: 8px;
   --space-sm: 12px;
@@ -10,7 +8,6 @@
   --space-xxl: 32px;
   --space-xxxl: 40px;
 
-  /* Typography */
   --font-xs: 0.75rem; /* 12px */
   --font-sm: 0.875rem; /* 14px */
   --font-md: 1rem; /* 16px */
@@ -19,13 +16,11 @@
   --font-xxl: 2rem; /* 32px */
   --font-xxxl: 2.5rem; /* 40px */
 
-  /* Radius */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 20px;
 
-  /* Padding / Margin */
   --padding-xs: 4px;
   --padding-sm: 8px;
   --padding-ms: 12px;
@@ -43,8 +38,6 @@
   --margin-xxl: 32px;
 }
 
-/* ====== Theme tokens (scoped) ============================================ */
-/* Light */
 :root.theme-light {
   --bg-darkest: hsla(0, 0%, 88%);
   --bg-dark: hsla(0, 0%, 93%);
@@ -77,11 +70,8 @@
   --button-primary-bg-hover: hsl(214, 50%, 50%);
   --button-primary-border: hsl(214, 50%, 60%);
   --button-primary-border-hover: hsl(214, 50%, 70%);
-
-  --link: #2a6bc0;
 }
 
-/* Dark */
 :root.theme-dark {
   --bg-darkest: hsla(0, 0%, 0%);
   --bg-dark: hsla(0, 0%, 9%);
@@ -116,7 +106,6 @@
   --button-primary-border-hover: hsl(214, 50%, 35%);
 }
 
-/* ====== Base / resets ===================================================== */
 * {
   box-sizing: border-box;
 }
@@ -127,62 +116,24 @@ body {
   min-height: 100vh;
 }
 
-/* Defensive base: lock main surfaces/text so browser auto-dark can't override */
-:root.theme-light body,
-:root.theme-dark body {
-  background-color: var(--bg-darkest) !important;
-  color: var(--color-text-primary) !important;
+body {
+  background-color: var(--bg-darkest);
+  /* background-image: linear-gradient(
+    45deg,
+    var(--bg-darkest) 0%,
+    var(--color-brand-primary-dark) 100%
+  ); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
 }
 
-:root.theme-light #root,
-:root.theme-dark #root {
-  background-color: var(--bg-darkest) !important;
+#root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
-/* Body text & font */
-body {
-  line-height: 1.5;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-}
-
-/* ====== Controls & shells (defensive) ==================================== */
-/* Inputs / buttons / selects / textareas */
-:root.theme-light :where(input, textarea, select),
-:root.theme-dark :where(input, textarea, select) {
-  background-color: var(--bg-medium) !important;
-  color: var(--color-text-primary) !important;
-  border-color: var(--color-border) !important;
-}
-
-/* Common bordered containers */
-:root.theme-light :where(.form-control, .card, .dropdown, .rdtPicker),
-:root.theme-dark :where(.form-control, .card, .dropdown, .rdtPicker) {
-  border-color: var(--color-border) !important;
-}
-
-/* Dropdown surface */
-:root.theme-light .dropdown,
-:root.theme-dark .dropdown {
-  background-color: var(--bg-medium) !important;
-}
-
-/* Optional: DateTime picker hover harmonize (you added similar already) */
-.rdtPicker td:hover,
-.rdtPicker td.rdtMonth:hover,
-.rdtPicker td.rdtYear:hover {
-  background-color: var(--bg-light);
-  color: var(--color-text-primary);
-}
-
-/* ====== Page background (subtle gradient optional) ======================= */
-/* Uncomment if you want a gradient:
-body {
-  background-image: linear-gradient(45deg, var(--bg-darkest) 0%, var(--bg-light) 100%);
-}
-*/
