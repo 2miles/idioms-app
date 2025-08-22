@@ -2,18 +2,16 @@ import styled from 'styled-components';
 
 // Base button styles
 const ButtonBase = styled.button`
-  max-height: 40px;
   display: flex;
   align-items: center;
-  gap: 6px; // spacing between icon and text
-  padding: 6px 12px; // optional: define consistent padding
-  border-radius: 8px !important; // optional: define border radius
+  padding: 6px 12px;
+  border-radius: 8px !important;
 `;
 
 // Success button
 export const SuccessButton = styled(ButtonBase)`
   background-color: var(--button-success-bg);
-  border: 1.5px solid;
+  border: 1px solid;
   border-color: var(--button-success-border);
   padding-top: 6px;
   margin: 0px;
@@ -28,7 +26,7 @@ export const SuccessButton = styled(ButtonBase)`
 // Primary button
 export const PrimaryButton = styled(ButtonBase)`
   background-color: var(--button-primary-bg);
-  border: 1.5px solid;
+  border: 1px solid;
   border-color: var(--button-primary-border);
   &:hover {
     border-color: var(--button-primary-border-hover);
@@ -41,7 +39,7 @@ export const PrimaryButton = styled(ButtonBase)`
 // Danger button
 export const DangerButton = styled(ButtonBase)`
   background-color: var(--button-danger-bg);
-  border: 1.5px solid;
+  border: 1px solid;
   border-color: var(--button-danger-border);
   &:hover {
     border-color: var(--button-danger-border-hover);
@@ -53,10 +51,10 @@ export const DangerButton = styled(ButtonBase)`
 
 // Secondary button
 export const SecondaryButton = styled(ButtonBase)`
-  background-color: var(--bg-dark);
+  background-color: var(--bg-dark) !important;
+  border: 1px solid;
   color: var(--color-text-primary);
-  border-color: var(--color-border);
-  margin-bottom: var(--margin-md) !important;
+  border-color: var(--color-border) !important;
 
   &:hover {
     background-color: var(--bg-medium) !important;
