@@ -1,23 +1,27 @@
 import { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { SecondaryButton } from './ButtonStyles';
+import { styled } from 'styled-components';
 
 type LoginButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-const LoginButton: React.FC<LoginButtonProps> = ({ className, ...props }) => {
+const StyledLoginButton = styled(SecondaryButton)`
+  background-color: var(--bg-dark) !important;
+`;
+
+const LoginButton: React.FC<LoginButtonProps> = ({ ...props }) => {
   const { loginWithRedirect, isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
   const handleLoginClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     loginWithRedirect();
   };
 
-  // Fetch the token directly when needed, no need to store it in state
   useEffect(() => {
     const fetchToken = async () => {
-      if (!isAuthenticated || isLoading) return; // wait until the user is authenticated
+      if (!isAuthenticated || isLoading) return;
 
       try {
-        await getAccessTokenSilently(); // Get the access token silently
-        // The token is now available if needed for future API requests
+        await getAccessTokenSilently();
       } catch (error) {
         console.error('Error fetching access token:', error);
       }
@@ -25,13 +29,12 @@ const LoginButton: React.FC<LoginButtonProps> = ({ className, ...props }) => {
 
     fetchToken();
   }, [isAuthenticated, isLoading, getAccessTokenSilently]);
-
   return (
-    <div>
-      <button className={className} onClick={handleLoginClick} {...props}>
+    <>
+      <StyledLoginButton onClick={handleLoginClick} className='btn btn-secondary' {...props}>
         Log In
-      </button>
-    </div>
+      </StyledLoginButton>
+    </>
   );
 };
 
