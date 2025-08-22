@@ -7,6 +7,7 @@ type LoginButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const StyledLoginButton = styled(SecondaryButton)`
   background-color: var(--bg-dark) !important;
+  padding: var(--padding-sm) var(--padding-md);
 `;
 
 const LoginButton: React.FC<LoginButtonProps> = ({ ...props }) => {

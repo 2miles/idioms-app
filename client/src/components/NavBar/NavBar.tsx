@@ -24,6 +24,7 @@ const NavBarWrapper = styled.nav`
   padding-bottom: 0px;
   width: 100%;
   z-index: 1000;
+  height: 68px;
 
   display: flex;
   justify-content: space-between;
