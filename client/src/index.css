@@ -1,4 +1,7 @@
 :root {
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-brand: 'Montserrat', system-ui, sans-serif;
+
   --space-xxs: 4px;
   --space-xs: 8px;
   --space-sm: 12px;
@@ -39,15 +42,15 @@
 }
 
 :root.theme-light {
-  --bg-darkest: hsla(0, 0%, 88%);
-  --bg-dark: hsla(0, 0%, 93%);
-  --bg-medium: hsla(0, 0%, 95%);
-  --bg-light: hsla(0, 0%, 98%);
-  --bg-nav: hsla(0, 0%, 20%);
+  --bg-darkest: hsla(187, 5%, 88%);
+  --bg-dark: hsla(187, 10%, 93%);
+  --bg-medium: hsla(187, 5%, 95%);
+  --bg-light: hsla(187, 5%, 98%);
+  --bg-nav: var(--bg-medium);
 
-  --color-border: hsla(0, 0%, 80%);
+  --color-border: hsla(197, 10%, 80%);
 
-  --color-brand-primary: #74bacb;
+  --color-brand-primary: hsla(187, 74%, 39%, 1);
 
   --color-active-pagination-bg: var(--color-brand-primary);
   --color-active-pagination-border: var(--color-border);
@@ -56,10 +59,15 @@
   --color-text-secondary: hsla(0, 0%, 30%);
   --color-text-dim: hsla(0, 0%, 60%);
 
-  --button-success-bg: hsla(154, 50%, 40%);
+  /* --button-success-bg: hsla(154, 50%, 40%);
   --button-success-bg-hover: hsla(154, 50%, 50%);
   --button-success-border: hsla(154, 50%, 60%);
-  --button-success-border-hover: hsla(154, 50%, 70%);
+  --button-success-border-hover: hsla(154, 50%, 70%); */
+
+  --button-success-bg: hsla(187, 50%, 40%);
+  --button-success-bg-hover: hsla(187, 50%, 50%);
+  --button-success-border: hsla(187, 50%, 60%);
+  --button-success-border-hover: hsla(187, 50%, 70%);
 
   --button-danger-bg: hsla(0, 50%, 40%);
   --button-danger-bg-hover: hsla(0, 50%, 50%);
@@ -70,18 +78,24 @@
   --button-primary-bg-hover: hsl(214, 50%, 50%);
   --button-primary-border: hsl(214, 50%, 60%);
   --button-primary-border-hover: hsl(214, 50%, 70%);
+
+  --button-primary-bg: hsl(187, 50%, 40%);
+  --button-primary-bg-hover: hsl(187, 50%, 50%);
+  --button-primary-border: hsl(187, 50%, 60%);
+  --button-primary-border-hover: hsl(187, 50%, 70%);
 }
 
 :root.theme-dark {
-  --bg-darkest: hsla(0, 0%, 0%);
-  --bg-dark: hsla(0, 0%, 9%);
-  --bg-medium: hsla(0, 0%, 14%);
-  --bg-light: hsla(0, 0%, 19%);
+  --bg-darkest: hsla(187, 3%, 3%);
+  --bg-dark: hsla(187, 4%, 9%);
+  --bg-medium: hsla(187, 7%, 14%);
+  --bg-light: hsla(187, 10%, 19%);
   --bg-nav: hsla(0, 0%, 20%);
+  --bg-nav: var(--bg-medium);
 
-  --color-border: hsla(0, 0%, 20%);
+  --color-border: hsla(187, 10%, 20%);
 
-  --color-brand-primary: #a3d4e0;
+  --color-brand-primary: hsla(187, 74%, 39%, 1);
 
   --color-active-pagination-bg: var(--bg-light);
   --color-active-pagination-border: var(--color-brand-primary);
@@ -90,20 +104,30 @@
   --color-text-secondary: hsla(0, 0%, 75%);
   --color-text-dim: hsla(0, 0%, 40%);
 
-  --button-success-bg: hsla(154, 50%, 20%);
+  /* --button-success-bg: hsla(154, 50%, 20%);
   --button-success-bg-hover: hsla(154, 50%, 25%);
   --button-success-border: hsla(154, 50%, 30%);
-  --button-success-border-hover: hsla(154, 50%, 35%);
+  --button-success-border-hover: hsla(154, 50%, 35%); */
+
+  --button-success-bg: hsla(187, 50%, 20%);
+  --button-success-bg-hover: hsla(187, 50%, 25%);
+  --button-success-border: hsla(187, 50%, 30%);
+  --button-success-border-hover: hsla(187, 50%, 35%);
 
   --button-danger-bg: hsla(0, 50%, 20%);
   --button-danger-bg-hover: hsla(0, 50%, 25%);
   --button-danger-border: hsla(0, 50%, 30%);
   --button-danger-border-hover: hsla(0, 50%, 35%);
 
-  --button-primary-bg: hsl(214, 50%, 20%);
+  /* --button-primary-bg: hsl(214, 50%, 20%);
   --button-primary-bg-hover: hsl(214, 50%, 25%);
   --button-primary-border: hsl(214, 50%, 30%);
-  --button-primary-border-hover: hsl(214, 50%, 35%);
+  --button-primary-border-hover: hsl(214, 50%, 35%); */
+
+  --button-primary-bg: hsl(187, 50%, 20%);
+  --button-primary-bg-hover: hsl(187, 50%, 25%);
+  --button-primary-border: hsl(187, 50%, 30%);
+  --button-primary-border-hover: hsl(187, 50%, 35%);
 }
 
 * {
@@ -129,7 +153,7 @@ body {
 
   color: var(--color-text-primary);
   line-height: 1.5;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
 }
 
 #root {
