@@ -31,6 +31,7 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [prevId, setPrevId] = useState<number | undefined>();
   const [nextId, setNextId] = useState<number | undefined>();
+  const [currentRow, setCurrentRow] = useState<number | undefined>();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
@@ -49,7 +50,6 @@ const DetailPage = () => {
     }
   };
 
-  // Fetch adjacent IDs based on the same list params (sort/search/etc.)
   const fetchAdjacentIds = async () => {
     if (!id) return;
 
@@ -63,9 +63,10 @@ const DetailPage = () => {
       };
 
       const res = await publicIdiomFinder.get('/adjacent', { params });
-      const { prevId, nextId } = res.data.data ?? {};
+      const { prevId, nextId, currentRow } = res.data.data ?? {};
       setPrevId(prevId ?? undefined);
       setNextId(nextId ?? undefined);
+      setCurrentRow(currentRow ?? undefined);
     } catch (err) {
       console.error('Failed to fetch adjacent idiom ids:', err);
       setPrevId(undefined);
@@ -145,9 +146,14 @@ const DetailPage = () => {
     );
   }
 
-  // helper to preserve list params on links
-  const qs = searchParams.toString();
-  const withQS = (path: string) => (qs ? `${path}?${qs}` : path);
+  const limit = Number(searchParams.get('limit') ?? '20');
+  const currentPage = currentRow
+    ? Math.max(1, Math.ceil(currentRow / limit))
+    : Number(searchParams.get('page') ?? '1');
+
+  const sp = new URLSearchParams(searchParams);
+  sp.set('page', String(currentPage));
+  const backHref = `/?${sp.toString()}`;
 
   return (
     <PageContainer>
@@ -185,8 +191,8 @@ const DetailPage = () => {
       <DetailPageControls
         prevId={prevId}
         nextId={nextId}
-        buildHref={(targetId) => withQS(`/idioms/${targetId}`)}
-        backHref={withQS('/')}
+        buildHref={(targetId) => `/idioms/${targetId}?${searchParams.toString()}`}
+        backHref={backHref}
       />
       <DetailCard
         idiom={selectedIdiom}

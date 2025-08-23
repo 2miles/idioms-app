@@ -127,11 +127,12 @@ export function buildAdjacentIdsQuery(
     ordered AS (
       SELECT
         id,
+        ROW_NUMBER() OVER (ORDER BY ${col} ${dir}, id DESC) AS row_num,
         LAG(id)  OVER (ORDER BY ${col} ${dir}, id DESC) AS prev_id,
         LEAD(id) OVER (ORDER BY ${col} ${dir}, id DESC) AS next_id
       FROM base
     )
-    SELECT prev_id, next_id
+    SELECT prev_id, next_id, row_num AS current_row
     FROM ordered
     WHERE id = $${idParamIndex};
   `;

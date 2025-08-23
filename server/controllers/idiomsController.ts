@@ -109,6 +109,7 @@ export async function getAdjacentIdioms(req: Request, res: Response): Promise<vo
       data: {
         prevId: row?.prev_id ?? null,
         nextId: row?.next_id ?? null,
+        currentRow: row?.current_row ?? null,
       },
     });
   } catch (error) {
