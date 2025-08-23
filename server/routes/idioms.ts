@@ -8,6 +8,7 @@ import {
   createExample,
   updateExamples,
   deleteExample,
+  getAdjacentIdioms,
 } from '../controllers/idiomsController.js';
 
 import { jwtCheck, checkRole } from '../authMiddleware.js';
@@ -16,7 +17,8 @@ const idiomsRouter = express.Router();
 
 // Public
 idiomsRouter.get('/', getAllIdioms);
-idiomsRouter.get('/:id', getSingleIdiomWithExamples);
+idiomsRouter.get('/adjacent', getAdjacentIdioms);
+idiomsRouter.get('/:id(\\d+)', getSingleIdiomWithExamples);
 
 // // Protected
 idiomsRouter.post('/', jwtCheck, checkRole('Admin'), createIdiom);

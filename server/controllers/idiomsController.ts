@@ -4,6 +4,7 @@ import {
   buildIdiomsQuery,
   buildIdiomWithPositionQuery,
   buildTotalCountQuery,
+  buildAdjacentIdsQuery,
 } from '../queries/idioms.js';
 import { getSearchClauses } from '../utils/searchUtils.js';
 
@@ -55,6 +56,63 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     console.error('Error executing paginated idioms query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+export async function getAdjacentIdioms(req: Request, res: Response): Promise<void> {
+  try {
+    // Required
+    const idRaw = req.query.id;
+    const id = Number(idRaw);
+    if (!id || Number.isNaN(id)) {
+      res.status(400).json({ error: 'Missing or invalid id' });
+      return;
+    }
+
+    // Validate searchColumn (match your list constraints)
+    const allowedColumns = ['title', 'contributor', 'general'];
+    const rawSearchColumn = (req.query.searchColumn as string) || 'title';
+    const searchColumn = rawSearchColumn === 'general' ? 'title_general' : rawSearchColumn;
+    if (!allowedColumns.includes(searchColumn)) {
+      res.status(400).json({ error: 'Invalid search column' });
+      return;
+    }
+
+    // Validate sort field/order (match your list constraints)
+    const allowedSortFields = ['position', 'timestamps', 'title', 'definition', 'contributor'];
+    const sortField = (req.query.sortField as string) || 'timestamps';
+    const sortOrder = (req.query.sortOrder as string) || 'desc';
+    if (!allowedSortFields.includes(sortField)) {
+      res.status(400).json({ error: 'Invalid sort field' });
+      return;
+    }
+    if (!['asc', 'desc'].includes(sortOrder)) {
+      res.status(400).json({ error: 'Invalid sort order' });
+      return;
+    }
+
+    // Optional search
+    const search = (req.query.search as string) || '';
+    const { searchWords, whereClause, whereValues } = getSearchClauses(search, searchColumn);
+    const hasSearch = searchWords.length > 0;
+
+    // Build query. We need the placeholder for `id` to be after all whereValues.
+    const idParamIndex = whereValues.length + 1;
+    const sql = buildAdjacentIdsQuery(hasSearch, whereClause, sortField, sortOrder, idParamIndex);
+
+    const result = await pool.query(sql, [...whereValues, id]);
+    const row = result.rows[0];
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        prevId: row?.prev_id ?? null,
+        nextId: row?.next_id ?? null,
+      },
+    });
+  } catch (error) {
+    console.error('Error computing adjacent idioms:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
