@@ -9,6 +9,11 @@ type DetailPageControlsProps = {
   backHref: string;
 };
 
+const ControlBar = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 const ControlsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -16,15 +21,18 @@ const ControlsWrapper = styled.div`
   margin-top: 2rem;
 `;
 
-const CenterButtonWrapper = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+const NavControls = styled.div`
+  display: flex;
 `;
 
-const ControlBar = styled.div`
-  position: relative;
-  width: 100%;
+const PrevButton = styled(SecondaryButton)`
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+`;
+const NextButton = styled(SecondaryButton)`
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-left: none !important;
 `;
 
 const ButtonLink = styled(Link)`
@@ -35,28 +43,27 @@ const DetailPageControls = ({ prevId, nextId, buildHref, backHref }: DetailPageC
   return (
     <ControlBar>
       <ControlsWrapper>
-        {prevId ? (
-          <ButtonLink to={buildHref(prevId)}>
-            <SecondaryButton>← Prev</SecondaryButton>
-          </ButtonLink>
-        ) : (
-          <span />
-        )}
-
-        {nextId ? (
-          <ButtonLink to={buildHref(nextId)}>
-            <SecondaryButton>Next →</SecondaryButton>
-          </ButtonLink>
-        ) : (
-          <span />
-        )}
-      </ControlsWrapper>
-
-      <CenterButtonWrapper>
         <ButtonLink to={backHref}>
-          <SecondaryButton>Back to List</SecondaryButton>
+          <SecondaryButton>Idiom List</SecondaryButton>
         </ButtonLink>
-      </CenterButtonWrapper>
+        <NavControls>
+          {prevId ? (
+            <ButtonLink to={buildHref(prevId)}>
+              <PrevButton>← Prev</PrevButton>
+            </ButtonLink>
+          ) : (
+            <span />
+          )}
+
+          {nextId ? (
+            <ButtonLink to={buildHref(nextId)}>
+              <NextButton>Next →</NextButton>
+            </ButtonLink>
+          ) : (
+            <span />
+          )}
+        </NavControls>
+      </ControlsWrapper>
     </ControlBar>
   );
 };
