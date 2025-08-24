@@ -54,8 +54,13 @@ jobs:
           EOF
 
       - name: Install server dependencies
-        run: npm ci
         working-directory: server
+        run: |
+          for i in 1 2 3; do
+            echo "npm ci attempt $i..."
+            npm ci --no-audit --no-fund && break
+            sleep 10
+          done
 
       - name: Reset and seed test DB
         run: ./server/scripts/resetTestDb.ci.sh
@@ -63,8 +68,13 @@ jobs:
           DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
 
       - name: Install client dependencies
-        run: npm ci
         working-directory: client
+        run: |
+          for i in 1 2 3; do
+            echo "npm ci attempt $i..."
+            npm ci --no-audit --no-fund && break
+            sleep 10
+          done
 
       - name: Install Playwright (browsers + CLI)
         run: npx playwright install --with-deps

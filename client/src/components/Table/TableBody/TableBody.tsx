@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -65,9 +65,13 @@ type TableBodyProps = {
 
 const TableBody = ({ tableData, columns }: TableBodyProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleRowClick = (id: number) => {
-    navigate(`/idioms/${id}`);
+    navigate({
+      pathname: `/idioms/${id}`,
+      search: location.search,
+    });
   };
 
   return (

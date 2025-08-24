@@ -199,12 +199,13 @@ const IdiomTableView = () => {
 
   const onSearchTermChange = (term: string) => {
     setSearchTerm(term);
+    setCurrentPage(1);
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set('search', term);
+      params.set('page', '1');
       return params;
     });
-    setCurrentPage(1);
   };
 
   const onSearchColumnChange = (column: SearchColumnAccessors) => {
@@ -229,6 +230,7 @@ const IdiomTableView = () => {
 
   const handleLimitChange = (newLimit: number) => {
     setItemsPerPage(newLimit);
+    setCurrentPage(1);
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set('page', '1');

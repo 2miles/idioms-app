@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 import { ThreeDots } from 'react-loader-spinner';
@@ -13,6 +13,7 @@ import DetailCard from '@/components/DetailCard/DetailCard';
 import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
+import DetailPageControls from '@/components/DetailPageControls';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -23,9 +24,15 @@ const SpinnerWrapper = styled.div`
 
 const DetailPage = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const { deleteIdiom } = useContext(IdiomsContext);
+
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
+  const [prevId, setPrevId] = useState<number | undefined>();
+  const [nextId, setNextId] = useState<number | undefined>();
+  const [currentRow, setCurrentRow] = useState<number | undefined>();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
@@ -40,6 +47,30 @@ const DetailPage = () => {
       console.error('Failed to fetch idiom detail:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAdjacentIds = async () => {
+    if (!id) return;
+
+    try {
+      const params = {
+        id: Number(id),
+        sortField: searchParams.get('sortField') ?? 'timestamps',
+        sortOrder: searchParams.get('sortOrder') ?? 'desc',
+        search: searchParams.get('search') ?? '',
+        searchColumn: searchParams.get('column') ?? '',
+      };
+
+      const res = await publicIdiomFinder.get('/adjacent', { params });
+      const { prevId, nextId, currentRow } = res.data.data ?? {};
+      setPrevId(prevId ?? undefined);
+      setNextId(nextId ?? undefined);
+      setCurrentRow(currentRow ?? undefined);
+    } catch (err) {
+      console.error('Failed to fetch adjacent idiom ids:', err);
+      setPrevId(undefined);
+      setNextId(undefined);
     }
   };
 
@@ -68,7 +99,8 @@ const DetailPage = () => {
         showConfirmButton: false,
       });
 
-      navigate('/');
+      // Go back to the list, preserving the user’s list params
+      navigate(`/?${searchParams.toString()}`);
     } catch (err) {
       console.error('Error deleting idiom:', err);
       Swal.fire({
@@ -91,8 +123,14 @@ const DetailPage = () => {
   }, []);
 
   useEffect(() => {
+    // setLoading(true);
     fetchIdiom();
   }, [id]);
+
+  useEffect(() => {
+    fetchAdjacentIds();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, searchParams.toString()]);
 
   if (loading || !selectedIdiom) {
     return (
@@ -107,6 +145,15 @@ const DetailPage = () => {
       </SpinnerWrapper>
     );
   }
+
+  const limit = Number(searchParams.get('limit') ?? '20');
+  const currentPage = currentRow
+    ? Math.max(1, Math.ceil(currentRow / limit))
+    : Number(searchParams.get('page') ?? '1');
+
+  const sp = new URLSearchParams(searchParams);
+  sp.set('page', String(currentPage));
+  const backHref = `/?${sp.toString()}`;
 
   return (
     <PageContainer>
@@ -140,6 +187,13 @@ const DetailPage = () => {
           />
         )}
       </Modal>
+      {/* Pass prev/next plus the list query string so links preserve state */}
+      <DetailPageControls
+        prevId={prevId}
+        nextId={nextId}
+        buildHref={(targetId) => `/idioms/${targetId}?${searchParams.toString()}`}
+        backHref={backHref}
+      />
       <DetailCard
         idiom={selectedIdiom}
         openAddExampleModal={openAddExampleModal}
