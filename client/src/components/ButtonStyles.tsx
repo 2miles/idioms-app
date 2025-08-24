@@ -6,6 +6,7 @@ const ButtonBase = styled.button`
   align-items: center;
   padding: 6px 12px;
   border-radius: 8px !important;
+  text-decoration: none;
 `;
 
 // Success button
@@ -72,4 +73,5 @@ export default {
   PrimaryButton,
   SecondaryButton,
   DangerButton,
+  SuccessButton,
 };

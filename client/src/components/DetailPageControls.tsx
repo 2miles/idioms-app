@@ -25,43 +25,51 @@ const NavControls = styled.div`
   display: flex;
 `;
 
-const PrevButton = styled(SecondaryButton)`
-  border-top-right-radius: 0px !important;
-  border-bottom-right-radius: 0px !important;
+const NavButton = styled(SecondaryButton)<{ $disabled?: boolean }>`
+  color: ${({ $disabled }) => ($disabled ? 'var(--color-text-dim)' : 'inherit')};
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  pointer-events: ${({ $disabled }) => ($disabled ? 'none' : 'auto')};
+  opacity: ${({ $disabled }) => ($disabled ? 0.8 : 1)};
 `;
-const NextButton = styled(SecondaryButton)`
-  border-top-left-radius: 0px !important;
-  border-bottom-left-radius: 0px !important;
+
+const PrevButton = styled(NavButton)`
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+`;
+
+const NextButton = styled(NavButton)`
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
   border-left: none !important;
 `;
 
-const ButtonLink = styled(Link)`
-  text-decoration: none;
-`;
-
 const DetailPageControls = ({ prevId, nextId, buildHref, backHref }: DetailPageControlsProps) => {
+  const prevDisabled = !prevId;
+  const nextDisabled = !nextId;
+
   return (
     <ControlBar>
       <ControlsWrapper>
-        <ButtonLink to={backHref}>
-          <SecondaryButton>Idiom List</SecondaryButton>
-        </ButtonLink>
+        <SecondaryButton as={Link} to={backHref}>
+          Idiom List
+        </SecondaryButton>
         <NavControls>
-          {prevId ? (
-            <ButtonLink to={buildHref(prevId)}>
-              <PrevButton>← Prev</PrevButton>
-            </ButtonLink>
-          ) : (
-            <span />
-          )}
-
-          {nextId ? (
-            <ButtonLink to={buildHref(nextId)}>
-              <NextButton>Next →</NextButton>
-            </ButtonLink>
-          ) : (
-            <span />
-          )}
+          <PrevButton
+            as={prevDisabled ? 'button' : Link}
+            to={prevDisabled ? undefined : buildHref(prevId!)}
+            aria-disabled={prevDisabled}
+            $disabled={prevDisabled}
+          >
+            ← Prev
+          </PrevButton>
+          <NextButton
+            as={nextDisabled ? 'button' : Link}
+            to={nextDisabled ? undefined : buildHref(nextId!)}
+            aria-disabled={nextDisabled}
+            $disabled={nextDisabled}
+          >
+            Next →
+          </NextButton>
         </NavControls>
       </ControlsWrapper>
     </ControlBar>
