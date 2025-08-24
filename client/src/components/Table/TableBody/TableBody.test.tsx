@@ -71,6 +71,7 @@ describe('TableBody', () => {
     );
 
     fireEvent.click(screen.getByText('Break the ice'));
-    expect(mockNavigate).toHaveBeenCalledWith('/idioms/1');
+
+    expect(mockNavigate).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/idioms/1' }));
   });
 });
