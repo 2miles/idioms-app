@@ -14,6 +14,7 @@ import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import DetailPageControls from '@/components/DetailPageControls';
+import { buildAdjacentParams } from '@/utils/listParams';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -55,19 +56,11 @@ const DetailPage = () => {
   };
 
   const fetchAdjacentIds = async () => {
-    if (!id) {
-      console.warn('[adjacent] skipped: no id yet');
-      return;
-    }
+    if (!id) return;
 
     try {
-      const params = {
-        id: Number(id),
-        sortField: searchParams.get('sortField') ?? 'timestamps',
-        sortOrder: searchParams.get('sortOrder') ?? 'desc',
-        search: searchParams.get('search') ?? '',
-        searchColumn: searchParams.get('searchColumn') ?? 'title',
-      };
+      const params = buildAdjacentParams(id, searchParams);
+      if (!params) return;
 
       const res = await publicIdiomFinder.get('/adjacent', { params });
       console.log('adjacent payload', res.data?.data);
