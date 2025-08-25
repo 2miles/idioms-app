@@ -29,13 +29,17 @@ const DetailPage = () => {
 
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
+
   const [prevId, setPrevId] = useState<number | undefined>();
   const [nextId, setNextId] = useState<number | undefined>();
   const [currentRow, setCurrentRow] = useState<number | undefined>();
 
+  const [backHref, setBackHref] = useState<string>('');
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchIdiom = async () => {
@@ -51,7 +55,10 @@ const DetailPage = () => {
   };
 
   const fetchAdjacentIds = async () => {
-    if (!id) return;
+    if (!id) {
+      console.warn('[adjacent] skipped: no id yet');
+      return;
+    }
 
     try {
       const params = {
@@ -63,20 +70,39 @@ const DetailPage = () => {
       };
 
       const res = await publicIdiomFinder.get('/adjacent', { params });
-      const { prevId, nextId, currentRow } = res.data.data ?? {};
+      console.log('adjacent payload', res.data?.data);
+
+      const { prevId, nextId, currentRow: adjacentRow } = res.data.data ?? {};
       setPrevId(prevId ?? undefined);
       setNextId(nextId ?? undefined);
-      setCurrentRow(currentRow ?? undefined);
+
+      const rowNum = adjacentRow != null ? Number(adjacentRow) : undefined;
+      setCurrentRow(Number.isFinite(rowNum) ? rowNum : undefined);
     } catch (err) {
       console.error('Failed to fetch adjacent idiom ids:', err);
       setPrevId(undefined);
       setNextId(undefined);
+      setCurrentRow(undefined);
     }
   };
 
+  useEffect(() => {
+    const limit = Number(searchParams.get('limit') ?? '20');
+    const urlPage = Number(searchParams.get('page') ?? '1');
+
+    const pageFromRow =
+      Number.isFinite(currentRow) && currentRow! > 0
+        ? Math.max(1, Math.ceil((currentRow as number) / limit))
+        : urlPage;
+
+    const sp = new URLSearchParams(searchParams);
+    sp.set('page', String(pageFromRow));
+    const href = `/?${sp.toString()}`;
+    setBackHref(href);
+  }, [currentRow, searchParams]);
+
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-
     const confirmResult = await Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this idiom!',
@@ -90,7 +116,6 @@ const DetailPage = () => {
 
     try {
       await deleteIdiom(Number(id));
-
       Swal.fire({
         title: 'Deleted!',
         text: 'The idiom has been successfully deleted.',
@@ -98,16 +123,10 @@ const DetailPage = () => {
         timer: 1800,
         showConfirmButton: false,
       });
-
-      // Go back to the list, preserving the user’s list params
       navigate(`/?${searchParams.toString()}`);
     } catch (err) {
       console.error('Error deleting idiom:', err);
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem deleting the idiom.',
-        icon: 'error',
-      });
+      Swal.fire({ title: 'Error', text: 'There was a problem deleting the idiom.', icon: 'error' });
     }
   };
 
@@ -123,7 +142,6 @@ const DetailPage = () => {
   }, []);
 
   useEffect(() => {
-    // setLoading(true);
     fetchIdiom();
   }, [id]);
 
@@ -136,7 +154,7 @@ const DetailPage = () => {
     return (
       <SpinnerWrapper>
         <ThreeDots
-          visible={true}
+          visible
           height='80'
           width='80'
           color='var(--color-brand-primary)'
@@ -145,15 +163,6 @@ const DetailPage = () => {
       </SpinnerWrapper>
     );
   }
-
-  const limit = Number(searchParams.get('limit') ?? '20');
-  const currentPage = currentRow
-    ? Math.max(1, Math.ceil(currentRow / limit))
-    : Number(searchParams.get('page') ?? '1');
-
-  const sp = new URLSearchParams(searchParams);
-  sp.set('page', String(currentPage));
-  const backHref = `/?${sp.toString()}`;
 
   return (
     <PageContainer>
@@ -177,6 +186,7 @@ const DetailPage = () => {
           />
         )}
       </Modal>
+
       <Modal title='Add Example' isOpen={isAddExampleModalOpen} onClose={closeAddExampleModal}>
         {typeof id !== 'undefined' && (
           <AddExampleForm
@@ -187,13 +197,16 @@ const DetailPage = () => {
           />
         )}
       </Modal>
-      {/* Pass prev/next plus the list query string so links preserve state */}
-      <DetailPageControls
-        prevId={prevId}
-        nextId={nextId}
-        buildHref={(targetId) => `/idioms/${targetId}?${searchParams.toString()}`}
-        backHref={backHref}
-      />
+
+      {backHref && (
+        <DetailPageControls
+          prevId={prevId}
+          nextId={nextId}
+          buildHref={(targetId) => `/idioms/${targetId}?${searchParams.toString()}`}
+          backHref={backHref}
+        />
+      )}
+
       <DetailCard
         idiom={selectedIdiom}
         openAddExampleModal={openAddExampleModal}

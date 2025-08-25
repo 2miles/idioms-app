@@ -23,8 +23,8 @@ const onRedirectCallback = (appState?: { returnTo?: string }) => {
 export default function AuthProvider({ children }: Props) {
   return (
     <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+      domain={'dev-pn3ht3m1xyzl7nya.us.auth0.com'}
+      clientId={'1CqdWEkyUXWDasuGa7fEYbrEkqeI1ayo'}
       authorizationParams={{
         redirect_uri: window.location.origin,
         audience: 'https://api.idiomvault.com',
