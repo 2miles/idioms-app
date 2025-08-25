@@ -1,107 +1,31 @@
-import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import {
+  StyledRestoreIcon,
+  TableSectionWrapper,
+  TableControls,
+  PaginationWrapper,
+  ResetButton,
+  ShowingText,
+  SearchBarWrapper,
+  RightGroup,
+  LeftGroup,
+} from './IdiomTableView.styles';
 import { Idiom, ColumnVisibility, ColumnAccessors, SearchColumnAccessors } from '@/types';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Table from '@/components/Table/Table/Table';
 import Pagination from '@/components/Pagination/Pagination';
-import RestoreIcon from '@/images/arrow-restore.svg?react';
 import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
 import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
-import { SecondaryButton } from '../ButtonStyles';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getListStateFromURL } from '@/utils/listParams';
+import { getShowingText } from '@/utils/pagination';
 
 // TODO:
 // Make searchParams setup fully cleaned and abstracted
 //   — it might be worth extracting into a useQueryDefaults() hook eventually.
-
-const StyledRestoreIcon = styled(RestoreIcon)`
-  width: 22px;
-  height: 22px;
-  margin-top: 2px;
-  margin-left: 0px;
-  margin-right: 0px;
-`;
-
-const TableSectionWrapper = styled.div`
-  margin: var(--margin-md) auto var(--margin-xxl);
-  background-color: transparent;
-
-  border-radius: var(--radius-sm);
-`;
-
-const TableControls = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-sm);
-
-  .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .bottom-row {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-sm);
-    flex-wrap: wrap;
-  }
-
-  .spacer {
-    flex: 1 1 auto;
-  }
-`;
-
-const PaginationWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-left: var(--space-md) !important;
-
-  @media (min-width: 661px) {
-    width: auto;
-  }
-`;
-
-const ResetButton = styled(SecondaryButton)`
-  margin-bottom: 11px;
-  border-radius: var(--radius-sm) !important;
-`;
-
-const ShowingText = styled.p`
-  margin-right: auto;
-  white-space: nowrap;
-  font-size: var(--font-md);
-  font-weight: 500;
-  margin-bottom: var(--margin-sm);
-  padding-bottom: var(--padding-sm);
-  color: var(--color-text-primary);
-  opacity: 0.8;
-`;
-
-const SearchBarWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: var(--margin-sm);
-`;
-
-const RightGroup = styled.div`
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: var(--gap-sm);
-  margin-left: 'auto';
-`;
-
-const LeftGroup = styled.div`
-  display: 'inline-flex';
-  gap: 'var(--gap-sm)';
-`;
 
 const IdiomTableView = () => {
   // Hook for URL query parameters
@@ -162,7 +86,7 @@ const IdiomTableView = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    onSearchTermChange(debouncedSearchTerm);
+    handleSearchTermChange(debouncedSearchTerm);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
 
@@ -189,7 +113,7 @@ const IdiomTableView = () => {
     fetchPage();
   }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder, searchParams]);
 
-  const onSearchTermChange = (term: string) => {
+  const handleSearchTermChange = (term: string) => {
     const normalizedSearchTerm = term ?? '';
     if (normalizedSearchTerm === searchTerm) {
       // Keep URL in sync without resetting page
@@ -210,7 +134,7 @@ const IdiomTableView = () => {
     });
   };
 
-  const onSearchColumnChange = (column: SearchColumnAccessors) => {
+  const handleSearchColumnChange = (column: SearchColumnAccessors) => {
     setSearchColumn(column);
     setCurrentPage(1);
     setSearchParams((prev) => {
@@ -259,7 +183,7 @@ const IdiomTableView = () => {
     });
   };
 
-  const restoreTable = () => {
+  const handleRestoreTable = () => {
     const defaultParams = new URLSearchParams();
     defaultParams.set('page', '1');
     defaultParams.set('limit', '20');
@@ -278,10 +202,7 @@ const IdiomTableView = () => {
     setInputValue('');
   };
 
-  const showingStart = (currentPage - 1) * itemsPerPage + 1;
-  const showingEnd = Math.min(currentPage * itemsPerPage, totalCount);
-  const showingText =
-    totalCount === 0 ? '' : `${showingStart}\u2013${showingEnd} of ${totalCount} idioms`;
+  const showingText = getShowingText(currentPage, itemsPerPage, totalCount);
 
   return (
     <TableSectionWrapper>
@@ -290,10 +211,10 @@ const IdiomTableView = () => {
           searchTerm={inputValue}
           searchColumn={searchColumn}
           onSearchTermChange={setInputValue}
-          onSearchColumnChange={onSearchColumnChange}
+          onSearchColumnChange={handleSearchColumnChange}
           onImmediateSearch={(term) => {
             setInputValue(term);
-            onSearchTermChange(term);
+            handleSearchTermChange(term);
           }}
         />
       </SearchBarWrapper>
@@ -305,7 +226,7 @@ const IdiomTableView = () => {
         <div className='bottom-row'>
           <LeftGroup>
             <div className='reset-wrapper'>
-              <ResetButton onClick={restoreTable} className='btn btn-secondary'>
+              <ResetButton onClick={handleRestoreTable} className='btn btn-secondary'>
                 <StyledRestoreIcon />
               </ResetButton>
             </div>
