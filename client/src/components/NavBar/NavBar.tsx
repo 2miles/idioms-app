@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import Avatar from '@/components/Avatar';
+import Avatar from '@/components/NavBar/Avatar';
 import HamburgerIcon from '@/images/hamburger.svg?react';
 import LoginButton from '@/components/NavBar/LoginButton';
 import LogoutButton from '@/components/NavBar/LogoutButton';
