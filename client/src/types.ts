@@ -68,3 +68,12 @@ export const Columns: Column[] = [
   { accessor: 'timestamps', label: 'Day' },
   { accessor: 'contributor', label: 'Owner' },
 ];
+
+export type ListParams = {
+  page: number;
+  limit: number;
+  sortField: ColumnAccessors;
+  sortOrder: 'asc' | 'desc';
+  search: string;
+  searchColumn: SearchColumnAccessors;
+};

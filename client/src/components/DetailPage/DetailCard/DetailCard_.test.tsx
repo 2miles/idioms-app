@@ -1,9 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, test, expect, beforeEach, describe } from 'vitest';
-import DetailCard from '@/components/DetailCard/DetailCard';
+
 import { Idiom } from '@/types';
-import { UserContext } from '@/context/userContext';
-import { suppressConsoleOutput } from '../../../testUtils';
+import { UserContext, UserContextType } from '@/context/userContext';
+import { suppressConsoleOutput } from '../../../../testUtils';
+import DetailCard from './DetailCard';
 
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
@@ -23,10 +24,37 @@ const dummyIdiom: Idiom = {
   examples: [{ example_id: 1, idiom_id: 1, example: 'He told a joke to break the ice.' }],
 };
 
+function makeUserContextMock(overrides: Partial<UserContextType> = {}): UserContextType {
+  return {
+    // minimal sensible defaults
+    roles: [],
+    isAuthenticated: false,
+    isAdmin: false,
+
+    theme: 'light',
+    loadingTheme: false,
+    setTheme: vi.fn(),
+    toggleTheme: vi.fn(),
+
+    // add any other fields your real context exposes
+    // user: null,
+    // login: vi.fn(),
+    // logout: vi.fn(),
+
+    ...overrides,
+  };
+}
+
 function setup(idiom: Idiom = dummyIdiom, roles: string[] = []) {
   const isAdmin = roles.includes('Admin');
+  const ctx = makeUserContextMock({
+    roles,
+    isAuthenticated: true,
+    isAdmin,
+  });
   render(
-    <UserContext.Provider value={{ roles, isAuthenticated: true, isAdmin }}>
+    // <UserContext.Provider value={{ roles, isAuthenticated: true, isAdmin }}>
+    <UserContext.Provider value={ctx}>
       <DetailCard
         idiom={idiom}
         openModal={mockOpenModal}

@@ -9,11 +9,12 @@ import { Idiom } from '@/types';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
 import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
-import DetailCard from '@/components/DetailCard/DetailCard';
+import DetailCard from '@/components/DetailPage/DetailCard/DetailCard';
 import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
-import DetailPageControls from '@/components/DetailPageControls';
+import DetailPageControls from '@/components/DetailPage/DetailPageControls';
+import { usePrevNextNav } from '@/hooks/usePrevNextNav';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -29,13 +30,13 @@ const DetailPage = () => {
 
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
-  const [prevId, setPrevId] = useState<number | undefined>();
-  const [nextId, setNextId] = useState<number | undefined>();
-  const [currentRow, setCurrentRow] = useState<number | undefined>();
+
+  const { prevId, nextId, backHref } = usePrevNextNav(id, searchParams);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchIdiom = async () => {
@@ -50,33 +51,8 @@ const DetailPage = () => {
     }
   };
 
-  const fetchAdjacentIds = async () => {
-    if (!id) return;
-
-    try {
-      const params = {
-        id: Number(id),
-        sortField: searchParams.get('sortField') ?? 'timestamps',
-        sortOrder: searchParams.get('sortOrder') ?? 'desc',
-        search: searchParams.get('search') ?? '',
-        searchColumn: searchParams.get('column') ?? '',
-      };
-
-      const res = await publicIdiomFinder.get('/adjacent', { params });
-      const { prevId, nextId, currentRow } = res.data.data ?? {};
-      setPrevId(prevId ?? undefined);
-      setNextId(nextId ?? undefined);
-      setCurrentRow(currentRow ?? undefined);
-    } catch (err) {
-      console.error('Failed to fetch adjacent idiom ids:', err);
-      setPrevId(undefined);
-      setNextId(undefined);
-    }
-  };
-
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-
     const confirmResult = await Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this idiom!',
@@ -90,7 +66,6 @@ const DetailPage = () => {
 
     try {
       await deleteIdiom(Number(id));
-
       Swal.fire({
         title: 'Deleted!',
         text: 'The idiom has been successfully deleted.',
@@ -98,16 +73,10 @@ const DetailPage = () => {
         timer: 1800,
         showConfirmButton: false,
       });
-
-      // Go back to the list, preserving the user’s list params
       navigate(`/?${searchParams.toString()}`);
     } catch (err) {
       console.error('Error deleting idiom:', err);
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem deleting the idiom.',
-        icon: 'error',
-      });
+      Swal.fire({ title: 'Error', text: 'There was a problem deleting the idiom.', icon: 'error' });
     }
   };
 
@@ -123,20 +92,14 @@ const DetailPage = () => {
   }, []);
 
   useEffect(() => {
-    // setLoading(true);
     fetchIdiom();
   }, [id]);
-
-  useEffect(() => {
-    fetchAdjacentIds();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, searchParams.toString()]);
 
   if (loading || !selectedIdiom) {
     return (
       <SpinnerWrapper>
         <ThreeDots
-          visible={true}
+          visible
           height='80'
           width='80'
           color='var(--color-brand-primary)'
@@ -145,15 +108,6 @@ const DetailPage = () => {
       </SpinnerWrapper>
     );
   }
-
-  const limit = Number(searchParams.get('limit') ?? '20');
-  const currentPage = currentRow
-    ? Math.max(1, Math.ceil(currentRow / limit))
-    : Number(searchParams.get('page') ?? '1');
-
-  const sp = new URLSearchParams(searchParams);
-  sp.set('page', String(currentPage));
-  const backHref = `/?${sp.toString()}`;
 
   return (
     <PageContainer>
@@ -177,6 +131,7 @@ const DetailPage = () => {
           />
         )}
       </Modal>
+
       <Modal title='Add Example' isOpen={isAddExampleModalOpen} onClose={closeAddExampleModal}>
         {typeof id !== 'undefined' && (
           <AddExampleForm
@@ -187,13 +142,16 @@ const DetailPage = () => {
           />
         )}
       </Modal>
-      {/* Pass prev/next plus the list query string so links preserve state */}
-      <DetailPageControls
-        prevId={prevId}
-        nextId={nextId}
-        buildHref={(targetId) => `/idioms/${targetId}?${searchParams.toString()}`}
-        backHref={backHref}
-      />
+
+      {backHref && (
+        <DetailPageControls
+          prevId={prevId}
+          nextId={nextId}
+          buildHref={(targetId) => `/idioms/${targetId}?${searchParams.toString()}`}
+          backHref={backHref}
+        />
+      )}
+
       <DetailCard
         idiom={selectedIdiom}
         openAddExampleModal={openAddExampleModal}
