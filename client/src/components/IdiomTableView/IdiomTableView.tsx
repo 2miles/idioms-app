@@ -12,6 +12,7 @@ import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown'
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import { SecondaryButton } from '../ButtonStyles';
 import { useDebounce } from '@/hooks/useDebounce';
+import { getListStateFromURL } from '@/utils/listParams';
 
 // TODO:
 // Make searchParams setup fully cleaned and abstracted
@@ -106,31 +107,23 @@ const IdiomTableView = () => {
   // Hook for URL query parameters
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // initial state from URL
+  const init = getListStateFromURL(searchParams);
+  const [currentPage, setCurrentPage] = useState(init.page);
+  const [itemsPerPage, setItemsPerPage] = useState(init.limit);
+  const [searchTerm, setSearchTerm] = useState(init.search);
+  const [searchColumn, setSearchColumn] = useState(init.searchColumn);
+  const [sortField, setSortField] = useState(init.sortField);
+  const [sortOrder, setSortOrder] = useState(init.sortOrder);
+
   const [idioms, setIdioms] = useState<Idiom[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-
-  // --- Initial state from URL (one-time only) ---
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const initialLimit = parseInt(searchParams.get('limit') || '20', 10);
-  const initialSearch = searchParams.get('search') || '';
-  const initialSearchColumn =
-    (searchParams.get('searchColumn') as SearchColumnAccessors) || 'title';
-  const initialSortField = (searchParams.get('sortField') as ColumnAccessors) || 'timestamps';
-  const initialSortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc';
-
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [itemsPerPage, setItemsPerPage] = useState(initialLimit);
-  const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [searchColumn, setSearchColumn] = useState<SearchColumnAccessors>(initialSearchColumn);
-  const [sortField, setSortField] = useState<ColumnAccessors>(initialSortField);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initialSortOrder);
 
   const [inputValue, setInputValue] = useState(searchTerm);
   const debouncedSearchTerm = useDebounce(inputValue, 500);
 
   const isSmallScreen = window.innerWidth < 660;
 
-  // State: column visibility
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
     title: true,
@@ -139,49 +132,39 @@ const IdiomTableView = () => {
     contributor: false,
   });
 
+  // Ensure required params exist in URL (once on mount)
   useEffect(() => {
-    onSearchTermChange(debouncedSearchTerm);
-  }, [debouncedSearchTerm]);
+    const defaultParams = getListStateFromURL(searchParams);
+    const updatedParams = new URLSearchParams(searchParams);
 
-  useEffect(() => {
-    const hasPage = searchParams.has('page');
-    const hasLimit = searchParams.has('limit');
-    const hasSortField = searchParams.has('sortField');
-    const hasSortOrder = searchParams.has('sortOrder');
-    const hasSearchColumn = searchParams.has('searchColumn');
-    const hasSearch = searchParams.has('search');
+    // If URL already has values, this won’t change them; otherwise it sets defaults.
+    updatedParams.set('page', String(defaultParams.page));
+    updatedParams.set('limit', String(defaultParams.limit));
+    updatedParams.set('sortField', defaultParams.sortField);
+    updatedParams.set('sortOrder', defaultParams.sortOrder);
+    updatedParams.set('searchColumn', defaultParams.searchColumn);
+    updatedParams.set('search', defaultParams.search);
 
-    if (!hasPage || !hasLimit || !hasSortField || !hasSortOrder || !hasSearchColumn || !hasSearch) {
-      const params = new URLSearchParams(searchParams);
-      if (!hasPage) params.set('page', '1');
-      if (!hasLimit) params.set('limit', '20');
-      if (!hasSortField) params.set('sortField', 'timestamps');
-      if (!hasSortOrder) params.set('sortOrder', 'desc');
-      if (!hasSearchColumn) params.set('searchColumn', 'title');
-      if (!hasSearch) params.set('search', '');
-      setSearchParams(params);
+    if (updatedParams.toString() !== searchParams.toString()) {
+      setSearchParams(updatedParams, { replace: true });
     }
   }, []);
 
   useEffect(() => {
-    const paramColumn = searchParams.get('searchColumn') as SearchColumnAccessors;
-    const paramField = searchParams.get('sortField') as ColumnAccessors;
-    const paramOrder = searchParams.get('sortOrder') as 'asc' | 'desc';
-    const paramPage = parseInt(searchParams.get('page') || '1', 10);
-
-    if (paramColumn && paramColumn !== searchColumn) {
-      setSearchColumn(paramColumn);
-    }
-    if (paramField && paramField !== sortField) {
-      setSortField(paramField);
-    }
-    if (paramOrder && paramOrder !== sortOrder) {
-      setSortOrder(paramOrder);
-    }
-    if (!Number.isNaN(paramPage)) {
-      setCurrentPage(paramPage);
-    }
+    const state = getListStateFromURL(searchParams);
+    setCurrentPage(state.page);
+    setItemsPerPage(state.limit);
+    setSearchTerm(state.search);
+    setSearchColumn(state.searchColumn);
+    setSortField(state.sortField);
+    setSortOrder(state.sortOrder);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  useEffect(() => {
+    onSearchTermChange(debouncedSearchTerm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchTerm]);
 
   useEffect(() => {
     const fetchPage = async () => {
@@ -207,21 +190,21 @@ const IdiomTableView = () => {
   }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder, searchParams]);
 
   const onSearchTermChange = (term: string) => {
-    const trimmed = term ?? '';
-    if (trimmed === searchTerm) {
+    const normalizedSearchTerm = term ?? '';
+    if (normalizedSearchTerm === searchTerm) {
       // Keep URL in sync without resetting page
       setSearchParams((prev) => {
         const params = new URLSearchParams(prev);
-        params.set('search', trimmed);
+        params.set('search', normalizedSearchTerm);
         return params;
       });
       return;
     }
-    setSearchTerm(trimmed);
+    setSearchTerm(normalizedSearchTerm);
     setCurrentPage(1);
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
-      params.set('search', trimmed);
+      params.set('search', normalizedSearchTerm);
       params.set('page', '1');
       return params;
     });
@@ -277,14 +260,15 @@ const IdiomTableView = () => {
   };
 
   const restoreTable = () => {
-    setSearchParams({
-      page: '1',
-      limit: '20',
-      search: '',
-      searchColumn: 'title',
-      sortField: 'timestamps',
-      sortOrder: 'desc',
-    });
+    const defaultParams = new URLSearchParams();
+    defaultParams.set('page', '1');
+    defaultParams.set('limit', '20');
+    defaultParams.set('search', '');
+    defaultParams.set('searchColumn', 'title');
+    defaultParams.set('sortField', 'timestamps');
+    defaultParams.set('sortOrder', 'desc');
+    setSearchParams(defaultParams);
+
     setCurrentPage(1);
     setItemsPerPage(20);
     setSearchTerm('');
