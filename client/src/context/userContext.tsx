@@ -3,7 +3,7 @@ import useAuthToken from '@/hooks/useAuthToken';
 import { useTheme } from '@/hooks/useTheme';
 import { Theme } from '@/utils/theme';
 
-interface UserContextType {
+export interface UserContextType {
   roles: string[] | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
