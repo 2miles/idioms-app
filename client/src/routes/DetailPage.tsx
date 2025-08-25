@@ -14,7 +14,7 @@ import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import DetailPageControls from '@/components/DetailPageControls';
-import { buildAdjacentParams } from '@/utils/listParams';
+import { usePrevNextNav } from '@/hooks/usePrevNextNav';
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -31,11 +31,7 @@ const DetailPage = () => {
   const [selectedIdiom, setSelectedIdiom] = useState<Idiom | undefined>();
   const [loading, setLoading] = useState(true);
 
-  const [prevId, setPrevId] = useState<number | undefined>();
-  const [nextId, setNextId] = useState<number | undefined>();
-  const [currentRow, setCurrentRow] = useState<number | undefined>();
-
-  const [backHref, setBackHref] = useState<string>('');
+  const { prevId, nextId, backHref } = usePrevNextNav(id, searchParams);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
@@ -54,45 +50,6 @@ const DetailPage = () => {
       setLoading(false);
     }
   };
-
-  const fetchAdjacentIds = async () => {
-    if (!id) return;
-
-    try {
-      const params = buildAdjacentParams(id, searchParams);
-      if (!params) return;
-
-      const res = await publicIdiomFinder.get('/adjacent', { params });
-      console.log('adjacent payload', res.data?.data);
-
-      const { prevId, nextId, currentRow: adjacentRow } = res.data.data ?? {};
-      setPrevId(prevId ?? undefined);
-      setNextId(nextId ?? undefined);
-
-      const rowNum = adjacentRow != null ? Number(adjacentRow) : undefined;
-      setCurrentRow(Number.isFinite(rowNum) ? rowNum : undefined);
-    } catch (err) {
-      console.error('Failed to fetch adjacent idiom ids:', err);
-      setPrevId(undefined);
-      setNextId(undefined);
-      setCurrentRow(undefined);
-    }
-  };
-
-  useEffect(() => {
-    const limit = Number(searchParams.get('limit') ?? '20');
-    const urlPage = Number(searchParams.get('page') ?? '1');
-
-    const pageFromRow =
-      Number.isFinite(currentRow) && currentRow! > 0
-        ? Math.max(1, Math.ceil((currentRow as number) / limit))
-        : urlPage;
-
-    const sp = new URLSearchParams(searchParams);
-    sp.set('page', String(pageFromRow));
-    const href = `/?${sp.toString()}`;
-    setBackHref(href);
-  }, [currentRow, searchParams]);
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -137,11 +94,6 @@ const DetailPage = () => {
   useEffect(() => {
     fetchIdiom();
   }, [id]);
-
-  useEffect(() => {
-    fetchAdjacentIds();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, searchParams.toString()]);
 
   if (loading || !selectedIdiom) {
     return (

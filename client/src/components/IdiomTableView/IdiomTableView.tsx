@@ -206,17 +206,6 @@ const IdiomTableView = () => {
     fetchPage();
   }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder, searchParams]);
 
-  // const onSearchTermChange = (term: string) => {
-  //   setSearchTerm(term);
-  //   setCurrentPage(1);
-  //   setSearchParams((prev) => {
-  //     const params = new URLSearchParams(prev);
-  //     params.set('search', term);
-  //     params.set('page', '1');
-  //     return params;
-  //   });
-  // };
-  // AFTER: only reset to page 1 if the term actually changed
   const onSearchTermChange = (term: string) => {
     const trimmed = term ?? '';
     if (trimmed === searchTerm) {
@@ -228,7 +217,6 @@ const IdiomTableView = () => {
       });
       return;
     }
-
     setSearchTerm(trimmed);
     setCurrentPage(1);
     setSearchParams((prev) => {
