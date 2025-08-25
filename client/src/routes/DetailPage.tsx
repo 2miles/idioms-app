@@ -59,7 +59,7 @@ const DetailPage = () => {
         sortField: searchParams.get('sortField') ?? 'timestamps',
         sortOrder: searchParams.get('sortOrder') ?? 'desc',
         search: searchParams.get('search') ?? '',
-        searchColumn: searchParams.get('column') ?? '',
+        searchColumn: searchParams.get('searchColumn') ?? 'title',
       };
 
       const res = await publicIdiomFinder.get('/adjacent', { params });

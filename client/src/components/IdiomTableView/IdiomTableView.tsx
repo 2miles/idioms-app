@@ -21,7 +21,6 @@ const StyledRestoreIcon = styled(RestoreIcon)`
   width: 22px;
   height: 22px;
   margin-top: 2px;
-  margin-bottom: 2px;
   margin-left: 0px;
   margin-right: 0px;
 `;
@@ -66,6 +65,12 @@ const PaginationWrapper = styled.div`
     width: auto;
   }
 `;
+
+const ResetButton = styled(SecondaryButton)`
+  margin-bottom: 11px;
+  border-radius: var(--radius-sm) !important;
+`;
+
 const ShowingText = styled.p`
   margin-right: auto;
   white-space: nowrap;
@@ -143,13 +148,17 @@ const IdiomTableView = () => {
     const hasLimit = searchParams.has('limit');
     const hasSortField = searchParams.has('sortField');
     const hasSortOrder = searchParams.has('sortOrder');
+    const hasSearchColumn = searchParams.has('searchColumn');
+    const hasSearch = searchParams.has('search');
 
-    if (!hasPage || !hasLimit || !hasSortField || !hasSortOrder) {
+    if (!hasPage || !hasLimit || !hasSortField || !hasSortOrder || !hasSearchColumn || !hasSearch) {
       const params = new URLSearchParams(searchParams);
       if (!hasPage) params.set('page', '1');
       if (!hasLimit) params.set('limit', '20');
       if (!hasSortField) params.set('sortField', 'timestamps');
       if (!hasSortOrder) params.set('sortOrder', 'desc');
+      if (!hasSearchColumn) params.set('searchColumn', 'title');
+      if (!hasSearch) params.set('search', '');
       setSearchParams(params);
     }
   }, []);
@@ -302,9 +311,9 @@ const IdiomTableView = () => {
         <div className='bottom-row'>
           <LeftGroup>
             <div className='reset-wrapper'>
-              <SecondaryButton onClick={restoreTable} className='btn btn-secondary'>
+              <ResetButton onClick={restoreTable} className='btn btn-secondary'>
                 <StyledRestoreIcon />
-              </SecondaryButton>
+              </ResetButton>
             </div>
           </LeftGroup>
           <div className='spacer' />
