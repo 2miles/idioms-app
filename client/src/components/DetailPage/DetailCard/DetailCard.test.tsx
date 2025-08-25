@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, test, expect, beforeEach, describe } from 'vitest';
 import DetailCard from '@/components/DetailPage/DetailCard/DetailCard';
+
 import { Idiom } from '@/types';
 import { UserContext } from '@/context/userContext';
 import { suppressConsoleOutput } from '../../../../testUtils';

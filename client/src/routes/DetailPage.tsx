@@ -9,11 +9,11 @@ import { Idiom } from '@/types';
 import PageContainer from '@/components/PageContainer';
 import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
 import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
-import DetailCard from '@/components/DetailCard/DetailCard';
+import DetailCard from '@/components/DetailPage/DetailCard/DetailCard';
 import Modal from '@/components/Modal/Modal';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
-import DetailPageControls from '@/components/DetailPageControls';
+import DetailPageControls from '@/components/DetailPage/DetailPageControls';
 import { usePrevNextNav } from '@/hooks/usePrevNextNav';
 
 const SpinnerWrapper = styled.div`
