@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import pool from '../db/index.js';
 import {
+  buildAdjacentIdsQuery,
   buildIdiomsQuery,
   buildIdiomWithPositionQuery,
   buildTotalCountQuery,
-  buildAdjacentIdsQuery,
+  // buildAdjacentIdsQuery,
 } from '../queries/idioms.js';
 import { getSearchClauses, getTotalWhereClause } from '../utils/searchUtils.js';
 
@@ -191,24 +192,13 @@ export async function getAdjacentIdioms(req: Request, res: Response) {
 
     const idParamIndex = whereValues.length + 1;
 
-    const sql = `
-      WITH base AS (
-        SELECT id, timestamps, title, definition, contributor
-        FROM idioms
-        ${hasSearch ? `WHERE ${whereClause}` : ''}
-      ),
-      ordered AS (
-        SELECT
-          id,
-          ROW_NUMBER() OVER (ORDER BY ${sortField} ${dir}, id DESC) AS row_num,
-          LAG(id)  OVER (ORDER BY ${sortField} ${dir}, id DESC) AS prev_id,
-          LEAD(id) OVER (ORDER BY ${sortField} ${dir}, id DESC) AS next_id
-        FROM base
-      )
-      SELECT prev_id, next_id, row_num::int AS current_row
-      FROM ordered
-      WHERE id = $${idParamIndex}::int;   -- << cast so PG never guesses
-    `;
+    const sql = buildAdjacentIdsQuery(
+      hasSearch,
+      whereClause || '',
+      sortField,
+      sortOrder,
+      idParamIndex,
+    );
 
     const result = await pool.query(sql, [...whereValues, id]);
     if (result.rowCount === 0) {

@@ -80,19 +80,19 @@ export function buildIdiomWithPositionQuery(): string {
     `;
 }
 
-function mapOrderColumn(sortField: string): string {
-  switch (sortField) {
-    case 'timestamps':
-    case 'title':
-    case 'definition':
-    case 'contributor':
-      return sortField; // real DB columns
-    // 'position' is virtual in the list; for adjacency, treat it as timestamps
-    case 'position':
-    default:
-      return 'timestamps';
-  }
-}
+// function mapOrderColumn(sortField: string): string {
+//   switch (sortField) {
+//     case 'timestamps':
+//     case 'title':
+//     case 'definition':
+//     case 'contributor':
+//       return sortField; // real DB columns
+//     // 'position' is virtual in the list; for adjacency, treat it as timestamps
+//     case 'position':
+//     default:
+//       return 'timestamps';
+//   }
+// }
 
 /**
  * Builds a SQL query that, given filters and sort, returns the previous
@@ -108,6 +108,35 @@ function mapOrderColumn(sortField: string): string {
  * @param sortOrder "asc" | "desc"
  * @param idParamIndex numeric position of the `$` placeholder for the `id`
  */
+// export function buildAdjacentIdsQuery(
+//   hasSearch: boolean,
+//   whereClause: string,
+//   sortField: string,
+//   sortOrder: string,
+//   idParamIndex: number,
+// ): string {
+//   const dir = sortOrder.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+
+//   return `
+//     WITH base AS (
+//       SELECT id, timestamps, title, definition, contributor
+//       FROM idioms
+//       ${hasSearch ? `WHERE ${whereClause}` : ''}
+//     ),
+//     ordered AS (
+//       SELECT
+//         id,
+//         ROW_NUMBER() OVER (ORDER BY ${sortField} ${dir}, id DESC) AS row_num,
+//         LAG(id)  OVER (ORDER BY ${sortField} ${dir}, id DESC) AS prev_id,
+//         LEAD(id) OVER (ORDER BY ${sortField} ${dir}, id DESC) AS next_id
+//       FROM base
+//     )
+//     SELECT prev_id, next_id, row_num AS current_row
+//     FROM ordered
+//     WHERE id = $${idParamIndex};
+//   `;
+// }
+
 export function buildAdjacentIdsQuery(
   hasSearch: boolean,
   whereClause: string,
@@ -131,8 +160,8 @@ export function buildAdjacentIdsQuery(
         LEAD(id) OVER (ORDER BY ${sortField} ${dir}, id DESC) AS next_id
       FROM base
     )
-    SELECT prev_id, next_id, row_num AS current_row
+    SELECT prev_id, next_id, row_num::int AS current_row
     FROM ordered
-    WHERE id = $${idParamIndex};
+    WHERE id = $${idParamIndex}::int;
   `;
 }
