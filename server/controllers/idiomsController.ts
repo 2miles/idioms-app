@@ -5,7 +5,6 @@ import {
   buildIdiomsQuery,
   buildIdiomWithPositionQuery,
   buildTotalCountQuery,
-  // buildAdjacentIdsQuery,
 } from '../queries/idioms.js';
 import { getSearchClauses, getTotalWhereClause } from '../utils/searchUtils.js';
 
@@ -68,92 +67,6 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
   }
 }
 
-// export async function getAdjacentIdioms(req: Request, res: Response): Promise<void> {
-//   try {
-//     // 1) Required: current idiom id
-//     const id = Number(req.query.id);
-//     if (!id || Number.isNaN(id)) {
-//       res.status(400).json({ error: 'Missing or invalid id' });
-//       return;
-//     }
-
-//     // 2) Validate UI search column; default to 'title'
-//     const allowedUiColumns = ['title', 'contributor', 'general'] as const;
-//     const uiColRawInput = (req.query.searchColumn as string) ?? '';
-//     const searchColumn = (uiColRawInput.trim() || 'title') as (typeof allowedUiColumns)[number];
-
-//     if (!allowedUiColumns.includes(searchColumn)) {
-//       res.status(400).json({ error: 'Invalid search column' });
-//       return;
-//     }
-
-//     // 3) Validate sort; treat 'position' as a virtual that maps to a real column
-//     const allowedSortFields = ['position', 'timestamps', 'title', 'definition', 'contributor'];
-//     const sortFieldRaw = (req.query.sortField as string) || 'timestamps';
-//     const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'desc';
-
-//     if (!allowedSortFields.includes(sortFieldRaw)) {
-//       res.status(400).json({ error: 'Invalid sort field' });
-//       return;
-//     }
-//     if (!['asc', 'desc'].includes(sortOrder)) {
-//       res.status(400).json({ error: 'Invalid sort order' });
-//       return;
-//     }
-
-//     const sortField = sortFieldRaw === 'position' ? 'timestamps' : sortFieldRaw;
-
-//     // 4) WHERE clause: start placeholders at $1 for this endpoint
-//     const search = ((req.query.search as string) || '').trim();
-//     const { whereClause, whereValues } = getSearchClauses(search, searchColumn, /* startIndex */ 1);
-//     const hasSearch = whereValues.length > 0;
-
-//     // 5) Build SQL (current id goes AFTER any search params)
-//     const idParamIndex = whereValues.length + 1;
-//     const sql = buildAdjacentIdsQuery(
-//       hasSearch,
-//       whereClause || '',
-//       sortField,
-//       sortOrder,
-//       idParamIndex,
-//     );
-
-//     // Optional debug (dev only)
-//     if (process.env.NODE_ENV !== 'production') {
-//       console.log('[adjacent]', {
-//         q: req.query,
-//         searchColumn,
-//         sortField,
-//         sortOrder,
-//         search,
-//         hasSearch,
-//         whereValuesLen: whereValues.length,
-//         whereClausePreview: (whereClause || '').replace(/\s+/g, ' ').trim(),
-//       });
-//     }
-
-//     const result = await pool.query(sql, [...whereValues, id]);
-
-//     if (result.rowCount === 0) {
-//       res.status(404).json({ error: 'Current idiom not in filtered set' });
-//       return;
-//     }
-
-//     const row = result.rows[0];
-//     res.status(200).json({
-//       status: 'success',
-//       data: {
-//         prevId: row?.prev_id ?? null,
-//         nextId: row?.next_id ?? null,
-//         currentRow: row?.current_row ?? null,
-//       },
-//     });
-//   } catch (error) {
-//     console.error('Error computing adjacent idioms:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// }
-
 // controllers/idiomsController.ts
 export async function getAdjacentIdioms(req: Request, res: Response) {
   try {
@@ -182,7 +95,6 @@ export async function getAdjacentIdioms(req: Request, res: Response) {
       return;
     }
     const sortField = sortFieldRaw === 'position' ? 'timestamps' : sortFieldRaw;
-    const dir = sortOrder === 'asc' ? 'ASC' : 'DESC';
 
     const search = ((req.query.search as string) || '').trim();
 

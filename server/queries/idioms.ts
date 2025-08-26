@@ -108,34 +108,6 @@ export function buildIdiomWithPositionQuery(): string {
  * @param sortOrder "asc" | "desc"
  * @param idParamIndex numeric position of the `$` placeholder for the `id`
  */
-// export function buildAdjacentIdsQuery(
-//   hasSearch: boolean,
-//   whereClause: string,
-//   sortField: string,
-//   sortOrder: string,
-//   idParamIndex: number,
-// ): string {
-//   const dir = sortOrder.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
-
-//   return `
-//     WITH base AS (
-//       SELECT id, timestamps, title, definition, contributor
-//       FROM idioms
-//       ${hasSearch ? `WHERE ${whereClause}` : ''}
-//     ),
-//     ordered AS (
-//       SELECT
-//         id,
-//         ROW_NUMBER() OVER (ORDER BY ${sortField} ${dir}, id DESC) AS row_num,
-//         LAG(id)  OVER (ORDER BY ${sortField} ${dir}, id DESC) AS prev_id,
-//         LEAD(id) OVER (ORDER BY ${sortField} ${dir}, id DESC) AS next_id
-//       FROM base
-//     )
-//     SELECT prev_id, next_id, row_num AS current_row
-//     FROM ordered
-//     WHERE id = $${idParamIndex};
-//   `;
-// }
 
 export function buildAdjacentIdsQuery(
   hasSearch: boolean,
