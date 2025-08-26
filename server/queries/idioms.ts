@@ -80,19 +80,19 @@ export function buildIdiomWithPositionQuery(): string {
     `;
 }
 
-function mapOrderColumn(sortField: string): string {
-  switch (sortField) {
-    case 'timestamps':
-    case 'title':
-    case 'definition':
-    case 'contributor':
-      return sortField; // real DB columns
-    // 'position' is virtual in the list; for adjacency, treat it as timestamps
-    case 'position':
-    default:
-      return 'timestamps';
-  }
-}
+// function mapOrderColumn(sortField: string): string {
+//   switch (sortField) {
+//     case 'timestamps':
+//     case 'title':
+//     case 'definition':
+//     case 'contributor':
+//       return sortField; // real DB columns
+//     // 'position' is virtual in the list; for adjacency, treat it as timestamps
+//     case 'position':
+//     default:
+//       return 'timestamps';
+//   }
+// }
 
 /**
  * Builds a SQL query that, given filters and sort, returns the previous
@@ -108,6 +108,7 @@ function mapOrderColumn(sortField: string): string {
  * @param sortOrder "asc" | "desc"
  * @param idParamIndex numeric position of the `$` placeholder for the `id`
  */
+
 export function buildAdjacentIdsQuery(
   hasSearch: boolean,
   whereClause: string,
@@ -131,8 +132,8 @@ export function buildAdjacentIdsQuery(
         LEAD(id) OVER (ORDER BY ${sortField} ${dir}, id DESC) AS next_id
       FROM base
     )
-    SELECT prev_id, next_id, row_num AS current_row
+    SELECT prev_id, next_id, row_num::int AS current_row
     FROM ordered
-    WHERE id = $${idParamIndex};
+    WHERE id = $${idParamIndex}::int;
   `;
 }
