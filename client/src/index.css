@@ -142,11 +142,6 @@ body {
 
 body {
   background-color: var(--bg-darkest);
-  /* background-image: linear-gradient(
-    45deg,
-    var(--bg-darkest) 0%,
-    var(--color-brand-primary-dark) 100%
-  ); */
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -154,6 +149,11 @@ body {
   color: var(--color-text-primary);
   line-height: 1.5;
   font-family: var(--font-body);
+}
+
+body.no-scroll {
+  overflow: hidden;
+  height: 100vh; /* prevents elastic scroll on iOS */
 }
 
 #root {

@@ -1,4 +1,4 @@
-// components/Modal.tsx
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 const ModalOverlay = styled.div`
@@ -29,16 +29,10 @@ const ModalContent = styled.div`
 
 const ModalBody = styled.div`
   overflow-y: auto;
-  flex: 1; /* Allow the body to grow and shrink within the modal */
+  flex: 1;
 `;
 
 const ModalHeader = styled.div`
-  /* background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
-  background-image: linear-gradient(
-    45deg,
-    var(--bg-gradient-start) 0%,
-    var(--bg-gradient-end) 100%
-  ); */
   padding: var(--padding-md);
   border-bottom: 1px solid var(--color-border);
   background-color: var(--bg-medium);
@@ -79,9 +73,17 @@ type ModalProps = {
 const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
   if (!isOpen) return null;
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+    return () => document.body.classList.remove('no-scroll');
+  }, [isOpen]);
+
   return (
     <ModalOverlay data-testid='modal-overlay'>
-      {/* <ModalContent onClick={(e) => e.stopPropagation()}> */}
       <ModalContent>
         <ModalHeader>
           <ModalTitle>{title}</ModalTitle>
