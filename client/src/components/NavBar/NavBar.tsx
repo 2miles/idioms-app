@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import Avatar from '@/components/NavBar/Avatar';
 import HamburgerIcon from '@/images/hamburger.svg?react';
 import LoginButton from '@/components/NavBar/LoginButton';
-import LogoutButton from '@/components/NavBar/LogoutButton';
 import { useUser } from '@/context/userContext';
 import PageContainer from '../PageContainer';
+import AvatarDropdown from '../Dropdown/AvatarDropdown';
 
 const NavContainer = styled(PageContainer)`
   margin-bottom: 0;
@@ -46,27 +45,29 @@ type NavbarLinksProps = {
 
 const NavbarLinks = styled.div<NavbarLinksProps>`
   display: flex;
-  padding-left: var(--padding-lg);
   gap: var(--space-xxl);
-
-  a {
-    color: var(--color-text-inverted);
-    text-decoration: none;
-    font-size: var(--font-lg);
-  }
+  padding-left: var(--padding-lg);
+  font-size: 1.2rem;
 
   @media (max-width: 770px) {
-    position: absolute;
-    top: 100%;
+    border-top: 1px solid var(--color-border);
+    position: fixed;
+    top: 68px;
     left: 0;
+    right: 0;
     background-color: var(--bg-nav);
     flex-direction: column;
     width: 100%;
     display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
     gap: 0;
+    z-index: 999;
+
     a {
+      text-align: center;
+      font-size: 1.2rem;
       padding: 1rem;
       border-bottom: 1px solid var(--color-border);
+      width: 100%;
     }
   }
 `;
@@ -88,6 +89,7 @@ const Hamburger = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: var(--margin-sm);
   }
 
   ${process.env.NODE_ENV === 'test' &&
@@ -107,17 +109,10 @@ const NavbarLogin = styled.div`
   align-items: center;
 `;
 
-const ProfileArea = styled.div`
-  display: flex;
-  button {
-    margin-left: var(--margin-lg);
-  }
-`;
-
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
-  const { loginWithRedirect, logout, user } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
   const { isAuthenticated } = useUser();
 
   const toggleMenu = () => {
@@ -127,6 +122,15 @@ const NavBar = () => {
   const closeMenu = () => {
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+    return () => document.body.classList.remove('no-scroll');
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -147,13 +151,13 @@ const NavBar = () => {
       <NavContainer>
         <NavBarWrapper ref={navRef} className='navbar navbar-expand-lg'>
           <NavLeft>
-            {/* <Hamburger
-        onClick={toggleMenu}
-        aria-label='Toggle navigation'
-        data-testid='navbar-hamburger'
-      >
-        <HamburgerIcon />
-      </Hamburger> */}
+            <Hamburger
+              onClick={toggleMenu}
+              aria-label='Toggle navigation'
+              data-testid='navbar-hamburger'
+            >
+              <HamburgerIcon />
+            </Hamburger>
 
             <div className='navbar-brand'>
               <Link to='/' onClick={closeMenu}>
@@ -161,29 +165,22 @@ const NavBar = () => {
               </Link>
             </div>
 
-            {/* <NavbarLinks className={`navbar-collapse ${isOpen ? 'open' : ''}`} $isOpen={isOpen}>
-        <Link to='/' onClick={closeMenu} className='nav-link'>
-          Home
-        </Link>
-        <Link to='/about' onClick={closeMenu} className='nav-link'>
-          About
-        </Link>
-        <Link to='/list' onClick={closeMenu} className='nav-link'>
-          List
-        </Link>
-      </NavbarLinks> */}
+            <NavbarLinks className={`navbar-collapse ${isOpen ? 'open' : ''}`} $isOpen={isOpen}>
+              <Link to='/' onClick={closeMenu} className='nav-link'>
+                List
+              </Link>
+              <Link to='/about' onClick={closeMenu} className='nav-link'>
+                About
+              </Link>
+              <Link to='/' onClick={closeMenu} className='nav-link'>
+                Request
+              </Link>
+            </NavbarLinks>
           </NavLeft>
 
           <NavbarLogin>
             {isAuthenticated ? (
-              <ProfileArea>
-                <Avatar email={user?.email || ''} />
-                <LogoutButton
-                  onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-                >
-                  Log Out
-                </LogoutButton>
-              </ProfileArea>
+              <AvatarDropdown />
             ) : (
               <LoginButton onClick={() => loginWithRedirect()}>Log In</LoginButton>
             )}

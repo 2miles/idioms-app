@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import ArrowUpIcon from '@/images/arrow-up.svg?react';
 import ArrowDownIcon from '@/images/arrow-down.svg?react';
 
-type DropdownVariantType = 'searchColumn';
+type DropdownVariantType = 'searchColumn' | 'avatar';
 
 type StyleProps = {
   $hideOnSmallScreen?: boolean;
@@ -15,7 +15,6 @@ type StyleProps = {
 
 const DropdownContainer = styled.div<StyleProps>`
   position: relative;
-  // display: flex;
   display: inline-flex;
   user-select: none;
   border: 1px solid var(--color-border);
@@ -52,17 +51,37 @@ const DropdownContainer = styled.div<StyleProps>`
       border-bottom: none !important;
       border-left: 2px solid var(--color-border);
     `}
+
+  ${(props) =>
+    props.$variant === 'avatar' &&
+    css`
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: 0px;
+    `}
+
+
   &:active {
-    background-color: var(--bg-light);
+    background-color: var(--bg-medium);
   }
 `;
 
-const Anchor = styled.button`
+const Anchor = styled.button<{ $variant?: DropdownVariantType }>`
   all: unset;
   display: flex;
   align-items: center;
   cursor: pointer;
   height: 38px;
+
+  ${(props) =>
+    props.$variant === 'avatar' &&
+    css`
+      height: 100%; // take the height of the nav wrapper
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `}
 `;
 
 // const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
@@ -102,17 +121,19 @@ const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
   }
 `;
 
-const Option = styled.li.attrs({ role: 'option' })`
+const Option = styled.li.attrs({ role: 'option' })<{ $dim?: boolean }>`
   padding: var(--padding-sm) var(--padding-md);
   cursor: pointer;
+  color: ${(p) => (p.$dim ? 'var(--color-text-dim)' : 'var(--color-text-primary)')};
 
   &:hover {
     background-color: var(--bg-light);
+    color: var(--color-text-primary);
   }
 `;
 
-const IconWrapper = styled.span`
-  display: inline-flex;
+const IconWrapper = styled.span<{ $hidden?: boolean }>`
+  display: ${(p) => (p.$hidden ? 'none' : 'inline-flex')};
   align-items: center;
   justify-content: center;
   margin-left: var(--margin-sm);
@@ -133,6 +154,7 @@ type DropdownProps = {
   onOptionClick?: (option: string | JSX.Element) => void;
   variant?: DropdownVariantType;
   ariaLabel?: string;
+  hideCaret?: boolean;
 };
 
 const Dropdown = ({
@@ -144,6 +166,7 @@ const Dropdown = ({
   onOptionClick,
   variant,
   ariaLabel,
+  hideCaret = false,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -183,16 +206,23 @@ const Dropdown = ({
         aria-expanded={isOpen}
         aria-haspopup='listbox'
         aria-label={ariaLabel}
+        $variant={variant}
       >
         {label}
-        <IconWrapper>{isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}</IconWrapper>
+        <IconWrapper $hidden={hideCaret}>
+          {isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
+        </IconWrapper>
       </Anchor>
+
       <Options $visible={isOpen}>
-        {options.map((option, index) => (
-          <Option key={index} onClick={() => handleOptionClick(option)}>
-            {option}
-          </Option>
-        ))}
+        {options.map((option, index) => {
+          const isDim = option === 'Profile' || option === 'Settings';
+          return (
+            <Option key={index} $dim={isDim} onClick={() => handleOptionClick(option)}>
+              {option}
+            </Option>
+          );
+        })}
       </Options>
     </DropdownContainer>
   );
