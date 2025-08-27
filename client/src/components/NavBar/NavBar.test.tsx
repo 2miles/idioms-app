@@ -9,10 +9,31 @@ vi.mock('@auth0/auth0-react', () => ({
 }));
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { UserContext } from '@/context/userContext';
+import { UserContext, UserContextType } from '@/context/userContext';
 
 // @ts-expect-error Suppress vi.MockedFunction type issue
 const mockUseAuth0 = useAuth0 as vi.MockedFunction<typeof useAuth0>;
+
+function makeUserContextMock(overrides: Partial<UserContextType> = {}): UserContextType {
+  return {
+    // minimal sensible defaults
+    roles: [],
+    isAuthenticated: false,
+    isAdmin: false,
+
+    theme: 'light',
+    loadingTheme: false,
+    setTheme: vi.fn(),
+    toggleTheme: vi.fn(),
+
+    // add any other fields your real context exposes
+    // user: null,
+    // login: vi.fn(),
+    // logout: vi.fn(),
+
+    ...overrides,
+  };
+}
 
 describe('NavBar', () => {
   const setup = (
@@ -34,9 +55,13 @@ describe('NavBar', () => {
       ...auth0Overrides,
     } as any);
 
+    const ctx = makeUserContextMock({
+      isAuthenticated: true,
+    });
+
     render(
       <MemoryRouter>
-        <UserContext.Provider value={defaultContext}>
+        <UserContext.Provider value={ctx}>
           <NavBar />
         </UserContext.Provider>
       </MemoryRouter>,
@@ -55,15 +80,15 @@ describe('NavBar', () => {
   });
 
   // TODO: Re-implement when links are re-added to NavBar
-  test.skip('renders navigation menu links', () => {
+  test('renders navigation menu links', () => {
     setup();
-    expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /about/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /list/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /about/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /request/i })).toBeInTheDocument();
   });
 
   // TODO: Re-implement when hamburger is re-added to NavBar
-  test.skip('toggles menu when clicking hamburger', async () => {
+  test('toggles menu when clicking hamburger', async () => {
     const user = userEvent.setup();
     setup();
 
@@ -80,7 +105,7 @@ describe('NavBar', () => {
   });
 
   // TODO: Re-implement when nav menu is re-added to NavBar
-  test.skip('closes the menu when clicking outside', async () => {
+  test('closes the menu when clicking outside', async () => {
     const user = userEvent.setup();
     setup();
 
@@ -100,9 +125,16 @@ describe('NavBar', () => {
     expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
   });
 
-  test('renders user avatar and Logout button if authenticated', () => {
+  test('renders user avatar and exposes Log out in dropdown when authenticated', async () => {
+    const user = userEvent.setup();
+
     setup({ isAuthenticated: true }, { user: { email: 'test@example.com' } });
-    expect(screen.getByText(/te/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument();
+
+    // Find and open the avatar dropdown
+    const trigger = screen.getByRole('button', { name: /user menu/i });
+    await user.click(trigger);
+
+    // Assert the dropdown option is present (roles unchanged: listbox/option)
+    expect(await screen.findByRole('option', { name: /log out/i })).toBeInTheDocument();
   });
 });
