@@ -2,13 +2,13 @@ import { Auth0Provider } from '@auth0/auth0-react';
 
 type Props = { children: React.ReactNode };
 
+const audience = 'https://api.idiomvault.com';
+
 const onRedirectCallback = (appState?: { returnTo?: string }) => {
   const url = new URL(window.location.href);
 
-  // drop OAuth handshake params
+  // drop OAuth handshake params and keep only your idiom list params
   ['code', 'state', 'session_state'].forEach((k) => url.searchParams.delete(k));
-
-  // keep only your idiom list params
   const keep = new URLSearchParams();
   ['page', 'limit', 'sortField', 'sortOrder', 'search', 'searchColumn'].forEach((k) => {
     const v = url.searchParams.get(k);
@@ -30,6 +30,9 @@ export default function AuthProvider({ children }: Props) {
         audience: 'https://api.idiomvault.com',
         scope: 'openid profile email',
       }}
+      cacheLocation='localstorage'
+      useRefreshTokens={true}
+      useRefreshTokensFallback={true}
       onRedirectCallback={onRedirectCallback}
     >
       {children}
