@@ -82,6 +82,7 @@ const Hamburger = styled.button`
   svg {
     width: 48px;
     height: 48px;
+    color: var(--color-text-primary);
   }
 
   @media (max-width: 770px) {
