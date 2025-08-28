@@ -5,7 +5,7 @@ import { StrictMode } from 'react';
 import App from '@/App';
 import { IdiomsContextProvider } from '@/context/idiomsContext';
 import { UserProvider } from '@/context/userContext';
-import AuthProvider from '@/providers/AuthProvider'; // 👈 new
+import AuthProvider from '@/providers/AuthProvider';
 import '@/index.css';
 
 const container = document.getElementById('root');
