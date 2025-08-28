@@ -71,8 +71,6 @@ type ModalProps = {
 };
 
 const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
-  if (!isOpen) return null;
-
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('no-scroll');
@@ -81,6 +79,8 @@ const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
     }
     return () => document.body.classList.remove('no-scroll');
   }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <ModalOverlay data-testid='modal-overlay'>

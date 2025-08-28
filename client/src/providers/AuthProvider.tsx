@@ -2,8 +2,6 @@ import { Auth0Provider } from '@auth0/auth0-react';
 
 type Props = { children: React.ReactNode };
 
-const audience = 'https://api.idiomvault.com';
-
 const onRedirectCallback = (appState?: { returnTo?: string }) => {
   const url = new URL(window.location.href);
 
