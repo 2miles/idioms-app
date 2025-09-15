@@ -10,6 +10,7 @@ import PageContainer from '@/components/PageContainer';
 import { SuccessButton } from '@/components/ButtonStyles';
 import { useUser } from '@/context/userContext';
 import ThemeDropdown from '@/components/Dropdown/ThemeDropdown';
+import RequestIdiomForm from '@/components/Forms/RequestIdiomForm';
 
 const TopRow = styled.div`
   display: flex;
@@ -36,19 +37,24 @@ const StyledAddIcon = styled(AddIcon)`
 `;
 
 const CustomSuccessButton = styled(SuccessButton)`
-  padding-left: 5px !important;
   margin-bottom: 13px !important;
+  margin-right: var(--margin-md);
+  height: 42px;
 `;
 
 const HomePage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isAdmin } = useUser();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const { isAdmin, isRegularUser } = useUser();
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openAddModal = () => setIsAddModalOpen(true);
+  const closeAddModal = () => setIsAddModalOpen(false);
+
+  const openRequestModal = () => setIsRequestModalOpen(true);
+  const closeRequestModal = () => setIsRequestModalOpen(false);
 
   const refreshIdiomList = () => {
     const url = new URLSearchParams(location.search);
@@ -61,9 +67,14 @@ const HomePage = () => {
       <TopRow>
         <LeftBox>
           {isAdmin && (
-            <CustomSuccessButton onClick={openModal} className='btn btn-success'>
+            <CustomSuccessButton onClick={openAddModal} className='btn btn-success'>
               <StyledAddIcon />
-              Add Idiom
+              Add
+            </CustomSuccessButton>
+          )}
+          {(isRegularUser || isAdmin) && (
+            <CustomSuccessButton onClick={openRequestModal} className='btn btn-success'>
+              Request
             </CustomSuccessButton>
           )}
         </LeftBox>
@@ -75,8 +86,11 @@ const HomePage = () => {
 
       <IdiomTableView />
 
-      <Modal title='Add Idiom' isOpen={isModalOpen} onClose={closeModal}>
-        <AddIdiomForm onClose={closeModal} onSucess={refreshIdiomList} />
+      <Modal title='Add Idiom' isOpen={isAddModalOpen} onClose={closeAddModal}>
+        <AddIdiomForm onClose={closeAddModal} onSucess={refreshIdiomList} />
+      </Modal>
+      <Modal title='Request an Idiom' isOpen={isRequestModalOpen} onClose={closeRequestModal}>
+        <RequestIdiomForm onClose={closeRequestModal} />
       </Modal>
     </PageContainer>
   );
