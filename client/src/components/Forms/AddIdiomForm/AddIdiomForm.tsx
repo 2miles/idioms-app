@@ -92,7 +92,6 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.trace('🚨 handleSubmit called');
     setValidated(true);
     if (formData.title.trim() === '') {
       return; // Prevent form submission if title is empty
