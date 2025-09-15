@@ -114,6 +114,7 @@ const NavBar = () => {
   const navRef = useRef<HTMLDivElement | null>(null);
   const { loginWithRedirect } = useAuth0();
   const { isAuthenticated } = useUser();
+  const { isAdmin } = useUser();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -172,9 +173,11 @@ const NavBar = () => {
               <Link to='/about' onClick={closeMenu} className='nav-link'>
                 About
               </Link>
-              <Link to='/' onClick={closeMenu} className='nav-link'>
-                Request
-              </Link>
+              {isAdmin && (
+                <Link to='/requests' onClick={closeMenu} className='nav-link'>
+                  Requests
+                </Link>
+              )}
             </NavbarLinks>
           </NavLeft>
 
