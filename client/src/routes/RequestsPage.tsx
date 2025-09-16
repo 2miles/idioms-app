@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
@@ -136,12 +137,35 @@ const RequestsPage = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
+    const confirmResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this request!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
     try {
-      const api = await getAuthorizedApi(); // ✅ Reuse the hook result
+      const api = await getAuthorizedApi();
       await api.delete(`/${id}`);
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'The request has been successfully deleted.',
+        icon: 'success',
+        timer: 1800,
+        showConfirmButton: false,
+      });
       setRequests((prev) => prev.filter((r) => r.id !== id));
     } catch (err) {
       console.error('Failed to delete request:', err);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was a problem deleting the request.',
+        icon: 'error',
+      });
     }
   };
 
