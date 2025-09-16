@@ -4,37 +4,23 @@ import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
 import CheckIcon from '@/images/check_2.svg?react';
 import { ThreeDots } from 'react-loader-spinner';
-
-const Container = styled.div`
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 1rem;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-
-  th,
-  td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  th {
-    font-weight: bold;
-    color: var(--color-text-primary);
-  }
-`;
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  IdiomInfo,
+  InfoElement,
+  InfoElementKey,
+} from '@/components/DetailPage/DetailCard/DetailCard.styles';
+import PageContainer from '@/components/PageContainer';
 
 const StyledCheckIcon = styled(CheckIcon)`
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   display: inline-block;
   vertical-align: middle;
   color: green;
+  margin-bottom: var(--margin-xs);
 `;
 
 type Request = {
@@ -52,10 +38,73 @@ const SpinnerWrapper = styled.div`
   height: 40vh;
 `;
 
-const ButtonsWrapper = styled.div`
+const CardsWrapper = styled.div`
   display: flex;
-  gap: 1rem;
-  float: right;
+  margin: auto;
+  flex-direction: column;
+  max-width: 800px;
+`;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  gap: var(--margin-md);
+
+  button,
+  div {
+    flex: 1;
+  }
+
+  @media (max-width: 769px) {
+    flex-direction: column;
+
+    button,
+    div {
+      width: 100%;
+    }
+  }
+`;
+
+export const ButtonPlaceholder = styled.div`
+  flex: 1;
+  visibility: hidden;
+`;
+
+const RequestCard = styled(Card)`
+  &.card {
+    margin-bottom: var(--margin-sm);
+    margin-top: var(--margin-sm);
+  }
+`;
+
+const RequestCardHeader = styled(CardHeader)`
+  h1 {
+    text-align: left;
+    padding-left: var(--padding-xxl);
+    margin-bottom: 0px;
+    font-size: 1.5rem;
+  }
+`;
+
+const RequestIdiomInfo = styled(IdiomInfo)`
+  padding-top: 0px;
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const RequestInfoElement = styled(InfoElement)`
+  margin-right: var(--margin-xl);
+  margin-right: 64px;
+`;
+
+const RequestInfoElementKey = styled(InfoElementKey)`
+  font-weight: normal;
+`;
+
+const PageTitle = styled.h1`
+  text-align: center;
+  margin-bottom: var(--margin-xxl);
+  margin-top: var(--margin-xxl);
+  font-size: 2rem;
 `;
 
 function formatDateMinusHours(isoString: string, hoursToSubtract: number = 7): string {
@@ -120,56 +169,59 @@ const RequestsPage = () => {
   }
 
   return (
-    <Container>
-      <h1>Requested Idioms</h1>
+    <PageContainer>
+      <PageTitle>Idiom Requests</PageTitle>
 
       {requests.length === 0 ? (
         <p>No idioms have been requested yet.</p>
       ) : (
-        <Table>
-          <thead>
-            <tr>
-              <th>Idiom</th>
-              <th>Requested</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map(({ id, title, contributor, submitted_at, added }) => (
-              <tr key={id}>
-                <td>
+        <CardsWrapper>
+          {requests.map(({ id, title, contributor, submitted_at, added }) => (
+            <RequestCard className='card' key={id}>
+              <RequestCardHeader>
+                <h1>
                   {added && <StyledCheckIcon />} {title}
-                </td>
-                <td>{contributor}</td>
-                <td>{formatDateMinusHours(submitted_at)}</td>
+                </h1>
+              </RequestCardHeader>
+              <CardBody className='card-body'>
+                <RequestIdiomInfo>
+                  <RequestInfoElement>
+                    <RequestInfoElementKey>Requested On:</RequestInfoElementKey>{' '}
+                    {formatDateMinusHours(submitted_at)}
+                  </RequestInfoElement>
+                  <RequestInfoElement>
+                    <RequestInfoElementKey>Requested By:</RequestInfoElementKey>{' '}
+                    {contributor || 'Anonymous'}
+                  </RequestInfoElement>
+                </RequestIdiomInfo>
 
-                <td>
-                  <ButtonsWrapper>
-                    {!added && (
-                      <SuccessButton
-                        type='button'
-                        className='btn btn-secondary'
-                        onClick={() => handleMarkAsAdded(id)}
-                      >
-                        Add
-                      </SuccessButton>
-                    )}
-                    <DangerButton
+                <ButtonsWrapper>
+                  {!added ? (
+                    <SuccessButton
                       type='button'
-                      className='btn btn-danger'
-                      onClick={() => handleDelete(id)}
+                      className='btn btn-success'
+                      onClick={() => handleMarkAsAdded(id)}
                     >
-                      Delete
-                    </DangerButton>
-                  </ButtonsWrapper>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+                      Add
+                    </SuccessButton>
+                  ) : (
+                    <ButtonPlaceholder />
+                  )}
+
+                  <DangerButton
+                    type='button'
+                    className='btn btn-danger'
+                    onClick={() => handleDelete(id)}
+                  >
+                    Delete
+                  </DangerButton>
+                </ButtonsWrapper>
+              </CardBody>
+            </RequestCard>
+          ))}
+        </CardsWrapper>
       )}
-    </Container>
+    </PageContainer>
   );
 };
 
