@@ -110,7 +110,9 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
           onChange={handleInputChange}
         />
         <ButtonsWrapper>
-          <SuccessButton type='submit'>Submit</SuccessButton>
+          <SuccessButton type='submit' className='btn btn-success'>
+            Submit
+          </SuccessButton>
         </ButtonsWrapper>
       </form>
     </FormContainer>

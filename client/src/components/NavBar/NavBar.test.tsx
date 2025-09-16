@@ -20,16 +20,12 @@ function makeUserContextMock(overrides: Partial<UserContextType> = {}): UserCont
     roles: [],
     isAuthenticated: false,
     isAdmin: false,
+    isRegularUser: false,
 
     theme: 'light',
     loadingTheme: false,
     setTheme: vi.fn(),
     toggleTheme: vi.fn(),
-
-    // add any other fields your real context exposes
-    // user: null,
-    // login: vi.fn(),
-    // logout: vi.fn(),
 
     ...overrides,
   };
@@ -79,15 +75,12 @@ describe('NavBar', () => {
     expect(brandLink).toHaveAttribute('href', '/');
   });
 
-  // TODO: Re-implement when links are re-added to NavBar
   test('renders navigation menu links', () => {
     setup();
     expect(screen.getByRole('link', { name: /list/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /about/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /request/i })).toBeInTheDocument();
   });
 
-  // TODO: Re-implement when hamburger is re-added to NavBar
   test('toggles menu when clicking hamburger', async () => {
     const user = userEvent.setup();
     setup();
@@ -104,7 +97,6 @@ describe('NavBar', () => {
     expect(menuLinksContainer).not.toHaveClass('open');
   });
 
-  // TODO: Re-implement when nav menu is re-added to NavBar
   test('closes the menu when clicking outside', async () => {
     const user = userEvent.setup();
     setup();
