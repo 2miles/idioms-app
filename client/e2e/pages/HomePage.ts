@@ -1,5 +1,5 @@
 // // e2e/pages/HomePage.ts
-import { Page, Locator, expect } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 export class HomePage {
   readonly page: Page;
   readonly addIdiomButton: Locator;

@@ -2,10 +2,10 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import { Example } from '@/types';
-import { IdiomsContext } from '@/context/idiomsContext';
-import TextAreaField from '@/components/FormFields/TextAreaField';
 import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
+import TextAreaField from '@/components/FormFields/TextAreaField';
+import { IdiomsContext } from '@/context/idiomsContext';
+import { Example } from '@/types';
 
 const FormContainer = styled.div`
   background-color: var(--bg-dark);

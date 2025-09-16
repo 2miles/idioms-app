@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
 import { randomUUID } from 'crypto';
+
+import { expect, test } from '@playwright/test';
 
 import { AddExampleForm } from '../pages/AddExamplesForm.js';
 import { AddIdiomForm } from '../pages/AddIdiomForm.js';
@@ -7,8 +8,7 @@ import { DetailPage } from '../pages/DetailPage.js';
 import { HomePage } from '../pages/HomePage.js';
 import { UpdateExamplesForm } from '../pages/UpdateExamplesForm.js';
 import { UpdateIdiomForm } from '../pages/UpdateIdiomForm.js';
-
-import { TEST_IDIOM, EDITED_IDIOM, TEST_EXAMPLES, EDITED_EXAMPLES } from '../test-data/idioms.js';
+import { EDITED_EXAMPLES, EDITED_IDIOM, TEST_EXAMPLES, TEST_IDIOM } from '../test-data/idioms.js';
 
 test.use({ storageState: './e2e/.auth/admin.json' });
 

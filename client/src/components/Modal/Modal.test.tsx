@@ -1,7 +1,9 @@
+import { describe, expect, test, vi } from 'vitest';
+
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import Modal from './Modal';
-import { describe, test, expect, vi } from 'vitest';
 
 const renderModal = (isOpen = true, onClose = vi.fn()) =>
   render(

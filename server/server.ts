@@ -1,10 +1,11 @@
-import express, { Response } from 'express';
-import dotenv from 'dotenv';
-import morgan from 'morgan'; // HTTP request logger
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express, { Response } from 'express';
+import morgan from 'morgan'; // HTTP request logger
+
 import idiomsRouter from './routes/idioms.js';
-import userSettingsRouter from './routes/userSettings.js';
 import requestsRoutes from './routes/requests.js';
+import userSettingsRouter from './routes/userSettings.js';
 
 dotenv.config();
 const app = express();

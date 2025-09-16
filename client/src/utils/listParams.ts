@@ -1,4 +1,4 @@
-import { ListParams, ColumnAccessors, SearchColumnAccessors } from '@/types';
+import { ColumnAccessors, ListParams, SearchColumnAccessors } from '@/types';
 
 export function getListStateFromURL(params: URLSearchParams): ListParams {
   return {

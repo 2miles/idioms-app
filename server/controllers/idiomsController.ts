@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
+
 import pool from '../db/index.js';
 import {
   buildAdjacentIdsQuery,
-  buildIdiomsQuery,
   buildIdiomWithPositionQuery,
+  buildIdiomsQuery,
   buildTotalCountQuery,
 } from '../queries/idioms.js';
 import { getSearchClauses, getTotalWhereClause } from '../utils/searchUtils.js';

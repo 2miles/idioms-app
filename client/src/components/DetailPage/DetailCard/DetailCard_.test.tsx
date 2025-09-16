@@ -1,9 +1,11 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, test, expect, beforeEach, describe } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { Idiom } from '@/types';
+import { fireEvent, render, screen } from '@testing-library/react';
+
+import { suppressConsoleOutput } from '@/../../testUtils';
 import { UserContext, UserContextType } from '@/context/userContext';
-import { suppressConsoleOutput } from '../../../../testUtils';
+import { Idiom } from '@/types';
+
 import DetailCard from './DetailCard';
 
 const DEBUG_ERRORS = false;

@@ -1,11 +1,12 @@
 import express from 'express';
+
+import { checkRole, jwtCheck } from '../authMiddleware.js';
 import {
   createRequest,
+  deleteRequest,
   getAllRequests,
   markRequestAsAdded,
-  deleteRequest,
 } from '../controllers/requestsController.js';
-import { checkRole, jwtCheck } from '../authMiddleware.js';
 
 const router = express.Router();
 

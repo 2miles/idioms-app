@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+
 import { AddIdiomFormData } from '../test-data/idioms';
 
 export class AddIdiomForm {

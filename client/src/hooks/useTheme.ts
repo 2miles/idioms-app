@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
-import { Theme, getLocalChoice, setLocalChoice, applyTheme } from '@/utils/theme';
+import { useCallback, useEffect, useState } from 'react';
+
+import { Theme, applyTheme, getLocalChoice, setLocalChoice } from '@/utils/theme';
 
 type UseThemeOpts = { token?: string | null; apiBase?: string };
 

@@ -1,6 +1,8 @@
-import { chromium } from '@playwright/test';
-import { LoginPage } from './pages/LoginPage';
 import * as dotenv from 'dotenv';
+
+import { chromium } from '@playwright/test';
+
+import { LoginPage } from './pages/LoginPage';
 
 dotenv.config({ path: './e2e/.env' });
 

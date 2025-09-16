@@ -1,6 +1,7 @@
-import pkg from 'pg';
-const { Pool } = pkg;
 import dotenv from 'dotenv';
+import pkg from 'pg';
+
+const { Pool } = pkg;
 
 dotenv.config();
 
@@ -13,8 +14,7 @@ if (env === 'test') {
   connectionString = process.env.DATABASE_URL_TEST as string;
 } else {
   // Use DATABASE_URL_DEV locally, but fallback to DATABASE_URL in prod (e.g., Railway)
-  connectionString =
-    process.env.DATABASE_URL_DEV || (process.env.DATABASE_URL as string);
+  connectionString = process.env.DATABASE_URL_DEV || (process.env.DATABASE_URL as string);
 }
 
 console.log('ENV:', env);

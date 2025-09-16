@@ -1,17 +1,17 @@
 import express from 'express';
+
+import { checkRole, jwtCheck } from '../authMiddleware.js';
 import {
+  createExample,
+  createIdiom,
+  deleteExample,
+  deleteIdiom,
+  getAdjacentIdioms,
   getAllIdioms,
   getSingleIdiomWithExamples,
-  createIdiom,
-  updateIdiom,
-  deleteIdiom,
-  createExample,
   updateExamples,
-  deleteExample,
-  getAdjacentIdioms,
+  updateIdiom,
 } from '../controllers/idiomsController.js';
-
-import { jwtCheck, checkRole } from '../authMiddleware.js';
 
 const router = express.Router();
 

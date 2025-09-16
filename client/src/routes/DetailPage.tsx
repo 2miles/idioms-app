@@ -1,20 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { ThreeDots } from 'react-loader-spinner';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
-import { ThreeDots } from 'react-loader-spinner';
 
-import { IdiomsContext } from '@/context/idiomsContext';
-import { Idiom } from '@/types';
-import PageContainer from '@/components/PageContainer';
-import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
-import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
-import DetailCard from '@/components/DetailPage/DetailCard/DetailCard';
-import Modal from '@/components/Modal/Modal';
-import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
+import DetailCard from '@/components/DetailPage/DetailCard/DetailCard';
 import DetailPageControls from '@/components/DetailPage/DetailPageControls';
+import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
+import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
+import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
+import Modal from '@/components/Modal/Modal';
+import PageContainer from '@/components/PageContainer';
+import { IdiomsContext } from '@/context/idiomsContext';
 import { usePrevNextNav } from '@/hooks/usePrevNextNav';
+import { Idiom } from '@/types';
 
 const SpinnerWrapper = styled.div`
   display: flex;

@@ -1,11 +1,11 @@
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
+import NavBar from '@/components/NavBar/NavBar';
+import TestBanner from '@/components/TestBanner';
 import AboutPage from '@/routes/AboutPage';
 import DetailPage from '@/routes/DetailPage';
 import HomePage from '@/routes/HomePage';
-import NavBar from '@/components/NavBar/NavBar';
-import TestBanner from './components/TestBanner';
-import RequestsPage from './routes/RequestsPage';
+import RequestsPage from '@/routes/RequestsPage';
 
 const App = () => (
   <>

@@ -1,12 +1,11 @@
-// tests/helpers/setupIdiomTableView.ts
-
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
 import { type Mock } from 'vitest';
 
-import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
+import userEvent from '@testing-library/user-event';
+
 import { publicIdiomFinder } from '@/apis/idiomFinder';
+import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
 import { Idiom } from '@/types';
 
 export const mockIdioms: Idiom[] = [

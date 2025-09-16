@@ -1,9 +1,12 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Swal from 'sweetalert2';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import AddExampleForm from './AddExampleForm';
+
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+
+import { suppressConsoleOutput } from '@/../../testUtils';
 import { IdiomsContext } from '@/context/idiomsContext';
-import { suppressConsoleOutput } from '../../../../testUtils';
+
+import AddExampleForm from './AddExampleForm';
 
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });

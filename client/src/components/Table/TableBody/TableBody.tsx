@@ -1,8 +1,8 @@
+import moment from 'moment';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import moment from 'moment';
 
-import { Idiom, Column } from '@/types';
+import { Column, Idiom } from '@/types';
 
 const truncateLength = 150;
 const truncateText = (text: string, maxLength: number) => {

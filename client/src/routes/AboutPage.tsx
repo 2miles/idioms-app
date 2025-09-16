@@ -1,11 +1,12 @@
-import PageContainer from '@/components/PageContainer';
+import { styled } from 'styled-components';
+
 import {
   Card,
-  CardHeader,
   CardBody,
+  CardHeader,
   SectionHeader,
 } from '@/components/DetailPage/DetailCard/DetailCard.styles';
-import { styled } from 'styled-components';
+import PageContainer from '@/components/PageContainer';
 
 // export const CardHeader = styled.div`
 //   background-color: var(--bg-dark);

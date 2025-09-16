@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
+import { ThreeDots } from 'react-loader-spinner';
 import styled from 'styled-components';
+
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
-import CheckIcon from '@/images/check_2.svg?react';
-import { ThreeDots } from 'react-loader-spinner';
 import {
   Card,
-  CardHeader,
   CardBody,
+  CardHeader,
   IdiomInfo,
   InfoElement,
   InfoElementKey,
 } from '@/components/DetailPage/DetailCard/DetailCard.styles';
 import PageContainer from '@/components/PageContainer';
+import CheckIcon from '@/images/check_2.svg?react';
 
 const StyledCheckIcon = styled(CheckIcon)`
   width: 1.5rem;

@@ -1,13 +1,14 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import HamburgerIcon from '@/images/hamburger.svg?react';
+import { useAuth0 } from '@auth0/auth0-react';
+
+import AvatarDropdown from '@/components/Dropdown/AvatarDropdown';
 import LoginButton from '@/components/NavBar/LoginButton';
+import PageContainer from '@/components/PageContainer';
 import { useUser } from '@/context/userContext';
-import PageContainer from '../PageContainer';
-import AvatarDropdown from '../Dropdown/AvatarDropdown';
+import HamburgerIcon from '@/images/hamburger.svg?react';
 
 const NavContainer = styled(PageContainer)`
   margin-bottom: 0;

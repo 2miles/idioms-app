@@ -1,7 +1,10 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
-import ColumnDropdown from './ColumnDropdown';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { fireEvent, render, screen, within } from '@testing-library/react';
+
 import { ColumnAccessors, ColumnVisibility, Columns } from '@/types';
+
+import ColumnDropdown from './ColumnDropdown';
 
 describe('ColumnDropdown', () => {
   const defaultVisibility: ColumnVisibility = Columns.reduce((acc, col) => {

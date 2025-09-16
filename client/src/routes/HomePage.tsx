@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-import AddIcon from '@/images/add.svg?react';
+import { SecondaryButton, SuccessButton } from '@/components/ButtonStyles';
+import ThemeDropdown from '@/components/Dropdown/ThemeDropdown';
 import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
+import RequestIdiomForm from '@/components/Forms/RequestIdiomForm';
 import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
 import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
-import { SecondaryButton, SuccessButton } from '@/components/ButtonStyles';
 import { useUser } from '@/context/userContext';
-import ThemeDropdown from '@/components/Dropdown/ThemeDropdown';
-import RequestIdiomForm from '@/components/Forms/RequestIdiomForm';
+import AddIcon from '@/images/add.svg?react';
 
 const TopRow = styled.div`
   display: flex;
