@@ -40,6 +40,8 @@ type RequestIdiomFormProps = {
   onClose: () => void;
 };
 
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
 const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
   const [formData, setFormData] = useState({
     title: '',
@@ -65,8 +67,8 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
     try {
       const api = await getAuthorizedApi();
       await api.post('/', {
-        title: formData.title.trim(),
-        contributor: formData.contributor.trim() || null,
+        title: capitalize(formData.title.trim()),
+        contributor: capitalize(formData.contributor.trim()) || null,
       });
 
       Swal.fire({
@@ -101,6 +103,7 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
           onChange={handleInputChange}
           placeholder='The cat’s out of the bag'
           required
+          maxLength={100}
         />
         <TextField
           label='Your Name'
@@ -108,6 +111,7 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
           placeholder='Miles'
           value={formData.contributor}
           onChange={handleInputChange}
+          maxLength={50}
         />
         <ButtonsWrapper>
           <SuccessButton type='submit' className='btn btn-success'>
