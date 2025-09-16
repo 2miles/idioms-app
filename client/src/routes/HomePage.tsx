@@ -7,7 +7,7 @@ import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
 import IdiomTableView from '@/components/IdiomTableView/IdiomTableView';
 import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
-import { SuccessButton } from '@/components/ButtonStyles';
+import { SecondaryButton, SuccessButton } from '@/components/ButtonStyles';
 import { useUser } from '@/context/userContext';
 import ThemeDropdown from '@/components/Dropdown/ThemeDropdown';
 import RequestIdiomForm from '@/components/Forms/RequestIdiomForm';
@@ -72,10 +72,12 @@ const HomePage = () => {
               Add
             </CustomSuccessButton>
           )}
-          {(isRegularUser || isAdmin) && (
+          {isRegularUser || isAdmin ? (
             <CustomSuccessButton onClick={openRequestModal} className='btn btn-success'>
               Request
             </CustomSuccessButton>
+          ) : (
+            <SecondaryButton disabled>Log in to request an idiom</SecondaryButton>
           )}
         </LeftBox>
 

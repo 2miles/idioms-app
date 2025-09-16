@@ -8,6 +8,12 @@ const ButtonBase = styled.button`
   border-radius: 8px !important;
   text-decoration: none;
   justify-content: center;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    filter: grayscale(0.5);
+  }
 `;
 
 // Success button
