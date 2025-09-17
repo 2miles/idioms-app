@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { jwtCheck } from '../authMiddleware.js';
 import { getUserSettings, upsertUserSettings } from '../controllers/userSettingsController.js';
+import { jwtCheck } from '../middleware/auth.js';
 
 const router = express.Router();
 

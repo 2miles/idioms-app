@@ -1,6 +1,5 @@
 import express from 'express';
 
-import { checkRole, jwtCheck } from '../authMiddleware.js';
 import {
   createExample,
   createIdiom,
@@ -12,6 +11,7 @@ import {
   updateExamples,
   updateIdiom,
 } from '../controllers/idiomsController.js';
+import { checkRole, jwtCheck } from '../middleware/auth.js';
 
 const router = express.Router();
 
