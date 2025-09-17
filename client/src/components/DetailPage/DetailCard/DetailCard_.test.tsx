@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { suppressConsoleOutput } from '@/../../testUtils';
 import { UserContext, UserContextType } from '@/context/userContext';
 import { Idiom } from '@/types';
+import { suppressConsoleOutput } from '@/utils/testUtils';
 
 import DetailCard from './DetailCard';
 

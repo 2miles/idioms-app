@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, test, vi } from 'vitest'; // Core Vitest 
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'; // Simulate and interact with the React component like a user would
 
-import { suppressConsoleOutput } from '@/../../testUtils';
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder'; // Cusotm hook used inside AddIdiom to call the API. We need to control it
 import { IdiomsContext } from '@/context/idiomsContext'; // AddIdiom uses it (via useContext) and needs it for testing
+import { suppressConsoleOutput } from '@/utils/testUtils';
 
 import AddIdiomForm from './AddIdiomForm'; // The component your testing
 

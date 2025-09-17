@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-import { suppressConsoleOutput } from '@/../../testUtils';
 import { IdiomsContext } from '@/context/idiomsContext';
+import { suppressConsoleOutput } from '@/utils/testUtils';
 
 import AddExampleForm from './AddExampleForm';
 
