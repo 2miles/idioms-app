@@ -1,20 +1,40 @@
 import { Request, Response } from 'express';
+import sanitizeHtml from 'sanitize-html';
+import { z } from 'zod';
 
 import pool from '../db/index.js';
+
+const requestSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(100),
+  contributor: z.string().max(50).optional(),
+});
 
 // Create a new request
 export async function createRequest(req: Request, res: Response): Promise<void> {
   try {
-    const { title, contributor } = req.body;
+    const parsed = requestSchema.safeParse(req.body);
 
-    if (!title || title.trim() === '') {
-      res.status(400).json({ error: 'Title is required' });
+    if (!parsed.success) {
+      const message = parsed.error.issues.map((e) => e.message).join(', ');
+      res.status(400).json({ error: `Validation error: ${message}` });
       return;
     }
 
+    const sanitizedTitle = sanitizeHtml(parsed.data.title.trim(), {
+      allowedTags: [],
+      allowedAttributes: {},
+    });
+
+    const sanitizedContributor = parsed.data.contributor
+      ? sanitizeHtml(parsed.data.contributor.trim(), {
+          allowedTags: [],
+          allowedAttributes: {},
+        })
+      : null;
+
     const result = await pool.query(
       `INSERT INTO requests (title, contributor) VALUES ($1, $2) RETURNING *`,
-      [title.trim(), contributor?.trim() || null],
+      [sanitizedTitle, sanitizedContributor],
     );
 
     res.status(201).json({
