@@ -193,7 +193,11 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
         />
         <FormControlsWrapper>
           <ButtonsWrapper>
-            <SuccessButton type='submit' className='btn btn-success'>
+            <SuccessButton
+              type='submit'
+              className='btn btn-success'
+              data-testid='submit-add-idiom-button'
+            >
               Add
             </SuccessButton>
             <div className='form-check'>

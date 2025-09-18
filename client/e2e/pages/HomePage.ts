@@ -11,7 +11,8 @@ export class HomePage {
   constructor(page: Page) {
     this.page = page;
 
-    this.addIdiomButton = page.getByRole('button', { name: /add idiom/i });
+    // this.addIdiomButton = page.getByRole('button', { name: /add/i });
+    this.addIdiomButton = page.getByTestId('open-add-idiom-button');
     this.tableRows = page.locator('table tbody tr');
     this.showingText = page.locator('p', { hasText: /of \d+ idioms/i });
     this.itemsPerPageDropdown = page.locator('button', { hasText: /items per page/i });

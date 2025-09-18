@@ -67,7 +67,11 @@ const HomePage = () => {
       <TopRow>
         <LeftBox>
           {isAdmin && (
-            <CustomSuccessButton onClick={openAddModal} className='btn btn-success'>
+            <CustomSuccessButton
+              onClick={openAddModal}
+              className='btn btn-success'
+              data-testid='open-add-idiom-button'
+            >
               <StyledAddIcon />
               Add
             </CustomSuccessButton>
