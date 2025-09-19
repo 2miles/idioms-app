@@ -1,11 +1,10 @@
 // src/components/Dropdown/ThemeDropdown.tsx
 import styled from 'styled-components';
+
 import Dropdown from '@/components/Dropdown/Dropdown/Dropdown';
 import { useUser } from '@/context/userContext';
-import type { Theme } from '@/utils/theme';
-
-// Always-shown icon
 import ThemeIcon from '@/images/dark-mode.svg?react';
+import type { Theme } from '@/utils/theme';
 
 const Icon = styled.span`
   inline-size: 24px;

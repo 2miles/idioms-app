@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect, ReactNode } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import ArrowUpIcon from '@/images/arrow-up.svg?react';
 import ArrowDownIcon from '@/images/arrow-down.svg?react';
+import ArrowUpIcon from '@/images/arrow-up.svg?react';
 
 type DropdownVariantType = 'searchColumn' | 'avatar';
 

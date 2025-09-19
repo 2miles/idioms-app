@@ -1,8 +1,10 @@
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
+
 import { screen, waitFor } from '@testing-library/react';
-import { vi, test, expect, beforeEach, Mock, describe } from 'vitest';
+
+import { publicIdiomFinder } from '@/apis/idiomFinder';
 
 import { setupIdiomTableView } from '../helpers/setupIdiomTableView';
-import { publicIdiomFinder } from '@/apis/idiomFinder';
 
 beforeEach(() => {
   vi.clearAllMocks();

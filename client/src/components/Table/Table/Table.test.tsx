@@ -1,8 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { describe, test, expect, vi } from 'vitest';
-import Table from './Table';
-import { ColumnVisibility, Idiom } from '@/types';
 import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, test, vi } from 'vitest';
+
+import { render, screen } from '@testing-library/react';
+
+import { ColumnVisibility, Idiom } from '@/types';
+
+import Table from './Table';
 
 const tableData: Idiom[] = [
   {

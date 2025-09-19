@@ -1,6 +1,7 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode'; // Use the named export
+import { useEffect, useState } from 'react';
+
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Define the structure of your token payload
 interface TokenPayload {

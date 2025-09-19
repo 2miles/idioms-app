@@ -1,8 +1,11 @@
-import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import TableBody from './TableBody';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { fireEvent, render, screen } from '@testing-library/react';
+
 import { Columns } from '@/types';
+
+import TableBody from './TableBody';
 
 const mockNavigate = vi.fn();
 

@@ -61,6 +61,7 @@ export const IdiomInfo = styled.div`
   background-color: var(--bg-dark);
   font-size: 1rem;
 `;
+
 export const DefinitionText = styled.p`
   margin-bottom: var(--margin-md) !important;
 `;

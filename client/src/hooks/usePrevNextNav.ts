@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import { buildAdjacentParams, buildBackHref, getListStateFromURL } from '@/utils/listParams';
 

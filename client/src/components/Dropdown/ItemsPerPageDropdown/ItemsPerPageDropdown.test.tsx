@@ -1,5 +1,7 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { fireEvent, render, screen, within } from '@testing-library/react';
+
 import ItemsPerPageDropdown from './ItemsPerPageDropdown';
 
 describe('ItemsPerPageDropdown', () => {

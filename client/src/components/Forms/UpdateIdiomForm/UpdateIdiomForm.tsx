@@ -1,14 +1,14 @@
-import { useContext, useState } from 'react';
 import moment from 'moment';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import { IdiomsContext } from '@/context/idiomsContext';
-import { Idiom, UpdateIdiomInput } from '@/types';
+import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
-import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
+import { IdiomsContext } from '@/context/idiomsContext';
+import { Idiom, UpdateIdiomInput } from '@/types';
 
 const FormContainer = styled.div`
   background-color: var(--bg-dark);

@@ -1,6 +1,8 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { describe, expect, test, vi } from 'vitest';
+
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, test, expect, vi } from 'vitest';
+
 import Dropdown from './Dropdown';
 
 describe('Dropdown', () => {

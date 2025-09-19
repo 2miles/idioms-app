@@ -1,7 +1,10 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
-import SearchColumnDropdown from './SearchColumnDropdown';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { fireEvent, render, screen, within } from '@testing-library/react';
+
 import { Columns, SearchColumns } from '@/types';
+
+import SearchColumnDropdown from './SearchColumnDropdown';
 
 describe('SearchColumnDropdown', () => {
   const mockHandleColumnChange = vi.fn();

@@ -1,7 +1,9 @@
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import { SecondaryButton } from '../ButtonStyles';
 import { styled } from 'styled-components';
+
+import { useAuth0 } from '@auth0/auth0-react';
+
+import { SecondaryButton } from '@/components/ButtonStyles';
 
 type LogoutButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 

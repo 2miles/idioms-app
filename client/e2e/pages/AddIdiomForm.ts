@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+
 import { AddIdiomFormData } from '../test-data/idioms';
 
 export class AddIdiomForm {
@@ -21,7 +22,7 @@ export class AddIdiomForm {
     this.contributorInput = page.getByRole('textbox', { name: 'Contributor', exact: true });
 
     this.keepOpenCheckbox = page.getByLabel('Keep Open');
-    this.submitButton = page.getByRole('button', { name: /^add$/i });
+    this.submitButton = page.getByTestId('submit-add-idiom-button');
   }
 
   async fillForm({ title, titleGeneral, definition, contributor, timestamp }: AddIdiomFormData) {

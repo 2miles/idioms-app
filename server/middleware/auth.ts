@@ -9,11 +9,13 @@ export const jwtCheck = auth({
 });
 
 export const checkRole =
-  (requiredRole: string) =>
+  (requiredRoles: string | string[]) =>
   (req: Request, res: Response, next: NextFunction): void => {
-    const roles = (req.auth?.payload?.['https://api.idiomvault.com/roles'] ||
-      []) as string[];
-    if (!roles.includes(requiredRole)) {
+    const userRoles = (req.auth?.payload?.['https://api.idiomvault.com/roles'] || []) as string[];
+    const required = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+
+    const hasRole = required.some((role) => userRoles.includes(role));
+    if (!hasRole) {
       res.status(403).json({ error: 'Forbidden: Insufficient roles' });
       return;
     }

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import RestoreIcon from '@/images/arrow-restore.svg?react';
+
 import { SecondaryButton } from '@/components/ButtonStyles';
+import RestoreIcon from '@/images/arrow-restore.svg?react';
 
 export const StyledRestoreIcon = styled(RestoreIcon)`
   width: 22px;

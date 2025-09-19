@@ -1,14 +1,14 @@
-import { useState, useContext } from 'react';
 import moment from 'moment';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import { IdiomsContext } from '@/context/idiomsContext';
+import { SuccessButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
+import { IdiomsContext } from '@/context/idiomsContext';
 import { NewIdiomInput } from '@/types';
-import { SuccessButton } from '@/components/ButtonStyles';
 
 const FormContainer = styled.div`
   background-color: var(--bg-dark);
@@ -92,7 +92,6 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.trace('🚨 handleSubmit called');
     setValidated(true);
     if (formData.title.trim() === '') {
       return; // Prevent form submission if title is empty
@@ -194,7 +193,11 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
         />
         <FormControlsWrapper>
           <ButtonsWrapper>
-            <SuccessButton type='submit' className='btn btn-success'>
+            <SuccessButton
+              type='submit'
+              className='btn btn-success'
+              data-testid='submit-add-idiom-button'
+            >
               Add
             </SuccessButton>
             <div className='form-check'>

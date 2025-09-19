@@ -1,27 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import {
-  StyledRestoreIcon,
-  TableSectionWrapper,
-  TableControls,
-  PaginationWrapper,
-  ResetButton,
-  ShowingText,
-  SearchBarWrapper,
-  RightGroup,
-  LeftGroup,
-} from './IdiomTableView.styles';
-import { Idiom, ColumnVisibility, ColumnAccessors, SearchColumnAccessors } from '@/types';
+import { publicIdiomFinder } from '@/apis/idiomFinder';
+import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
+import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
+import Pagination from '@/components/Pagination/Pagination';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Table from '@/components/Table/Table/Table';
-import Pagination from '@/components/Pagination/Pagination';
-import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
-import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
-import { publicIdiomFinder } from '@/apis/idiomFinder';
 import { useDebounce } from '@/hooks/useDebounce';
+import { ColumnAccessors, ColumnVisibility, Idiom, SearchColumnAccessors } from '@/types';
 import { getListStateFromURL } from '@/utils/listParams';
 import { getShowingText } from '@/utils/pagination';
+
+import {
+  LeftGroup,
+  PaginationWrapper,
+  ResetButton,
+  RightGroup,
+  SearchBarWrapper,
+  ShowingText,
+  StyledRestoreIcon,
+  TableControls,
+  TableSectionWrapper,
+} from './IdiomTableView.styles';
 
 // TODO:
 // Make searchParams setup fully cleaned and abstracted

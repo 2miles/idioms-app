@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import pool from '../db/index.js';
 
 type Theme = 'light' | 'dark' | 'system';

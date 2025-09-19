@@ -1,5 +1,9 @@
 import moment from 'moment';
 
+import { SecondaryButton } from '@/components/ButtonStyles';
+import { useUser } from '@/context/userContext';
+import { Idiom } from '@/types';
+
 import {
   Card,
   CardBody,
@@ -14,9 +18,6 @@ import {
   SectionHeader,
   UpdateExampleButtons,
 } from './DetailCard.styles';
-import { Idiom } from '@/types';
-import { SecondaryButton } from '@/components/ButtonStyles';
-import { useUser } from '@/context/userContext';
 
 type DetailCardProps = {
   idiom: Idiom;

@@ -1,5 +1,5 @@
 import { screen, waitFor } from '@testing-library/react';
-import { vi, test, expect, beforeEach, describe } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { setupIdiomTableView } from '../helpers/setupIdiomTableView';
 

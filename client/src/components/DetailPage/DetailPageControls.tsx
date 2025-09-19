@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { SecondaryButton } from '../ButtonStyles';
+
+import { SecondaryButton } from '@/components/ButtonStyles';
 
 type DetailPageControlsProps = {
   prevId?: number;

@@ -1,13 +1,14 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import HamburgerIcon from '@/images/hamburger.svg?react';
+import { useAuth0 } from '@auth0/auth0-react';
+
+import AvatarDropdown from '@/components/Dropdown/AvatarDropdown';
 import LoginButton from '@/components/NavBar/LoginButton';
+import PageContainer from '@/components/PageContainer';
 import { useUser } from '@/context/userContext';
-import PageContainer from '../PageContainer';
-import AvatarDropdown from '../Dropdown/AvatarDropdown';
+import HamburgerIcon from '@/images/hamburger.svg?react';
 
 const NavContainer = styled(PageContainer)`
   margin-bottom: 0;
@@ -114,6 +115,7 @@ const NavBar = () => {
   const navRef = useRef<HTMLDivElement | null>(null);
   const { loginWithRedirect } = useAuth0();
   const { isAuthenticated } = useUser();
+  const { isAdmin } = useUser();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -172,9 +174,11 @@ const NavBar = () => {
               <Link to='/about' onClick={closeMenu} className='nav-link'>
                 About
               </Link>
-              <Link to='/' onClick={closeMenu} className='nav-link'>
-                Request
-              </Link>
+              {isAdmin && (
+                <Link to='/requests' onClick={closeMenu} className='nav-link'>
+                  Requests
+                </Link>
+              )}
             </NavbarLinks>
           </NavLeft>
 

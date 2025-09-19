@@ -1,6 +1,6 @@
+import moment, { Moment } from 'moment';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
-import moment, { Moment } from 'moment';
 import { styled } from 'styled-components';
 
 type TimestampFieldProps = {

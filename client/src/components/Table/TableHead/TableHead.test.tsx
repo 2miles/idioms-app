@@ -1,7 +1,9 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
-import TableHead from './TableHead';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { ColumnAccessors, Columns } from '@/types';
+
+import TableHead from './TableHead';
 
 describe('TableHead', () => {
   const visibleColumns = Columns.slice(0, 3); // e.g. position, title, definition

@@ -1,12 +1,12 @@
-import { BrowserRouter } from 'react-router-dom';
-import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 
 import App from '@/App';
 import { IdiomsContextProvider } from '@/context/idiomsContext';
 import { UserProvider } from '@/context/userContext';
-import AuthProvider from '@/providers/AuthProvider';
 import '@/index.css';
+import AuthProvider from '@/providers/AuthProvider';
 
 const container = document.getElementById('root');
 if (!container) {

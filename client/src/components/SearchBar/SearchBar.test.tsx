@@ -1,7 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { SearchColumnAccessors } from '@/types';
+
 import SearchBar from './SearchBar';
-import { ColumnAccessors, SearchColumnAccessors } from '@/types';
 
 describe('SearchBar', () => {
   const mockOnSearchTermChange = vi.fn();

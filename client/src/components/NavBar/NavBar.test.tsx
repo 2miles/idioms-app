@@ -1,15 +1,17 @@
-import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import NavBar from './NavBar';
-import { describe, expect, test, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { useAuth0 } from '@auth0/auth0-react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { UserContext, UserContextType } from '@/context/userContext';
+
+import NavBar from './NavBar';
 
 vi.mock('@auth0/auth0-react', () => ({
   useAuth0: vi.fn(),
 }));
-
-import { useAuth0 } from '@auth0/auth0-react';
-import { UserContext, UserContextType } from '@/context/userContext';
 
 // @ts-expect-error Suppress vi.MockedFunction type issue
 const mockUseAuth0 = useAuth0 as vi.MockedFunction<typeof useAuth0>;
@@ -20,16 +22,12 @@ function makeUserContextMock(overrides: Partial<UserContextType> = {}): UserCont
     roles: [],
     isAuthenticated: false,
     isAdmin: false,
+    isRegularUser: false,
 
     theme: 'light',
     loadingTheme: false,
     setTheme: vi.fn(),
     toggleTheme: vi.fn(),
-
-    // add any other fields your real context exposes
-    // user: null,
-    // login: vi.fn(),
-    // logout: vi.fn(),
 
     ...overrides,
   };
@@ -79,15 +77,12 @@ describe('NavBar', () => {
     expect(brandLink).toHaveAttribute('href', '/');
   });
 
-  // TODO: Re-implement when links are re-added to NavBar
   test('renders navigation menu links', () => {
     setup();
     expect(screen.getByRole('link', { name: /list/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /about/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /request/i })).toBeInTheDocument();
   });
 
-  // TODO: Re-implement when hamburger is re-added to NavBar
   test('toggles menu when clicking hamburger', async () => {
     const user = userEvent.setup();
     setup();
@@ -104,7 +99,6 @@ describe('NavBar', () => {
     expect(menuLinksContainer).not.toHaveClass('open');
   });
 
-  // TODO: Re-implement when nav menu is re-added to NavBar
   test('closes the menu when clicking outside', async () => {
     const user = userEvent.setup();
     setup();

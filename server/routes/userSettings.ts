@@ -1,13 +1,11 @@
 import express from 'express';
-import { jwtCheck } from '../authMiddleware.js';
+
 import { getUserSettings, upsertUserSettings } from '../controllers/userSettingsController.js';
+import { jwtCheck } from '../middleware/auth.js';
 
-const userSettingsRouter = express.Router();
+const router = express.Router();
 
-// GET /api/v1/me/settings
-userSettingsRouter.get('/me/settings', jwtCheck, getUserSettings);
+router.get('/me/settings', jwtCheck, getUserSettings);
+router.put('/me/settings', jwtCheck, upsertUserSettings);
 
-// PUT /api/v1/me/settings
-userSettingsRouter.put('/me/settings', jwtCheck, upsertUserSettings);
-
-export default userSettingsRouter;
+export default router;

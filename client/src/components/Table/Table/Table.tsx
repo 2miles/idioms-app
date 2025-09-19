@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { Idiom, ColumnAccessors, ColumnVisibility, Columns } from '@/types';
 import TableBody from '@/components/Table/TableBody/TableBody';
 import TableHead from '@/components/Table/TableHead/TableHead';
+import { ColumnAccessors, ColumnVisibility, Columns, Idiom } from '@/types';
 
 export const StyledTable = styled.table`
   width: 100%;

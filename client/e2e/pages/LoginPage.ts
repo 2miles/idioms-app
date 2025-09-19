@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
@@ -17,7 +17,7 @@ export class LoginPage {
 
   async login(email: string, password: string) {
     await this.page.goto('http://localhost:5174');
-    await this.page.getByRole('button', { name: 'Log In' }).click();
+    await this.page.getByRole('button', { name: 'Log In', exact: true }).click();
     await this.page.waitForURL(/auth0\.com/);
 
     await this.emailInput.fill(email);

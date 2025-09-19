@@ -1,32 +1,32 @@
 import express from 'express';
+
 import {
+  createExample,
+  createIdiom,
+  deleteExample,
+  deleteIdiom,
+  getAdjacentIdioms,
   getAllIdioms,
   getSingleIdiomWithExamples,
-  createIdiom,
-  updateIdiom,
-  deleteIdiom,
-  createExample,
   updateExamples,
-  deleteExample,
-  getAdjacentIdioms,
+  updateIdiom,
 } from '../controllers/idiomsController.js';
+import { checkRole, jwtCheck } from '../middleware/auth.js';
 
-import { jwtCheck, checkRole } from '../authMiddleware.js';
-
-const idiomsRouter = express.Router();
+const router = express.Router();
 
 // Public
-idiomsRouter.get('/', getAllIdioms);
-idiomsRouter.get('/adjacent', getAdjacentIdioms);
-idiomsRouter.get('/:id(\\d+)', getSingleIdiomWithExamples);
+router.get('/', getAllIdioms);
+router.get('/adjacent', getAdjacentIdioms);
+router.get('/:id(\\d+)', getSingleIdiomWithExamples);
 
 // // Protected
-idiomsRouter.post('/', jwtCheck, checkRole('Admin'), createIdiom);
-idiomsRouter.put('/:id', jwtCheck, checkRole('Admin'), updateIdiom);
-idiomsRouter.delete('/:id', jwtCheck, checkRole('Admin'), deleteIdiom);
+router.post('/', jwtCheck, checkRole('Admin'), createIdiom);
+router.put('/:id', jwtCheck, checkRole('Admin'), updateIdiom);
+router.delete('/:id', jwtCheck, checkRole('Admin'), deleteIdiom);
 
-idiomsRouter.post('/:id/examples', jwtCheck, checkRole('Admin'), createExample);
-idiomsRouter.put('/:id/examples', jwtCheck, checkRole('Admin'), updateExamples);
-idiomsRouter.delete('/examples/:id', jwtCheck, checkRole('Admin'), deleteExample);
+router.post('/:id/examples', jwtCheck, checkRole('Admin'), createExample);
+router.put('/:id/examples', jwtCheck, checkRole('Admin'), updateExamples);
+router.delete('/examples/:id', jwtCheck, checkRole('Admin'), deleteExample);
 
-export default idiomsRouter;
+export default router;

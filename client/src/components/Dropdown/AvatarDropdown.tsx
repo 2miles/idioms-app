@@ -1,6 +1,7 @@
+import { useAuth0 } from '@auth0/auth0-react';
+
 import Dropdown from '@/components/Dropdown/Dropdown/Dropdown';
 import Avatar from '@/components/NavBar/Avatar';
-import { useAuth0 } from '@auth0/auth0-react';
 
 type AvatarDropdownProps = {
   // optional future props (e.g., onProfile, onSettings)

@@ -1,8 +1,10 @@
-import express, { Response } from 'express';
-import dotenv from 'dotenv';
-import morgan from 'morgan'; // HTTP request logger
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express, { Response } from 'express';
+import morgan from 'morgan'; // HTTP request logger
+
 import idiomsRouter from './routes/idioms.js';
+import requestsRoutes from './routes/requests.js';
 import userSettingsRouter from './routes/userSettings.js';
 
 dotenv.config();
@@ -28,6 +30,7 @@ if (process.env.NODE_ENV === 'test') {
 
 app.use('/api/v1/idioms', idiomsRouter);
 app.use('/api/v1', userSettingsRouter);
+app.use('/api/v1/requests', requestsRoutes);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);

@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 
-import { Column, ColumnAccessors } from '@/types';
-import ArrowUpIcon from '@/images/arrow-up-sort.svg?react';
 import ArrowDownIcon from '@/images/arrow-down-sort.svg?react';
 import ArrowNeutralIcon from '@/images/arrow-up-arrow-down.svg?react';
+import ArrowUpIcon from '@/images/arrow-up-sort.svg?react';
+import { Column, ColumnAccessors } from '@/types';
 
 type TableHeadProps = {
   columns: Column[];
