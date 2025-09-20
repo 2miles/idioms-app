@@ -71,6 +71,17 @@ CREATE TABLE public.idioms (
 
 ALTER TABLE public.idioms OWNER TO postgres;
 
+-- Stores idiom requests submitted by users
+CREATE TABLE public.requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    contributor TEXT,
+    submitted_at TIMESTAMPTZ DEFAULT now(),
+    added BOOLEAN DEFAULT false
+);
+
+ALTER TABLE public.requests OWNER TO postgres;
+
 -- Tracks whether E2E tests are currently running (used for local locking)
 CREATE TABLE public.e2e_lock (
     id INT PRIMARY KEY,
@@ -914,6 +925,13 @@ COPY public.idioms (id, title, title_general, definition, contributor, timestamp
 148	This isn’t my first rodeo	Not (one’s) first rodeo	One is experienced with a certain situation, especially in relation to potential pitfalls or deceitful practices by others.	Miles	2023-07-14 00:00:21-07
 149	Bury the hatchet	Bury the hatchet	To make peace with someone.	Miles	2023-07-14 00:22:00-07
 150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 00:23:00-07
+\.
+
+-- Seed test requests
+COPY public.requests (id, title, contributor, submitted_at, added) FROM stdin;
+550e8400-e29b-41d4-a716-446655440000	A watched pot never boils	Christina	2025-01-01 12:00:00-07	false
+550e8400-e29b-41d4-a716-446655440001	When pigs fly	Miles	2025-01-02 12:00:00-07	false
+550e8400-e29b-41d4-a716-446655440002	Kick the bucket	TestUser	2025-01-03 12:00:00-07	true
 \.
 
 SELECT pg_catalog.setval('public.idiom_examples_example_id_seq', 674, true);
