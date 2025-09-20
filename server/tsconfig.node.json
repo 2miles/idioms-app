@@ -25,8 +25,8 @@
     /* Other */
     "noEmit": false,
     "isolatedModules": true,
-    "outDir": "dist",
-    "rootDir": "./"
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "include": ["**/*.ts"]
+  "include": ["src/**/*"]
 }
