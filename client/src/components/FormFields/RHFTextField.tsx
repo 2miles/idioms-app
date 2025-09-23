@@ -1,4 +1,4 @@
-import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
+import { useFormContext, useFormState } from 'react-hook-form';
 import styled from 'styled-components';
 
 const StyledInput = styled.input`
@@ -13,21 +13,13 @@ const StyledInput = styled.input`
 type RHFTextFieldProps = {
   id: string;
   label: string;
-  registration: UseFormRegisterReturn;
-  error?: FieldError;
-  isSubmitted?: boolean;
-  isTouched?: boolean;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const RHFTextField = ({
-  id,
-  label,
-  registration,
-  error,
-  isSubmitted,
-  isTouched,
-  ...props
-}: RHFTextFieldProps) => {
+const RHFTextField = ({ id, label, ...props }: RHFTextFieldProps) => {
+  const { register, control } = useFormContext();
+  const { errors, isSubmitted, touchedFields } = useFormState({ control });
+  const error = errors[id];
+  const isTouched = touchedFields[id];
   const validationClass = error ? 'is-invalid' : isTouched || isSubmitted ? 'is-valid' : '';
   return (
     <div className='form-group'>
@@ -36,10 +28,10 @@ const RHFTextField = ({
         id={id}
         type='text'
         className={`form-control ${validationClass}`}
-        {...registration}
+        {...register(id)}
         {...props}
       />
-      {error && <div className='invalid-feedback d-block'>{error.message}</div>}
+      {error && <div className='invalid-feedback d-block'>{(error as any).message}</div>}
     </div>
   );
 };
