@@ -224,6 +224,31 @@ This script:
 
 You can run this script manually at any time to restore a clean testing state.
 
+### Auth State for E2E Tests
+
+Playwright E2E tests rely on pre-populated storage state files for test accounts:
+
+- `client/e2e/.auth/admin.json`
+- `client/e2e/.auth/user.json`
+
+These files contain login cookies + tokens for your test admin and test user accounts in Auth0.
+
+To generate them, add your test account credentials to `client/e2e/.env`:
+
+```conf
+TEST_ADMIN_EMAIL=admintest@example.com
+TEST_ADMIN_PASSWORD=supersecret
+TEST_USER_EMAIL=usertest@example.com
+TEST_USER_PASSWORD=supersecret
+```
+
+Then run:
+
+```bash
+# one-time setup to populate .auth files
+npx tsx client/e2e/global.setup.ts
+```
+
 ## Deployment
 
 You can deploy the backend to any Node-compatible cloud host (e.g. Railway, Render, Fly.io) and the frontend to Vercel, Netlify, or another static host.
