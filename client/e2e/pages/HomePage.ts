@@ -8,11 +8,17 @@ export class HomePage {
   readonly itemsPerPageDropdown: Locator;
   readonly itemsPerPageOption10: Locator;
 
+  readonly requestButton: Locator;
+  readonly adminRequestsLink: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
     // this.addIdiomButton = page.getByRole('button', { name: /add/i });
     this.addIdiomButton = page.getByTestId('open-add-idiom-button');
+    this.requestButton = page.getByRole('button', { name: /request/i });
+    this.adminRequestsLink = page.getByRole('link', { name: /^requests$/i });
+
     this.tableRows = page.locator('table tbody tr');
     this.showingText = page.locator('p', { hasText: /of \d+ idioms/i });
     this.itemsPerPageDropdown = page.locator('button', { hasText: /items per page/i });
@@ -40,6 +46,14 @@ export class HomePage {
 
   async openAddIdiomForm() {
     await this.addIdiomButton.click();
+  }
+
+  async openRequestForm() {
+    await this.requestButton.click();
+  }
+
+  async goToRequestsPage() {
+    await this.adminRequestsLink.click();
   }
 
   async clickTableRowWithText(text: string) {

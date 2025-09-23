@@ -47,3 +47,11 @@ async function globalSetup() {
 }
 
 export default globalSetup;
+
+// ✅ Run directly with `npx tsx e2e/global.setup.ts`
+if (import.meta.url === `file://${process.argv[1]}`) {
+  globalSetup().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
