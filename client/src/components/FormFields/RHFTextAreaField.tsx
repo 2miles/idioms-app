@@ -1,21 +1,22 @@
 import { useFormContext, useFormState } from 'react-hook-form';
 import styled from 'styled-components';
 
-const StyledInput = styled.input`
+const StyledTextArea = styled.textarea`
   border-color: var(--color-border) !important;
   background-color: var(--bg-medium) !important;
   color: var(--color-text-primary) !important;
   &::placeholder {
-    color: var(--color-text-dim);
+    color: var(--color-text-dim) !important;
   }
 `;
 
-type RHFTextFieldProps = {
+type RHFTextAreaFieldProps = {
   id: string;
   label: string;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+  rows?: number;
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const RHFTextField = ({ id, label, ...props }: RHFTextFieldProps) => {
+const TextAreaField = ({ id, label, rows = 4, ...props }: RHFTextAreaFieldProps) => {
   const { register, control } = useFormContext();
   const { errors, isSubmitted, touchedFields } = useFormState({ control });
 
@@ -26,16 +27,15 @@ const RHFTextField = ({ id, label, ...props }: RHFTextFieldProps) => {
   return (
     <div className='form-group'>
       <label htmlFor={id}>{label}</label>
-      <StyledInput
+      <StyledTextArea
         id={id}
-        type='text'
-        className={`form-control ${validationClass}`}
+        className={`form-control${validationClass}`}
+        rows={rows}
         {...register(id)}
         {...props}
       />
-      {error && <div className='invalid-feedback d-block'>{(error as any).message}</div>}
     </div>
   );
 };
 
-export default RHFTextField;
+export default TextAreaField;

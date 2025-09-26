@@ -1,12 +1,15 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import moment from 'moment';
 import { useContext, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
+import { z } from 'zod';
 
 import { SuccessButton } from '@/components/ButtonStyles';
-import TextAreaField from '@/components/FormFields/TextAreaField';
-import TextField from '@/components/FormFields/TextField';
-import TimestampField from '@/components/FormFields/TimestampField';
+import RHFTextAreaField from '@/components/FormFields/RHFTextAreaField';
+import RHFTextField from '@/components/FormFields/RHFTextField';
+import RHFTimestampField from '@/components/FormFields/RHFTimestampField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { NewIdiomInput } from '@/types';
 
@@ -17,6 +20,7 @@ const FormContainer = styled.div`
   padding-left: var(--padding-lg);
   padding-right: var(--padding-lg);
   padding-bottom: var(--padding-sm);
+
   @media (max-width: 600px) {
     padding-left: 0;
     padding-right: 0;
@@ -60,58 +64,59 @@ type AddIdiomProps = {
   onSucess?: () => void;
 };
 
+const schema = z.object({
+  title: z.string().min(1, 'Title is required').max(100).trim(),
+  titleGeneral: z
+    .string()
+    .transform((val) => (val.trim() === '' ? null : val))
+    .nullable(),
+  definition: z
+    .string()
+    .transform((val) => (val.trim() === '' ? null : val))
+    .nullable(),
+  contributor: z
+    .string()
+    .transform((val) => (val.trim() === '' ? null : val))
+    .nullable(),
+  timestamp: z.date(),
+});
+
+type FormValues = z.infer<typeof schema>;
+
 const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
   const { addIdiom } = useContext(IdiomsContext);
-
-  const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    titleGeneral: '',
-    definition: '',
-    contributor: '',
-    timestamp: moment(),
+
+  const methods = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: 'onBlur',
+    defaultValues: {
+      title: '',
+      titleGeneral: null,
+      definition: null,
+      contributor: null,
+      timestamp: new Date(),
+    },
   });
 
-  const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
+  const { handleSubmit, reset } = methods;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
-
-  const handleTimestampChange = (value: moment.Moment) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      timestamp: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setValidated(true);
-    if (formData.title.trim() === '') {
-      return; // Prevent form submission if title is empty
-    }
-
-    // Format for the backend and remove milliseconds
-    const formattedTimestamp: string = formData.timestamp.toISOString().split('.')[0] + 'Z';
+  const onSubmit = async (values: FormValues) => {
+    // Format timestamp to backend format (remove milliseconds)
+    const formattedTimestamp = moment(values.timestamp).toISOString().split('.')[0] + 'Z';
 
     const payload: NewIdiomInput = {
-      title: emptyStringToNull(formData.title),
-      title_general: emptyStringToNull(formData.titleGeneral),
-      definition: emptyStringToNull(formData.definition),
-      timestamps: emptyStringToNull(formattedTimestamp),
-      contributor: emptyStringToNull(formData.contributor),
+      title: values.title,
+      title_general: values.titleGeneral,
+      definition: values.definition,
+      contributor: values.contributor,
+      timestamps: formattedTimestamp,
     };
 
     const addedIdiom = await addIdiom(payload);
 
     if (addedIdiom) {
-      clearFormFields();
+      reset(); // clears the form
       Swal.fire({
         title: 'Idiom Added!',
         text: 'The idiom has been successfully added.',
@@ -119,9 +124,7 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
         timer: 1500,
         showConfirmButton: false,
       });
-      if (onSucess) {
-        onSucess();
-      }
+      onSucess?.();
 
       if (!keepOpen) {
         setTimeout(() => {
@@ -137,85 +140,56 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
     }
   };
 
-  const clearFormFields = () => {
-    setFormData({
-      title: '',
-      titleGeneral: '',
-      definition: '',
-      contributor: '',
-      timestamp: moment(),
-    });
-    setValidated(false);
-  };
-
   return (
     <FormContainer>
-      <form
-        className={`needs-validation ${validated ? 'was-validated' : ''}`}
-        noValidate
-        onSubmit={handleSubmit}
-      >
-        <TextField
-          label='Title'
-          id='title'
-          value={formData.title}
-          onChange={handleInputChange}
-          placeholder='Pull yourself up by your bootstraps'
-          required
-        />
-        <TextField
-          label='Title General'
-          id='titleGeneral'
-          value={formData.titleGeneral}
-          onChange={handleInputChange}
-          placeholder="Pull (oneself) up by (one's) (own) bootstraps"
-        />
-        <TextAreaField
-          label='Definition'
-          id='definition'
-          value={formData.definition}
-          onChange={handleInputChange}
-          placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
-          rows={3}
-        />
-        <TimestampField
-          label='Timestamp'
-          id='timestamp'
-          value={formData.timestamp}
-          onChange={handleTimestampChange}
-        />
-        <TextField
-          label='Contributor'
-          id='contributor'
-          placeholder='Miles'
-          value={formData.contributor}
-          onChange={handleInputChange}
-        />
-        <FormControlsWrapper>
-          <ButtonsWrapper>
-            <SuccessButton
-              type='submit'
-              className='btn btn-success'
-              data-testid='submit-add-idiom-button'
-            >
-              Add
-            </SuccessButton>
-            <div className='form-check'>
-              <input
-                id='flexCheckDefault'
-                type='checkbox'
-                value=''
-                className='form-check-input'
-                checked={keepOpen}
-                onChange={(e) => setKeepOpen(e.target.checked)}
-              />
-              <label className='form-check-label' htmlFor='flexCheckDefault'>
-                Keep Open
-              </label>
-            </div>
-          </ButtonsWrapper>
-        </FormControlsWrapper>
-      </form>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <RHFTextField
+            id='title'
+            label='Title'
+            placeholder='Pull yourself up by your bootstraps'
+            maxLength={100}
+          />
+          <RHFTextField
+            id='titleGeneral'
+            label='Title General'
+            placeholder="Pull (oneself) up by (one's) (own) bootstraps"
+            maxLength={200}
+          />
+          <RHFTextAreaField
+            id='definition'
+            label='Definition'
+            placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
+            rows={3}
+          />
+          <RHFTimestampField id='timestamp' label='Timestamp' />
+          <RHFTextField id='contributor' label='Contributor' placeholder='Miles' maxLength={50} />
+
+          <FormControlsWrapper>
+            <ButtonsWrapper>
+              <SuccessButton
+                type='submit'
+                className='btn btn-success'
+                data-testid='submit-add-idiom-button'
+              >
+                Add
+              </SuccessButton>
+              <div className='form-check'>
+                <input
+                  id='flexCheckDefault'
+                  type='checkbox'
+                  className='form-check-input'
+                  checked={keepOpen}
+                  onChange={(e) => setKeepOpen(e.target.checked)}
+                />
+                <label className='form-check-label' htmlFor='flexCheckDefault'>
+                  Keep Open
+                </label>
+              </div>
+            </ButtonsWrapper>
+          </FormControlsWrapper>
+        </form>
+      </FormProvider>
     </FormContainer>
   );
 };
