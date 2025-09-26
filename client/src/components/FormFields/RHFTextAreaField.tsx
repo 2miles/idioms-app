@@ -29,7 +29,7 @@ const TextAreaField = ({ id, label, rows = 4, ...props }: RHFTextAreaFieldProps)
       <label htmlFor={id}>{label}</label>
       <StyledTextArea
         id={id}
-        className={`form-control${validationClass}`}
+        className={`form-control ${validationClass}`}
         rows={rows}
         {...register(id)}
         {...props}
