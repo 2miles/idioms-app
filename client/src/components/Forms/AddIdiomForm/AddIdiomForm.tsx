@@ -38,25 +38,20 @@ const FormContainer = styled.div`
 
 const FormControlsWrapper = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
   .form-check {
-    margin: var(--margin-lg);
-  }
-  .button {
-    margin: var(--margin-lg);
+    margin-bottom: var(--margin-xl);
   }
   label {
     font-weight: normal;
   }
+  padding: var(--padding-lg);
+  align-items: left;
+  width: 100%;
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  margin-left: var(--margin-lg);
-  margin-top: var(--margin-lg);
-  margin-bottom: var(--margin-md);
-  max-height: 40px;
-  align-items: center;
+const WideSuccessButton = styled(SuccessButton)`
+  width: 100%;
 `;
 
 type AddIdiomProps = {
@@ -65,17 +60,24 @@ type AddIdiomProps = {
 };
 
 const schema = z.object({
-  title: z.string().min(1, 'Title is required').max(100).trim(),
+  title: z
+    .string()
+    .nonempty('Title is required')
+    .max(100, 'Title must be 100 characters or less')
+    .trim(),
   titleGeneral: z
     .string()
+    .max(100, 'General Title must be 100 characters or less')
     .transform((val) => (val.trim() === '' ? null : val))
     .nullable(),
   definition: z
     .string()
+    .max(500, 'Definition must be 500 characters or less')
     .transform((val) => (val.trim() === '' ? null : val))
     .nullable(),
   contributor: z
     .string()
+    .max(50, 'Name must be 50 characters or less')
     .transform((val) => (val.trim() === '' ? null : val))
     .nullable(),
   timestamp: z.date(),
@@ -99,7 +101,8 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
     },
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, formState } = methods;
+  const { isSubmitting } = formState;
 
   const onSubmit = async (values: FormValues) => {
     // Format timestamp to backend format (remove milliseconds)
@@ -161,32 +164,32 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
             label='Definition'
             placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
             rows={3}
+            maxLength={500}
           />
           <RHFTimestampField id='timestamp' label='Timestamp' />
           <RHFTextField id='contributor' label='Contributor' placeholder='Miles' maxLength={50} />
 
           <FormControlsWrapper>
-            <ButtonsWrapper>
-              <SuccessButton
-                type='submit'
-                className='btn btn-success'
-                data-testid='submit-add-idiom-button'
-              >
-                Add
-              </SuccessButton>
-              <div className='form-check'>
-                <input
-                  id='flexCheckDefault'
-                  type='checkbox'
-                  className='form-check-input'
-                  checked={keepOpen}
-                  onChange={(e) => setKeepOpen(e.target.checked)}
-                />
-                <label className='form-check-label' htmlFor='flexCheckDefault'>
-                  Keep Open
-                </label>
-              </div>
-            </ButtonsWrapper>
+            <div className='form-check'>
+              <input
+                id='flexCheckDefault'
+                type='checkbox'
+                className='form-check-input'
+                checked={keepOpen}
+                onChange={(e) => setKeepOpen(e.target.checked)}
+              />
+              <label className='form-check-label' htmlFor='flexCheckDefault'>
+                Keep Open
+              </label>
+            </div>
+            <WideSuccessButton
+              type='submit'
+              className='btn btn-success'
+              data-testid='submit-add-idiom-button'
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Adding...' : 'Add'}
+            </WideSuccessButton>
           </FormControlsWrapper>
         </form>
       </FormProvider>
