@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import Swal from 'sweetalert2';
 import { z } from 'zod';
 
-import { SuccessButton } from '@/components/ButtonStyles';
+import { WideSuccessButton } from '@/components/ButtonStyles';
 import RHFTextAreaField from '@/components/FormFields/RHFTextAreaField';
 import RHFTextField from '@/components/FormFields/RHFTextField';
 import RHFTimestampField from '@/components/FormFields/RHFTimestampField';
@@ -47,10 +47,6 @@ const FormControlsWrapper = styled.div`
   }
   padding: var(--padding-lg);
   align-items: left;
-  width: 100%;
-`;
-
-const WideSuccessButton = styled(SuccessButton)`
   width: 100%;
 `;
 
@@ -157,7 +153,7 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
             id='titleGeneral'
             label='Title General'
             placeholder="Pull (oneself) up by (one's) (own) bootstraps"
-            maxLength={200}
+            maxLength={100}
           />
           <RHFTextAreaField
             id='definition'

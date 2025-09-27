@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { z } from 'zod';
 
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
-import { SuccessButton } from '@/components/ButtonStyles';
+import { WideSuccessButton } from '@/components/ButtonStyles';
 import RHFTextField from '@/components/FormFields/RHFTextField';
 
 const FormContainer = styled.div`
@@ -31,11 +31,11 @@ const FormContainer = styled.div`
   }
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  margin-left: var(--margin-lg);
-  margin-top: var(--margin-lg);
-  margin-bottom: var(--margin-md);
+const ButtonWrapper = styled.div`
+  margin-left: var(--margin-md);
+  margin-right: var(--margin-md);
+  margin-top: var(--margin-xl);
+  margin-bottom: var(--margin-lg);
   align-items: center;
 `;
 
@@ -70,7 +70,8 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
       contributor: null,
     },
   });
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, formState } = methods;
+  const { isSubmitting } = formState;
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -103,13 +104,13 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
     <FormContainer>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <RHFTextField id='title' label='Idiom' placeholder='Break a leg' maxLength={100} />
+          <RHFTextField id='title' label='Idiom' placeholder='Break a leg' maxLength={200} />
           <RHFTextField id='contributor' label='Your Name' placeholder='Miles' maxLength={50} />
-          <ButtonsWrapper>
-            <SuccessButton type='submit' className='btn btn-success'>
-              Submit
-            </SuccessButton>
-          </ButtonsWrapper>
+          <ButtonWrapper>
+            <WideSuccessButton type='submit' className='btn btn-success' disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </WideSuccessButton>
+          </ButtonWrapper>
         </form>
       </FormProvider>
     </FormContainer>

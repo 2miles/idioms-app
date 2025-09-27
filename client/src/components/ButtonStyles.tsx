@@ -40,6 +40,10 @@ export const SuccessButton = styled(ButtonBase)`
   }
 `;
 
+export const WideSuccessButton = styled(SuccessButton)`
+  width: 100%;
+`;
+
 // Primary button
 export const PrimaryButton = styled(ButtonBase)`
   background-color: var(--button-primary-bg);
