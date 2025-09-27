@@ -28,6 +28,15 @@ export const SuccessButton = styled(ButtonBase)`
     background-color: var(--button-success-bg-hover);
   }
   &:active {
+    background-color: var(--button-success-bg-hover) !important;
+    border-color: var(--button-success-border-hover) !important;
+    transform: scale(0.99);
+  }
+  &:disabled {
+    background-color: var(--button-success-bg);
+    border-color: var(--button-success-border);
+    opacity: 0.6;
+    filter: grayscale(0.5);
   }
 `;
 
@@ -41,6 +50,15 @@ export const PrimaryButton = styled(ButtonBase)`
     background-color: var(--button-primary-bg-hover);
   }
   &:active {
+    background-color: var(--button-primary-bg-hover) !important;
+    border-color: var(--button-primary-border-hover) !important;
+    transform: scale(0.99);
+  }
+  &:disabled {
+    background-color: var(--button-primary-bg);
+    border-color: var(--button-primary-border);
+    opacity: 0.6;
+    filter: grayscale(0.5);
   }
 `;
 
@@ -54,6 +72,15 @@ export const DangerButton = styled(ButtonBase)`
     background-color: var(--button-danger-bg-hover);
   }
   &:active {
+    background-color: var(--button-danger-bg-hover) !important;
+    border-color: var(--button-danger-border-hover) !important;
+    transform: scale(0.99);
+  }
+  &:disabled {
+    background-color: var(--button-danger-bg);
+    border-color: var(--button-danger-border);
+    opacity: 0.6;
+    filter: grayscale(0.5);
   }
 `;
 
@@ -73,6 +100,13 @@ export const SecondaryButton = styled(ButtonBase)`
     background-color: var(--bg-light) !important;
     border-color: var(--color-border) !important;
     color: var(--color-text-primary) !important;
+    transform: scale(0.99);
+  }
+  &:disabled {
+    background-color: var(--bg-dark);
+    border-color: var(--color-border);
+    opacity: 0.6;
+    filter: grayscale(0.5);
   }
 `;
 
