@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
-import styled from 'styled-components';
 import Swal from 'sweetalert2';
 import { z } from 'zod';
 
@@ -8,36 +7,7 @@ import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { WideSuccessButton } from '@/components/ButtonStyles';
 import RHFTextField from '@/components/FormFields/RHFTextField';
 
-const FormContainer = styled.div`
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-  padding-bottom: var(--padding-sm);
-
-  @media (max-width: 600px) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .form-group {
-    padding: var(--padding-md);
-  }
-
-  label {
-    font-weight: 600;
-    padding-bottom: var(--padding-xs);
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  margin-left: var(--margin-md);
-  margin-right: var(--margin-md);
-  margin-top: var(--margin-xl);
-  margin-bottom: var(--margin-lg);
-  align-items: center;
-`;
+import { FormContainer, SubmitButtonWrapper } from './Form.styles';
 
 type RequestIdiomFormProps = {
   onClose: () => void;
@@ -106,11 +76,11 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <RHFTextField id='title' label='Idiom' placeholder='Break a leg' maxLength={200} />
           <RHFTextField id='contributor' label='Your Name' placeholder='Miles' maxLength={50} />
-          <ButtonWrapper>
+          <SubmitButtonWrapper>
             <WideSuccessButton type='submit' className='btn btn-success' disabled={isSubmitting}>
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </WideSuccessButton>
-          </ButtonWrapper>
+          </SubmitButtonWrapper>
         </form>
       </FormProvider>
     </FormContainer>

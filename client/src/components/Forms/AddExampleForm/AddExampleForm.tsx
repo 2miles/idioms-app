@@ -6,41 +6,7 @@ import { SuccessButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
 
-const FormContainer = styled.div`
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-  padding-bottom: var(--padding-lg);
-  @media (max-width: 600px) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .form-group {
-    padding: var(--padding-md);
-  }
-
-  label {
-    font-weight: 600;
-    padding-bottom: var(--padding-xs);
-  }
-`;
-
-const FormControlsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  .form-check {
-    margin: var(--margin-lg);
-  }
-  .button {
-    margin: var(--margin-lg);
-  }
-  label {
-    font-weight: normal;
-  }
-`;
+import { FormContainer, FormControlsWrapper } from '../Form.styles';
 
 const ButtonsWrapper = styled.div`
   display: flex;

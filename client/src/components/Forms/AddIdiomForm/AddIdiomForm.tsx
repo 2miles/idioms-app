@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import moment from 'moment';
 import { useContext, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import { WideSuccessButton } from '@/components/ButtonStyles';
@@ -13,42 +12,7 @@ import { IdiomsContext } from '@/context/idiomsContext';
 import { NewIdiomInput } from '@/types';
 import { IdiomFormValues, idiomSchema } from '@/validation/idiomSchema';
 
-const FormContainer = styled.div`
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-  padding-bottom: var(--padding-sm);
-
-  @media (max-width: 600px) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .form-group {
-    padding: var(--padding-md);
-  }
-
-  label {
-    font-weight: 600;
-    padding-bottom: var(--padding-xs);
-  }
-`;
-
-const FormControlsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  .form-check {
-    margin-bottom: var(--margin-xl);
-  }
-  label {
-    font-weight: normal;
-  }
-  padding: var(--padding-lg);
-  align-items: left;
-  width: 100%;
-`;
+import { FormContainer, FormControlsWrapper, SubmitButtonWrapper } from '../Form.styles';
 
 type AddIdiomProps = {
   onClose: () => void;
@@ -152,14 +116,16 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
                 Keep Open
               </label>
             </div>
-            <WideSuccessButton
-              type='submit'
-              className='btn btn-success'
-              data-testid='submit-add-idiom-button'
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Adding...' : 'Add'}
-            </WideSuccessButton>
+            <SubmitButtonWrapper>
+              <WideSuccessButton
+                type='submit'
+                className='btn btn-success'
+                data-testid='submit-add-idiom-button'
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Adding...' : 'Add'}
+              </WideSuccessButton>
+            </SubmitButtonWrapper>
           </FormControlsWrapper>
         </form>
       </FormProvider>

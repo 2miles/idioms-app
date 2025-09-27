@@ -7,28 +7,7 @@ import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Example } from '@/types';
 
-const FormContainer = styled.div`
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  padding-right: var(--padding-lg);
-  padding-left: var(--padding-lg);
-  padding-bottom: var(--padding-lg);
-
-  @media (max-width: 600px) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .form-group {
-    padding: var(--padding-md);
-  }
-
-  label {
-    font-weight: 600 !important;
-    padding-bottom: var(--padding-xs);
-  }
-`;
+import { FormContainer } from '../Form.styles';
 
 const DeleteButtonArea = styled.div`
   margin: 0 var(--margin-md);
