@@ -4,7 +4,6 @@ import { useContext, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
-import { z } from 'zod';
 
 import { WideSuccessButton } from '@/components/ButtonStyles';
 import RHFTextAreaField from '@/components/FormFields/RHFTextAreaField';
@@ -12,6 +11,7 @@ import RHFTextField from '@/components/FormFields/RHFTextField';
 import RHFTimestampField from '@/components/FormFields/RHFTimestampField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { NewIdiomInput } from '@/types';
+import { IdiomFormValues, idiomSchema } from '@/validation/idiomSchema';
 
 const FormContainer = styled.div`
   background-color: var(--bg-dark);
@@ -55,38 +55,12 @@ type AddIdiomProps = {
   onSucess?: () => void;
 };
 
-const schema = z.object({
-  title: z
-    .string()
-    .nonempty('Title is required')
-    .max(100, 'Title must be 100 characters or less')
-    .trim(),
-  titleGeneral: z
-    .string()
-    .max(100, 'General Title must be 100 characters or less')
-    .transform((val) => (val.trim() === '' ? null : val))
-    .nullable(),
-  definition: z
-    .string()
-    .max(500, 'Definition must be 500 characters or less')
-    .transform((val) => (val.trim() === '' ? null : val))
-    .nullable(),
-  contributor: z
-    .string()
-    .max(50, 'Name must be 50 characters or less')
-    .transform((val) => (val.trim() === '' ? null : val))
-    .nullable(),
-  timestamp: z.date(),
-});
-
-type FormValues = z.infer<typeof schema>;
-
 const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
   const { addIdiom } = useContext(IdiomsContext);
   const [keepOpen, setKeepOpen] = useState(false);
 
-  const methods = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  const methods = useForm<IdiomFormValues>({
+    resolver: zodResolver(idiomSchema),
     mode: 'onBlur',
     defaultValues: {
       title: '',
@@ -100,7 +74,7 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
   const { handleSubmit, reset, formState } = methods;
   const { isSubmitting } = formState;
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: IdiomFormValues) => {
     // Format timestamp to backend format (remove milliseconds)
     const formattedTimestamp = moment(values.timestamp).toISOString().split('.')[0] + 'Z';
 
