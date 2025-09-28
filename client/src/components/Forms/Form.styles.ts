@@ -59,3 +59,11 @@ export const HalfButton = styled.button`
   flex: 1; /* take equal space */
   text-align: center; /* center label */
 `;
+
+export const TitleArea = styled.div`
+  text-align: center;
+  font-size: var(--font-xl);
+  margin: 0;
+  font-style: italic;
+  font-weight: normal;
+`;

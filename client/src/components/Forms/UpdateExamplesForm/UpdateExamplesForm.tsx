@@ -7,7 +7,7 @@ import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Example } from '@/types';
 
-import { FormContainer } from '../Form.styles';
+import { FormContainer, TitleArea } from '../Form.styles';
 
 const DeleteButtonArea = styled.div`
   margin: 0 var(--margin-md);
@@ -24,13 +24,6 @@ const InputArea = styled.div`
   button {
     float: right;
   }
-`;
-const TitleArea = styled.div`
-  text-align: center;
-  font-size: var(--font-xl);
-  margin: 0;
-  font-style: italic;
-  font-weight: normal;
 `;
 
 type UpdateExamplesProps = {

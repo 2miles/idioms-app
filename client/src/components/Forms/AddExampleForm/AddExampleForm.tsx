@@ -1,28 +1,11 @@
 import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-import { SuccessButton } from '@/components/ButtonStyles';
+import { WideSuccessButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
 
-import { FormContainer, FormControlsWrapper } from '../Form.styles';
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  margin-left: var(--margin-lg);
-  margin-top: var(--margin-lg);
-  max-height: 40px;
-  align-items: center;
-`;
-
-const TitleArea = styled.div`
-  text-align: center;
-  font-size: var(--font-xl);
-  margin: 0;
-  font-style: italic;
-  font-weight: normal;
-`;
+import { FormContainer, FormControlsWrapper, SubmitButtonWrapper, TitleArea } from '../Form.styles';
 
 type AddExampleProps = {
   idiomId: number;
@@ -102,24 +85,24 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExamp
           rows={3}
         />
         <FormControlsWrapper>
-          <ButtonsWrapper>
-            <SuccessButton type='submit' className='btn btn-success'>
+          <div className='form-check'>
+            <input
+              id='flexCheckDefault'
+              type='checkbox'
+              value=''
+              className='form-check-input'
+              checked={keepOpen}
+              onChange={(e) => setKeepOpen(e.target.checked)}
+            />
+            <label className='form-check-label' htmlFor='flexCheckDefault'>
+              Keep Open
+            </label>
+          </div>
+          <SubmitButtonWrapper>
+            <WideSuccessButton type='submit' className='btn btn-success'>
               Add
-            </SuccessButton>
-            <div className='form-check'>
-              <input
-                id='flexCheckDefault'
-                type='checkbox'
-                value=''
-                className='form-check-input'
-                checked={keepOpen}
-                onChange={(e) => setKeepOpen(e.target.checked)}
-              />
-              <label className='form-check-label' htmlFor='flexCheckDefault'>
-                Keep Open
-              </label>
-            </div>
-          </ButtonsWrapper>
+            </WideSuccessButton>
+          </SubmitButtonWrapper>
         </FormControlsWrapper>
       </form>
     </FormContainer>
