@@ -1,13 +1,14 @@
 import { useContext, useState } from 'react';
-import Swal from 'sweetalert2';
+import { FormProvider, useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { WideSuccessButton } from '@/components/ButtonStyles';
+import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
+import { showError, showSuccess } from '@/utils/alerts';
 import { ExampleFormValues, exampleSchema } from '@/validation/idiomSchema';
 
-import TextAreaField from '@/components/FormFields/TextAreaField';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm } from 'react-hook-form';
 import { FormContainer, FormControlsWrapper, SubmitButtonWrapper, TitleArea } from '../Form.styles';
 
 type AddExampleProps = {
@@ -36,14 +37,7 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExamp
       if (newExample) {
         reset();
         onAddSuccess?.();
-        Swal.fire({
-          title: 'Example Added!',
-          text: 'The example has been successfully added.',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false,
-        });
-
+        showSuccess('Example Added!', 'The example has been successfully added.');
         if (!keepOpen) {
           setTimeout(() => {
             onClose();
@@ -53,12 +47,7 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExamp
         throw new Error('No example returned');
       }
     } catch (err) {
-      console.error('Error adding idiom.', err);
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem adding the example.',
-        icon: 'error',
-      });
+      showError('Error', 'There was a problem adding the example.');
     }
   };
 

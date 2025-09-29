@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import Swal from 'sweetalert2';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -9,6 +8,7 @@ import { DangerButton, WideSuccessButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Example } from '@/types';
+import { showConfirm, showError, showSuccess } from '@/utils/alerts';
 import { UpdateExamplesFormValues, updateExamplesSchema } from '@/validation/idiomSchema';
 
 import { FormContainer, SubmitButtonWrapper, TitleArea } from '../Form.styles';
@@ -69,38 +69,22 @@ const UpdateExamplesForm = ({
       );
       if (savedExamples) {
         onUpdateSuccess?.();
-        Swal.fire({
-          title: 'Updated!',
-          text: 'Examples have been successfully updated.',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false,
-        });
+        showSuccess('Updated!', 'Examples have been successfully updated.');
         onClose();
       } else {
         throw new Error('Context updateExamples returned false');
       }
     } catch (err) {
-      console.error('Error updating examples:', err);
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem updating the examples.',
-        icon: 'error',
-      });
+      showError('Error', 'There was a problem updating the examples.');
     }
   };
 
   const handleDeleteExample = async (index: number, exampleId: number) => {
     try {
-      const confirmResult = await Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will not be able to recover this example!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        confirmButtonColor: '#DC3545',
-        cancelButtonText: 'No, keep it',
-      });
+      const confirmResult = await showConfirm(
+        'Are you sure?',
+        'You will not be able to recover this example!',
+      );
 
       if (!confirmResult.isConfirmed) return;
 
@@ -117,24 +101,12 @@ const UpdateExamplesForm = ({
         );
 
         onUpdateSuccess?.(); // tells parent to refresh examples
-
-        Swal.fire({
-          title: 'Deleted!',
-          text: 'The example has been successfully deleted.',
-          icon: 'success',
-          timer: 1800,
-          showConfirmButton: false,
-        });
+        showSuccess('Deleted!', 'The example has been successfully deleted.');
       } else {
         throw new Error('Failed to delete example');
       }
     } catch (err) {
-      console.error('Error deleting example:', err);
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem deleting the example.',
-        icon: 'error',
-      });
+      showError('Error', 'There was a problem deleting the example.');
     }
   };
 

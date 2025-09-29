@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import moment from 'moment';
 import { useContext } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
 
 import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
@@ -10,6 +9,7 @@ import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, UpdateIdiomInput } from '@/types';
+import { showError, showSuccess } from '@/utils/alerts';
 import { IdiomFormValues, idiomSchema } from '@/validation/idiomSchema';
 
 import { FormContainer, HalfButton, HalfButtonsWrapper } from '../Form.styles';
@@ -55,25 +55,14 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
       const updated = await updateIdiom(idiom!.id, payload);
 
       if (updated) {
-        Swal.fire({
-          title: 'Updated!',
-          text: 'The idiom has been successfully updated.',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false,
-        });
         onUpdateSuccess?.();
+        showSuccess('Updated!', 'The idiom has been successfully updated.');
         onClose();
       } else {
         throw new Error('No idiom returned');
       }
     } catch (error) {
-      console.error('Update failed:', error);
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem updating the idiom.',
-        icon: 'error',
-      });
+      showError('Error', 'There was a problem updating the idiom.');
     }
   };
 

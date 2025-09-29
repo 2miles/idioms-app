@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import moment from 'moment';
 import { useContext, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
 
 import { WideSuccessButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
@@ -10,6 +9,7 @@ import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { NewIdiomInput } from '@/types';
+import { showError, showSuccess } from '@/utils/alerts';
 import { IdiomFormValues, idiomSchema } from '@/validation/idiomSchema';
 
 import { FormContainer, FormControlsWrapper, SubmitButtonWrapper } from '../Form.styles';
@@ -53,15 +53,9 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
     const addedIdiom = await addIdiom(payload);
 
     if (addedIdiom) {
-      reset(); // clears the form
-      Swal.fire({
-        title: 'Idiom Added!',
-        text: 'The idiom has been successfully added.',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-      });
+      reset();
       onSucess?.();
+      showSuccess('Idiom Added', 'The idiom has been successfully added.');
 
       if (!keepOpen) {
         setTimeout(() => {
@@ -69,11 +63,7 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
         }, 200);
       }
     } else {
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem adding the idiom.',
-        icon: 'error',
-      });
+      showError('Error', 'There was a problem adding the idiom.');
     }
   };
 
