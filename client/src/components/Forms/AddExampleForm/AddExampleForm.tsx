@@ -1,10 +1,13 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import Swal from 'sweetalert2';
 
 import { WideSuccessButton } from '@/components/ButtonStyles';
-import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
+import { ExampleFormValues, exampleSchema } from '@/validation/idiomSchema';
 
+import RHFTextAreaField from '@/components/FormFields/RHFTextAreaField';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormProvider, useForm } from 'react-hook-form';
 import { FormContainer, FormControlsWrapper, SubmitButtonWrapper, TitleArea } from '../Form.styles';
 
 type AddExampleProps = {
@@ -16,27 +19,23 @@ type AddExampleProps = {
 
 const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExampleProps) => {
   const { addExampleToIdiom } = useContext(IdiomsContext);
-  const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
-  const [formData, setFormData] = useState({ newExample: '' });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
+  const methods = useForm<ExampleFormValues>({
+    resolver: zodResolver(exampleSchema),
+    mode: 'onBlur',
+    defaultValues: { newExample: '' },
+  });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setValidated(true);
-    if (!formData.newExample.trim()) return;
+  const { handleSubmit, reset, formState } = methods;
+  const { isSubmitting } = formState;
+
+  const onSubmit = async (values: ExampleFormValues) => {
     try {
-      const newExample = await addExampleToIdiom(idiomId, formData.newExample);
+      const newExample = await addExampleToIdiom(idiomId, values.newExample);
       if (newExample) {
-        clearFormFields();
-        onAddSuccess?.(); // Let DetailPage refresh examples
+        reset();
+        onAddSuccess?.();
         Swal.fire({
           title: 'Example Added!',
           text: 'The example has been successfully added.',
@@ -63,48 +62,40 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExamp
     }
   };
 
-  const clearFormFields = () => {
-    setFormData({ newExample: '' });
-    setValidated(false);
-  };
-
   return (
     <FormContainer>
       <TitleArea>{idiomTitle}</TitleArea>
-      <form
-        className={`needs-validation ${validated ? 'was-validated' : ''}`}
-        noValidate
-        onSubmit={handleSubmit}
-      >
-        <TextAreaField
-          label='New Example'
-          id='newExample'
-          value={formData.newExample}
-          onChange={handleInputChange}
-          placeholder='This is an example sentence.'
-          rows={3}
-        />
-        <FormControlsWrapper>
-          <div className='form-check'>
-            <input
-              id='flexCheckDefault'
-              type='checkbox'
-              value=''
-              className='form-check-input'
-              checked={keepOpen}
-              onChange={(e) => setKeepOpen(e.target.checked)}
-            />
-            <label className='form-check-label' htmlFor='flexCheckDefault'>
-              Keep Open
-            </label>
-          </div>
-          <SubmitButtonWrapper>
-            <WideSuccessButton type='submit' className='btn btn-success'>
-              Add
-            </WideSuccessButton>
-          </SubmitButtonWrapper>
-        </FormControlsWrapper>
-      </form>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <RHFTextAreaField
+            id='newExample'
+            label='New Example'
+            placeholder='This is an example sentence.'
+            rows={3}
+            maxLength={500}
+          />
+          <FormControlsWrapper>
+            <div className='form-check'>
+              <input
+                id='flexCheckDefault'
+                type='checkbox'
+                value=''
+                className='form-check-input'
+                checked={keepOpen}
+                onChange={(e) => setKeepOpen(e.target.checked)}
+              />
+              <label className='form-check-label' htmlFor='flexCheckDefault'>
+                Keep Open
+              </label>
+            </div>
+            <SubmitButtonWrapper>
+              <WideSuccessButton type='submit' className='btn btn-success' disabled={isSubmitting}>
+                {isSubmitting ? 'Adding...' : 'Add'}
+              </WideSuccessButton>
+            </SubmitButtonWrapper>
+          </FormControlsWrapper>
+        </form>
+      </FormProvider>
     </FormContainer>
   );
 };

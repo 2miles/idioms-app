@@ -24,4 +24,13 @@ export const idiomSchema = z.object({
   timestamp: z.date(),
 });
 
+export const exampleSchema = z.object({
+  newExample: z
+    .string()
+    .nonempty('Example is required')
+    .max(500, 'Example must be 500 characters or less')
+    .trim(),
+});
+
 export type IdiomFormValues = z.infer<typeof idiomSchema>;
+export type ExampleFormValues = z.infer<typeof exampleSchema>;
