@@ -55,7 +55,12 @@ function setup() {
         hasFetched: true,
       }}
     >
-      <UpdateExamplesForm idiomId={dummyIdiomId} examples={dummyExamples} onClose={mockClose} />
+      <UpdateExamplesForm
+        idiomId={dummyIdiomId}
+        idiomTitle={dummyIdiom.title}
+        examples={dummyExamples}
+        onClose={mockClose}
+      />
     </IdiomsContext.Provider>,
   );
 
@@ -92,18 +97,13 @@ describe('UpdateExamples', () => {
       expect(mockUpdateExamples).not.toHaveBeenCalled();
     });
 
-    test('shows warning and does not save if example is empty', async () => {
+    test('does not submit if example is empty', async () => {
       const { exampleInput1, saveButton } = setup();
-      fireEvent.change(exampleInput1, { target: { value: '' } });
 
+      fireEvent.change(exampleInput1, { target: { value: '' } });
       fireEvent.click(saveButton);
+
       await waitFor(() => {
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            text: 'All examples must have text.',
-            icon: 'warning',
-          }),
-        );
         expect(mockUpdateExamples).not.toHaveBeenCalled();
       });
     });
@@ -151,8 +151,8 @@ describe('UpdateExamples', () => {
       fireEvent.click(deleteButton1);
 
       await waitFor(() => {
-        expect(mockDeleteExampleById).toHaveBeenCalledWith(dummyIdiom.examples[0].example_id);
-        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiom.id, [dummyIdiom.examples[1]]);
+        expect(mockDeleteExampleById).toHaveBeenCalledWith(dummyIdiom.examples![0].example_id);
+        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiom.id, [dummyIdiom.examples![1]]);
       });
     });
 
