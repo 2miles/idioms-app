@@ -5,7 +5,7 @@ import { WideSuccessButton } from '@/components/ButtonStyles';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { ExampleFormValues, exampleSchema } from '@/validation/idiomSchema';
 
-import RHFTextAreaField from '@/components/FormFields/RHFTextAreaField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormContainer, FormControlsWrapper, SubmitButtonWrapper, TitleArea } from '../Form.styles';
@@ -67,7 +67,7 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExamp
       <TitleArea>{idiomTitle}</TitleArea>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <RHFTextAreaField
+          <TextAreaField
             id='newExample'
             label='New Example'
             placeholder='This is an example sentence.'

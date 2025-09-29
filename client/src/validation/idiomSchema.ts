@@ -23,7 +23,9 @@ export const idiomSchema = z.object({
     .nullable(),
   timestamp: z.date(),
 });
+export type IdiomFormValues = z.infer<typeof idiomSchema>;
 
+// Schema for AddExampleForm
 export const exampleSchema = z.object({
   newExample: z
     .string()
@@ -31,6 +33,15 @@ export const exampleSchema = z.object({
     .max(500, 'Example must be 500 characters or less')
     .trim(),
 });
-
-export type IdiomFormValues = z.infer<typeof idiomSchema>;
 export type ExampleFormValues = z.infer<typeof exampleSchema>;
+
+// Schema for UpdateExamplesForm
+export const updateExampleSchema = z.object({
+  example_id: z.number(),
+  example: z.string().nonempty('Example cannot be empty'),
+});
+
+export const updateExamplesSchema = z.object({
+  examples: z.array(updateExampleSchema).nonempty('At least one example is required'),
+});
+export type UpdateExamplesFormValues = z.infer<typeof updateExamplesSchema>;

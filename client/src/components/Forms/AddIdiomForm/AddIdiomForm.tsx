@@ -5,9 +5,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 
 import { WideSuccessButton } from '@/components/ButtonStyles';
-import RHFTextAreaField from '@/components/FormFields/RHFTextAreaField';
-import RHFTextField from '@/components/FormFields/RHFTextField';
-import RHFTimestampField from '@/components/FormFields/RHFTimestampField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
+import TextField from '@/components/FormFields/TextField';
+import TimestampField from '@/components/FormFields/TimestampField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { NewIdiomInput } from '@/types';
 import { IdiomFormValues, idiomSchema } from '@/validation/idiomSchema';
@@ -81,27 +81,27 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
     <FormContainer>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <RHFTextField
+          <TextField
             id='title'
             label='Title'
             placeholder='Pull yourself up by your bootstraps'
             maxLength={100}
           />
-          <RHFTextField
+          <TextField
             id='titleGeneral'
             label='Title General'
             placeholder="Pull (oneself) up by (one's) (own) bootstraps"
             maxLength={100}
           />
-          <RHFTextAreaField
+          <TextAreaField
             id='definition'
             label='Definition'
             placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
             rows={3}
             maxLength={500}
           />
-          <RHFTimestampField id='timestamp' label='Timestamp' />
-          <RHFTextField id='contributor' label='Contributor' placeholder='Miles' maxLength={50} />
+          <TimestampField id='timestamp' label='Timestamp' />
+          <TextField id='contributor' label='Contributor' placeholder='Miles' maxLength={50} />
 
           <FormControlsWrapper>
             <div className='form-check'>

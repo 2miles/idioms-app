@@ -27,10 +27,12 @@ export const FormControlsWrapper = styled.div`
   flex-direction: column;
   align-items: left;
   .form-check {
-    margin: var(--margin-lg);
+    margin-left: var(--margin-lg);
+    margin-top: var(--margin-lg);
   }
   .button {
     margin: var(--margin-lg);
+    margin-top: var(--margin-xl);
   }
   label {
     font-weight: normal;

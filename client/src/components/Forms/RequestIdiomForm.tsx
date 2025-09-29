@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { WideSuccessButton } from '@/components/ButtonStyles';
-import RHFTextField from '@/components/FormFields/RHFTextField';
+import TextField from '@/components/FormFields/TextField';
 
 import { FormContainer, SubmitButtonWrapper } from './Form.styles';
 
@@ -74,8 +74,8 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
     <FormContainer>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <RHFTextField id='title' label='Idiom' placeholder='Break a leg' maxLength={200} />
-          <RHFTextField id='contributor' label='Your Name' placeholder='Miles' maxLength={50} />
+          <TextField id='title' label='Idiom' placeholder='Break a leg' maxLength={200} />
+          <TextField id='contributor' label='Your Name' placeholder='Miles' maxLength={50} />
           <SubmitButtonWrapper>
             <WideSuccessButton type='submit' className='btn btn-success' disabled={isSubmitting}>
               {isSubmitting ? 'Submitting...' : 'Submit'}

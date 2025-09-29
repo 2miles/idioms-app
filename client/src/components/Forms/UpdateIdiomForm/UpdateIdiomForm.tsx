@@ -5,9 +5,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 
 import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
-import RHFTextAreaField from '@/components/FormFields/RHFTextAreaField';
-import RHFTextField from '@/components/FormFields/RHFTextField';
-import RHFTimestampField from '@/components/FormFields/RHFTimestampField';
+import TextAreaField from '@/components/FormFields/TextAreaField';
+import TextField from '@/components/FormFields/TextField';
+import TimestampField from '@/components/FormFields/TimestampField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom, UpdateIdiomInput } from '@/types';
 import { IdiomFormValues, idiomSchema } from '@/validation/idiomSchema';
@@ -81,11 +81,11 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
     <FormContainer>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <RHFTextField id='title' label='Title' maxLength={100} />
-          <RHFTextField id='titleGeneral' label='Title General' maxLength={100} />
-          <RHFTextAreaField label='Definition' id='definition' rows={3} maxLength={500} />
-          <RHFTimestampField label='Timestamp' id='timestamp' />
-          <RHFTextField label='Contributor' id='contributor' maxLength={50} />
+          <TextField id='title' label='Title' maxLength={100} />
+          <TextField id='titleGeneral' label='Title General' maxLength={100} />
+          <TextAreaField label='Definition' id='definition' rows={3} maxLength={500} />
+          <TimestampField label='Timestamp' id='timestamp' />
+          <TextField label='Contributor' id='contributor' maxLength={50} />
           <HalfButtonsWrapper>
             <HalfButton as={PrimaryButton} type='submit' disabled={isSubmitting}>
               {isSubmitting ? 'Saving...' : 'Save'}

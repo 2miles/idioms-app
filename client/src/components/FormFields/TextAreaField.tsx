@@ -1,3 +1,4 @@
+import { useFormContext, useFormState } from 'react-hook-form';
 import styled from 'styled-components';
 
 const StyledTextArea = styled.textarea`
@@ -8,22 +9,29 @@ const StyledTextArea = styled.textarea`
     color: var(--color-text-dim) !important;
   }
 `;
-type TextAreaFieldProps = {
+
+type RHFTextAreaFieldProps = {
   id: string;
   label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  rows?: number;
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
-const TextAreaField = ({ id, label, value, onChange, rows = 4, ...props }: TextAreaFieldProps) => {
+
+const TextAreaField = ({ id, label, rows = 4, ...props }: RHFTextAreaFieldProps) => {
+  const { register, control } = useFormContext();
+  const { errors, isSubmitted, touchedFields } = useFormState({ control });
+
+  const error = errors[id];
+  const isTouched = touchedFields[id];
+  const validationClass = error ? 'is-invalid' : isTouched || isSubmitted ? 'is-valid' : '';
+
   return (
     <div className='form-group'>
       <label htmlFor={id}>{label}</label>
       <StyledTextArea
         id={id}
-        className='form-control'
-        value={value}
-        onChange={onChange}
+        className={`form-control ${validationClass}`}
         rows={rows}
+        {...register(id)}
         {...props}
       />
     </div>
