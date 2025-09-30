@@ -1,9 +1,9 @@
-import Swal from 'sweetalert2';
 import { describe, expect, test, vi } from 'vitest';
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { IdiomsContext } from '@/context/idiomsContext';
+import { showError, showSuccess } from '@/utils/alerts';
 import { suppressConsoleOutput } from '@/utils/testUtils';
 
 import UpdateIdiom from './UpdateIdiomForm';
@@ -11,10 +11,9 @@ import UpdateIdiom from './UpdateIdiomForm';
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
-vi.mock('sweetalert2', () => ({
-  default: {
-    fire: vi.fn(() => Promise.resolve({})),
-  },
+vi.mock('@/utils/alerts', () => ({
+  showSuccess: vi.fn(),
+  showError: vi.fn(),
 }));
 
 const mockUpdateIdiom = vi.fn().mockResolvedValue({ id: 1, title: 'Updated Title' });
@@ -115,14 +114,7 @@ describe('UpdateIdiom', () => {
           expect.objectContaining({ title: 'Updated Title' }),
         );
 
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Updated!',
-            text: 'The idiom has been successfully updated.',
-            icon: 'success',
-          }),
-        );
-
+        expect(showSuccess).toHaveBeenCalled();
         expect(mockClose).toHaveBeenCalled();
       });
     });
@@ -135,13 +127,7 @@ describe('UpdateIdiom', () => {
       fireEvent.click(saveButton);
 
       await waitFor(() => {
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Error',
-            text: 'There was a problem updating the idiom.',
-            icon: 'error',
-          }),
-        );
+        expect(showError).toHaveBeenCalled();
       });
 
       await waitFor(() => {

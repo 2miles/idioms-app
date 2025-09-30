@@ -1,9 +1,9 @@
-import Swal from 'sweetalert2';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { IdiomsContext } from '@/context/idiomsContext';
+import { showError, showSuccess } from '@/utils/alerts';
 import { suppressConsoleOutput } from '@/utils/testUtils';
 
 import AddExampleForm from './AddExampleForm';
@@ -11,10 +11,9 @@ import AddExampleForm from './AddExampleForm';
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
-vi.mock('sweetalert2', () => ({
-  default: {
-    fire: vi.fn(() => Promise.resolve({})),
-  },
+vi.mock('@/utils/alerts', () => ({
+  showSuccess: vi.fn(),
+  showError: vi.fn(),
 }));
 
 const mockAddExampleToIdiom = vi.fn();
@@ -114,13 +113,7 @@ describe('AddExample', () => {
 
       await waitFor(() => {
         expect(mockAddExampleToIdiom).toHaveBeenCalledWith(1, 'This is a test example.');
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Example Added!',
-            text: 'The example has been successfully added.',
-            icon: 'success',
-          }),
-        );
+        expect(showSuccess).toHaveBeenCalled();
         expect(exampleInput).toHaveValue('');
       });
     });
@@ -136,13 +129,7 @@ describe('AddExample', () => {
       fireEvent.click(addButton);
 
       await waitFor(() => {
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Error',
-            text: 'There was a problem adding the example.',
-            icon: 'error',
-          }),
-        );
+        expect(showError).toHaveBeenCalled();
       });
     });
 

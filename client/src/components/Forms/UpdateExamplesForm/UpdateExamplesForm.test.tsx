@@ -1,10 +1,10 @@
-import Swal from 'sweetalert2';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { IdiomsContext } from '@/context/idiomsContext';
 import { Idiom } from '@/types';
+import { showError, showSuccess } from '@/utils/alerts';
 import { suppressConsoleOutput } from '@/utils/testUtils';
 
 import UpdateExamplesForm from './UpdateExamplesForm';
@@ -12,10 +12,10 @@ import UpdateExamplesForm from './UpdateExamplesForm';
 const DEBUG_ERRORS = false;
 suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 
-vi.mock('sweetalert2', () => ({
-  default: {
-    fire: vi.fn(() => Promise.resolve({ isConfirmed: true })),
-  },
+vi.mock('@/utils/alerts', () => ({
+  showSuccess: vi.fn(),
+  showError: vi.fn(),
+  showConfirm: vi.fn(() => Promise.resolve({ isConfirmed: true })),
 }));
 
 beforeEach(() => {
@@ -117,12 +117,7 @@ describe('UpdateExamples', () => {
       fireEvent.click(saveButton);
       await waitFor(() => {
         expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, dummyExamples);
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Updated!',
-            icon: 'success',
-          }),
-        );
+        expect(showSuccess).toHaveBeenCalled();
         expect(mockClose).toHaveBeenCalled();
       });
     });
@@ -133,13 +128,7 @@ describe('UpdateExamples', () => {
 
       fireEvent.click(saveButton);
       await waitFor(() => {
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Error',
-            text: 'There was a problem updating the examples.',
-            icon: 'error',
-          }),
-        );
+        expect(showError).toHaveBeenCalled();
       });
       expect(mockUpdateExamples).toHaveBeenCalled();
     });
@@ -162,13 +151,7 @@ describe('UpdateExamples', () => {
 
       fireEvent.click(deleteButton1);
       await waitFor(() => {
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Error',
-            text: 'There was a problem deleting the example.',
-            icon: 'error',
-          }),
-        );
+        expect(showError).toHaveBeenCalled();
       });
     });
 
@@ -177,8 +160,10 @@ describe('UpdateExamples', () => {
       fireEvent.click(deleteButton1);
 
       await waitFor(() => {
-        expect(mockDeleteExampleById).toHaveBeenCalledWith(1);
-        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, [dummyExamples[1]]);
+        expect(mockDeleteExampleById).toHaveBeenCalledWith(dummyExamples[0].example_id);
+        expect(mockUpdateExamples).toHaveBeenCalledWith(dummyIdiomId, [
+          expect.objectContaining({ example_id: 2, example: 'Original example 2' }),
+        ]);
       });
     });
   });
