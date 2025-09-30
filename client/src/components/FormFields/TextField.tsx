@@ -1,3 +1,4 @@
+import { useFormContext, useFormState } from 'react-hook-form';
 import styled from 'styled-components';
 
 const StyledInput = styled.input`
@@ -9,29 +10,32 @@ const StyledInput = styled.input`
   }
 `;
 
-type TextFieldProps = {
+type RHFTextFieldProps = {
   id: string;
   label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const TextField = ({ id, label, value, onChange, required, ...props }: TextFieldProps) => {
+const RHFTextField = ({ id, label, ...props }: RHFTextFieldProps) => {
+  const { register, control } = useFormContext();
+  const { errors, isSubmitted, touchedFields } = useFormState({ control });
+
+  const error = errors[id];
+  const isTouched = touchedFields[id];
+  const validationClass = error ? 'is-invalid' : isTouched || isSubmitted ? 'is-valid' : '';
+
   return (
     <div className='form-group'>
       <label htmlFor={id}>{label}</label>
       <StyledInput
-        type='text'
-        className='form-control'
         id={id}
-        value={value}
-        onChange={onChange}
-        required={required}
+        type='text'
+        className={`form-control ${validationClass}`}
+        {...register(id)}
         {...props}
       />
-      {required && <div className='invalid-feedback'>Please enter {label.toLowerCase()}.</div>}
+      {error && <div className='invalid-feedback d-block'>{(error as any).message}</div>}
     </div>
   );
 };
 
-export default TextField;
+export default RHFTextField;

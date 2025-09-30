@@ -1,59 +1,18 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import moment from 'moment';
 import { useContext, useState } from 'react';
-import styled from 'styled-components';
-import Swal from 'sweetalert2';
+import { FormProvider, useForm } from 'react-hook-form';
 
-import { SuccessButton } from '@/components/ButtonStyles';
+import { WideSuccessButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { NewIdiomInput } from '@/types';
+import { showError, showSuccess } from '@/utils/alerts';
+import { IdiomFormValues, idiomSchema } from '@/validation/idiomSchema';
 
-const FormContainer = styled.div`
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-  padding-bottom: var(--padding-sm);
-  @media (max-width: 600px) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .form-group {
-    padding: var(--padding-md);
-  }
-
-  label {
-    font-weight: 600;
-    padding-bottom: var(--padding-xs);
-  }
-`;
-
-const FormControlsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  .form-check {
-    margin: var(--margin-lg);
-  }
-  .button {
-    margin: var(--margin-lg);
-  }
-  label {
-    font-weight: normal;
-  }
-`;
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  margin-left: var(--margin-lg);
-  margin-top: var(--margin-lg);
-  margin-bottom: var(--margin-md);
-  max-height: 40px;
-  align-items: center;
-`;
+import { FormContainer, FormControlsWrapper, SubmitButtonWrapper } from '../Form.styles';
 
 type AddIdiomProps = {
   onClose: () => void;
@@ -62,66 +21,41 @@ type AddIdiomProps = {
 
 const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
   const { addIdiom } = useContext(IdiomsContext);
-
-  const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    titleGeneral: '',
-    definition: '',
-    contributor: '',
-    timestamp: moment(),
+
+  const methods = useForm<IdiomFormValues>({
+    resolver: zodResolver(idiomSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      title: '',
+      titleGeneral: null,
+      definition: null,
+      contributor: null,
+      timestamp: new Date(),
+    },
   });
 
-  const emptyStringToNull = (value: string) => (value.trim() === '' ? null : value);
+  const { handleSubmit, reset, formState } = methods;
+  const { isSubmitting } = formState;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
-
-  const handleTimestampChange = (value: moment.Moment) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      timestamp: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setValidated(true);
-    if (formData.title.trim() === '') {
-      return; // Prevent form submission if title is empty
-    }
-
-    // Format for the backend and remove milliseconds
-    const formattedTimestamp: string = formData.timestamp.toISOString().split('.')[0] + 'Z';
+  const onSubmit = async (values: IdiomFormValues) => {
+    // Format timestamp to backend format (remove milliseconds)
+    const formattedTimestamp = moment(values.timestamp).toISOString().split('.')[0] + 'Z';
 
     const payload: NewIdiomInput = {
-      title: emptyStringToNull(formData.title),
-      title_general: emptyStringToNull(formData.titleGeneral),
-      definition: emptyStringToNull(formData.definition),
-      timestamps: emptyStringToNull(formattedTimestamp),
-      contributor: emptyStringToNull(formData.contributor),
+      title: values.title,
+      title_general: values.titleGeneral,
+      definition: values.definition,
+      contributor: values.contributor,
+      timestamps: formattedTimestamp,
     };
 
     const addedIdiom = await addIdiom(payload);
 
     if (addedIdiom) {
-      clearFormFields();
-      Swal.fire({
-        title: 'Idiom Added!',
-        text: 'The idiom has been successfully added.',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-      });
-      if (onSucess) {
-        onSucess();
-      }
+      reset();
+      onSucess?.();
+      showSuccess('Idiom Added', 'The idiom has been successfully added.');
 
       if (!keepOpen) {
         setTimeout(() => {
@@ -129,82 +63,41 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
         }, 200);
       }
     } else {
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem adding the idiom.',
-        icon: 'error',
-      });
+      showError('Error', 'There was a problem adding the idiom.');
     }
-  };
-
-  const clearFormFields = () => {
-    setFormData({
-      title: '',
-      titleGeneral: '',
-      definition: '',
-      contributor: '',
-      timestamp: moment(),
-    });
-    setValidated(false);
   };
 
   return (
     <FormContainer>
-      <form
-        className={`needs-validation ${validated ? 'was-validated' : ''}`}
-        noValidate
-        onSubmit={handleSubmit}
-      >
-        <TextField
-          label='Title'
-          id='title'
-          value={formData.title}
-          onChange={handleInputChange}
-          placeholder='Pull yourself up by your bootstraps'
-          required
-        />
-        <TextField
-          label='Title General'
-          id='titleGeneral'
-          value={formData.titleGeneral}
-          onChange={handleInputChange}
-          placeholder="Pull (oneself) up by (one's) (own) bootstraps"
-        />
-        <TextAreaField
-          label='Definition'
-          id='definition'
-          value={formData.definition}
-          onChange={handleInputChange}
-          placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
-          rows={3}
-        />
-        <TimestampField
-          label='Timestamp'
-          id='timestamp'
-          value={formData.timestamp}
-          onChange={handleTimestampChange}
-        />
-        <TextField
-          label='Contributor'
-          id='contributor'
-          placeholder='Miles'
-          value={formData.contributor}
-          onChange={handleInputChange}
-        />
-        <FormControlsWrapper>
-          <ButtonsWrapper>
-            <SuccessButton
-              type='submit'
-              className='btn btn-success'
-              data-testid='submit-add-idiom-button'
-            >
-              Add
-            </SuccessButton>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            id='title'
+            label='Title'
+            placeholder='Pull yourself up by your bootstraps'
+            maxLength={100}
+          />
+          <TextField
+            id='titleGeneral'
+            label='Title General'
+            placeholder="Pull (oneself) up by (one's) (own) bootstraps"
+            maxLength={100}
+          />
+          <TextAreaField
+            id='definition'
+            label='Definition'
+            placeholder="To improve one's life or circumstances through one's own efforts, rather than relying on others."
+            rows={3}
+            maxLength={500}
+          />
+          <TimestampField id='timestamp' label='Timestamp' />
+          <TextField id='contributor' label='Contributor' placeholder='Miles' maxLength={50} />
+
+          <FormControlsWrapper>
             <div className='form-check'>
               <input
                 id='flexCheckDefault'
                 type='checkbox'
-                value=''
                 className='form-check-input'
                 checked={keepOpen}
                 onChange={(e) => setKeepOpen(e.target.checked)}
@@ -213,9 +106,19 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
                 Keep Open
               </label>
             </div>
-          </ButtonsWrapper>
-        </FormControlsWrapper>
-      </form>
+            <SubmitButtonWrapper>
+              <WideSuccessButton
+                type='submit'
+                className='btn btn-success'
+                data-testid='submit-add-idiom-button'
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Adding...' : 'Add'}
+              </WideSuccessButton>
+            </SubmitButtonWrapper>
+          </FormControlsWrapper>
+        </form>
+      </FormProvider>
     </FormContainer>
   );
 };

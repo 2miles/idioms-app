@@ -1,74 +1,54 @@
-import { useState } from 'react';
-import styled from 'styled-components';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormProvider, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
+import { z } from 'zod';
 
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
-import { SuccessButton } from '@/components/ButtonStyles';
+import { WideSuccessButton } from '@/components/ButtonStyles';
 import TextField from '@/components/FormFields/TextField';
 
-const FormContainer = styled.div`
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-  padding-bottom: var(--padding-sm);
-  @media (max-width: 600px) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .form-group {
-    padding: var(--padding-md);
-  }
-
-  label {
-    font-weight: 600;
-    padding-bottom: var(--padding-xs);
-  }
-`;
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  margin-left: var(--margin-lg);
-  margin-top: var(--margin-lg);
-  margin-bottom: var(--margin-md);
-  align-items: center;
-`;
+import { FormContainer, SubmitButtonWrapper } from './Form.styles';
 
 type RequestIdiomFormProps = {
   onClose: () => void;
 };
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalize = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
+
+const schema = z.object({
+  title: z
+    .string()
+    .min(1, 'Idiom is required')
+    .max(100, 'Idiom must be 100 characters or less')
+    .trim(),
+  contributor: z
+    .string()
+    .max(50, 'Name must be 50 characters or less')
+    .transform((val) => (val.trim() === '' ? null : capitalize(val)))
+    .nullable(),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
-  const [formData, setFormData] = useState({
-    title: '',
-    contributor: '',
-  });
-
-  const [validated, setValidated] = useState(false);
   const getAuthorizedApi = useAuthorizedRequestFinder();
+  const methods = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: 'onBlur',
+    defaultValues: {
+      title: '',
+      contributor: null,
+    },
+  });
+  const { reset, handleSubmit, formState } = methods;
+  const { isSubmitting } = formState;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setValidated(true);
-    if (formData.title.trim() === '') return;
-
+  const onSubmit = async (values: FormValues) => {
     try {
       const api = await getAuthorizedApi();
       await api.post('/', {
-        title: capitalize(formData.title.trim()),
-        contributor: capitalize(formData.contributor.trim()) || null,
+        title: capitalize(values.title),
+        contributor: values.contributor,
       });
 
       Swal.fire({
@@ -78,6 +58,7 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
         timer: 1500,
         showConfirmButton: false,
       });
+      reset();
       onClose();
     } catch (err) {
       console.error('Failed to submit request:', err);
@@ -91,34 +72,17 @@ const RequestIdiomForm = ({ onClose }: RequestIdiomFormProps) => {
 
   return (
     <FormContainer>
-      <form
-        className={`needs-validation ${validated ? 'was-validated' : ''}`}
-        noValidate
-        onSubmit={handleSubmit}
-      >
-        <TextField
-          label='Idiom'
-          id='title'
-          value={formData.title}
-          onChange={handleInputChange}
-          placeholder='The cat’s out of the bag'
-          required
-          maxLength={100}
-        />
-        <TextField
-          label='Your Name'
-          id='contributor'
-          placeholder='Miles'
-          value={formData.contributor}
-          onChange={handleInputChange}
-          maxLength={50}
-        />
-        <ButtonsWrapper>
-          <SuccessButton type='submit' className='btn btn-success'>
-            Submit
-          </SuccessButton>
-        </ButtonsWrapper>
-      </form>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextField id='title' label='Idiom' placeholder='Break a leg' maxLength={200} />
+          <TextField id='contributor' label='Your Name' placeholder='Miles' maxLength={50} />
+          <SubmitButtonWrapper>
+            <WideSuccessButton type='submit' className='btn btn-success' disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </WideSuccessButton>
+          </SubmitButtonWrapper>
+        </form>
+      </FormProvider>
     </FormContainer>
   );
 };

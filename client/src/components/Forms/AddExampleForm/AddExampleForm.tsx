@@ -1,62 +1,15 @@
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import Swal from 'sweetalert2';
+import { useContext, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 
-import { SuccessButton } from '@/components/ButtonStyles';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { WideSuccessButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import { IdiomsContext } from '@/context/idiomsContext';
+import { showError, showSuccess } from '@/utils/alerts';
+import { ExampleFormValues, exampleSchema } from '@/validation/idiomSchema';
 
-const FormContainer = styled.div`
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-md);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-  padding-bottom: var(--padding-lg);
-  @media (max-width: 600px) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .form-group {
-    padding: var(--padding-md);
-  }
-
-  label {
-    font-weight: 600;
-    padding-bottom: var(--padding-xs);
-  }
-`;
-
-const FormControlsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  .form-check {
-    margin: var(--margin-lg);
-  }
-  .button {
-    margin: var(--margin-lg);
-  }
-  label {
-    font-weight: normal;
-  }
-`;
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  margin-left: var(--margin-lg);
-  margin-top: var(--margin-lg);
-  max-height: 40px;
-  align-items: center;
-`;
-
-const TitleArea = styled.div`
-  text-align: center;
-  font-size: var(--font-xl);
-  margin: 0;
-  font-style: italic;
-  font-weight: normal;
-`;
+import { FormContainer, FormControlsWrapper, SubmitButtonWrapper, TitleArea } from '../Form.styles';
 
 type AddExampleProps = {
   idiomId: number;
@@ -67,35 +20,24 @@ type AddExampleProps = {
 
 const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExampleProps) => {
   const { addExampleToIdiom } = useContext(IdiomsContext);
-  const [validated, setValidated] = useState(false);
   const [keepOpen, setKeepOpen] = useState(false);
-  const [formData, setFormData] = useState({ newExample: '' });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
+  const methods = useForm<ExampleFormValues>({
+    resolver: zodResolver(exampleSchema),
+    mode: 'onBlur',
+    defaultValues: { newExample: '' },
+  });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setValidated(true);
-    if (!formData.newExample.trim()) return;
+  const { handleSubmit, reset, formState } = methods;
+  const { isSubmitting } = formState;
+
+  const onSubmit = async (values: ExampleFormValues) => {
     try {
-      const newExample = await addExampleToIdiom(idiomId, formData.newExample);
+      const newExample = await addExampleToIdiom(idiomId, values.newExample);
       if (newExample) {
-        clearFormFields();
-        onAddSuccess?.(); // Let DetailPage refresh examples
-        Swal.fire({
-          title: 'Example Added!',
-          text: 'The example has been successfully added.',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false,
-        });
-
+        reset();
+        onAddSuccess?.();
+        showSuccess('Example Added!', 'The example has been successfully added.');
         if (!keepOpen) {
           setTimeout(() => {
             onClose();
@@ -105,41 +47,23 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExamp
         throw new Error('No example returned');
       }
     } catch (err) {
-      console.error('Error adding idiom.', err);
-      Swal.fire({
-        title: 'Error',
-        text: 'There was a problem adding the example.',
-        icon: 'error',
-      });
+      showError('Error', 'There was a problem adding the example.');
     }
-  };
-
-  const clearFormFields = () => {
-    setFormData({ newExample: '' });
-    setValidated(false);
   };
 
   return (
     <FormContainer>
       <TitleArea>{idiomTitle}</TitleArea>
-      <form
-        className={`needs-validation ${validated ? 'was-validated' : ''}`}
-        noValidate
-        onSubmit={handleSubmit}
-      >
-        <TextAreaField
-          label='New Example'
-          id='newExample'
-          value={formData.newExample}
-          onChange={handleInputChange}
-          placeholder='This is an example sentence.'
-          rows={3}
-        />
-        <FormControlsWrapper>
-          <ButtonsWrapper>
-            <SuccessButton type='submit' className='btn btn-success'>
-              Add
-            </SuccessButton>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextAreaField
+            id='newExample'
+            label='New Example'
+            placeholder='This is an example sentence.'
+            rows={3}
+            maxLength={500}
+          />
+          <FormControlsWrapper>
             <div className='form-check'>
               <input
                 id='flexCheckDefault'
@@ -153,9 +77,14 @@ const AddExampleForm = ({ idiomId, idiomTitle, onClose, onAddSuccess }: AddExamp
                 Keep Open
               </label>
             </div>
-          </ButtonsWrapper>
-        </FormControlsWrapper>
-      </form>
+            <SubmitButtonWrapper>
+              <WideSuccessButton type='submit' className='btn btn-success' disabled={isSubmitting}>
+                {isSubmitting ? 'Adding...' : 'Add'}
+              </WideSuccessButton>
+            </SubmitButtonWrapper>
+          </FormControlsWrapper>
+        </form>
+      </FormProvider>
     </FormContainer>
   );
 };

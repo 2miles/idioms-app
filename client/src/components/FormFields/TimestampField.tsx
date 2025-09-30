@@ -1,15 +1,8 @@
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
+import { Controller, useFormContext, useFormState } from 'react-hook-form';
 import { styled } from 'styled-components';
-
-type TimestampFieldProps = {
-  id: string;
-  label: string;
-  value: Moment;
-  required?: boolean;
-  onChange: (value: Moment) => void;
-};
 
 const StyledDatetime = styled(Datetime)`
   input {
@@ -38,14 +31,12 @@ const StyledDatetime = styled(Datetime)`
     color: var(--color-text-primary);
   }
 
-  /* active selected day */
   .rdtPicker td.rdtActive,
   .rdtPicker td.rdtActive:hover {
     background-color: var(--color-brand-primary);
     color: var(--color-text-primary);
   }
 
-  /* HOVER: use a darker/lighter surface than the picker bg */
   .rdtPicker td:hover:not(.rdtActive),
   .rdtPicker .rdtSwitch:hover,
   .rdtPicker .rdtNext:hover,
@@ -55,25 +46,46 @@ const StyledDatetime = styled(Datetime)`
   }
 `;
 
-const TimestampField = ({ label, id, value, onChange }: TimestampFieldProps) => {
-  const handleChange = (newValue: string | Moment) => {
-    const momentValue = moment.isMoment(newValue) ? newValue : moment(newValue);
-    if (momentValue.isValid()) {
-      onChange(momentValue);
-    }
-  };
+type RHFTimestampFieldProps = {
+  id: string;
+  label: string;
+};
+
+const RHFTimestampField = ({ id, label }: RHFTimestampFieldProps) => {
+  const { control } = useFormContext();
+  const { errors, isSubmitted, touchedFields } = useFormState({ control });
+
+  const error = errors[id];
+  const isTouched = touchedFields[id];
+  const validationClass = error ? 'is-invalid' : isTouched || isSubmitted ? 'is-valid' : '';
 
   return (
     <div className='form-group'>
       <label htmlFor={id}>{label}</label>
-      <StyledDatetime
-        value={value}
-        onChange={handleChange}
-        dateFormat='YYYY-MM-DD'
-        timeFormat='HH:mm:ss'
-        inputProps={{ id, className: 'form-control' }}
+      <Controller
+        name={id}
+        control={control}
+        render={({ field }) => (
+          <StyledDatetime
+            value={field.value ? moment(field.value) : ''}
+            onChange={(newValue) => {
+              const momentValue = moment.isMoment(newValue) ? newValue : moment(newValue);
+              if (momentValue.isValid()) {
+                field.onChange(momentValue.toDate()); // Store Date in RHF
+              }
+            }}
+            dateFormat='YYYY-MM-DD'
+            timeFormat='HH:mm:ss'
+            inputProps={{
+              id,
+              className: `form-control ${validationClass}`,
+            }}
+          />
+        )}
       />
+      {error && <div className='invalid-feedback d-block'>{(error as any).message}</div>}
     </div>
   );
 };
-export default TimestampField;
+
+export default RHFTimestampField;

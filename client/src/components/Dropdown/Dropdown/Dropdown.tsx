@@ -84,20 +84,6 @@ const Anchor = styled.button<{ $variant?: DropdownVariantType }>`
     `}
 `;
 
-// const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
-//   border: 1px solid var(--color-ui-border) !important;
-//   display: ${(props) => (props.$visible ? 'block' : 'none')};
-//   position: absolute;
-//   top: calc(100% + 5px);
-//   right: 0;
-//   background-color: var(--color-ui-primary);
-//   border-radius: var(--radius-sm);
-//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-//   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 4px 10px rgba(0, 0, 0, 0.12);
-//   z-index: 4;
-//   padding: 0;
-//   list-style: none;
-// `;
 const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
   border: 1px solid var(--color-border) !important;
   display: ${(props) => (props.$visible ? 'block' : 'none')};

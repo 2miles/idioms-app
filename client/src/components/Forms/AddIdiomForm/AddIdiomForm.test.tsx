@@ -1,10 +1,10 @@
-import Swal from 'sweetalert2'; // So we can spy on Swal.fire calls
 import { beforeEach, describe, expect, test, vi } from 'vitest'; // Core Vitest tools for running, organizing, and mocking tests
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'; // Simulate and interact with the React component like a user would
 
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder'; // Cusotm hook used inside AddIdiom to call the API. We need to control it
 import { IdiomsContext } from '@/context/idiomsContext'; // AddIdiom uses it (via useContext) and needs it for testing
+import { showError, showSuccess } from '@/utils/alerts';
 import { suppressConsoleOutput } from '@/utils/testUtils';
 
 import AddIdiomForm from './AddIdiomForm'; // The component your testing
@@ -17,10 +17,10 @@ suppressConsoleOutput({ log: !DEBUG_ERRORS, error: !DEBUG_ERRORS });
 // We dont want real popups or API calls in tests, we want to spy on Swal.fire and API calls.
 // Replace Swal.fire with a vi.fn() spy
 // Replace API calls with a vi.fn() that returns a fake post() function
-vi.mock('sweetalert2', () => ({
-  default: {
-    fire: vi.fn(() => Promise.resolve({})),
-  },
+
+vi.mock('@/utils/alerts', () => ({
+  showSuccess: vi.fn(),
+  showError: vi.fn(),
 }));
 
 vi.mock('@/apis/useAuthorizedIdiomFinder', () => ({
@@ -160,13 +160,7 @@ describe('AddIdiom', () => {
 
       await waitFor(() => {
         expect(mockAddIdiom).toHaveBeenCalledWith(expect.objectContaining({ title: 'Test idiom' }));
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Idiom Added!',
-            text: 'The idiom has been successfully added.',
-            icon: 'success',
-          }),
-        );
+        expect(showSuccess).toHaveBeenCalled();
       });
     });
 
@@ -177,14 +171,7 @@ describe('AddIdiom', () => {
       fireEvent.click(screen.getByText(/add/i));
 
       await waitFor(() => {
-        // Check that SweetAlert2's fire method was called
-        expect(Swal.fire).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Error',
-            text: 'There was a problem adding the idiom.',
-            icon: 'error',
-          }),
-        );
+        expect(showError).toHaveBeenCalled();
       });
     });
 
