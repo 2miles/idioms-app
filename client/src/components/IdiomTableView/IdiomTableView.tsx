@@ -12,6 +12,7 @@ import { ColumnAccessors, ColumnVisibility, Idiom, SearchColumnAccessors } from 
 import { getListStateFromURL } from '@/utils/listParams';
 import { getShowingText } from '@/utils/pagination';
 
+import AzLetterDropdown from '../Dropdown/AzLetterDropdown';
 import {
   LeftGroup,
   PaginationWrapper,
@@ -223,6 +224,7 @@ const IdiomTableView = () => {
       <TableControls>
         <div className='top-row'>
           <ShowingText>{showingText}</ShowingText>
+          <AzLetterDropdown />
         </div>
         <div className='bottom-row'>
           <LeftGroup>
