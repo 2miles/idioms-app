@@ -11,12 +11,7 @@
  *
  * This allows users to search/sort idioms and still see the idiom's position in the full unfiltered list.
  */
-export function buildIdiomsQuery(
-  hasSearch: boolean,
-  whereClause: string,
-  sortField: string,
-  sortOrder: string,
-) {
+export function buildIdiomsQuery(whereClause: string, sortField: string, sortOrder: string) {
   return `
       WITH global_total AS (
         SELECT COUNT(*) AS total FROM idioms
@@ -30,7 +25,7 @@ export function buildIdiomsQuery(
         SELECT *,
           (SELECT total FROM global_total) + 1 - row_num AS position
         FROM ranked_all
-        ${hasSearch ? `WHERE ${whereClause}` : ''}
+        ${whereClause?.trim() ? `WHERE ${whereClause}` : ''}
       )
       SELECT *
       FROM filtered
@@ -43,8 +38,8 @@ export function buildIdiomsQuery(
  * Builds a SQL query to count total idioms, optionally filtered by a search condition.
  * Used for pagination calculations.
  */
-export function buildTotalCountQuery(hasSearch: boolean, totalWhereClause: string) {
-  return hasSearch
+export function buildTotalCountQuery(totalWhereClause: string) {
+  return totalWhereClause?.trim()
     ? `SELECT COUNT(*) AS total FROM idioms WHERE ${totalWhereClause}`
     : `SELECT COUNT(*) AS total FROM idioms`;
 }
@@ -88,7 +83,6 @@ export function buildIdiomWithPositionQuery(): string {
  * - Orders by the same `${sortField} ${sortOrder}` + stable tie-breaker `id DESC`.
  * - Uses window functions to get LAG/LEAD neighbors.
  *
- * @param hasSearch whether a WHERE clause should be applied
  * @param whereClause the WHERE clause fragment from getSearchClauses (without the "WHERE" keyword)
  * @param sortField validated sort field (e.g., "timestamps")
  * @param sortOrder "asc" | "desc"
@@ -96,7 +90,6 @@ export function buildIdiomWithPositionQuery(): string {
  */
 
 export function buildAdjacentIdsQuery(
-  hasSearch: boolean,
   whereClause: string,
   sortField: string,
   sortOrder: string,
@@ -108,7 +101,7 @@ export function buildAdjacentIdsQuery(
     WITH base AS (
       SELECT id, timestamps, title, definition, contributor
       FROM idioms
-      ${hasSearch ? `WHERE ${whereClause}` : ''}
+      ${whereClause?.trim() ? `WHERE ${whereClause}` : ''}
     ),
     ordered AS (
       SELECT

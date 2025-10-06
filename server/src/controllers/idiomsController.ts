@@ -8,38 +8,28 @@ import {
   buildTotalCountQuery,
 } from '../queries/idioms.js';
 import { buildFilterClauses } from '../utils/filterUtils.js';
-// import { getSearchClauses } from '../utils/searchUtils.js';
+import { normalizeLetterParam } from '../utils/letterUtils.js';
 
 export async function getAllIdioms(req: Request, res: Response): Promise<void> {
   try {
     const page = parseInt((req.query.page as string) || '1', 10);
     const limit = parseInt((req.query.limit as string) || '20', 10);
     const offset = (page - 1) * limit;
-
-    // Normalize/validate search column (UI values)
     const allowedColumns = ['title', 'contributor', 'general'] as const;
     const rawCol = (req.query.searchColumn as string) || 'title';
     if (!allowedColumns.includes(rawCol as any)) {
       res.status(400).json({ error: 'Invalid search column' });
       return;
     }
-    const searchColumn = rawCol; // pass UI value; helper expands 'general' -> title|definition
 
-    // Read search
+    const searchColumn = rawCol;
     const search = (req.query.search as string) || '';
 
     const rawLetter = req.query.letter as string | undefined;
-    const letter =
-      rawLetter && /^[A-Za-z]$/.test(rawLetter.toUpperCase())
-        ? rawLetter.toUpperCase() //single A–Z char, uppercase it
-        : rawLetter === 'num'
-        ? 'num' //allow "num" for 0–9 bucket
-        : null;
+    const letter = normalizeLetterParam(rawLetter);
 
     // Build WHERE fragments
-    // Page query: LIMIT ($1), OFFSET ($2), so search placeholders start at $3
     const { whereClause, whereValues } = buildFilterClauses(search, searchColumn, letter, 3);
-    // Count query: standalone, so start at $1
     const { whereClause: totalWhereClause, whereValues: totalValues } = buildFilterClauses(
       search,
       searchColumn,
@@ -47,7 +37,6 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
       1,
     );
 
-    // Validate sort
     const allowedSortFields = ['position', 'timestamps', 'title', 'definition', 'contributor'];
     const sortField = (req.query.sortField as string) || 'timestamps';
     const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'desc';
@@ -60,10 +49,8 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const hasSearch = whereValues.length > 0;
-
-    const idiomsQuery = buildIdiomsQuery(hasSearch, whereClause, sortField, sortOrder);
-    const totalCountQuery = buildTotalCountQuery(hasSearch, totalWhereClause);
+    const idiomsQuery = buildIdiomsQuery(whereClause, sortField, sortOrder);
+    const totalCountQuery = buildTotalCountQuery(totalWhereClause);
 
     const idiomsResult = await pool.query(idiomsQuery, [limit, offset, ...whereValues]);
     const countResult = await pool.query(totalCountQuery, totalValues);
@@ -82,7 +69,6 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
   }
 }
 
-// controllers/idiomsController.ts
 export async function getAdjacentIdioms(req: Request, res: Response) {
   try {
     const id = Number(req.query.id);
@@ -114,26 +100,14 @@ export async function getAdjacentIdioms(req: Request, res: Response) {
     const search = ((req.query.search as string) || '').trim();
 
     const rawLetter = req.query.letter as string | undefined;
-    const letter =
-      rawLetter && /^[A-Za-z]$/.test(rawLetter.toUpperCase())
-        ? rawLetter.toUpperCase()
-        : rawLetter === 'num'
-        ? 'num'
-        : null;
+    const letter = normalizeLetterParam(rawLetter);
 
-    // 🔑 Build WHERE with placeholders starting at $1 for this endpoint
+    // Build WHERE with placeholders starting at $1 for this endpoint
     const { whereClause, whereValues } = buildFilterClauses(search, uiColRaw, letter, 1);
-    const hasFilters = !!whereClause;
 
     const idParamIndex = whereValues.length + 1;
 
-    const sql = buildAdjacentIdsQuery(
-      hasFilters,
-      whereClause || '',
-      sortField,
-      sortOrder,
-      idParamIndex,
-    );
+    const sql = buildAdjacentIdsQuery(whereClause, sortField, sortOrder, idParamIndex);
 
     const result = await pool.query(sql, [...whereValues, id]);
     if (result.rowCount === 0) {
