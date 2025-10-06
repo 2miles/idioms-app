@@ -7,7 +7,8 @@ import {
   buildIdiomsQuery,
   buildTotalCountQuery,
 } from '../queries/idioms.js';
-import { getSearchClauses, getTotalWhereClause } from '../utils/searchUtils.js';
+import { buildFilterClauses } from '../utils/filterUtils.js';
+// import { getSearchClauses } from '../utils/searchUtils.js';
 
 export async function getAllIdioms(req: Request, res: Response): Promise<void> {
   try {
@@ -27,11 +28,24 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
     // Read search
     const search = (req.query.search as string) || '';
 
+    const rawLetter = req.query.letter as string | undefined;
+    const letter =
+      rawLetter && /^[A-Za-z]$/.test(rawLetter.toUpperCase())
+        ? rawLetter.toUpperCase() //single A–Z char, uppercase it
+        : rawLetter === 'num'
+        ? 'num' //allow "num" for 0–9 bucket
+        : null;
+
     // Build WHERE fragments
     // Page query: LIMIT ($1), OFFSET ($2), so search placeholders start at $3
-    const { whereClause, whereValues } = getSearchClauses(search, searchColumn, 3);
+    const { whereClause, whereValues } = buildFilterClauses(search, searchColumn, letter, 3);
     // Count query: standalone, so start at $1
-    const totalWhereClause = getTotalWhereClause(search, searchColumn, 1);
+    const { whereClause: totalWhereClause, whereValues: totalValues } = buildFilterClauses(
+      search,
+      searchColumn,
+      letter,
+      1,
+    );
 
     // Validate sort
     const allowedSortFields = ['position', 'timestamps', 'title', 'definition', 'contributor'];
@@ -52,7 +66,7 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
     const totalCountQuery = buildTotalCountQuery(hasSearch, totalWhereClause);
 
     const idiomsResult = await pool.query(idiomsQuery, [limit, offset, ...whereValues]);
-    const countResult = await pool.query(totalCountQuery, [...whereValues]);
+    const countResult = await pool.query(totalCountQuery, totalValues);
     const totalCount = parseInt(countResult.rows[0].total, 10);
 
     res.status(200).json({
@@ -99,14 +113,22 @@ export async function getAdjacentIdioms(req: Request, res: Response) {
 
     const search = ((req.query.search as string) || '').trim();
 
+    const rawLetter = req.query.letter as string | undefined;
+    const letter =
+      rawLetter && /^[A-Za-z]$/.test(rawLetter.toUpperCase())
+        ? rawLetter.toUpperCase()
+        : rawLetter === 'num'
+        ? 'num'
+        : null;
+
     // 🔑 Build WHERE with placeholders starting at $1 for this endpoint
-    const { whereClause, whereValues } = getSearchClauses(search, uiColRaw, 1);
-    const hasSearch = whereValues.length > 0;
+    const { whereClause, whereValues } = buildFilterClauses(search, uiColRaw, letter, 1);
+    const hasFilters = !!whereClause;
 
     const idParamIndex = whereValues.length + 1;
 
     const sql = buildAdjacentIdsQuery(
-      hasSearch,
+      hasFilters,
       whereClause || '',
       sortField,
       sortOrder,

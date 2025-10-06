@@ -76,4 +76,5 @@ export type ListParams = {
   sortOrder: 'asc' | 'desc';
   search: string;
   searchColumn: SearchColumnAccessors;
+  letter: string | null;
 };

@@ -41,6 +41,7 @@ const IdiomTableView = () => {
   const [searchColumn, setSearchColumn] = useState(init.searchColumn);
   const [sortField, setSortField] = useState(init.sortField);
   const [sortOrder, setSortOrder] = useState(init.sortOrder);
+  const [letter, setLetter] = useState(init.letter);
 
   const [idioms, setIdioms] = useState<Idiom[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -70,6 +71,7 @@ const IdiomTableView = () => {
     updatedParams.set('sortOrder', defaultParams.sortOrder);
     updatedParams.set('searchColumn', defaultParams.searchColumn);
     updatedParams.set('search', defaultParams.search);
+    // if (!updatedParams.has('letter')) updatedParams.delete('letter');
 
     if (updatedParams.toString() !== searchParams.toString()) {
       setSearchParams(updatedParams, { replace: true });
@@ -84,6 +86,7 @@ const IdiomTableView = () => {
     setSearchColumn(state.searchColumn);
     setSortField(state.sortField);
     setSortOrder(state.sortOrder);
+    setLetter(state.letter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -103,6 +106,7 @@ const IdiomTableView = () => {
             searchColumn: searchColumn,
             sortField,
             sortOrder,
+            letter: letter || undefined,
           },
         });
 
@@ -113,7 +117,16 @@ const IdiomTableView = () => {
       }
     };
     fetchPage();
-  }, [currentPage, itemsPerPage, searchTerm, searchColumn, sortField, sortOrder, searchParams]);
+  }, [
+    currentPage,
+    itemsPerPage,
+    searchTerm,
+    searchColumn,
+    sortField,
+    sortOrder,
+    searchParams,
+    letter,
+  ]);
 
   const handleSearchTermChange = (term: string) => {
     const normalizedSearchTerm = term ?? '';
@@ -167,6 +180,18 @@ const IdiomTableView = () => {
     });
   };
 
+  const handleLetterChange = (newLetter: string | null) => {
+    setLetter(newLetter);
+    setCurrentPage(1);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      if (newLetter) params.set('letter', newLetter);
+      else params.delete('letter');
+      params.set('page', '1');
+      return params;
+    });
+  };
+
   const handleColumnVisibilityChange = (accessor: ColumnAccessors) => {
     setColumnVisibility({
       ...columnVisibility,
@@ -186,14 +211,15 @@ const IdiomTableView = () => {
   };
 
   const handleRestoreTable = () => {
-    const defaultParams = new URLSearchParams();
-    defaultParams.set('page', '1');
-    defaultParams.set('limit', '20');
-    defaultParams.set('search', '');
-    defaultParams.set('searchColumn', 'title');
-    defaultParams.set('sortField', 'timestamps');
-    defaultParams.set('sortOrder', 'desc');
-    setSearchParams(defaultParams);
+    const defaults = new URLSearchParams();
+    defaults.set('page', '1');
+    defaults.set('limit', '20');
+    defaults.set('search', '');
+    defaults.set('searchColumn', 'title');
+    defaults.set('sortField', 'timestamps');
+    defaults.set('sortOrder', 'desc');
+    defaults.delete('letter');
+    setSearchParams(defaults);
 
     setCurrentPage(1);
     setItemsPerPage(20);
@@ -202,6 +228,7 @@ const IdiomTableView = () => {
     setSortField('timestamps');
     setSortOrder('desc');
     setInputValue('');
+    setLetter(null);
   };
 
   const showingText = getShowingText(currentPage, itemsPerPage, totalCount);
@@ -224,7 +251,7 @@ const IdiomTableView = () => {
       <TableControls>
         <div className='top-row'>
           <ShowingText>{showingText}</ShowingText>
-          <AzLetterDropdown />
+          <AzLetterDropdown letter={letter} handleLetterChange={handleLetterChange} />
         </div>
         <div className='bottom-row'>
           <LeftGroup>

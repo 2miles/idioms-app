@@ -80,20 +80,6 @@ export function buildIdiomWithPositionQuery(): string {
     `;
 }
 
-// function mapOrderColumn(sortField: string): string {
-//   switch (sortField) {
-//     case 'timestamps':
-//     case 'title':
-//     case 'definition':
-//     case 'contributor':
-//       return sortField; // real DB columns
-//     // 'position' is virtual in the list; for adjacency, treat it as timestamps
-//     case 'position':
-//     default:
-//       return 'timestamps';
-//   }
-// }
-
 /**
  * Builds a SQL query that, given filters and sort, returns the previous
  * and next idiom IDs relative to a specific idiom ID.
