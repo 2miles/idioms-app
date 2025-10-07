@@ -10,19 +10,39 @@ import {
 import { buildFilterClauses } from '../utils/filterUtils.js';
 import { normalizeLetterParam } from '../utils/letterUtils.js';
 
+const ALLOWED_SORT_FIELDS = [
+  'position',
+  'timestamps',
+  'title',
+  'definition',
+  'contributor',
+] as const;
+const ALLOWED_UI_COLUMNS = ['title', 'contributor', 'general'] as const;
+
+function validateSortParams(req: Request, { forAdjacent = false } = {}) {
+  const sortField = (req.query.sortField as string) || 'timestamps';
+  const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'desc';
+  if (!ALLOWED_SORT_FIELDS.includes(sortField as any)) throw new Error('Invalid sort field');
+  if (!['asc', 'desc'].includes(sortOrder)) throw new Error('Invalid sort order');
+  return {
+    sortField: forAdjacent && sortField === 'position' ? 'timestamps' : sortField,
+    sortOrder,
+  };
+}
+
 export async function getAllIdioms(req: Request, res: Response): Promise<void> {
   try {
     const page = parseInt((req.query.page as string) || '1', 10);
     const limit = parseInt((req.query.limit as string) || '20', 10);
     const offset = (page - 1) * limit;
-    const allowedColumns = ['title', 'contributor', 'general'] as const;
-    const rawCol = (req.query.searchColumn as string) || 'title';
-    if (!allowedColumns.includes(rawCol as any)) {
+    const rawSearchColumn = (req.query.searchColumn as string) || 'title';
+
+    if (!ALLOWED_UI_COLUMNS.includes(rawSearchColumn as any)) {
       res.status(400).json({ error: 'Invalid search column' });
       return;
     }
 
-    const searchColumn = rawCol;
+    const searchColumn = rawSearchColumn;
     const search = (req.query.search as string) || '';
 
     const rawLetter = req.query.letter as string | undefined;
@@ -37,23 +57,14 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
       1,
     );
 
-    const allowedSortFields = ['position', 'timestamps', 'title', 'definition', 'contributor'];
-    const sortField = (req.query.sortField as string) || 'timestamps';
-    const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'desc';
-    if (!allowedSortFields.includes(sortField)) {
-      res.status(400).json({ error: 'Invalid sort field' });
-      return;
-    }
-    if (!['asc', 'desc'].includes(sortOrder)) {
-      res.status(400).json({ error: 'Invalid sort order' });
-      return;
-    }
+    const { sortField, sortOrder } = validateSortParams(req);
 
     const idiomsQuery = buildIdiomsQuery(whereClause, sortField, sortOrder);
     const totalCountQuery = buildTotalCountQuery(totalWhereClause);
 
     const idiomsResult = await pool.query(idiomsQuery, [limit, offset, ...whereValues]);
     const countResult = await pool.query(totalCountQuery, totalValues);
+
     const totalCount = parseInt(countResult.rows[0].total, 10);
 
     res.status(200).json({
@@ -71,39 +82,28 @@ export async function getAllIdioms(req: Request, res: Response): Promise<void> {
 
 export async function getAdjacentIdioms(req: Request, res: Response) {
   try {
+    // --- Validate required inputs ---
     const id = Number(req.query.id);
     if (!id || Number.isNaN(id)) {
       res.status(400).json({ error: 'Missing or invalid id' });
       return;
     }
 
-    const allowedUiColumns = ['title', 'contributor', 'general'] as const;
-    const uiColRaw = ((req.query.searchColumn as string) || '').trim() || 'title';
-    if (!allowedUiColumns.includes(uiColRaw as any)) {
+    const rawUiColumn = ((req.query.searchColumn as string) || '').trim() || 'title';
+    if (!ALLOWED_UI_COLUMNS.includes(rawUiColumn as any)) {
       res.status(400).json({ error: 'Invalid search column' });
       return;
     }
 
-    const allowedSortFields = ['position', 'timestamps', 'title', 'definition', 'contributor'];
-    const sortFieldRaw = (req.query.sortField as string) || 'timestamps';
-    const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'desc';
-    if (!allowedSortFields.includes(sortFieldRaw)) {
-      res.status(400).json({ error: 'Invalid sort field' });
-      return;
-    }
-    if (!['asc', 'desc'].includes(sortOrder)) {
-      res.status(400).json({ error: 'Invalid sort order' });
-      return;
-    }
-    const sortField = sortFieldRaw === 'position' ? 'timestamps' : sortFieldRaw;
-
     const search = ((req.query.search as string) || '').trim();
+
+    const { sortField, sortOrder } = validateSortParams(req, { forAdjacent: true });
 
     const rawLetter = req.query.letter as string | undefined;
     const letter = normalizeLetterParam(rawLetter);
 
     // Build WHERE with placeholders starting at $1 for this endpoint
-    const { whereClause, whereValues } = buildFilterClauses(search, uiColRaw, letter, 1);
+    const { whereClause, whereValues } = buildFilterClauses(search, rawUiColumn, letter, 1);
 
     const idParamIndex = whereValues.length + 1;
 
