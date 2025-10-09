@@ -47,7 +47,7 @@ export function buildTotalCountQuery(totalWhereClause: string) {
 }
 
 /**
- * Builds a query to fetch a single idiom by ID and its global position
+ * Fetch a single idiom by ID and its global position
  * within all idioms ordered by timestamp.
  *
  * CTEs:
@@ -55,7 +55,7 @@ export function buildTotalCountQuery(totalWhereClause: string) {
  * - total_count: count all idioms
  * - positioned_idiom: join target idiom with rank and total count
  */
-export function buildIdiomWithPositionQuery(): string {
+export function idiomWithPositionQuery(): string {
   return `
       WITH ranked_idioms AS (
         SELECT id,
@@ -80,7 +80,7 @@ export function buildIdiomWithPositionQuery(): string {
  * Builds a query to find the previous and next idiom IDs
  * relative to a given idiom, using the same filters and sorting.
  *
- * @param whereClause filter conditions (no leading "WHERE")
+ * @param whereClause filter conditions
  * @param sortField column to order by
  * @param sortOrder "asc" | "desc"
  * @param idParamIndex parameter index for the idiom ID
@@ -111,5 +111,95 @@ export function buildAdjacentIdsQuery(
     SELECT prev_id, next_id, row_num::int AS current_row
     FROM ordered
     WHERE id = $${idParamIndex}::int;
+  `;
+}
+
+/**
+ * Fetch all example sentences for a given idiom ID.
+ *
+ * @returns All examples linked to that idiom
+ */
+export function examplesForIdiomQuery(): string {
+  return `
+    SELECT *
+    FROM idiom_examples
+    WHERE idiom_id = $1;
+  `;
+}
+
+/**
+ * Insert a new idiom into the database.
+ *
+ * @returns Newly inserted idiom row.
+ */
+export function createIdiomQuery(): string {
+  return `
+    INSERT INTO idioms (title, title_general, definition, timestamps, contributor) 
+    values ($1, $2, $3, $4, $5) 
+    returning *
+  `;
+}
+
+/**
+ * Update an existing idiom by its ID.
+ *
+ * @returns Updated idiom row.
+ */
+export function updateIdiomQuery(): string {
+  return `
+    UPDATE idioms 
+    SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5 
+    WHERE id = $6 
+    returning *
+  `;
+}
+
+/**
+ * Delete an existing idiom by its ID.
+ *
+ * @returns Deleted idiom row.
+ */
+export function deleteIdiomQuery(): string {
+  return `
+    DELETE FROM idioms 
+    WHERE id = $1 
+    RETURNING *
+  `;
+}
+
+/**
+ * Insert a new example sentence for a given idiom.
+ *
+ *  @returns Newly created example row
+ */
+export function createIdiomExampleQuery(): string {
+  return `
+    INSERT INTO idiom_examples (idiom_id, example)
+    VALUES ($1, $2)
+    RETURNING example_id, idiom_id, example
+  `;
+}
+
+/**
+ * Update an existing example sentence for a given idiom.
+ */
+export function updateIdiomExampleQuery(): string {
+  return `
+    UPDATE idiom_examples 
+    SET example = $1 
+    WHERE example_id = $2 AND idiom_id = $3
+  `;
+}
+
+/**
+ * Delete an example sentence by its ID.
+ *
+ * @returns Deleted example row
+ */
+export function deleteExampleQuery(): string {
+  return `
+    DELETE FROM idiom_examples 
+    WHERE example_id = $1
+    RETURNING *
   `;
 }
