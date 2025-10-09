@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import pool from '../db/index.js';
+import { handleError } from '../utils/errorHandler.js';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -25,8 +26,7 @@ export async function getUserSettings(req: Request, res: Response): Promise<void
       data: { theme: (rows[0]?.theme as Theme | undefined) ?? null },
     });
   } catch (error) {
-    console.error('Error fetching user settings:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    handleError(res, 'Error fetching user settings', error);
   }
 }
 
@@ -59,7 +59,6 @@ export async function upsertUserSettings(req: Request, res: Response): Promise<v
       data: { theme: rows[0].theme as Theme },
     });
   } catch (error) {
-    console.error('Error upserting user settings:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    handleError(res, 'Error upserting user settings', error);
   }
 }

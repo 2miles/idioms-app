@@ -8,13 +8,14 @@ export function getListStateFromURL(params: URLSearchParams): ListParams {
     sortOrder: (params.get('sortOrder') ?? 'desc') as 'asc' | 'desc',
     search: params.get('search') ?? '',
     searchColumn: (params.get('searchColumn') ?? 'title') as SearchColumnAccessors,
+    letter: params.get('letter') || null,
   };
 }
 
 export function buildAdjacentParams(id: string | undefined, sp: URLSearchParams) {
   if (!id) return null;
-  const { sortField, sortOrder, search, searchColumn } = getListStateFromURL(sp);
-  return { id: Number(id), sortField, sortOrder, search, searchColumn };
+  const { sortField, sortOrder, search, searchColumn, letter } = getListStateFromURL(sp);
+  return { id: Number(id), sortField, sortOrder, search, searchColumn, letter };
 }
 
 export function buildBackHref(sp: URLSearchParams, page: number) {

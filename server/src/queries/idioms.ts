@@ -1,22 +1,17 @@
 /**
- * Builds a SQL query to fetch a paginated and optionally filtered list of idioms,
- * ordered by any allowed field (e.g. timestamps DESC). Each idiom is assigned a
- * global position based on its true ranking in the full dataset, even when filters are applied.
+ * Builds a paginated SQL query for idioms with optional filters and sorting.
+ * Each idiom includes its global position across the dataset.
  *
- * Query breakdown:
- * 1. `global_total`: counts all idioms (unfiltered).
- * 2. `ranked_all`: assigns a global row number to all idioms ordered by timestamp DESC.
- * 3. `filtered`: optionally filters the ranked idioms and calculates their global position using: (total + 1 - row_num).
- * 4. Final SELECT returns a page of idioms with their correct global positions.
+ * CTEs:
+ * - global_total: count all idioms
+ * - ranked_all: assign row numbers by timestamp
+ * - filtered: apply filters and compute positions
  *
- * This allows users to search/sort idioms and still see the idiom's position in the full unfiltered list.
+ * @param whereClause filter conditions (no leading "WHERE")
+ * @param sortField column to order by
+ * @param sortOrder "asc" | "desc"
  */
-export function buildIdiomsQuery(
-  hasSearch: boolean,
-  whereClause: string,
-  sortField: string,
-  sortOrder: string,
-) {
+export function buildIdiomsQuery(whereClause: string, sortField: string, sortOrder: string) {
   return `
       WITH global_total AS (
         SELECT COUNT(*) AS total FROM idioms
@@ -30,7 +25,7 @@ export function buildIdiomsQuery(
         SELECT *,
           (SELECT total FROM global_total) + 1 - row_num AS position
         FROM ranked_all
-        ${hasSearch ? `WHERE ${whereClause}` : ''}
+        ${whereClause?.trim() ? `WHERE ${whereClause}` : ''}
       )
       SELECT *
       FROM filtered
@@ -40,26 +35,27 @@ export function buildIdiomsQuery(
 }
 
 /**
- * Builds a SQL query to count total idioms, optionally filtered by a search condition.
- * Used for pagination calculations.
+ * Builds a query to count total idioms, applying any filters.
+ * Used for pagination totals.
+ *
+ * @param whereClause filter conditions (no leading "WHERE")
  */
-export function buildTotalCountQuery(hasSearch: boolean, totalWhereClause: string) {
-  return hasSearch
+export function buildTotalCountQuery(totalWhereClause: string) {
+  return totalWhereClause?.trim()
     ? `SELECT COUNT(*) AS total FROM idioms WHERE ${totalWhereClause}`
     : `SELECT COUNT(*) AS total FROM idioms`;
 }
 
 /**
- * Builds a SQL query to fetch a single idiom by ID, including its global position
- * based on timestamp DESC ordering.
+ * Fetch a single idiom by ID and its global position
+ * within all idioms ordered by timestamp.
  *
- * Query breakdown:
- * 1. `ranked_idioms`: assigns a row number to each idiom ordered by timestamps DESC.
- * 2. `total_count`: counts all idioms.
- * 3. `positioned_idiom`: joins the target idiom with its rank and the total to compute global position.
- * 4. Final SELECT returns the full idiom row plus its position.
+ * CTEs:
+ * - ranked_idioms: assign row numbers
+ * - total_count: count all idioms
+ * - positioned_idiom: join target idiom with rank and total count
  */
-export function buildIdiomWithPositionQuery(): string {
+export function idiomWithPositionQuery(): string {
   return `
       WITH ranked_idioms AS (
         SELECT id,
@@ -80,37 +76,17 @@ export function buildIdiomWithPositionQuery(): string {
     `;
 }
 
-// function mapOrderColumn(sortField: string): string {
-//   switch (sortField) {
-//     case 'timestamps':
-//     case 'title':
-//     case 'definition':
-//     case 'contributor':
-//       return sortField; // real DB columns
-//     // 'position' is virtual in the list; for adjacency, treat it as timestamps
-//     case 'position':
-//     default:
-//       return 'timestamps';
-//   }
-// }
-
 /**
- * Builds a SQL query that, given filters and sort, returns the previous
- * and next idiom IDs relative to a specific idiom ID.
+ * Builds a query to find the previous and next idiom IDs
+ * relative to a given idiom, using the same filters and sorting.
  *
- * - Reuses the same search filtering (`whereClause`) you use on the list.
- * - Orders by the same `${sortField} ${sortOrder}` + stable tie-breaker `id DESC`.
- * - Uses window functions to get LAG/LEAD neighbors.
- *
- * @param hasSearch whether a WHERE clause should be applied
- * @param whereClause the WHERE clause fragment from getSearchClauses (without the "WHERE" keyword)
- * @param sortField validated sort field (e.g., "timestamps")
+ * @param whereClause filter conditions
+ * @param sortField column to order by
  * @param sortOrder "asc" | "desc"
- * @param idParamIndex numeric position of the `$` placeholder for the `id`
+ * @param idParamIndex parameter index for the idiom ID
  */
 
 export function buildAdjacentIdsQuery(
-  hasSearch: boolean,
   whereClause: string,
   sortField: string,
   sortOrder: string,
@@ -122,7 +98,7 @@ export function buildAdjacentIdsQuery(
     WITH base AS (
       SELECT id, timestamps, title, definition, contributor
       FROM idioms
-      ${hasSearch ? `WHERE ${whereClause}` : ''}
+      ${whereClause?.trim() ? `WHERE ${whereClause}` : ''}
     ),
     ordered AS (
       SELECT
@@ -135,5 +111,95 @@ export function buildAdjacentIdsQuery(
     SELECT prev_id, next_id, row_num::int AS current_row
     FROM ordered
     WHERE id = $${idParamIndex}::int;
+  `;
+}
+
+/**
+ * Fetch all example sentences for a given idiom ID.
+ *
+ * @returns All examples linked to that idiom
+ */
+export function examplesForIdiomQuery(): string {
+  return `
+    SELECT *
+    FROM idiom_examples
+    WHERE idiom_id = $1;
+  `;
+}
+
+/**
+ * Insert a new idiom into the database.
+ *
+ * @returns Newly inserted idiom row.
+ */
+export function createIdiomQuery(): string {
+  return `
+    INSERT INTO idioms (title, title_general, definition, timestamps, contributor) 
+    values ($1, $2, $3, $4, $5) 
+    returning *
+  `;
+}
+
+/**
+ * Update an existing idiom by its ID.
+ *
+ * @returns Updated idiom row.
+ */
+export function updateIdiomQuery(): string {
+  return `
+    UPDATE idioms 
+    SET title = $1, title_general = $2, definition = $3, timestamps = $4, contributor = $5 
+    WHERE id = $6 
+    returning *
+  `;
+}
+
+/**
+ * Delete an existing idiom by its ID.
+ *
+ * @returns Deleted idiom row.
+ */
+export function deleteIdiomQuery(): string {
+  return `
+    DELETE FROM idioms 
+    WHERE id = $1 
+    RETURNING *
+  `;
+}
+
+/**
+ * Insert a new example sentence for a given idiom.
+ *
+ *  @returns Newly created example row
+ */
+export function createIdiomExampleQuery(): string {
+  return `
+    INSERT INTO idiom_examples (idiom_id, example)
+    VALUES ($1, $2)
+    RETURNING example_id, idiom_id, example
+  `;
+}
+
+/**
+ * Update an existing example sentence for a given idiom.
+ */
+export function updateIdiomExampleQuery(): string {
+  return `
+    UPDATE idiom_examples 
+    SET example = $1 
+    WHERE example_id = $2 AND idiom_id = $3
+  `;
+}
+
+/**
+ * Delete an example sentence by its ID.
+ *
+ * @returns Deleted example row
+ */
+export function deleteExampleQuery(): string {
+  return `
+    DELETE FROM idiom_examples 
+    WHERE example_id = $1
+    RETURNING *
   `;
 }

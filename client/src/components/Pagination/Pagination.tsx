@@ -49,7 +49,7 @@ const PageItem = styled.li`
   }
   &.thin-gap .page-link {
     width: 10px;
-    height: 42px; /* Match the height of regular pagination */
+    height: 41px; /* Match the height of regular pagination */
     display: inline-block;
     background-color: var(--bg-dark);
     border: 1px solid var(--color-border);

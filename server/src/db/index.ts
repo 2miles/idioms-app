@@ -17,9 +17,6 @@ if (env === 'test') {
   connectionString = process.env.DATABASE_URL_DEV || (process.env.DATABASE_URL as string);
 }
 
-console.log('ENV:', env);
-console.log('Connecting to DB:', connectionString);
-
 pool = new Pool({
   connectionString,
   ssl: false, // you're local, so you don't need SSL

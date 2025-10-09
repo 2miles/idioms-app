@@ -1,13 +1,14 @@
-import styled from 'styled-components';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
-import searchIcon from '@/images/search.svg?react';
 import SearchColumnDropdown from '@/components/Dropdown/SearchColumnDropdown/SearchColumnDropdown';
+import searchIcon from '@/images/search.svg?react';
 import { SearchColumnAccessors } from '@/types';
 
 const Container = styled.div`
   position: relative;
   margin: var(--margin-md);
+  margin-bottom: 50px;
   width: 60%;
   @media (max-width: 660px) {
     width: 100%;
