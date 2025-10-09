@@ -13,6 +13,7 @@ const PageItem = styled.li`
     width: var(--space-xxxl);
     text-align: center;
     border: none;
+    height: 42px;
 
     &:hover {
       background-color: var(--bg-medium);
@@ -47,9 +48,9 @@ const PageItem = styled.li`
     border-top-right-radius: var(--radius-sm) !important;
     border-bottom-right-radius: var(--radius-sm) !important;
   }
+
   &.thin-gap .page-link {
     width: 10px;
-    height: 41px; /* Match the height of regular pagination */
     display: inline-block;
     background-color: var(--bg-dark);
     border: 1px solid var(--color-border);
