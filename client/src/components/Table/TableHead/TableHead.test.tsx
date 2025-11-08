@@ -1,89 +1,104 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
-import { ColumnAccessors, Columns } from '@/types';
+import { getCoreRowModel, TableOptions, useReactTable } from '@tanstack/react-table';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+
+import { Columns, Idiom } from '@/types';
 
 import TableHead from './TableHead';
 
-describe('TableHead', () => {
-  const visibleColumns = Columns.slice(0, 3); // e.g. position, title, definition
-  const mockSort = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
+const makeTable = (options?: Partial<TableOptions<Idiom>>) =>
+  useReactTable({
+    data: defaultData,
+    columns: defaultColumns,
+    getCoreRowModel: getCoreRowModel(),
+    manualSorting: true,
+    ...options,
   });
+
+const defaultColumns = Columns.slice(0, 3).map((c) => ({
+  id: c.accessor,
+  header: c.label,
+  accessorKey: c.accessor,
+  enableSorting: true,
+}));
+
+const defaultData: Idiom[] = [
+  {
+    id: 1,
+    position: 1,
+    title: 'Break the ice',
+    title_general: '',
+    definition: 'Start a conversation',
+    timestamps: '',
+    contributor: '',
+  },
+];
+
+describe('TableHead', () => {
+  const BasicWrapper = () => {
+    const table = makeTable();
+    return (
+      <table>
+        <TableHead table={table} />
+      </table>
+    );
+  };
 
   test('renders all column headers with correct labels', () => {
-    render(
-      <table>
-        <TableHead
-          columns={visibleColumns}
-          handleSorting={mockSort}
-          sortField='title'
-          sortOrder='asc'
-        />
-      </table>,
-    );
-    visibleColumns.forEach(({ label }) => {
-      expect(screen.getByText(label)).toBeInTheDocument();
+    render(<BasicWrapper />);
+    defaultColumns.forEach(({ header }) => {
+      expect(screen.getByText(header)).toBeInTheDocument();
     });
   });
 
-  test('calls handleSorting with correct params on header click', () => {
-    let currentSortField: ColumnAccessors = 'position'; // NOT 'title'
-    let currentSortOrder: 'asc' | 'desc' = 'desc';
+  test('calls onSortingChange when clicking sortable header', () => {
+    const mockOnSortingChange = vi.fn();
 
-    const mockHandleSorting = vi.fn((field: ColumnAccessors, order: 'asc' | 'desc') => {
-      currentSortField = field;
-      currentSortOrder = order;
-    });
+    const Wrapper = ({ sorting = [] }: { sorting?: any[] }) => {
+      const table = makeTable({ state: { sorting }, onSortingChange: mockOnSortingChange });
+      return (
+        <table>
+          <TableHead table={table} />
+        </table>
+      );
+    };
 
-    const { rerender } = render(
-      <table>
-        <TableHead
-          columns={visibleColumns}
-          handleSorting={mockHandleSorting}
-          sortField={currentSortField}
-          sortOrder={currentSortOrder}
-        />
-      </table>,
-    );
+    const { rerender } = render(<Wrapper sorting={[]} />);
 
     const idiomHeader = screen.getByText('Idiom');
-
-    // Click once → now sortField !== title, so we expect first sort = asc
     fireEvent.click(idiomHeader);
-    expect(mockHandleSorting).toHaveBeenCalledWith('title', 'asc');
 
-    // Simulate state update and rerender with new props
-    rerender(
-      <table>
-        <TableHead
-          columns={visibleColumns}
-          handleSorting={mockHandleSorting}
-          sortField='title'
-          sortOrder='asc'
-        />
-      </table>,
-    );
+    const firstArg = mockOnSortingChange.mock.calls[0][0];
+    const firstValue = typeof firstArg === 'function' ? firstArg([]) : firstArg;
+    expect(firstValue).toEqual([{ id: 'title', desc: false }]);
 
-    // Click again → flips to desc
+    rerender(<Wrapper sorting={[{ id: 'title', desc: false }]} />);
     fireEvent.click(idiomHeader);
-    expect(mockHandleSorting).toHaveBeenCalledWith('title', 'desc');
+
+    const secondArg = mockOnSortingChange.mock.calls[1][0];
+    const secondValue = typeof secondArg === 'function' ? secondArg(firstValue) : secondArg;
+    expect(secondValue).toEqual([{ id: 'title', desc: true }]);
   });
 
-  test('applies correct background image style for decending order', () => {
-    render(
-      <table>
-        <TableHead
-          columns={visibleColumns}
-          handleSorting={mockSort}
-          sortField='title'
-          sortOrder='desc'
-        />
-      </table>,
-    );
+  test('renders descending sort icon when column is sorted descending', () => {
+    const Wrapper = () => {
+      const table = makeTable({
+        state: { sorting: [{ id: 'title', desc: true }] },
+      });
+
+      return (
+        <table>
+          <TableHead table={table} />
+        </table>
+      );
+    };
+
+    render(<Wrapper />);
+
     const titleHeader = screen.getByTestId('table-header-title');
-    expect(within(titleHeader).getByTestId('sort-icon-down')).toBeInTheDocument();
+
+    const downIcon = within(titleHeader).getByTestId('sort-icon-down');
+    expect(downIcon).toBeInTheDocument();
   });
 });
