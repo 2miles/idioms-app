@@ -37,16 +37,11 @@ const Table = ({
 }: TableProps) => {
   const columns = Columns;
   const isSmall = useMediaQuery('(max-width: 770px)');
-  // force-only set for small screens
   const smallOnly = new Set<ColumnAccessors>(['position', 'title']);
-
-  // pick which columns to show
   let effectiveColumns;
   if (isSmall) {
-    // On small screens: only position + title
     effectiveColumns = columns.filter((c) => smallOnly.has(c.accessor));
   } else {
-    // On larger screens: respect user/URL-driven visibility
     effectiveColumns = columns.filter((c) => columnVisibility[c.accessor] !== false);
   }
 
