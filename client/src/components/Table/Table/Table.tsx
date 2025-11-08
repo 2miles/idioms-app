@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import TableBody from '@/components/Table/TableBody/TableBody';
 import TableHead from '@/components/Table/TableHead/TableHead';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { ColumnAccessors, ColumnVisibility, Columns, Idiom } from '@/types';
 
 export const StyledTable = styled.table`
@@ -35,18 +36,25 @@ const Table = ({
   sortOrder,
 }: TableProps) => {
   const columns = Columns;
-  const visibleColumns = columns.filter((col) => columnVisibility[col.accessor]);
+  const isSmall = useMediaQuery('(max-width: 770px)');
+  const smallOnly = new Set<ColumnAccessors>(['position', 'title']);
+  let effectiveColumns;
+  if (isSmall) {
+    effectiveColumns = columns.filter((c) => smallOnly.has(c.accessor));
+  } else {
+    effectiveColumns = columns.filter((c) => columnVisibility[c.accessor] !== false);
+  }
 
   return (
     <>
       <StyledTable>
         <TableHead
-          columns={visibleColumns}
+          columns={effectiveColumns}
           handleSorting={handleSorting}
           sortField={sortField}
           sortOrder={sortOrder}
         />
-        {tableData && <TableBody columns={visibleColumns} tableData={tableData} />}
+        {tableData && <TableBody columns={effectiveColumns} tableData={tableData} />}
       </StyledTable>
     </>
   );

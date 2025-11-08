@@ -9,7 +9,7 @@ type TableHeadProps = {
   columns: Column[];
   handleSorting: (sortField: ColumnAccessors, sortOrder: 'asc' | 'desc') => void;
   sortField: ColumnAccessors;
-  sortOrder: 'asc' | 'desc'; // Use 'default
+  sortOrder: 'asc' | 'desc';
 };
 
 type StyledThProps = {
@@ -26,11 +26,10 @@ const StyledTh = styled.th<StyledThProps>`
   color: var(--color-text-primary) !important;
   cursor: pointer;
   background-repeat: no-repeat;
-  /* background-position: right; */
   background-position: left center;
-  padding-left: 20px !important; /* prevent text from overlapping the icon */
-  padding-top: var(--padding-sm);
-  padding-bottom: var(--padding-sm);
+  padding-left: 20px !important;
+  padding-top: var(--padding-md);
+  padding-bottom: var(--padding-md);
   background-size: 25px 25px;
   font-weight: 600;
   font-size: var(--font-md);
@@ -39,43 +38,22 @@ const StyledTh = styled.th<StyledThProps>`
     background-color: var(--bg-medium);
   }
 
-  width: ${(props) => {
-    const widths: Record<StyledThProps['$accessor'], string> = {
-      position: '10%',
-      definition: '70%',
-      title: '30%',
-      timestamps: '20%',
-      contributor: '20%',
-    };
-    return widths[props.$accessor] || 'auto';
-  }};
-
+  /* --- column-specific rules --- */
   ${(props) =>
     props.$accessor === 'position' &&
     css`
-      width: auto;
+      text-align: center;
       white-space: nowrap;
-      max-width: none;
-      padding-right: 12px; /* tweak if needed */
+      max-width: 100px;
+      width: 1%; /* let browser auto-size minimally */
+      padding-right: 12px;
     `}
 
-  @media (max-width: 770px) {
-    width: ${(props) => {
-      const widths: Record<StyledThProps['$accessor'], string> = {
-        position: '20%',
-        definition: '0%',
-        title: '80%',
-        timestamps: '0%',
-        contributor: '0%',
-      };
-      return widths[props.$accessor] || 'auto';
-    }};
-    ${(props) =>
-      ['definition', 'timestamps', 'contributor'].includes(props.$accessor) &&
-      css`
-        display: none;
-      `}
-  }
+  ${(props) =>
+    props.$accessor === 'title' &&
+    css`
+      width: auto;
+    `}
 `;
 
 const SortIconWrapper = styled.span`
