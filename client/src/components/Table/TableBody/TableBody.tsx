@@ -48,14 +48,6 @@ const StyledTd = styled.td<StyleProps>`
       font-size: var(--font-lg);
       color: var(--color-ui-border) !important;
   `}
-
-  @media (max-width: 770px) {
-    ${(props) =>
-      ['definition', 'timestamps', 'contributor'].includes(props.$accessor) &&
-      `
-        display: none;
-      `}
-  }
 `;
 
 type TableBodyProps = {
