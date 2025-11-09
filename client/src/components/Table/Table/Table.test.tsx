@@ -28,69 +28,59 @@ const defaultVisibility: ColumnVisibility = {
   contributor: true,
 };
 
-describe('Table (TanStack)', () => {
-  const mockOnSortingChange = vi.fn();
-  const mockOnColumnVisibilityChange = vi.fn();
-  const mockOnPageChange = vi.fn();
-  const mockOnPageSizeChange = vi.fn();
+const mockOnSortingChange = vi.fn();
+const mockOnColumnVisibilityChange = vi.fn();
+const mockOnPageChange = vi.fn();
+const mockOnPageSizeChange = vi.fn();
 
+const defaultProps = {
+  data: tableData,
+  totalRows: tableData.length,
+  pageIndex: 0,
+  pageSize: 10,
+  sorting: defaultSorting,
+  columnVisibility: defaultVisibility,
+  onSortingChange: mockOnSortingChange,
+  onColumnVisibilityChange: mockOnColumnVisibilityChange,
+  onPageChange: mockOnPageChange,
+  onPageSizeChange: mockOnPageSizeChange,
+};
+
+function renderTable(overrides: Partial<typeof defaultProps> = {}) {
+  const props = { ...defaultProps, ...overrides };
+  return render(
+    <MemoryRouter>
+      <Table {...props} />
+    </MemoryRouter>,
+  );
+}
+
+describe('Table (TanStack)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   test('renders only visible columns', () => {
-    const columnVisibility: ColumnVisibility = {
-      position: true,
-      title: false,
-      definition: true,
-      timestamps: false,
-      contributor: true,
-    };
+    renderTable({
+      columnVisibility: {
+        position: true,
+        title: false,
+        definition: true,
+        timestamps: false,
+        contributor: true,
+      },
+    });
 
-    render(
-      <MemoryRouter>
-        <Table
-          data={tableData}
-          totalRows={1}
-          pageIndex={0}
-          pageSize={10}
-          onPageChange={mockOnPageChange}
-          onPageSizeChange={mockOnPageSizeChange}
-          sorting={defaultSorting}
-          onSortingChange={mockOnSortingChange}
-          columnVisibility={columnVisibility}
-          onColumnVisibilityChange={mockOnColumnVisibilityChange}
-        />
-      </MemoryRouter>,
-    );
-
-    // visible
     expect(screen.getByText('Order')).toBeInTheDocument();
     expect(screen.getByText('Definition')).toBeInTheDocument();
     expect(screen.getByText('Owner')).toBeInTheDocument();
 
-    // hidden
     expect(screen.queryByText('Idiom')).not.toBeInTheDocument();
     expect(screen.queryByText('Day')).not.toBeInTheDocument();
   });
 
   test('renders data rows matching visible columns', () => {
-    render(
-      <MemoryRouter>
-        <Table
-          data={tableData}
-          totalRows={1}
-          pageIndex={0}
-          pageSize={10}
-          onPageChange={mockOnPageChange}
-          onPageSizeChange={mockOnPageSizeChange}
-          sorting={defaultSorting}
-          onSortingChange={mockOnSortingChange}
-          columnVisibility={defaultVisibility}
-          onColumnVisibilityChange={mockOnColumnVisibilityChange}
-        />
-      </MemoryRouter>,
-    );
+    renderTable();
 
     expect(screen.getByText('Break the ice')).toBeInTheDocument();
     expect(screen.getByText('To initiate conversation in a social setting')).toBeInTheDocument();
@@ -98,22 +88,7 @@ describe('Table (TanStack)', () => {
   });
 
   test('renders fallback message when table is empty', () => {
-    render(
-      <MemoryRouter>
-        <Table
-          data={[]}
-          totalRows={0}
-          pageIndex={0}
-          pageSize={10}
-          onPageChange={mockOnPageChange}
-          onPageSizeChange={mockOnPageSizeChange}
-          sorting={defaultSorting}
-          onSortingChange={mockOnSortingChange}
-          columnVisibility={defaultVisibility}
-          onColumnVisibilityChange={mockOnColumnVisibilityChange}
-        />
-      </MemoryRouter>,
-    );
+    renderTable({ data: [], totalRows: 0 });
 
     expect(screen.getByText('No Idioms Found')).toBeInTheDocument();
   });
