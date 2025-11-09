@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import type { SortingState } from '@tanstack/react-table';
+
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import ColumnDropdown from '@/components/Dropdown/ColumnDropdown/ColumnDropdown';
 import ItemsPerPageDropdown from '@/components/Dropdown/ItemsPerPageDropdown/ItemsPerPageDropdown';
@@ -8,6 +10,7 @@ import Pagination from '@/components/Pagination/Pagination';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Table from '@/components/Table/Table/Table';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { ColumnAccessors, ColumnVisibility, Idiom, SearchColumnAccessors } from '@/types';
 import { getListStateFromURL } from '@/utils/listParams';
 import { getShowingText } from '@/utils/pagination';
@@ -49,7 +52,7 @@ const IdiomTableView = () => {
   const [inputValue, setInputValue] = useState(searchTerm);
   const debouncedSearchTerm = useDebounce(inputValue, 500);
 
-  const isSmallScreen = window.innerWidth < 660;
+  const isSmallScreen = useMediaQuery('(max-width: 660px)');
 
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     position: true,
@@ -210,6 +213,15 @@ const IdiomTableView = () => {
     });
   };
 
+  const handleTableSortingChange = (next: { id: string; desc: boolean }[]) => {
+    const top = next[0];
+    if (top) {
+      handleSorting(top.id as ColumnAccessors, top.desc ? 'desc' : 'asc');
+    } else {
+      handleSorting('timestamps' as ColumnAccessors, 'desc');
+    }
+  };
+
   const handleRestoreTable = () => {
     const defaults = new URLSearchParams();
     defaults.set('page', '1');
@@ -232,6 +244,9 @@ const IdiomTableView = () => {
   };
 
   const showingText = getShowingText(currentPage, itemsPerPage, totalCount);
+
+  // derive SortingState from your sortField/sortOrder URL state
+  const sorting: SortingState = sortField ? [{ id: sortField, desc: sortOrder === 'desc' }] : [];
 
   return (
     <TableSectionWrapper>
@@ -281,11 +296,16 @@ const IdiomTableView = () => {
         </div>
       </TableControls>
       <Table
-        tableData={idioms}
-        handleSorting={handleSorting}
+        data={idioms}
+        totalRows={totalCount}
+        pageIndex={currentPage - 1}
+        pageSize={itemsPerPage}
+        onPageChange={(p) => handlePageChange(p + 1)}
+        onPageSizeChange={handleLimitChange}
+        sorting={sorting}
+        onSortingChange={handleTableSortingChange}
         columnVisibility={columnVisibility}
-        sortField={sortField}
-        sortOrder={sortOrder}
+        onColumnVisibilityChange={setColumnVisibility}
       />
       <TableControls>
         <PaginationWrapper>

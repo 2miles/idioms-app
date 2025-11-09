@@ -1,16 +1,9 @@
-import moment from 'moment';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Column, Idiom } from '@/types';
+import { flexRender, type Table as TanTable } from '@tanstack/react-table';
 
-const truncateLength = 150;
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) {
-    return text;
-  }
-  return text.substring(0, maxLength) + '...';
-};
+import { Idiom } from '@/types';
 
 type StyleProps = {
   $accessor: string;
@@ -29,8 +22,6 @@ const StyledTr = styled.tr`
 const StyledTd = styled.td<StyleProps>`
   padding: var(--padding-lg) var(--padding-lg) !important;
   border-bottom: 1px solid var(--color-border) !important;
-  border-left: none !important;
-  border-right: none !important;
   background: var(--bg-dark);
   color: var(--color-text-primary) !important;
 
@@ -51,49 +42,37 @@ const StyledTd = styled.td<StyleProps>`
 `;
 
 type TableBodyProps = {
-  tableData: Idiom[];
-  columns: Column[];
+  table: TanTable<Idiom>;
 };
 
-const TableBody = ({ tableData, columns }: TableBodyProps) => {
+const TableBody = ({ table }: TableBodyProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const rows = table.getRowModel().rows;
 
   const handleRowClick = (id: number) => {
-    navigate({
-      pathname: `/idioms/${id}`,
-      search: location.search,
-    });
+    navigate({ pathname: `/idioms/${id}`, search: location.search });
   };
 
   return (
     <tbody>
-      {tableData && tableData.length > 0 ? (
-        tableData.map((row) => {
-          return (
-            <StyledTr key={row.id} onClick={() => handleRowClick(row.id)}>
-              {columns.map(({ accessor }) => {
-                let cellData: string;
-                if (accessor === 'timestamps') {
-                  cellData = moment(row[accessor]).format('MM-DD-YY');
-                } else {
-                  cellData = String(row[accessor] ? row[accessor] : ' ');
-                }
-                if (accessor === 'definition') {
-                  cellData = truncateText(cellData, truncateLength);
-                }
-                return (
-                  <StyledTd key={accessor} $accessor={accessor}>
-                    {cellData}
-                  </StyledTd>
-                );
-              })}
-            </StyledTr>
-          );
-        })
+      {rows.length > 0 ? (
+        rows.map((row) => (
+          <StyledTr
+            key={row.id}
+            onClick={() => handleRowClick(row.original.id)}
+            data-testid={`table-row-${row.original.id}`}
+          >
+            {row.getVisibleCells().map((cell) => (
+              <StyledTd key={cell.id} $accessor={cell.column.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </StyledTd>
+            ))}
+          </StyledTr>
+        ))
       ) : (
         <tr>
-          <StyledTd colSpan={columns.length} $accessor='default'>
+          <StyledTd colSpan={table.getVisibleLeafColumns().length} $accessor='default'>
             No Idioms Found
           </StyledTd>
         </tr>

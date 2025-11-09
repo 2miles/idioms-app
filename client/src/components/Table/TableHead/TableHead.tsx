@@ -1,15 +1,14 @@
 import styled, { css } from 'styled-components';
 
+import { flexRender, type Header, type Table as TanTable } from '@tanstack/react-table';
+
 import ArrowDownIcon from '@/images/arrow-down-sort.svg?react';
 import ArrowNeutralIcon from '@/images/arrow-up-arrow-down.svg?react';
 import ArrowUpIcon from '@/images/arrow-up-sort.svg?react';
-import { Column, ColumnAccessors } from '@/types';
+import { ColumnAccessors, Idiom } from '@/types';
 
 type TableHeadProps = {
-  columns: Column[];
-  handleSorting: (sortField: ColumnAccessors, sortOrder: 'asc' | 'desc') => void;
-  sortField: ColumnAccessors;
-  sortOrder: 'asc' | 'desc';
+  table: TanTable<Idiom>;
 };
 
 type StyledThProps = {
@@ -48,12 +47,6 @@ const StyledTh = styled.th<StyledThProps>`
       width: 1%; /* let browser auto-size minimally */
       padding-right: 12px;
     `}
-
-  ${(props) =>
-    props.$accessor === 'title' &&
-    css`
-      width: auto;
-    `}
 `;
 
 const SortIconWrapper = styled.span`
@@ -87,43 +80,40 @@ const StyledArrowNeutral = styled(ArrowNeutralIcon)`
   fill: var(--color-text-dim) !important;
 `;
 
-const TableHead = ({ columns, handleSorting, sortField, sortOrder }: TableHeadProps) => {
-  const handleSortingChange = (accessor: ColumnAccessors) => {
-    const newSortOrder = accessor === sortField && sortOrder === 'asc' ? 'desc' : 'asc';
-    handleSorting(accessor, newSortOrder);
-  };
+const TableHead = ({ table }: TableHeadProps) => {
   return (
     <thead>
-      <tr>
-        {columns.map(({ label, accessor }) => {
-          const currentSortOrder = sortField === accessor ? sortOrder : 'default';
-          const isSorted = sortField === accessor;
+      {table.getHeaderGroups().map((headerGroup) => (
+        <tr key={headerGroup.id}>
+          {headerGroup.headers.map((header: Header<Idiom, unknown>) => {
+            const accessor = header.column.id as ColumnAccessors;
+            const sortDir = header.column.getIsSorted(); // 'asc' | 'desc' | false
+            const sortOrder = sortDir === 'asc' ? 'asc' : sortDir === 'desc' ? 'desc' : 'default';
 
-          return (
-            <StyledTh
-              key={accessor}
-              onClick={() => handleSortingChange(accessor)}
-              $accessor={accessor}
-              $sortOrder={currentSortOrder}
-              $isSorted={isSorted}
-              data-testid={`table-header-${accessor}`}
-            >
-              {label}
-              <SortIconWrapper>
-                {isSorted ? (
-                  currentSortOrder === 'asc' ? (
+            return (
+              <StyledTh
+                key={header.id}
+                onClick={header.column.getToggleSortingHandler()}
+                $accessor={accessor}
+                $sortOrder={sortOrder}
+                $isSorted={!!sortDir}
+                data-testid={`table-header-${accessor}`}
+              >
+                {flexRender(header.column.columnDef.header, header.getContext())}
+                <SortIconWrapper>
+                  {sortOrder === 'asc' ? (
                     <StyledArrowUp data-testid='sort-icon-up' />
-                  ) : (
+                  ) : sortOrder === 'desc' ? (
                     <StyledArrowDown data-testid='sort-icon-down' />
-                  )
-                ) : (
-                  <StyledArrowNeutral data-testid='sort-icon-neutral' />
-                )}
-              </SortIconWrapper>
-            </StyledTh>
-          );
-        })}
-      </tr>
+                  ) : (
+                    <StyledArrowNeutral data-testid='sort-icon-neutral' />
+                  )}
+                </SortIconWrapper>
+              </StyledTh>
+            );
+          })}
+        </tr>
+      ))}
     </thead>
   );
 };

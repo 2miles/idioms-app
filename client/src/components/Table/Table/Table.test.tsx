@@ -1,110 +1,95 @@
-import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, test, vi } from 'vitest';
-
+import { type SortingState } from '@tanstack/react-table';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { ColumnVisibility, Idiom } from '@/types';
-
 import Table from './Table';
 
 const tableData: Idiom[] = [
   {
     id: 1,
     title: 'Break the ice',
-    timestamps: '2023-01-01T00:00:00Z',
-    title_general: null,
     definition: 'To initiate conversation in a social setting',
+    timestamps: '2023-01-01T00:00:00Z',
     contributor: 'Alice',
     position: 1,
+    title_general: '',
     examples: [],
   },
 ];
 
-describe('Table', () => {
-  const handleSorting = vi.fn();
+const defaultSorting: SortingState = [{ id: 'position', desc: false }];
+const defaultVisibility: ColumnVisibility = {
+  position: true,
+  title: true,
+  definition: true,
+  timestamps: true,
+  contributor: true,
+};
 
-  const defaultSortField = 'position';
-  const defaultSortOrder = 'asc';
+const mockOnSortingChange = vi.fn();
+const mockOnColumnVisibilityChange = vi.fn();
+const mockOnPageChange = vi.fn();
+const mockOnPageSizeChange = vi.fn();
+
+const defaultProps = {
+  data: tableData,
+  totalRows: tableData.length,
+  pageIndex: 0,
+  pageSize: 10,
+  sorting: defaultSorting,
+  columnVisibility: defaultVisibility,
+  onSortingChange: mockOnSortingChange,
+  onColumnVisibilityChange: mockOnColumnVisibilityChange,
+  onPageChange: mockOnPageChange,
+  onPageSizeChange: mockOnPageSizeChange,
+};
+
+function renderTable(overrides: Partial<typeof defaultProps> = {}) {
+  const props = { ...defaultProps, ...overrides };
+  return render(
+    <MemoryRouter>
+      <Table {...props} />
+    </MemoryRouter>,
+  );
+}
+
+describe('Table (TanStack)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   test('renders only visible columns', () => {
-    const columnVisibility: ColumnVisibility = {
-      position: true,
-      title: false,
-      definition: true,
-      timestamps: false,
-      contributor: true,
-    };
+    renderTable({
+      columnVisibility: {
+        position: true,
+        title: false,
+        definition: true,
+        timestamps: false,
+        contributor: true,
+      },
+    });
 
-    render(
-      <MemoryRouter>
-        <Table
-          tableData={tableData}
-          handleSorting={handleSorting}
-          columnVisibility={columnVisibility}
-          sortField={defaultSortField}
-          sortOrder={defaultSortOrder}
-        />
-      </MemoryRouter>,
-    );
-
-    // Check visible column headers
     expect(screen.getByText('Order')).toBeInTheDocument();
-    expect(screen.queryByText('Idiom')).not.toBeInTheDocument();
     expect(screen.getByText('Definition')).toBeInTheDocument();
-    expect(screen.queryByText('Day')).not.toBeInTheDocument();
     expect(screen.getByText('Owner')).toBeInTheDocument();
+
+    expect(screen.queryByText('Idiom')).not.toBeInTheDocument();
+    expect(screen.queryByText('Day')).not.toBeInTheDocument();
   });
 
   test('renders data rows matching visible columns', () => {
-    const columnVisibility: ColumnVisibility = {
-      position: true,
-      title: true,
-      definition: true,
-      timestamps: true,
-      contributor: true,
-    };
-
-    render(
-      <MemoryRouter>
-        <Table
-          tableData={tableData}
-          handleSorting={handleSorting}
-          columnVisibility={columnVisibility}
-          sortField={defaultSortField}
-          sortOrder={defaultSortOrder}
-        />
-      </MemoryRouter>,
-    );
+    renderTable();
 
     expect(screen.getByText('Break the ice')).toBeInTheDocument();
     expect(screen.getByText('To initiate conversation in a social setting')).toBeInTheDocument();
     expect(screen.getByText('Alice')).toBeInTheDocument();
   });
 
-  test('renders empty table gracefully', () => {
-    const columnVisibility: ColumnVisibility = {
-      position: true,
-      title: true,
-      definition: true,
-      timestamps: true,
-      contributor: true,
-    };
+  test('renders fallback message when table is empty', () => {
+    renderTable({ data: [], totalRows: 0 });
 
-    render(
-      <MemoryRouter>
-        <Table
-          tableData={[]}
-          handleSorting={handleSorting}
-          columnVisibility={columnVisibility}
-          sortField={defaultSortField}
-          sortOrder={defaultSortOrder}
-        />
-        ,
-      </MemoryRouter>,
-    );
-
-    // Only header should exist
-    expect(screen.getByText('Idiom')).toBeInTheDocument();
-    expect(screen.queryByText('Break the ice')).not.toBeInTheDocument();
+    expect(screen.getByText('No Idioms Found')).toBeInTheDocument();
   });
 });
