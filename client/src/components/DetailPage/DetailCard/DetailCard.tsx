@@ -14,6 +14,7 @@ import {
   IdiomInfo,
   InfoElement,
   InfoElementKey,
+  OriginText,
   SectionGroup,
   SectionHeader,
   UpdateExampleButtons,
@@ -76,6 +77,17 @@ const DetailCard = ({
                 Edit Idiom
               </SecondaryButton>
             </UpdateExampleButtons>
+          )}
+
+          {idiom.origin && idiom.origin.origin_text && (
+            <>
+              <SectionHeader>
+                <h3>Origin:</h3>
+              </SectionHeader>
+              <DefinitionText>
+                <OriginText>{idiom.origin.origin_text}</OriginText>
+              </DefinitionText>
+            </>
           )}
 
           {idiom.examples && idiom.examples.length > 0 && (

@@ -5,11 +5,13 @@ import {
   createIdiom,
   deleteExample,
   deleteIdiom,
+  deleteOrigin,
   getAdjacentIdioms,
   getAllIdioms,
   getSingleIdiomWithExamples,
   updateExamples,
   updateIdiom,
+  upsertOrigin,
 } from '../controllers/idiomsController.js';
 import { checkRole, jwtCheck } from '../middleware/auth.js';
 
@@ -24,6 +26,9 @@ router.get('/:id(\\d+)', getSingleIdiomWithExamples);
 router.post('/', jwtCheck, checkRole('Admin'), createIdiom);
 router.put('/:id', jwtCheck, checkRole('Admin'), updateIdiom);
 router.delete('/:id', jwtCheck, checkRole('Admin'), deleteIdiom);
+
+router.put('/:id/origin', jwtCheck, checkRole('Admin'), upsertOrigin);
+router.delete('/:id/origin', jwtCheck, checkRole('Admin'), deleteOrigin);
 
 router.post('/:id/examples', jwtCheck, checkRole('Admin'), createExample);
 router.put('/:id/examples', jwtCheck, checkRole('Admin'), updateExamples);

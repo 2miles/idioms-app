@@ -7,6 +7,7 @@ export type Idiom = {
   contributor: string | null;
   position: number | null;
   examples?: Example[];
+  origin?: Origin | null;
 };
 
 export type NewIdiomInput = {
@@ -29,6 +30,14 @@ export type Example = {
   example_id: number;
   idiom_id: number;
   example: string;
+};
+
+export type Origin = {
+  id: number;
+  idiom_id: number;
+  origin_text: string | null;
+  model: string | null;
+  updated_at: string; // ISO date string
 };
 
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';

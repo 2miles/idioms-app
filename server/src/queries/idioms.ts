@@ -128,6 +128,19 @@ export function examplesForIdiomQuery(): string {
 }
 
 /**
+ * Fetch origin text for a given idiom ID.
+ *
+ * @returns Origin text linked to that idiom
+ */
+export function originForIdiomQuery(): string {
+  return `
+    SELECT idiom_id, origin_text
+    FROM idiom_origins_ai
+    WHERE idiom_id = $1;
+  `;
+}
+
+/**
  * Insert a new idiom into the database.
  *
  * @returns Newly inserted idiom row.
@@ -201,5 +214,34 @@ export function deleteExampleQuery(): string {
     DELETE FROM idiom_examples 
     WHERE example_id = $1
     RETURNING *
+  `;
+}
+
+/**
+ * Upsert a single origin row for an idiom.
+ * If an origin already exists for that idiom_id, update it; otherwise insert.
+ *
+ * Requires a UNIQUE constraint or PRIMARY KEY on idiom_id in idiom_origins_ai.
+ */
+export function upsertOriginQuery(): string {
+  return `
+    INSERT INTO idiom_origins_ai (idiom_id, origin_text)
+    VALUES ($1, $2)
+    ON CONFLICT (idiom_id)
+    DO UPDATE SET origin_text = EXCLUDED.origin_text
+    RETURNING *;
+  `;
+}
+
+/**
+ * Delete the origin row associated with an idiom.
+ *
+ * @returns Deleted origin row (or null if none existed)
+ */
+export function deleteOriginByIdiomIdQuery(): string {
+  return `
+    DELETE FROM idiom_origins_ai
+    WHERE idiom_id = $1
+    RETURNING *;
   `;
 }

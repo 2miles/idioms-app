@@ -112,3 +112,7 @@ export const SectionGroup = styled.div`
     margin-bottom: var(--margin-xxl);
   }
 `;
+
+export const OriginText = styled(DefinitionText)`
+  white-space: pre-wrap;
+`;
