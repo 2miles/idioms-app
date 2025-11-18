@@ -3,7 +3,7 @@ import moment from 'moment';
 import { useContext } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
+import { DangerButton, PrimaryButton, SecondaryButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
@@ -19,9 +19,18 @@ type UpdateIdiomProps = {
   onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onClose: () => void;
   onUpdateSuccess?: () => void;
+  onOpenAddExample: () => void;
+  onOpenEditExamples: () => void;
 };
 
-const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateIdiomProps) => {
+const UpdateIdiomForm = ({
+  idiom,
+  onDelete,
+  onClose,
+  onUpdateSuccess,
+  onOpenAddExample,
+  onOpenEditExamples,
+}: UpdateIdiomProps) => {
   const { updateIdiom, upsertOrigin, deleteOrigin } = useContext(IdiomsContext);
 
   const methods = useForm<IdiomFormValues>({
@@ -94,8 +103,6 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
           <TextAreaField label='Definition' id='definition' rows={3} maxLength={500} />
           <TimestampField label='Timestamp' id='timestamp' />
           <TextField label='Contributor' id='contributor' maxLength={50} />
-
-          {/* NEW ORIGIN FIELD */}
           <TextAreaField
             id='originText'
             label='Origin'
@@ -103,6 +110,17 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
             maxLength={4000}
             placeholder='Explain the origin of this idiom (optional)...'
           />
+
+          <HalfButtonsWrapper>
+            <SecondaryButton as={PrimaryButton} type='button' onClick={onOpenAddExample}>
+              Add Example
+            </SecondaryButton>
+            {idiom?.examples && idiom.examples.length > 0 && (
+              <SecondaryButton as={PrimaryButton} type='button' onClick={onOpenEditExamples}>
+                Edit Examples
+              </SecondaryButton>
+            )}
+          </HalfButtonsWrapper>
 
           <HalfButtonsWrapper>
             <HalfButton as={PrimaryButton} type='submit' disabled={isSubmitting}>

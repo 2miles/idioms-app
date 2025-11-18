@@ -10,7 +10,6 @@ import DetailPageControls from '@/components/DetailPage/DetailPageControls';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
 import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
-import UpdateOriginForm from '@/components/Forms/UpdateOriginForm';
 import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
 import { IdiomsContext } from '@/context/idiomsContext';
@@ -37,8 +36,6 @@ const DetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
-  const [isAddOriginModalOpen, setIsAddOriginModalOpen] = useState(false);
-  const [isEditOriginModalOpen, setIsEditOriginModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -89,10 +86,6 @@ const DetailPage = () => {
   const closeExampleModal = () => setIsExampleModalOpen(false);
   const openAddExampleModal = () => setIsAddExampleModalOpen(true);
   const closeAddExampleModal = () => setIsAddExampleModalOpen(false);
-  const openAddOriginModal = () => setIsAddOriginModalOpen(true);
-  const closeAddOriginModal = () => setIsAddOriginModalOpen(false);
-  const openEditOriginModal = () => setIsEditOriginModalOpen(true);
-  const closeEditOriginModal = () => setIsEditOriginModalOpen(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -124,18 +117,15 @@ const DetailPage = () => {
           onDelete={handleDelete}
           onClose={closeModal}
           onUpdateSuccess={fetchIdiom}
+          onOpenAddExample={() => {
+            closeModal();
+            openAddExampleModal();
+          }}
+          onOpenEditExamples={() => {
+            closeModal();
+            openExampleModal();
+          }}
         />
-      </Modal>
-
-      <Modal title='Edit Origin' isOpen={isEditOriginModalOpen} onClose={closeEditOriginModal}>
-        {typeof id !== 'undefined' && (
-          <UpdateOriginForm
-            idiomId={Number(id)}
-            origin={selectedIdiom.origin ?? null}
-            onClose={closeEditOriginModal}
-            onUpdateSuccess={fetchIdiom}
-          />
-        )}
       </Modal>
 
       <Modal title='Edit Examples' isOpen={isExampleModalOpen} onClose={closeExampleModal}>
@@ -170,14 +160,7 @@ const DetailPage = () => {
         />
       )}
 
-      <DetailCard
-        idiom={selectedIdiom}
-        openAddExampleModal={openAddExampleModal}
-        openExampleModal={openExampleModal}
-        openEditOriginModal={openEditOriginModal}
-        openAddOriginModal={openAddOriginModal}
-        openModal={openModal}
-      />
+      <DetailCard idiom={selectedIdiom} openModal={openModal} />
     </PageContainer>
   );
 };

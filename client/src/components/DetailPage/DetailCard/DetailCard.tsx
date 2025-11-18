@@ -24,20 +24,9 @@ import {
 type DetailCardProps = {
   idiom: Idiom;
   openModal: () => void;
-  openAddOriginModal: () => void;
-  openEditOriginModal: () => void;
-  openExampleModal: () => void;
-  openAddExampleModal: () => void;
 };
 
-const DetailCard = ({
-  idiom,
-  openModal,
-  openAddOriginModal,
-  openEditOriginModal,
-  openExampleModal,
-  openAddExampleModal,
-}: DetailCardProps) => {
+const DetailCard = ({ idiom, openModal }: DetailCardProps) => {
   const { isAdmin } = useUser();
   const examples = Array.isArray(idiom.examples) ? idiom.examples : [];
   return (
@@ -97,18 +86,6 @@ const DetailCard = ({
           {idiom.examples && idiom.examples.length > 0 && (
             <SectionHeader>
               <h3>Examples</h3>
-              {isAdmin && (
-                <UpdateExampleButtons>
-                  <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
-                    Add Ex.
-                  </SecondaryButton>
-                  {idiom.examples && idiom.examples.length > 0 && (
-                    <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
-                      Edit Ex.
-                    </SecondaryButton>
-                  )}
-                </UpdateExampleButtons>
-              )}
             </SectionHeader>
           )}
           <ExampleList data-testid='examples'>
@@ -116,13 +93,6 @@ const DetailCard = ({
               <ExampleItem key={example.example_id}>{example.example}</ExampleItem>
             ))}
           </ExampleList>
-          {isAdmin && idiom.examples && idiom.examples.length < 1 && (
-            <UpdateExampleButtons>
-              <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
-                Add Ex.
-              </SecondaryButton>
-            </UpdateExampleButtons>
-          )}
         </SectionGroup>
       </CardBody>
     </Card>
