@@ -43,10 +43,13 @@
 
 :root.theme-light {
   --bg-darkest: hsla(187, 5%, 88%);
+  --bg-darker: hsla(187, 7%, 90%);
   --bg-dark: hsla(187, 10%, 93%);
   --bg-medium: hsla(187, 5%, 95%);
   --bg-light: hsla(187, 5%, 98%);
   --bg-nav: var(--bg-medium);
+
+  --bg-header: var(--bg-darker);
 
   --color-border: hsla(197, 10%, 80%);
 
@@ -83,10 +86,13 @@
 :root.theme-dark {
   --bg-darkest: hsla(187, 3%, 3%);
   --bg-dark: hsla(187, 4%, 9%);
+  --bg-light-dark: hsla(187, 5%, 12%);
   --bg-medium: hsla(187, 7%, 14%);
   --bg-light: hsla(187, 10%, 19%);
   --bg-nav: hsla(0, 0%, 20%);
   --bg-nav: var(--bg-medium);
+
+  --bg-header: var(--bg-light-dark);
 
   --color-border: hsla(187, 10%, 20%);
 

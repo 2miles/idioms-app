@@ -268,8 +268,14 @@ export async function upsertOrigin(req: Request, res: Response) {
         origin: result.rows[0],
       },
     });
-  } catch (error) {
-    handleError(res, 'Error upserting origin', error);
+    // } catch (error) {
+    //   handleError(res, 'Error upserting origin', error);
+    // }
+  } catch (error: any) {
+    console.error('UPSERT ORIGIN ERROR:', error);
+    res.status(500).json({
+      error: error?.message || String(error),
+    });
   }
 }
 

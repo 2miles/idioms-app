@@ -40,6 +40,11 @@ export type Origin = {
   updated_at: string; // ISO date string
 };
 
+export type UpsertOriginInput = {
+  origin_text: string | null;
+  model?: string | null;
+};
+
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
 export type ColumnLabels = 'Order' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
 

@@ -13,6 +13,7 @@ export const Card = styled.div`
 export const CardHeader = styled.div`
   background-color: var(--bg-dark);
   color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
 
   h1 {
     font-size: 1.5rem;
@@ -21,6 +22,7 @@ export const CardHeader = styled.div`
     letter-spacing: 0.5px;
     color: var(--color-text-primary);
     margin-top: var(--margin-lg);
+    margin-bottom: var(--margin-lg);
     text-align: center;
   }
 `;
@@ -57,7 +59,6 @@ export const CardBody = styled.div`
 export const IdiomInfo = styled.div`
   padding-right: var(--padding-lg);
   padding-top: var(--padding-sm);
-  padding-bottom: var(--padding-sm);
   background-color: var(--bg-dark);
   font-size: 1rem;
 `;
@@ -90,8 +91,8 @@ export const UpdateExampleButtons = styled.div`
   button {
     color: var(--color-text-secondary);
     background-color: var(--bg-medium);
-    margin-right: var(--margin-lg);
-    margin-bottom: var(--margin-md);
+    margin-left: var(--margin-sm);
+    padding: var(--padding-sm);
 
     &:hover {
       background-color: var(--bg-light) !important;
@@ -100,10 +101,18 @@ export const UpdateExampleButtons = styled.div`
 `;
 
 export const SectionHeader = styled.div`
-  margin-bottom: var(--margin-sm);
-  margin-top: var(--margin-xl);
+  background-color: var(--bg-header);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-sm);
+  margin-bottom: var(--margin-lg);
+  margin-top: 60px;
   h3 {
     color: var(--color-text-primary);
+    margin-bottom: 0 !important;
+    padding-left: var(--padding-sm);
   }
 `;
 

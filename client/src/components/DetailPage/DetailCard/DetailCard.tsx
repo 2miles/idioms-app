@@ -23,6 +23,8 @@ import {
 type DetailCardProps = {
   idiom: Idiom;
   openModal: () => void;
+  openAddOriginModal: () => void;
+  openEditOriginModal: () => void;
   openExampleModal: () => void;
   openAddExampleModal: () => void;
 };
@@ -30,6 +32,8 @@ type DetailCardProps = {
 const DetailCard = ({
   idiom,
   openModal,
+  openAddOriginModal,
+  openEditOriginModal,
   openExampleModal,
   openAddExampleModal,
 }: DetailCardProps) => {
@@ -66,12 +70,17 @@ const DetailCard = ({
         <SectionGroup>
           {idiom.definition && (
             <SectionHeader>
-              <h3>Meaning:</h3>
+              <h3>Meaning</h3>
+              {isAdmin && (
+                <UpdateExampleButtons>
+                  <SecondaryButton className='btn btn-secondary' onClick={openModal}>
+                    Edit Idiom
+                  </SecondaryButton>
+                </UpdateExampleButtons>
+              )}
             </SectionHeader>
           )}
-
-          <DefinitionText data-testid='definition'>{idiom.definition}</DefinitionText>
-          {isAdmin && (
+          {isAdmin && !idiom.definition && (
             <UpdateExampleButtons>
               <SecondaryButton className='btn btn-secondary' onClick={openModal}>
                 Edit Idiom
@@ -79,38 +88,72 @@ const DetailCard = ({
             </UpdateExampleButtons>
           )}
 
+          <DefinitionText data-testid='definition'>{idiom.definition}</DefinitionText>
+
           {idiom.origin && idiom.origin.origin_text && (
             <>
               <SectionHeader>
-                <h3>Origin:</h3>
+                <h3>Origin</h3>
+                {isAdmin && (
+                  <UpdateExampleButtons>
+                    {idiom.origin ? (
+                      <SecondaryButton className='btn btn-secondary' onClick={openEditOriginModal}>
+                        Edit Origin
+                      </SecondaryButton>
+                    ) : (
+                      <SecondaryButton className='btn btn-secondary' onClick={openAddOriginModal}>
+                        Add Origin
+                      </SecondaryButton>
+                    )}
+                  </UpdateExampleButtons>
+                )}
               </SectionHeader>
               <DefinitionText>
                 <OriginText>{idiom.origin.origin_text}</OriginText>
               </DefinitionText>
             </>
           )}
+          {isAdmin && (
+            <UpdateExampleButtons>
+              {idiom.origin ? (
+                <SecondaryButton className='btn btn-secondary' onClick={openEditOriginModal}>
+                  Edit Origin
+                </SecondaryButton>
+              ) : (
+                <SecondaryButton className='btn btn-secondary' onClick={openAddOriginModal}>
+                  Add Origin
+                </SecondaryButton>
+              )}
+            </UpdateExampleButtons>
+          )}
 
           {idiom.examples && idiom.examples.length > 0 && (
             <SectionHeader>
-              <h3>Examples:</h3>
+              <h3>Examples</h3>
+              {isAdmin && (
+                <UpdateExampleButtons>
+                  <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
+                    Add Ex.
+                  </SecondaryButton>
+                  {idiom.examples && idiom.examples.length > 0 && (
+                    <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
+                      Edit Ex.
+                    </SecondaryButton>
+                  )}
+                </UpdateExampleButtons>
+              )}
             </SectionHeader>
           )}
-
           <ExampleList data-testid='examples'>
             {examples.map((example) => (
               <ExampleItem key={example.example_id}>{example.example}</ExampleItem>
             ))}
           </ExampleList>
-          {isAdmin && (
+          {isAdmin && idiom.examples && idiom.examples.length < 1 && (
             <UpdateExampleButtons>
               <SecondaryButton className='btn btn-secondary' onClick={openAddExampleModal}>
                 Add Ex.
               </SecondaryButton>
-              {idiom.examples && idiom.examples.length > 0 && (
-                <SecondaryButton className='btn btn-secondary' onClick={openExampleModal}>
-                  Edit Ex.
-                </SecondaryButton>
-              )}
             </UpdateExampleButtons>
           )}
         </SectionGroup>
