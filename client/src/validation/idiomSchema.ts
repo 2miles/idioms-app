@@ -22,6 +22,7 @@ export const idiomSchema = z.object({
     .transform((val) => (val.trim() === '' ? null : val))
     .nullable(),
   timestamp: z.date(),
+  originText: z.string().max(4000, 'Origin must be at most 4000 characters').nullable(),
 });
 export type IdiomFormValues = z.infer<typeof idiomSchema>;
 
@@ -45,13 +46,3 @@ export const updateExamplesSchema = z.object({
   examples: z.array(updateExampleSchema).nonempty('At least one example is required'),
 });
 export type UpdateExamplesFormValues = z.infer<typeof updateExamplesSchema>;
-
-// Schema for UpdateOriginForm, AddOriginForm
-export const originSchema = z.object({
-  originText: z
-    .string()
-    .min(1, 'Origin is required')
-    .max(4000, 'Origin must be at most 4000 characters'),
-});
-
-export type OriginFormValues = z.infer<typeof originSchema>;

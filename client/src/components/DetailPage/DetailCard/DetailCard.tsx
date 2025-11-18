@@ -14,6 +14,7 @@ import {
   IdiomInfo,
   InfoElement,
   InfoElementKey,
+  InfoSection,
   OriginText,
   SectionGroup,
   SectionHeader,
@@ -50,82 +51,48 @@ const DetailCard = ({
       </CardHeader>
 
       <CardBody className='card-body'>
-        <IdiomInfo>
-          <InfoElement>
-            <InfoElementKey>Idiom #:</InfoElementKey>
-            {idiom.position}
-          </InfoElement>
-          <InfoElement data-testid='timestamp'>
-            <InfoElementKey>Added on:</InfoElementKey>
-            {moment(idiom.timestamps).format('MM-DD-YY')}
-          </InfoElement>
-          {idiom.contributor && (
-            <InfoElement data-testid='contributor'>
-              <InfoElementKey>Added by:</InfoElementKey>
-              {idiom.contributor}
+        <InfoSection>
+          <IdiomInfo>
+            <InfoElement>
+              <InfoElementKey>Idiom #:</InfoElementKey>
+              {idiom.position}
             </InfoElement>
-          )}
-        </IdiomInfo>
-
-        <SectionGroup>
-          {idiom.definition && (
-            <SectionHeader>
-              <h3>Meaning</h3>
-              {isAdmin && (
-                <UpdateExampleButtons>
-                  <SecondaryButton className='btn btn-secondary' onClick={openModal}>
-                    Edit Idiom
-                  </SecondaryButton>
-                </UpdateExampleButtons>
-              )}
-            </SectionHeader>
-          )}
-          {isAdmin && !idiom.definition && (
+            <InfoElement data-testid='timestamp'>
+              <InfoElementKey>Added on:</InfoElementKey>
+              {moment(idiom.timestamps).format('MM-DD-YY')}
+            </InfoElement>
+            {idiom.contributor && (
+              <InfoElement data-testid='contributor'>
+                <InfoElementKey>Added by:</InfoElementKey>
+                {idiom.contributor}
+              </InfoElement>
+            )}
+          </IdiomInfo>
+          {isAdmin && (
             <UpdateExampleButtons>
               <SecondaryButton className='btn btn-secondary' onClick={openModal}>
                 Edit Idiom
               </SecondaryButton>
             </UpdateExampleButtons>
           )}
+        </InfoSection>
 
+        <SectionGroup>
+          {idiom.definition && (
+            <SectionHeader>
+              <h3>Meaning</h3>
+            </SectionHeader>
+          )}
           <DefinitionText data-testid='definition'>{idiom.definition}</DefinitionText>
 
           {idiom.origin && idiom.origin.origin_text && (
-            <>
-              <SectionHeader>
-                <h3>Origin</h3>
-                {isAdmin && (
-                  <UpdateExampleButtons>
-                    {idiom.origin ? (
-                      <SecondaryButton className='btn btn-secondary' onClick={openEditOriginModal}>
-                        Edit Origin
-                      </SecondaryButton>
-                    ) : (
-                      <SecondaryButton className='btn btn-secondary' onClick={openAddOriginModal}>
-                        Add Origin
-                      </SecondaryButton>
-                    )}
-                  </UpdateExampleButtons>
-                )}
-              </SectionHeader>
-              <DefinitionText>
-                <OriginText>{idiom.origin.origin_text}</OriginText>
-              </DefinitionText>
-            </>
+            <SectionHeader>
+              <h3>Origin</h3>
+            </SectionHeader>
           )}
-          {isAdmin && (
-            <UpdateExampleButtons>
-              {idiom.origin ? (
-                <SecondaryButton className='btn btn-secondary' onClick={openEditOriginModal}>
-                  Edit Origin
-                </SecondaryButton>
-              ) : (
-                <SecondaryButton className='btn btn-secondary' onClick={openAddOriginModal}>
-                  Add Origin
-                </SecondaryButton>
-              )}
-            </UpdateExampleButtons>
-          )}
+          <DefinitionText>
+            <OriginText>{idiom.origin?.origin_text}</OriginText>
+          </DefinitionText>
 
           {idiom.examples && idiom.examples.length > 0 && (
             <SectionHeader>

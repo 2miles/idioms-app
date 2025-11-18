@@ -88,6 +88,7 @@ export const ExampleList = styled.ul`
 export const UpdateExampleButtons = styled.div`
   display: flex;
   justify-content: right;
+  height: 43px;
   button {
     color: var(--color-text-secondary);
     background-color: var(--bg-medium);
@@ -124,4 +125,9 @@ export const SectionGroup = styled.div`
 
 export const OriginText = styled(DefinitionText)`
   white-space: pre-wrap;
+`;
+
+export const InfoSection = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;

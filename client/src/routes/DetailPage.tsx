@@ -8,7 +8,6 @@ import { publicIdiomFinder } from '@/apis/idiomFinder';
 import DetailCard from '@/components/DetailPage/DetailCard/DetailCard';
 import DetailPageControls from '@/components/DetailPage/DetailPageControls';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
-import AddOriginForm from '@/components/Forms/AddOriginForm';
 import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
 import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
 import UpdateOriginForm from '@/components/Forms/UpdateOriginForm';
@@ -126,16 +125,6 @@ const DetailPage = () => {
           onClose={closeModal}
           onUpdateSuccess={fetchIdiom}
         />
-      </Modal>
-
-      <Modal title='Add Origin' isOpen={isAddOriginModalOpen} onClose={closeAddOriginModal}>
-        {typeof id !== 'undefined' && (
-          <AddOriginForm
-            idiomId={Number(id)}
-            onClose={closeAddOriginModal}
-            onSuccess={fetchIdiom}
-          />
-        )}
       </Modal>
 
       <Modal title='Edit Origin' isOpen={isEditOriginModalOpen} onClose={closeEditOriginModal}>
