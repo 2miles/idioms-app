@@ -29,8 +29,8 @@ export const CardHeader = styled.div`
 
 export const CardBody = styled.div`
   color: var(--color-text-secondary);
-  padding-left: var(--padding-xxl);
-  padding-right: var(--padding-xxl);
+  padding-left: var(--padding-xl);
+  padding-right: var(--padding-xl);
 
   h3 {
     font-size: 1.5rem;
@@ -65,6 +65,7 @@ export const IdiomInfo = styled.div`
 
 export const DefinitionText = styled.p`
   margin-bottom: var(--margin-md) !important;
+  margin-left: var(--margin-md);
 `;
 
 export const InfoElement = styled.p`
@@ -83,6 +84,7 @@ export const ExampleItem = styled.li`
 export const ExampleList = styled.ul`
   padding-left: var(--padding-lg) !important;
   margin-bottom: var(--margin-xs);
+  margin-left: var(--margin-md);
 `;
 
 export const UpdateExampleButtons = styled.div`
@@ -118,13 +120,20 @@ export const SectionHeader = styled.div`
 `;
 
 export const SectionGroup = styled.div`
-  p {
+  div {
     margin-bottom: var(--margin-xxl);
   }
 `;
 
 export const OriginText = styled(DefinitionText)`
   white-space: pre-wrap;
+`;
+
+export const OriginSource = styled.p`
+  margin-left: var(--margin-md);
+  color: var(--color-text-primary);
+  opacity: 0.5;
+  font-size: 1rem;
 `;
 
 export const InfoSection = styled.div`

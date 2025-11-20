@@ -134,7 +134,7 @@ export function examplesForIdiomQuery(): string {
  */
 export function originForIdiomQuery(): string {
   return `
-    SELECT idiom_id, origin_text
+    SELECT idiom_id, origin_text, model, updated_at
     FROM idiom_origins_ai
     WHERE idiom_id = $1;
   `;
