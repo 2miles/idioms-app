@@ -207,48 +207,46 @@ describe('UpdateIdiomForm', () => {
     });
   });
 
-  // describe('Examples buttons', () => {
-  //   test('shows "Add Example" button when no examples exist', () => {
-  //     renderWithContext({ examples: [] });
+  describe('Examples buttons', () => {
+    test('shows "Add Example" button when no examples exist', () => {
+      renderWithContext({ examples: [] });
 
-  //     // match whatever label you’re using, e.g. "Add Ex." / "Add Example"
-  //     const addExampleButton = screen.getByRole('button', { name: /add ex/i });
-  //     expect(addExampleButton).toBeInTheDocument();
+      const addExampleButton = screen.getByRole('button', { name: /add example/i });
+      expect(addExampleButton).toBeInTheDocument();
 
-  //     // if "Edit Example(s)" is hidden in this case:
-  //     const editExampleButton = screen.queryByRole('button', { name: /edit ex/i });
-  //     expect(editExampleButton).not.toBeInTheDocument();
-  //   });
+      const editExampleButton = screen.queryByRole('button', { name: /edit examples?/i });
+      expect(editExampleButton).not.toBeInTheDocument();
+    });
 
-  //   test('shows "Edit Example" button when examples exist', () => {
-  //     renderWithContext({
-  //       examples: [{ example_id: 1, idiom_id: 1, example: 'An example sentence.' }],
-  //     });
+    test('shows "Edit Example" button when examples exist', () => {
+      renderWithContext({
+        examples: [{ example_id: 1, idiom_id: 1, example: 'An example sentence.' }],
+      });
 
-  //     const editExampleButton = screen.getByRole('button', { name: /edit ex/i });
-  //     expect(editExampleButton).toBeInTheDocument();
-  //   });
+      const editExampleButton = screen.getByRole('button', { name: /edit examples?/i });
+      expect(editExampleButton).toBeInTheDocument();
+    });
 
-  //   test('clicking "Add Example" calls onOpenAddExample', () => {
-  //     renderWithContext({ examples: [] });
+    test('clicking "Add Example" calls onOpenAddExample', () => {
+      renderWithContext({ examples: [] });
 
-  //     const addExampleButton = screen.getByRole('button', { name: /add ex/i });
-  //     fireEvent.click(addExampleButton);
+      const addExampleButton = screen.getByRole('button', { name: /add example/i });
+      fireEvent.click(addExampleButton);
 
-  //     expect(mockOpenAddExampleModal).toHaveBeenCalled();
-  //   });
+      expect(mockOpenAddExampleModal).toHaveBeenCalledTimes(1);
+    });
 
-  //   test('clicking "Edit Example" calls onOpenEditExamples', () => {
-  //     renderWithContext({
-  //       examples: [{ example_id: 1, idiom_id: 1, example: 'An example sentence.' }],
-  //     });
+    test('clicking "Edit Example" calls onOpenEditExamples', () => {
+      renderWithContext({
+        examples: [{ example_id: 1, idiom_id: 1, example: 'An example sentence.' }],
+      });
 
-  //     const editExampleButton = screen.getByRole('button', { name: /edit ex/i });
-  //     fireEvent.click(editExampleButton);
+      const editExampleButton = screen.getByRole('button', { name: /edit examples?/i });
+      fireEvent.click(editExampleButton);
 
-  //     expect(mockOpenExampleModal).toHaveBeenCalled();
-  //   });
-  // });
+      expect(mockOpenExampleModal).toHaveBeenCalledTimes(1);
+    });
+  });
 
   describe('Deletion', () => {
     test('calls onDelete when Delete button is clicked', () => {
