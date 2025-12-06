@@ -18,6 +18,15 @@ export type NewIdiomInput = {
   contributor: string | null;
 };
 
+export type AddIdiomFormData = {
+  title: string;
+  titleGeneral?: string;
+  definition?: string;
+  contributor?: string;
+  timestamp?: string;
+  originText?: string;
+};
+
 export type UpdateIdiomInput = {
   title?: string | null;
   title_general?: string | null;

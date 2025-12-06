@@ -32,7 +32,7 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
       definition: null,
       contributor: null,
       timestamp: new Date(),
-      originText: '', // ← NEW FIELD
+      originText: null, // ← NEW FIELD
     },
   });
 
@@ -120,7 +120,12 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
               </label>
             </div>
             <SubmitButtonWrapper>
-              <WideSuccessButton type='submit' className='btn btn-success' disabled={isSubmitting}>
+              <WideSuccessButton
+                type='submit'
+                className='btn btn-success'
+                disabled={isSubmitting}
+                data-testid='submit-add-idiom-button'
+              >
                 {isSubmitting ? 'Adding...' : 'Add'}
               </WideSuccessButton>
             </SubmitButtonWrapper>
