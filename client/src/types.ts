@@ -7,6 +7,7 @@ export type Idiom = {
   contributor: string | null;
   position: number | null;
   examples?: Example[];
+  origin?: Origin | null;
 };
 
 export type NewIdiomInput = {
@@ -15,6 +16,15 @@ export type NewIdiomInput = {
   definition: string | null;
   timestamps: string | null;
   contributor: string | null;
+};
+
+export type AddIdiomFormData = {
+  title: string;
+  titleGeneral?: string;
+  definition?: string;
+  contributor?: string;
+  timestamp?: string;
+  originText?: string;
 };
 
 export type UpdateIdiomInput = {
@@ -29,6 +39,19 @@ export type Example = {
   example_id: number;
   idiom_id: number;
   example: string;
+};
+
+export type Origin = {
+  id: number;
+  idiom_id: number;
+  origin_text: string | null;
+  model: string | null;
+  updated_at: string; // ISO date string
+};
+
+export type UpsertOriginInput = {
+  origin_text: string | null;
+  model?: string | null;
 };
 
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';

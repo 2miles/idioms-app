@@ -2,7 +2,14 @@ import React, { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import useAuthorizedIdiomFinder from '@/apis/useAuthorizedIdiomFinder';
-import { Example, Idiom, NewIdiomInput, UpdateIdiomInput } from '@/types';
+import {
+  Example,
+  Idiom,
+  NewIdiomInput,
+  Origin,
+  UpdateIdiomInput,
+  UpsertOriginInput,
+} from '@/types';
 
 type IdiomsContextType = {
   idioms: Idiom[];
@@ -13,6 +20,8 @@ type IdiomsContextType = {
   updateExamples: (idiomId: number, updatedExamples: Example[]) => Promise<Example[] | null>;
   deleteExampleById: (exampleId: number) => Promise<Example | null>;
   addExampleToIdiom: (idiomId: number, exampleText: string) => Promise<Example | null>;
+  upsertOrigin: (idiomId: number, payload: UpsertOriginInput) => Promise<Origin | null>;
+  deleteOrigin: (idiomId: number) => Promise<void>;
   isLoading: boolean;
   hasFetched: boolean;
 };
@@ -26,6 +35,8 @@ const defaultContext: IdiomsContextType = {
   updateExamples: async () => null,
   deleteExampleById: async () => null,
   addExampleToIdiom: async () => null,
+  upsertOrigin: async () => null,
+  deleteOrigin: async () => {},
   isLoading: true,
   hasFetched: false,
 };
@@ -169,6 +180,41 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
     }
   };
 
+  const upsertOrigin = async (
+    idiomId: number,
+    payload: UpsertOriginInput,
+  ): Promise<Origin | null> => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      const response = await api.put(`/${idiomId}/origin`, payload);
+      const origin = response.data.data.origin;
+
+      // Update idiom in local state too
+      setIdioms((prev) =>
+        prev.map((idiom) => (idiom.id === idiomId ? { ...idiom, origin } : idiom)),
+      );
+
+      return origin;
+    } catch (err) {
+      console.error('Failed to upsert origin:', err);
+      return null;
+    }
+  };
+
+  const deleteOrigin = async (idiomId: number) => {
+    try {
+      const api = await getAuthorizedIdiomFinder();
+      await api.delete(`/${idiomId}/origin`);
+
+      // Remove local origin in the list
+      setIdioms((prev) =>
+        prev.map((idiom) => (idiom.id === idiomId ? { ...idiom, origin: null } : idiom)),
+      );
+    } catch (err) {
+      console.error('Failed to delete origin:', err);
+    }
+  };
+
   return (
     <IdiomsContext.Provider
       value={{
@@ -180,6 +226,8 @@ export const IdiomsContextProvider = ({ children }: IdiomsContextProviderProps) 
         updateExamples,
         deleteExampleById,
         addExampleToIdiom,
+        upsertOrigin,
+        deleteOrigin,
         isLoading,
         hasFetched,
       }}

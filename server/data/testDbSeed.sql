@@ -71,6 +71,29 @@ CREATE TABLE public.idioms (
 
 ALTER TABLE public.idioms OWNER TO postgres;
 
+
+-- Sequence for origins.id
+CREATE SEQUENCE public.idiom_origins_ai_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE public.idiom_origins_ai_id_seq OWNER TO postgres;
+
+-- Origins table: one origin row per idiom
+CREATE TABLE public.idiom_origins_ai (
+    id integer NOT NULL DEFAULT nextval('public.idiom_origins_ai_id_seq'::regclass),
+    idiom_id integer NOT NULL,
+    origin_text text,
+    model text,
+    updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.idiom_origins_ai OWNER TO postgres;
+
 -- Stores idiom requests submitted by users
 CREATE TABLE public.requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -927,6 +950,12 @@ COPY public.idioms (id, title, title_general, definition, contributor, timestamp
 150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 00:23:00-07
 \.
 
+-- Seed origins for some idioms used in tests
+COPY public.idiom_origins_ai (id, idiom_id, origin_text, model, updated_at) FROM stdin;
+1	1	“Not my circus, not my monkeys” is a loan translation of the Polish saying “Nie mój cyrk, nie moje małpy,” used to mean “this situation is not my responsibility.”	gpt-5.1	2025-01-01 00:00:00-07
+2	2	“Wait with bated breath” goes back to Shakespeare’s usage of “bated” as “abated,” meaning held or restrained. The idiom describes anxious or excited anticipation.	manual	2025-01-01 00:05:00-07
+\.
+
 -- Seed test requests
 COPY public.requests (id, title, contributor, submitted_at, added) FROM stdin;
 550e8400-e29b-41d4-a716-446655440000	A watched pot never boils	Christina	2025-01-01 12:00:00-07	false
@@ -938,6 +967,9 @@ SELECT pg_catalog.setval('public.idiom_examples_example_id_seq', 674, true);
 
 SELECT pg_catalog.setval('public.idioms_id_seq', 151, true);
 
+SELECT pg_catalog.setval('public.idiom_origins_ai_id_seq', 3, true);
+
+
 ALTER TABLE ONLY public.idiom_examples
     ADD CONSTRAINT idiom_examples_pkey PRIMARY KEY (example_id);
 
@@ -946,6 +978,15 @@ ALTER TABLE ONLY public.idioms
 
 ALTER TABLE ONLY public.idiom_examples
     ADD CONSTRAINT idiom_examples_idiom_id_fkey
+    FOREIGN KEY (idiom_id)
+    REFERENCES public.idioms(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.idiom_origins_ai
+    ADD CONSTRAINT idiom_origins_ai_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.idiom_origins_ai
+    ADD CONSTRAINT idiom_origins_ai_idiom_id_fkey
     FOREIGN KEY (idiom_id)
     REFERENCES public.idioms(id)
     ON DELETE CASCADE;

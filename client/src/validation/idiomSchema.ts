@@ -22,6 +22,7 @@ export const idiomSchema = z.object({
     .transform((val) => (val.trim() === '' ? null : val))
     .nullable(),
   timestamp: z.date(),
+  originText: z.string().max(4000, 'Origin must be at most 4000 characters').nullable(),
 });
 export type IdiomFormValues = z.infer<typeof idiomSchema>;
 

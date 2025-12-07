@@ -1,27 +1,28 @@
-import { NewIdiomInput } from '../../src/types';
-
 export type AddIdiomFormData = {
   title: string;
-  titleGeneral?: string;
+  title_general?: string;
   definition?: string;
   contributor?: string;
-  timestamp?: string;
+  timestamp?: string | null;
+  origin?: string;
 };
 
-export const TEST_IDIOM: NewIdiomInput = {
+export const TEST_IDIOM: AddIdiomFormData = {
   title: 'Break the ice',
   title_general: 'When one breaks the ice',
   definition: 'To initiate conversation in a social setting.',
-  timestamps: null, // No date provided
+  timestamp: null, // No date provided
   contributor: 'E2E Bot',
+  origin: 'Common social idiom',
 };
 
-export const EDITED_IDIOM: NewIdiomInput = {
+export const EDITED_IDIOM: AddIdiomFormData = {
   title: 'Break the ice. EDIT',
   title_general: '',
   definition: 'To initiate conversation in a social setting. This is a test edit.',
-  timestamps: null, // No date provided
+  timestamp: null, // No date provided
   contributor: 'E2E Bot',
+  origin: 'Common social idiom. EDIT',
 };
 
 export const TEST_EXAMPLES: string[] = [

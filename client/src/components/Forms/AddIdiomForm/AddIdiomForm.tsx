@@ -20,7 +20,7 @@ type AddIdiomProps = {
 };
 
 const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
-  const { addIdiom } = useContext(IdiomsContext);
+  const { addIdiom, upsertOrigin } = useContext(IdiomsContext);
   const [keepOpen, setKeepOpen] = useState(false);
 
   const methods = useForm<IdiomFormValues>({
@@ -32,6 +32,7 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
       definition: null,
       contributor: null,
       timestamp: new Date(),
+      originText: null, // ← NEW FIELD
     },
   });
 
@@ -39,7 +40,6 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
   const { isSubmitting } = formState;
 
   const onSubmit = async (values: IdiomFormValues) => {
-    // Format timestamp to backend format (remove milliseconds)
     const formattedTimestamp = moment(values.timestamp).toISOString().split('.')[0] + 'Z';
 
     const payload: NewIdiomInput = {
@@ -53,14 +53,20 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
     const addedIdiom = await addIdiom(payload);
 
     if (addedIdiom) {
+      const trimmedOrigin = values.originText?.trim();
+      if (trimmedOrigin) {
+        await upsertOrigin(addedIdiom.id, {
+          origin_text: trimmedOrigin,
+          model: 'manual',
+        });
+      }
+
       reset();
       onSucess?.();
       showSuccess('Idiom Added', 'The idiom has been successfully added.');
 
       if (!keepOpen) {
-        setTimeout(() => {
-          onClose();
-        }, 200);
+        setTimeout(() => onClose(), 200);
       }
     } else {
       showError('Error', 'There was a problem adding the idiom.');
@@ -92,6 +98,13 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
           />
           <TimestampField id='timestamp' label='Timestamp' />
           <TextField id='contributor' label='Contributor' placeholder='Miles' maxLength={50} />
+          <TextAreaField
+            id='originText'
+            label='Origin'
+            rows={6}
+            maxLength={4000}
+            placeholder='Optional: explain the origin of this idiom…'
+          />
 
           <FormControlsWrapper>
             <div className='form-check'>
@@ -110,8 +123,8 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
               <WideSuccessButton
                 type='submit'
                 className='btn btn-success'
-                data-testid='submit-add-idiom-button'
                 disabled={isSubmitting}
+                data-testid='submit-add-idiom-button'
               >
                 {isSubmitting ? 'Adding...' : 'Add'}
               </WideSuccessButton>

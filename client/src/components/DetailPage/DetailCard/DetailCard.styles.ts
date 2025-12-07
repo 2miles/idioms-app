@@ -13,6 +13,7 @@ export const Card = styled.div`
 export const CardHeader = styled.div`
   background-color: var(--bg-dark);
   color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
 
   h1 {
     font-size: 1.5rem;
@@ -21,14 +22,15 @@ export const CardHeader = styled.div`
     letter-spacing: 0.5px;
     color: var(--color-text-primary);
     margin-top: var(--margin-lg);
+    margin-bottom: var(--margin-lg);
     text-align: center;
   }
 `;
 
 export const CardBody = styled.div`
   color: var(--color-text-secondary);
-  padding-left: var(--padding-xxl);
-  padding-right: var(--padding-xxl);
+  padding-left: var(--padding-xl);
+  padding-right: var(--padding-xl);
 
   h3 {
     font-size: 1.5rem;
@@ -57,13 +59,13 @@ export const CardBody = styled.div`
 export const IdiomInfo = styled.div`
   padding-right: var(--padding-lg);
   padding-top: var(--padding-sm);
-  padding-bottom: var(--padding-sm);
   background-color: var(--bg-dark);
   font-size: 1rem;
 `;
 
 export const DefinitionText = styled.p`
   margin-bottom: var(--margin-md) !important;
+  margin-left: var(--margin-md);
 `;
 
 export const InfoElement = styled.p`
@@ -82,16 +84,18 @@ export const ExampleItem = styled.li`
 export const ExampleList = styled.ul`
   padding-left: var(--padding-lg) !important;
   margin-bottom: var(--margin-xs);
+  margin-left: var(--margin-md);
 `;
 
 export const UpdateExampleButtons = styled.div`
   display: flex;
   justify-content: right;
+  height: 43px;
   button {
     color: var(--color-text-secondary);
     background-color: var(--bg-medium);
-    margin-right: var(--margin-lg);
-    margin-bottom: var(--margin-md);
+    margin-left: var(--margin-sm);
+    padding: var(--padding-sm);
 
     &:hover {
       background-color: var(--bg-light) !important;
@@ -100,15 +104,39 @@ export const UpdateExampleButtons = styled.div`
 `;
 
 export const SectionHeader = styled.div`
-  margin-bottom: var(--margin-sm);
-  margin-top: var(--margin-xl);
+  background-color: var(--bg-header);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-sm);
+  margin-bottom: var(--margin-lg);
+  margin-top: 60px;
   h3 {
     color: var(--color-text-primary);
+    margin-bottom: 0 !important;
+    padding-left: var(--padding-sm);
   }
 `;
 
 export const SectionGroup = styled.div`
-  p {
+  div {
     margin-bottom: var(--margin-xxl);
   }
+`;
+
+export const OriginText = styled(DefinitionText)`
+  white-space: pre-wrap;
+`;
+
+export const OriginSource = styled.p`
+  margin-left: var(--margin-md);
+  color: var(--color-text-primary);
+  opacity: 0.5;
+  font-size: 1rem;
+`;
+
+export const InfoSection = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;

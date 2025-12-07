@@ -28,9 +28,10 @@ test.describe('Admin: Idiom management', () => {
     await homePage.openAddIdiomForm();
     await addIdiomForm.fillForm({
       title: testTitle,
-      titleGeneral: TEST_IDIOM.title_general ?? '',
+      title_general: TEST_IDIOM.title_general ?? '',
       definition: TEST_IDIOM.definition ?? '',
       contributor: TEST_IDIOM.contributor ?? '',
+      origin: TEST_IDIOM.origin ?? '',
     });
     await addIdiomForm.submit();
     await page.waitForLoadState('networkidle');
@@ -44,16 +45,18 @@ test.describe('Admin: Idiom management', () => {
     await detailPage.openUpdateIdiomForm();
     await updateIdiomForm.fillForm({
       title: newTestTitle,
-      titleGeneral: EDITED_IDIOM.title_general ?? '',
+      title_general: EDITED_IDIOM.title_general ?? '',
       definition: EDITED_IDIOM.definition ?? '',
       contributor: EDITED_IDIOM.contributor ?? '',
+      origin: EDITED_IDIOM.origin ?? '',
     });
     await updateIdiomForm.submit();
     await detailPage.expectIdiomTitleToBe(newTestTitle);
     await detailPage.expectDefinitionToBe(EDITED_IDIOM.definition!);
 
     // Add two example sentences and verify they appear on detail page
-    await detailPage.openAddExampleForm();
+    await detailPage.openUpdateIdiomForm();
+    await updateIdiomForm.openAddExampleForm();
     await addExampleForm.fillForm(TEST_EXAMPLES[0]);
     await addExampleForm.toggleKeepOpen();
     await addExampleForm.submit();
@@ -68,7 +71,8 @@ test.describe('Admin: Idiom management', () => {
     await detailPage.expectExamplesToInclude(TEST_EXAMPLES[1]);
 
     // Edit example sentences and verify changes
-    await detailPage.openUpdateExamplesForm();
+    await detailPage.openUpdateIdiomForm();
+    await updateIdiomForm.openUpdateExamplesForm();
     await updateExamplesForm.fillExample(0, EDITED_EXAMPLES[0]);
     await updateExamplesForm.fillExample(1, EDITED_EXAMPLES[1]);
     await updateExamplesForm.submit();
@@ -77,7 +81,8 @@ test.describe('Admin: Idiom management', () => {
     await detailPage.expectExamplesToInclude(EDITED_EXAMPLES[1]);
 
     // Delete the first example and verify it was removed
-    await detailPage.openUpdateExamplesForm();
+    await detailPage.openUpdateIdiomForm();
+    await updateIdiomForm.openUpdateExamplesForm();
     await updateExamplesForm.deleteExample(0);
     await updateExamplesForm.submit();
     await detailPage.expectExamplesToNotInclude(EDITED_EXAMPLES[0]);

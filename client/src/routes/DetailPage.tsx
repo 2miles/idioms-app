@@ -42,8 +42,8 @@ const DetailPage = () => {
   const fetchIdiom = async () => {
     try {
       const res = await publicIdiomFinder.get(`/${id}`);
-      const { idiom, examples } = res.data.data;
-      setSelectedIdiom({ ...idiom, examples: examples ?? [] });
+      const { idiom, examples, origin } = res.data.data;
+      setSelectedIdiom({ ...idiom, examples: examples ?? [], origin: origin ?? null });
     } catch (err) {
       console.error('Failed to fetch idiom detail:', err);
     } finally {
@@ -117,6 +117,14 @@ const DetailPage = () => {
           onDelete={handleDelete}
           onClose={closeModal}
           onUpdateSuccess={fetchIdiom}
+          onOpenAddExample={() => {
+            closeModal();
+            openAddExampleModal();
+          }}
+          onOpenEditExamples={() => {
+            closeModal();
+            openExampleModal();
+          }}
         />
       </Modal>
 
@@ -152,12 +160,7 @@ const DetailPage = () => {
         />
       )}
 
-      <DetailCard
-        idiom={selectedIdiom}
-        openAddExampleModal={openAddExampleModal}
-        openExampleModal={openExampleModal}
-        openModal={openModal}
-      />
+      <DetailCard idiom={selectedIdiom} openModal={openModal} />
     </PageContainer>
   );
 };

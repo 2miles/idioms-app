@@ -10,10 +10,13 @@ import {
   createIdiomQuery,
   deleteExampleQuery,
   deleteIdiomQuery,
+  deleteOriginByIdiomIdQuery,
   examplesForIdiomQuery,
   idiomWithPositionQuery,
+  originForIdiomQuery,
   updateIdiomExampleQuery,
   updateIdiomQuery,
+  upsertOriginQuery,
 } from '../queries/idioms.js';
 import { handleError } from '../utils/errorHandler.js';
 import { buildFilterClauses } from '../utils/filterUtils.js';
@@ -137,12 +140,14 @@ export async function getSingleIdiomWithExamples(req: Request, res: Response) {
   try {
     const idiomResult = await pool.query(idiomWithPositionQuery(), [req.params.id]);
     const examplesResult = await pool.query(examplesForIdiomQuery(), [req.params.id]);
+    const originResult = await pool.query(originForIdiomQuery(), [req.params.id]);
 
     res.status(200).json({
       status: 'success',
       data: {
         idiom: idiomResult.rows[0],
         examples: examplesResult.rows,
+        origin: originResult.rows[0] || null,
       },
     });
   } catch (error) {
@@ -244,5 +249,48 @@ export async function deleteExample(req: Request, res: Response) {
     res.status(200).json({ status: 'success', data: { example: result.rows[0] } });
   } catch (error) {
     handleError(res, 'Error deleting example', error);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// PUT /api/v1/idioms/:id/origin — Update or insert origin
+// ─────────────────────────────────────────────────────────────
+export async function upsertOrigin(req: Request, res: Response) {
+  try {
+    const { origin_text } = req.body;
+    const idiomId = req.params.id;
+
+    const result = await pool.query(upsertOriginQuery(), [idiomId, origin_text || null]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        origin: result.rows[0],
+      },
+    });
+    // } catch (error) {
+    //   handleError(res, 'Error upserting origin', error);
+    // }
+  } catch (error: any) {
+    console.error('UPSERT ORIGIN ERROR:', error);
+    res.status(500).json({
+      error: error?.message || String(error),
+    });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// DELETE /api/v1/:id/origin — Delete origin
+// ─────────────────────────────────────────────────────────────
+export async function deleteOrigin(req: Request, res: Response) {
+  try {
+    const result = await pool.query(deleteOriginByIdiomIdQuery(), [req.params.id]);
+
+    res.status(200).json({
+      status: 'success',
+      data: { deleted: result.rows[0] || null },
+    });
+  } catch (error) {
+    handleError(res, 'Error deleting origin', error);
   }
 }

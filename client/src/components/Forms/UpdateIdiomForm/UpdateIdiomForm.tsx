@@ -3,7 +3,7 @@ import moment from 'moment';
 import { useContext } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { DangerButton, PrimaryButton } from '@/components/ButtonStyles';
+import { DangerButton, PrimaryButton, SecondaryButton } from '@/components/ButtonStyles';
 import TextAreaField from '@/components/FormFields/TextAreaField';
 import TextField from '@/components/FormFields/TextField';
 import TimestampField from '@/components/FormFields/TimestampField';
@@ -19,10 +19,19 @@ type UpdateIdiomProps = {
   onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onClose: () => void;
   onUpdateSuccess?: () => void;
+  onOpenAddExample: () => void;
+  onOpenEditExamples: () => void;
 };
 
-const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateIdiomProps) => {
-  const { updateIdiom } = useContext(IdiomsContext);
+const UpdateIdiomForm = ({
+  idiom,
+  onDelete,
+  onClose,
+  onUpdateSuccess,
+  onOpenAddExample,
+  onOpenEditExamples,
+}: UpdateIdiomProps) => {
+  const { updateIdiom, upsertOrigin, deleteOrigin } = useContext(IdiomsContext);
 
   const methods = useForm<IdiomFormValues>({
     resolver: zodResolver(idiomSchema),
@@ -33,6 +42,7 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
       definition: idiom?.definition || null,
       contributor: idiom?.contributor || null,
       timestamp: idiom?.timestamps ? new Date(idiom.timestamps) : new Date(),
+      originText: idiom?.origin?.origin_text || '',
     },
   });
 
@@ -40,7 +50,9 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
   const { isSubmitting } = formState;
 
   const onSubmit = async (values: IdiomFormValues) => {
-    // Format for the backend and remove milliseconds
+    if (!idiom) return;
+
+    // Format timestamp for the backend and remove milliseconds
     const formattedTimestamp = moment(values.timestamp).toISOString().split('.')[0] + 'Z';
 
     const payload: UpdateIdiomInput = {
@@ -52,16 +64,32 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
     };
 
     try {
-      const updated = await updateIdiom(idiom!.id, payload);
-
-      if (updated) {
-        onUpdateSuccess?.();
-        showSuccess('Updated!', 'The idiom has been successfully updated.');
-        onClose();
-      } else {
+      // 1) Update idiom core fields
+      const updated = await updateIdiom(idiom.id, payload);
+      if (!updated) {
         throw new Error('No idiom returned');
       }
+
+      // 2) Update origin, if changed/filled
+      const rawOrigin = values.originText ?? '';
+      const trimmedOrigin = rawOrigin.trim();
+
+      if (trimmedOrigin) {
+        await upsertOrigin(idiom.id, {
+          origin_text: trimmedOrigin,
+          // if you’re storing model, you can keep existing or default:
+          model: idiom.origin?.model ?? 'manual',
+        });
+      } else if (idiom.origin) {
+        // field is empty but origin exists -> delete it
+        await deleteOrigin(idiom.id);
+      }
+
+      onUpdateSuccess?.();
+      showSuccess('Updated!', 'The idiom has been successfully updated.');
+      onClose();
     } catch (error) {
+      console.error('Update idiom with origin failed:', error);
       showError('Error', 'There was a problem updating the idiom.');
     }
   };
@@ -75,6 +103,25 @@ const UpdateIdiomForm = ({ idiom, onDelete, onClose, onUpdateSuccess }: UpdateId
           <TextAreaField label='Definition' id='definition' rows={3} maxLength={500} />
           <TimestampField label='Timestamp' id='timestamp' />
           <TextField label='Contributor' id='contributor' maxLength={50} />
+          <TextAreaField
+            id='originText'
+            label='Origin'
+            rows={6}
+            maxLength={4000}
+            placeholder='Explain the origin of this idiom (optional)...'
+          />
+
+          <HalfButtonsWrapper>
+            <SecondaryButton as={PrimaryButton} type='button' onClick={onOpenAddExample}>
+              Add Example
+            </SecondaryButton>
+            {idiom?.examples && idiom.examples.length > 0 && (
+              <SecondaryButton as={PrimaryButton} type='button' onClick={onOpenEditExamples}>
+                Edit Examples
+              </SecondaryButton>
+            )}
+          </HalfButtonsWrapper>
+
           <HalfButtonsWrapper>
             <HalfButton as={PrimaryButton} type='submit' disabled={isSubmitting}>
               {isSubmitting ? 'Saving...' : 'Save'}
