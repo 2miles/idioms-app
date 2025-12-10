@@ -28,10 +28,10 @@ const dummyIdiom: Idiom = {
 
 function makeUserContextMock(overrides: Partial<UserContextType> = {}): UserContextType {
   return {
-    // minimal sensible defaults
     roles: [],
     isAuthenticated: false,
     isAdmin: false,
+    isRegularUser: false,
 
     theme: 'light',
     loadingTheme: false,
