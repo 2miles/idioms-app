@@ -18,6 +18,7 @@ const Card = styled.div`
 
 const CardHeader = styled.div`
   color: var(--color-text-primary);
+  background-color: var(--bg-medium);
   border-bottom: 1px solid var(--color-border);
 
   h1 {

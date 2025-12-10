@@ -12,9 +12,9 @@ export const IdiomHeader = styled.div`
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.3px;
+    text-align: center;
     margin-top: var(--margin-xl);
     margin-bottom: var(--margin-md);
-    text-align: center;
     padding-top: var(--padding-md);
   }
 `;
