@@ -54,6 +54,14 @@ export type UpsertOriginInput = {
   model?: string | null;
 };
 
+export type Request = {
+  id: string;
+  title: string;
+  contributor: string | null;
+  submitted_at: string;
+  added: boolean;
+};
+
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
 export type ColumnLabels = 'Order' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
 

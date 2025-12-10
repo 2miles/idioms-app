@@ -7,11 +7,11 @@ import Swal from 'sweetalert2';
 import { publicIdiomFinder } from '@/apis/idiomFinder';
 import DetailCard from '@/components/DetailPage/DetailCard/DetailCard';
 import DetailPageControls from '@/components/DetailPage/DetailPageControls';
+import DetailPageContainer from '@/components/DetailPageContainer';
 import AddExampleForm from '@/components/Forms/AddExampleForm/AddExampleForm';
 import UpdateExamplesForm from '@/components/Forms/UpdateExamplesForm/UpdateExamplesForm';
 import UpdateIdiomForm from '@/components/Forms/UpdateIdiomForm/UpdateIdiomForm';
 import Modal from '@/components/Modal/Modal';
-import PageContainer from '@/components/PageContainer';
 import { IdiomsContext } from '@/context/idiomsContext';
 import { usePrevNextNav } from '@/hooks/usePrevNextNav';
 import { Idiom } from '@/types';
@@ -110,7 +110,7 @@ const DetailPage = () => {
   }
 
   return (
-    <PageContainer>
+    <DetailPageContainer>
       <Modal title='Edit Idiom' isOpen={isModalOpen} onClose={closeModal}>
         <UpdateIdiomForm
           idiom={selectedIdiom}
@@ -161,7 +161,7 @@ const DetailPage = () => {
       )}
 
       <DetailCard idiom={selectedIdiom} openModal={openModal} />
-    </PageContainer>
+    </DetailPageContainer>
   );
 };
 
