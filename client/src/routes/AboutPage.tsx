@@ -1,28 +1,9 @@
 import { styled } from 'styled-components';
 
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  SectionHeader,
-} from '@/components/DetailPage/DetailCard/DetailCard.styles';
+import { SectionHeader } from '@/components/DetailPage/DetailCard/DetailCard.styles';
 import PageContainer from '@/components/PageContainer';
 
-// export const CardHeader = styled.div`
-//   background-color: var(--bg-dark);
-//   color: var(--color-text-primary);
-
-//   h1 {
-//     font-size: 1.5rem;
-//     font-weight: 500;
-//     line-height: 1.3;
-//     letter-spacing: 0.5px;
-//     color: var(--color-text-primary);
-//     margin-top: var(--margin-lg);
-//     text-align: center;
-//   }
-// `;
-const AboutCardHeader = styled(CardHeader)`
+const AboutCardHeader = styled.div`
   background-color: var(--bg-darker);
   padding-left: var(--padding-xxl);
   padding-right: var(--padding-xxl);
@@ -32,7 +13,7 @@ const AboutCardHeader = styled(CardHeader)`
   }
 `;
 
-const AboutCardBody = styled(CardBody)`
+const AboutCardBody = styled.div`
   margin-top: var(--margin-xl) !important;
   li {
     font-style: normal;
@@ -42,7 +23,7 @@ const AboutCardBody = styled(CardBody)`
 const AboutPage = () => {
   return (
     <PageContainer>
-      <Card>
+      <div>
         <AboutCardHeader>
           <h1>What Is (and Isn’t) an Idiom?</h1>
         </AboutCardHeader>
@@ -114,7 +95,7 @@ const AboutPage = () => {
             not actually biting a hand
           </p>
         </AboutCardBody>
-      </Card>
+      </div>
     </PageContainer>
   );
 };

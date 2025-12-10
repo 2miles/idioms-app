@@ -5,16 +5,41 @@ import Swal from 'sweetalert2';
 
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  IdiomInfo,
-  InfoElement,
-  InfoElementKey,
-} from '@/components/DetailPage/DetailCard/DetailCard.styles';
+import { InfoElementKey } from '@/components/DetailPage/DetailCard/DetailCard.styles';
 import PageContainer from '@/components/PageContainer';
 import CheckIcon from '@/images/check_2.svg?react';
+import { Request } from '@/types';
+
+const Card = styled.div`
+  font-size: var(--font-md);
+  background: var(--bg-dark);
+  overflow: hidden;
+`;
+
+const CardHeader = styled.div`
+  color: var(--color-text-primary);
+  background-color: var(--bg-medium);
+  border-bottom: 1px solid var(--color-border);
+
+  h1 {
+    font-size: 1.3rem;
+    color: var(--color-text-primary);
+    padding-top: var(--padding-md);
+    padding-bottom: var(--padding-sm);
+    text-align: center;
+  }
+`;
+
+const CardBody = styled.div`
+  color: var(--color-text-primary);
+  padding-left: var(--padding-lg);
+  padding-right: var(--padding-lg);
+
+  @media (max-width: 770px) {
+    padding-left: var(--padding-md);
+    padding-right: var(--padding-md);
+  }
+`;
 
 const StyledCheckIcon = styled(CheckIcon)`
   width: 1.5rem;
@@ -24,14 +49,6 @@ const StyledCheckIcon = styled(CheckIcon)`
   color: green;
   margin-bottom: var(--margin-xs);
 `;
-
-type Request = {
-  id: string;
-  title: string;
-  contributor: string | null;
-  submitted_at: string;
-  added: boolean;
-};
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -47,7 +64,7 @@ const CardsWrapper = styled.div`
   max-width: 800px;
 `;
 
-export const ButtonsWrapper = styled.div`
+const ButtonsWrapper = styled.div`
   display: flex;
   gap: var(--margin-md);
 
@@ -66,7 +83,7 @@ export const ButtonsWrapper = styled.div`
   }
 `;
 
-export const ButtonPlaceholder = styled.div`
+const ButtonPlaceholder = styled.div`
   flex: 1;
   visibility: hidden;
 `;
@@ -81,21 +98,21 @@ const RequestCard = styled(Card)`
 const RequestCardHeader = styled(CardHeader)`
   h1 {
     text-align: left;
-    padding-left: var(--padding-xxl);
-    margin-bottom: 0px;
+    padding-left: var(--padding-lg);
     font-size: 1.5rem;
   }
 `;
 
-const RequestIdiomInfo = styled(IdiomInfo)`
-  padding-top: 0px;
+const RequestIdiomInfo = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  margin-bottom: var(--margin-lg);
+  margin-top: 0px;
 `;
 
-const RequestInfoElement = styled(InfoElement)`
-  margin-right: var(--margin-xl);
-  margin-right: 64px;
+const RequestInfoElement = styled.div`
+  margin-top: 0px;
+  padding: 0px;
 `;
 
 const RequestInfoElementKey = styled(InfoElementKey)`

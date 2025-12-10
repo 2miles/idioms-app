@@ -13,13 +13,16 @@ type DetailPageControlsProps = {
 const ControlBar = styled.div`
   position: relative;
   width: 100%;
+  padding-top: var(--margin-xl);
+  padding-bottom: var(--margin-md);
+  padding-left: var(--padding-sm);
+  padding-right: var(--padding-sm);
 `;
 
 const ControlsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2rem;
 `;
 
 const NavControls = styled.div`

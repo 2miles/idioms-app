@@ -1,131 +1,56 @@
 import styled from 'styled-components';
 
-export const Card = styled.div`
-  font-size: var(--font-lg);
-  &.card {
-    background: var(--bg-dark);
-    border: 1px solid var(--color-border);
-    overflow: hidden;
-    margin-top: var(--margin-xxl);
-  }
-`;
-
-export const CardHeader = styled.div`
-  background-color: var(--bg-dark);
+export const IdiomHeader = styled.div`
   color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-border);
+  background-color: var(--bg-dark);
+  border-radius: var(--radius-md);
+  border-bottom: 0.5px solid var(--color-border);
+  margin-bottom: var(--margin-lg);
 
   h1 {
     font-size: 1.5rem;
-    font-weight: 500;
-    line-height: 1.3;
-    letter-spacing: 0.5px;
-    color: var(--color-text-primary);
-    margin-top: var(--margin-lg);
-    margin-bottom: var(--margin-lg);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.3px;
     text-align: center;
-  }
-`;
-
-export const CardBody = styled.div`
-  color: var(--color-text-secondary);
-  padding-left: var(--padding-xl);
-  padding-right: var(--padding-xl);
-
-  h3 {
-    font-size: 1.5rem;
-  }
-
-  li {
-    padding-bottom: var(--padding-md);
-    line-height: 1.6;
-    font-size: 1.1rem;
-    font-style: italic;
-  }
-
-  li::marker {
-    color: var(--color-text-secondary);
-  }
-  li {
-    padding-left: var(--padding-lg) !important;
-  }
-
-  @media (max-width: 770px) {
-    padding-left: var(--padding-lg);
-    padding-right: var(--padding-lg);
+    margin-top: var(--margin-xl);
+    margin-bottom: var(--margin-md);
+    padding-top: var(--padding-md);
   }
 `;
 
 export const IdiomInfo = styled.div`
-  padding-right: var(--padding-lg);
-  padding-top: var(--padding-sm);
-  background-color: var(--bg-dark);
-  font-size: 1rem;
+  display: flex;
+  gap: var(--margin-xl);
+  margin-top: var(--margin-lg);
+  padding-left: var(--padding-sm);
 `;
 
-export const DefinitionText = styled.p`
-  margin-bottom: var(--margin-md) !important;
-  margin-left: var(--margin-md);
-`;
-
-export const InfoElement = styled.p`
-  margin-bottom: var(--margin-sm);
-`;
 export const InfoElementKey = styled.span`
   margin-right: var(--margin-sm);
-  font-weight: bold;
   color: var(--color-text-primary);
-`;
-
-export const ExampleItem = styled.li`
-  padding-left: var(--padding-sm) !important;
 `;
 
 export const ExampleList = styled.ul`
   padding-left: var(--padding-lg) !important;
   margin-bottom: var(--margin-xs);
-  margin-left: var(--margin-md);
-`;
-
-export const UpdateExampleButtons = styled.div`
-  display: flex;
-  justify-content: right;
-  height: 43px;
-  button {
-    color: var(--color-text-secondary);
-    background-color: var(--bg-medium);
-    margin-left: var(--margin-sm);
-    padding: var(--padding-sm);
-
-    &:hover {
-      background-color: var(--bg-light) !important;
-    }
-  }
 `;
 
 export const SectionHeader = styled.div`
-  background-color: var(--bg-header);
-  border-radius: var(--radius-md);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--padding-xs) var(--padding-sm);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--padding-sm);
-  margin-bottom: var(--margin-lg);
-  margin-top: 60px;
+  margin-top: var(--margin-xl);
+  margin-bottom: var(--margin-md);
   h3 {
     color: var(--color-text-primary);
     margin-bottom: 0 !important;
-    padding-left: var(--padding-sm);
   }
 `;
 
-export const SectionGroup = styled.div`
-  div {
-    margin-bottom: var(--margin-xxl);
-  }
-`;
-
-export const OriginText = styled(DefinitionText)`
+export const OriginText = styled.div`
   white-space: pre-wrap;
 `;
 
@@ -139,4 +64,37 @@ export const OriginSource = styled.p`
 export const InfoSection = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--margin-lg);
+  margin-left: var(--margin-sm);
+  margin-right: var(--margin-sm);
+`;
+
+export const IdiomBody = styled.div`
+  margin: var(--margin-sm);
+  li {
+    padding-bottom: var(--padding-md);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  li::marker {
+    color: var(--color-text-secondary);
+  }
+  li {
+    padding-left: var(--padding-lg) !important;
+  }
+`;
+
+export const PageBody = styled.div`
+  margin-left: var(--margin-sm);
+  margin-right: var(--margin-sm);
+`;
+
+export const IdiomSection = styled.div`
+  margin-bottom: var(--margin-xxl);
+`;
+
+export const SectionBody = styled.div`
+  padding-left: var(--padding-sm);
 `;

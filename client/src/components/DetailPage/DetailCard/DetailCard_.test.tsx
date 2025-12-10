@@ -28,10 +28,10 @@ const dummyIdiom: Idiom = {
 
 function makeUserContextMock(overrides: Partial<UserContextType> = {}): UserContextType {
   return {
-    // minimal sensible defaults
     roles: [],
     isAuthenticated: false,
     isAdmin: false,
+    isRegularUser: false,
 
     theme: 'light',
     loadingTheme: false,
@@ -74,7 +74,6 @@ function setup(idiom: Idiom = dummyIdiom, roles: string[] = []) {
     addExampleButton: screen.queryByRole('button', { name: /add ex./i }),
     editExampleButton: screen.queryByRole('button', { name: /edit ex./i }),
     timestamp: screen.getByTestId('timestamp'),
-    contributor: screen.getByTestId('contributor'),
     exampleList: screen.queryAllByRole('listitem'),
   };
 }
@@ -97,12 +96,7 @@ describe('DetailCard', () => {
 
     test('renders formatted timestamp', () => {
       const { timestamp } = setup();
-      expect(timestamp).toHaveTextContent('Added on:05-01-24');
-    });
-
-    test('renders contributor if available', () => {
-      const { contributor } = setup();
-      expect(contributor).toHaveTextContent('Added by:John Doe');
+      expect(timestamp).toHaveTextContent('Added:05-01-24');
     });
 
     test('renders definition if available', () => {
@@ -139,24 +133,10 @@ describe('DetailCard', () => {
       expect(editIdiomButton).toBeInTheDocument();
     });
 
-    // test('renders "Add Example" and "Edit Example" buttons for admin users', () => {
-    //   const { addExampleButton, editExampleButton } = setup(dummyIdiom, ['Admin']);
-    //   expect(addExampleButton).toBeInTheDocument();
-    //   expect(editExampleButton).toBeInTheDocument();
-    // });
-
     test('hides admin buttons for non-admins', () => {
-      // const { editExampleButton, addExampleButton, editIdiomButton } = setup();
       const { editIdiomButton } = setup();
       expect(editIdiomButton).not.toBeInTheDocument();
-      // expect(addExampleButton).not.toBeInTheDocument();
-      // expect(editExampleButton).not.toBeInTheDocument();
     });
-
-    //   test('hides "Edit Example" button if no examples exist', () => {
-    //     const { editExampleButton } = setup({ ...dummyIdiom, examples: [] }, ['Admin']);
-    //     expect(editExampleButton).not.toBeInTheDocument();
-    //   });
   });
 
   describe('Buttons interaction', () => {
@@ -165,17 +145,5 @@ describe('DetailCard', () => {
       fireEvent.click(editIdiomButton!);
       expect(mockOpenModal).toHaveBeenCalled();
     });
-
-    // test('clicking "Add Example" calls openAddExampleModal', () => {
-    //   const { addExampleButton } = setup(dummyIdiom, ['Admin']);
-    //   fireEvent.click(addExampleButton!);
-    //   expect(mockOpenAddExampleModal).toHaveBeenCalled();
-    // });
-
-    // test('clicking "Edit Example" calls openExampleModal', () => {
-    //   const { editExampleButton } = setup(dummyIdiom, ['Admin']);
-    //   fireEvent.click(editExampleButton!);
-    //   expect(mockOpenExampleModal).toHaveBeenCalled();
-    // });
   });
 });
