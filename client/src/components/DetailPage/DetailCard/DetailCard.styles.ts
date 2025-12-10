@@ -2,10 +2,11 @@ import styled from 'styled-components';
 
 export const IdiomHeader = styled.div`
   color: var(--color-text-primary);
-  background-color: var(--bg-dark);
-  border-radius: var(--radius-md);
-  border-bottom: 0.5px solid var(--color-border);
-  margin-bottom: var(--margin-lg);
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: var(--margin-md);
+  margin-left: var(--margin-sm);
+  margin-right: var(--margin-sm);
+  margin-top: var(--margin-xl);
 
   h1 {
     font-size: 1.5rem;
@@ -13,16 +14,14 @@ export const IdiomHeader = styled.div`
     line-height: 1.1;
     letter-spacing: -0.3px;
     text-align: center;
-    margin-top: var(--margin-xl);
-    margin-bottom: var(--margin-md);
+    margin-bottom: var(--margin-xl);
+    margin-top: var(--margin-sm);
     padding-top: var(--padding-md);
   }
 `;
 
 export const IdiomInfo = styled.div`
   display: flex;
-  gap: var(--margin-xl);
-  margin-top: var(--margin-lg);
   padding-left: var(--padding-sm);
 `;
 
@@ -37,7 +36,6 @@ export const ExampleList = styled.ul`
 `;
 
 export const SectionHeader = styled.div`
-  border-bottom: 1px solid var(--color-border);
   padding: var(--padding-xs) var(--padding-sm);
   display: flex;
   justify-content: space-between;
