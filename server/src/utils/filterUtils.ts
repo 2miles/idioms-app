@@ -50,14 +50,25 @@ export function buildFilterClauses(
         searchWords
           .map((_, i) => {
             const n = startIndex + values.length + i;
-            return `(title ILIKE $${n} OR definition ILIKE $${n})`;
+            return `
+          (
+            i.title ILIKE $${n}
+            OR i.definition ILIKE $${n}
+            OR EXISTS (
+              SELECT 1
+              FROM idiom_origins_ai o
+              WHERE o.idiom_id = i.id
+                AND o.origin_text ILIKE $${n}
+            )
+          )
+        `;
           })
           .join(' AND '),
       );
     } else {
       clauses.push(
         searchWords
-          .map((_, i) => `${searchColumn} ILIKE $${startIndex + values.length + i}`)
+          .map((_, i) => `i.${searchColumn} ILIKE $${startIndex + values.length + i}`)
           .join(' AND '),
       );
     }
@@ -66,9 +77,9 @@ export function buildFilterClauses(
 
   // Letter filter
   if (letter === 'num') {
-    clauses.push(`title ~ '^[0-9]'`);
+    clauses.push(`i.title ~ '^[0-9]'`);
   } else if (letter && /^[A-Z]$/.test(letter)) {
-    clauses.push(`title ILIKE $${startIndex + values.length}`);
+    clauses.push(`i.title ILIKE $${startIndex + values.length}`);
     values.push(`${letter}%`);
   }
 
