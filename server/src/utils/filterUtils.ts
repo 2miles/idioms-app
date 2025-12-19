@@ -44,7 +44,7 @@ export function buildFilterClauses(
     .filter(Boolean);
 
   if (searchWords.length > 0) {
-    if (searchColumn === 'general') {
+    if (searchColumn === 'keywords') {
       // AND across words, OR across fields
       clauses.push(
         searchWords

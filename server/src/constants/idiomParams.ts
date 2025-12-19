@@ -1,4 +1,4 @@
-export const ALLOWED_UI_COLUMNS = ['title', 'contributor', 'general'] as const;
+export const ALLOWED_UI_COLUMNS = ['title', 'keywords'] as const;
 export type UiColumn = (typeof ALLOWED_UI_COLUMNS)[number];
 
 export const ALLOWED_SORT_FIELDS = [

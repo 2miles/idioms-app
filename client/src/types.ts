@@ -78,8 +78,8 @@ export type ColumnVisibility = {
   contributor: boolean;
 };
 
-export type SearchColumnAccessors = 'title' | 'general' | 'contributor';
-export type SearchColumnLabels = 'Idiom' | 'General' | 'Contributor';
+export type SearchColumnAccessors = 'title' | 'keywords';
+export type SearchColumnLabels = 'Idiom' | 'Keywords';
 
 export type SearchColumn = {
   label: SearchColumnLabels;
@@ -88,8 +88,8 @@ export type SearchColumn = {
 
 export const SearchColumns: SearchColumn[] = [
   { accessor: 'title', label: 'Idiom' },
-  { accessor: 'general', label: 'General' },
-  { accessor: 'contributor', label: 'Contributor' },
+  { accessor: 'keywords', label: 'Keywords' },
+  // { accessor: 'contributor', label: 'Contributor' },
 ];
 
 export const Columns: Column[] = [

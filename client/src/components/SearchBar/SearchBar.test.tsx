@@ -55,8 +55,8 @@ describe('SearchBar', () => {
 
     const button = screen.getByRole('button');
     fireEvent.click(button); // Open dropdown
-    fireEvent.click(screen.getByText(/General/i)); // Select new column
+    fireEvent.click(screen.getByText(/Keywords/i)); // Select new column
 
-    expect(mockOnSearchColumnChange).toHaveBeenCalledWith('general' as SearchColumnAccessors);
+    expect(mockOnSearchColumnChange).toHaveBeenCalledWith('keywords' as SearchColumnAccessors);
   });
 });
