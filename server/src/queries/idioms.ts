@@ -17,14 +17,14 @@ export function buildIdiomsQuery(whereClause: string, sortField: string, sortOrd
         SELECT COUNT(*) AS total FROM idioms
       ),
       ranked_all AS (
-        SELECT *,
+        SELECT idioms.*,
           ROW_NUMBER() OVER (ORDER BY timestamps DESC) AS row_num
         FROM idioms
       ),
       filtered AS (
-        SELECT *,
-          (SELECT total FROM global_total) + 1 - row_num AS position
-        FROM ranked_all
+        SELECT i.*,
+          (SELECT total FROM global_total) + 1 - i.row_num AS position
+        FROM ranked_all i
         ${whereClause?.trim() ? `WHERE ${whereClause}` : ''}
       )
       SELECT *
@@ -42,8 +42,8 @@ export function buildIdiomsQuery(whereClause: string, sortField: string, sortOrd
  */
 export function buildTotalCountQuery(totalWhereClause: string) {
   return totalWhereClause?.trim()
-    ? `SELECT COUNT(*) AS total FROM idioms WHERE ${totalWhereClause}`
-    : `SELECT COUNT(*) AS total FROM idioms`;
+    ? `SELECT COUNT(*) AS total FROM idioms i WHERE ${totalWhereClause}`
+    : `SELECT COUNT(*) AS total FROM idioms i`;
 }
 
 /**
@@ -96,8 +96,8 @@ export function buildAdjacentIdsQuery(
 
   return `
     WITH base AS (
-      SELECT id, timestamps, title, definition, contributor
-      FROM idioms
+      SELECT i.id, i.timestamps, i.title, i.definition, i.contributor
+      FROM idioms i
       ${whereClause?.trim() ? `WHERE ${whereClause}` : ''}
     ),
     ordered AS (

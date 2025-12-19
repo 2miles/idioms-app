@@ -45,7 +45,7 @@ describe('SearchColumnDropdown', () => {
     fireEvent.click(button);
 
     const listbox = screen.getByRole('listbox');
-    const option = within(listbox).getByText('General');
+    const option = within(listbox).getByText('Keywords');
     fireEvent.click(option);
 
     expect(listbox).not.toBeVisible(); // or use queryByRole('listbox') and expect null
@@ -59,9 +59,9 @@ describe('SearchColumnDropdown', () => {
     const button = screen.getByLabelText('Search Column');
     fireEvent.click(button);
 
-    const targetLabel = SearchColumns.find((c) => c.accessor === 'general')?.label!;
+    const targetLabel = SearchColumns.find((c) => c.accessor === 'keywords')?.label!;
     fireEvent.click(screen.getByText(targetLabel));
 
-    expect(mockHandleColumnChange).toHaveBeenCalledWith('general');
+    expect(mockHandleColumnChange).toHaveBeenCalledWith('keywords');
   });
 });
