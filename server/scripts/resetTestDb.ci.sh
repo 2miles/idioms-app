@@ -1,27 +1,3 @@
-# #!/bin/bash
-
-# set -e
-
-# SEED_FILE=./server/data/testDbSeed.sql
-
-# if [ -z "$DATABASE_URL_TEST" ]; then
-#   echo "DATABASE_URL_TEST is not set!"
-#   exit 1
-# fi
-
-# if [[ "$DATABASE_URL_TEST" == *"supabase"* || "$DATABASE_URL_TEST" == *"prod"* ]]; then
-#   echo "Refusing to run reset on production or supabase DB!"
-#   exit 1
-# fi
-
-# echo "Wiping test DB schema..."
-# psql "$DATABASE_URL_TEST" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
-
-# echo "Seeding test DB..."
-# psql "$DATABASE_URL_TEST" -f "$SEED_FILE"
-
-# echo "Railway test DB reset complete."
-
 #!/bin/bash
 set -euo pipefail
 
@@ -42,8 +18,8 @@ echo "Wiping test DB schema..."
 psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
 echo "Running migrations..."
-psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/001_baseline.sql"
-psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/002_add_e2e_lock.sql"
+psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/common/001_baseline.sql"
+psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/test/001_add_e2e_lock.sql"
 # Optional:
 # psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/003_add_pg_trgm_and_origin_text_index.sql"
 
