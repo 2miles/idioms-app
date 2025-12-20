@@ -842,20 +842,32 @@ COPY public.requests (id, title, contributor, submitted_at, added) FROM stdin;
 \.
 
 -- Reset identity counters to max(id)
-SELECT setval(
-  pg_get_serial_sequence('public.idioms', 'id'),
-  (SELECT MAX(id) FROM public.idioms),
-  true
-);
+-- SELECT setval(
+--   pg_get_serial_sequence('public.idioms', 'id'),
+--   (SELECT MAX(id) FROM public.idioms),
+--   true
+-- );
 
-SELECT setval(
-  pg_get_serial_sequence('public.idiom_examples', 'example_id'),
-  (SELECT MAX(example_id) FROM public.idiom_examples),
-  true
-);
+-- SELECT setval(
+--   pg_get_serial_sequence('public.idiom_examples', 'example_id'),
+--   (SELECT MAX(example_id) FROM public.idiom_examples),
+--   true
+-- );
 
-SELECT setval(
-  pg_get_serial_sequence('public.idiom_origins_ai', 'id'),
-  (SELECT MAX(id) FROM public.idiom_origins_ai),
-  true
-);
+-- SELECT setval(
+--   pg_get_serial_sequence('public.idiom_origins_ai', 'id'),
+--   (SELECT MAX(id) FROM public.idiom_origins_ai),
+--   true
+-- );
+-------
+SELECT setval(pg_get_serial_sequence('public.idioms','id'),
+             COALESCE((SELECT MAX(id) FROM public.idioms), 1));
+
+SELECT setval(pg_get_serial_sequence('public.idiom_examples','example_id'),
+             COALESCE((SELECT MAX(example_id) FROM public.idiom_examples), 1));
+
+SELECT setval(pg_get_serial_sequence('public.idiom_origins_ai','id'),
+             COALESCE((SELECT MAX(id) FROM public.idiom_origins_ai), 1));
+
+SELECT setval(pg_get_serial_sequence('public.staging_scrapes','id'),
+             COALESCE((SELECT MAX(id) FROM public.staging_scrapes), 1));
