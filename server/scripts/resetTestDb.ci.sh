@@ -9,21 +9,31 @@ if [ -z "${DATABASE_URL_TEST:-}" ]; then
   exit 1
 fi
 
+# Extra safety: refuse prod/supabase
 if [[ "$DATABASE_URL_TEST" == *"supabase"* || "$DATABASE_URL_TEST" == *"prod"* ]]; then
   echo "Refusing to run reset on production or supabase DB!"
   exit 1
 fi
 
 echo "Wiping test DB schema..."
-psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 \
+  -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
-echo "Running migrations..."
-psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/common/001_baseline.sql"
-psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/test/001_add_e2e_lock.sql"
-# Optional:
-# psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/003_add_pg_trgm_and_origin_text_index.sql"
+echo "Running base migrations..."
+shopt -s nullglob
+for f in "$MIGRATIONS_DIR"/*.sql; do
+  echo "→ $f"
+  psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$f"
+done
+
+echo "Running test-only migrations..."
+for f in "$MIGRATIONS_DIR/test_only"/*.sql; do
+  echo "→ $f"
+  psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$f"
+done
+shopt -u nullglob
 
 echo "Seeding test DB data..."
 psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f "$SEED_FILE"
 
-echo "Railway test DB reset complete."
+echo "CI test DB reset complete."
