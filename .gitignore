@@ -53,3 +53,4 @@ client/e2e/.auth/
 
 # Database artifacts
 server/data/
+server/data/schema_audit/
