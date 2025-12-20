@@ -95,3 +95,49 @@ psql "$DATABASE_URL_PROD" -f server/db/migrations/002_add_e2e_lock.sql
 psql "$DATABASE_URL_PROD" -f server/db/migrations/003_add_pg_trgm_and_origin_text_index.sql
 psql "$DATABASE_URL_PROD" -f server/data/data_only/seed.sql
 ```
+
+# workflow
+
+The flow you want
+
+1. While developing (dev DB):
+
+   - You change schema by creating a new migration file (e.g. 004_add_requests_index.sql).
+   - You run migrate.sh against dev to apply it.
+   - You run your app/tests and confirm everything works.
+
+2. Merge to main:
+
+   - Commit the migration file(s) with the code change.
+
+3. Deploy + prod:
+
+   - Run migrate.sh against prod to apply only the new, not-yet-applied migrations.
+
+## Two important rules
+
+- Never “edit” old migrations once they’ve been applied anywhere (especially prod).
+- If you need a fix, add a new migration.
+  - Prod runs forward-only.
+  - No DROP SCHEMA, no rebuilding. Just apply new migrations.
+
+## Practical habit that prevents pain
+
+When you’re ready to push:
+
+- Run migrate.sh on a fresh dev rebuild (or a scratch DB) to ensure the full chain still builds cleanly from baseline.
+- Then merge + run on prod.
+
+That’s basically the same workflow real teams use, just lighter-weight.
+
+# Run migrations on Dev
+
+```bash
+set -a && source server/.env && set +a && MIGRATION_ENV=dev ./server/scripts/migrate.sh
+```
+
+# Run migrations on Prod
+
+```bash
+MIGRATION_ENV=prod DATABASE_URL="postgresql://..." ./server/scripts/migrate.sh
+```
