@@ -254,3 +254,31 @@ npx tsx client/e2e/global.setup.ts
 You can deploy the backend to any Node-compatible cloud host (e.g. Railway, Render, Fly.io) and the frontend to Vercel, Netlify, or another static host.
 
 Environment variables should be set based on `.env.production.example` files.
+
+## Databse & Migrations
+
+This project uses SQL-based migrations for schema changes.
+
+- **Dev & Prod** use forward-only migrations (`migrate.sh`).
+- **Test / CI** databases are rebuilt from scratch every run
+
+### Running Migrations
+
+#### Dev:
+
+```bash
+set -a && source server/.env && set +a
+MIGRATION_ENV=dev ./server/scripts/migrate.sh
+```
+
+#### Prod:
+
+```bash
+MIGRATION_ENV=prod DATABASE_URL="postgresql://..." ./server/scripts/migrate.sh
+```
+
+### Rules
+
+- Never edit applied migrations
+- Always add new migrations
+- Back up prod before running migrations

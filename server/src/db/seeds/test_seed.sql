@@ -1,125 +1,156 @@
--- PostgreSQL database dump
--- Dumped from database version 14.2
--- Dumped by pg_dump version 14.3
 
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
--- Stores per-user preferences such as dark mode
-CREATE TABLE IF NOT EXISTS public.user_settings (
-    user_id text PRIMARY KEY,
-    theme text NOT NULL CHECK (theme IN ('light','dark','system'))
-);
-
-ALTER TABLE public.user_settings OWNER TO postgres;
-
--- Optional: seed a test user setting
--- COPY public.user_settings (user_id, theme) FROM stdin;
--- auth0|testuserid   dark
--- \.
-
-CREATE TABLE public.idiom_examples (
-    example_id integer NOT NULL,
-    idiom_id integer NOT NULL,
-    example text
-);
-
-ALTER TABLE public.idiom_examples OWNER TO postgres;
-
-CREATE SEQUENCE public.idiom_examples_example_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER TABLE public.idiom_examples_example_id_seq OWNER TO postgres;
-
-ALTER SEQUENCE public.idiom_examples_example_id_seq OWNED BY public.idiom_examples.example_id;
-
-CREATE SEQUENCE public.idioms_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER TABLE public.idioms_id_seq OWNER TO postgres;
-
-CREATE TABLE public.idioms (
-    id integer DEFAULT nextval('public.idioms_id_seq'::regclass) NOT NULL,
-    title character varying(255),
-    title_general character varying(255),
-    definition text,
-    contributor character varying(50),
-    timestamps timestamp with time zone
-);
-
-ALTER TABLE public.idioms OWNER TO postgres;
-
-
--- Sequence for origins.id
-CREATE SEQUENCE public.idiom_origins_ai_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER TABLE public.idiom_origins_ai_id_seq OWNER TO postgres;
-
--- Origins table: one origin row per idiom
-CREATE TABLE public.idiom_origins_ai (
-    id integer NOT NULL DEFAULT nextval('public.idiom_origins_ai_id_seq'::regclass),
-    idiom_id integer NOT NULL,
-    origin_text text,
-    model text,
-    updated_at timestamptz DEFAULT now()
-);
-
-ALTER TABLE public.idiom_origins_ai OWNER TO postgres;
-
--- Stores idiom requests submitted by users
-CREATE TABLE public.requests (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    contributor TEXT,
-    submitted_at TIMESTAMPTZ DEFAULT now(),
-    added BOOLEAN DEFAULT false
-);
-
-ALTER TABLE public.requests OWNER TO postgres;
-
--- Tracks whether E2E tests are currently running (used for local locking)
-CREATE TABLE public.e2e_lock (
-    id INT PRIMARY KEY,
-    running BOOLEAN NOT NULL,
-    updated_at TIMESTAMP DEFAULT now()
-);
-
-ALTER TABLE public.e2e_lock OWNER TO postgres;
-
--- Seed row for e2e_lock to initialize it in the "not running" state
-COPY public.e2e_lock (id, running, updated_at) FROM stdin;
-1	false	2025-01-01 00:00:00
+COPY public.idioms (id, title, title_general, definition, contributor, timestamps) FROM stdin;
+1	Not my circus, not my monkeys	Not my circus, not my monkeys	This troublesome, burdensome, or volatile situation is none of my concern, and thus I refuse to get involved in it. A loan translation of the Polish idio.	Eve	2023-07-13 00:00:01-07
+2	Waiting with baited breath	Wait with bated breath	To remain in a state of eager anticipation (of or for something).	Eve	2023-07-13 00:00:02-07
+3	Don’t hold your breath	Don’t hold your breath	Don’t expect something to happen. (The idea being that one couldn’t hold one’s breath long enough for the unlikely thing to happen.)	\N	2023-07-13 00:00:03-07
+4	People in glass houses shouldn’t throw stones	People (who live) in glass houses shouldn’t throw stones.	People who are vulnerable to criticism should not criticize others, especially not for the faults that they themselves have (since such criticism will likely be returned).	\N	2023-07-13 00:00:04-07
+5	Don’t look a gift horse in the mouth	Don’t look a gift horse in the mouth	If you receive a gift, do so graciously, without voicing criticisms. The saying is attributed to St. Jerome and refers to the practice of looking at a horse’s teeth to determine its age.	\N	2023-07-13 00:00:05-07
+6	Don’t count your chickens before they hatch	Don’t count your chickens before they hatch.	Don’t make plans based on future events, outcomes, or successes that might not come to pass.	\N	2023-07-13 00:00:06-07
+7	Don’t keep all your eggs in one basket	put all (one’s) eggs in one basket	To invest, devote, or commit all of one’s energy or resources into a single venture, opportunity, or goal, generally at the risk of losing everything in the event that that thing fails or does not come to fruition.	\N	2023-07-13 00:00:07-07
+8	A bird in the hand is worth two in the bush	A bird in the hand is worth two in the bush	It is better to have something less valuable than to pursue something more valuable that may not be able to be obtained.	\N	2023-07-13 00:00:08-07
+9	There’s more than one way to skin a cat	There’s more than one way to skin a cat	There are many methods one may employ in achieving one’s ends.	Miles	2023-07-13 00:00:09-07
+10	Let the cat out of the bag	Let the cat out of the bag	To reveal a secret.	\N	2023-07-13 00:00:10-07
+11	Open a can of worms	Open (up) a can of worms	To initiate, instigate, or reveal a situation that is or is likely to become very complicated or problematic or that will have a negative outcome.	\N	2023-07-13 00:00:11-07
+12	Bull in a china shop	A bull in a china shop	Someone who is aggressively reckless and clumsy in a situation that requires delicacy and care.	Miles	2023-07-13 00:00:12-07
+13	One trick pony	A one-trick pony	A person, group, or thing that is known for or limited to only one unique or noteworthy skill, talent, ability, quality, area of success, etc.	\N	2023-07-13 00:00:13-07
+14	Don’t piss on my leg and tell me it’s raining	Piss on someone’s leg and tell them it’s raining	To tell someone an obvious lie.	Miles	2023-07-13 00:00:14-07
+15	Too many chefs in the kitchen	Too many chefs in the kitchen	Too many people are trying to control, influence, or work on something, with the quality of the final product suffering as a result.	Miles	2023-07-13 00:00:15-07
+16	If you can’t handle the heat get out of the kitchen	If you can’t stand the heat, get out of the kitchen	Used as a way to tell someone that they should either stop complaining about a difficult or unpleasant activity, or stop doing it	Miles	2023-07-13 00:00:16-07
+17	Running on fumes	Running on fumes	Continuing to operate with no or very little enthusiasm, energy, or resources left. A reference to a car that has nearly run out of fuel.	\N	2023-07-13 00:00:17-07
+18	One bad apple spoils the bunch	One bad apple spoils the (whole) bunch	It only takes one person, thing, element, etc., to ruin the entire group, situation, project, etc. Refers to the fact that a rotting apple can cause other apples in close proximity to begin to rot as well.	Eve	2023-07-13 00:00:18-07
+19	The cream rises to the top	The cream (always) rises to the top	Those with the most skill, the best work ethic, or the strongest moral character will inevitably find success in life.	Miles	2023-07-13 00:00:19-07
+20	Cut from same cloth	\N	Very similar in characteristics or behaviors.	\N	2023-07-13 00:00:20-07
+21	Stick in the mud	Stick-in-the-mud	Someone who is considered boring, often due to unpopular or outdated beliefs.	Miles	2023-07-13 00:00:21-07
+22	Don’t rain on my parade	Don’t rain on (one’s) parade	Don’t ruin one’s plans or temper one’s excitement.	Eve	2023-07-13 00:00:22-07
+23	Even the darkest storm cloud has a silver lining	\N	The potential for something positive or beneficial to result from a negative situation. Often used in the phrase "every cloud has a silver lining." (A silver lining on a cloud is an indication that the sun is behind it.)	Eve	2023-07-13 00:00:23-07
+24	Mess with a bull you get the horn	If you mess with the bull, you get the horns	If you anger, irritate, or provoke someone enough, you will induce some hostile retaliation or emotional reaction.	Miles	2023-07-13 00:00:24-07
+25	It’s always darkest before dawn	it’s (always) darkest (just) before the dawn	The worst part of an experience, situation, period of time, etc., usually happens just before things get better.	Eve	2023-07-13 00:00:25-07
+26	When it rains it pours	When it rains, it pours	When something good or bad happens, similarly good or bad things tend to follow.	\N	2023-07-13 00:00:26-07
+27	Time and tide wait for no man	time and tide wait for no one	The opportunities of life will pass you by if you delay or procrastinate in taking advantage of them.	\N	2023-07-13 00:00:27-07
+28	Even a broken clock is right twice a day	a broken clock is right twice a day	Even people who are usually wrong can be right sometimes, even if just by accident. From the idea that the stationary hands of a broken clock will still display the correct time at two points during the 24-hour cycle.	Miles	2023-07-13 00:00:28-07
+29	For whom the bell tolls	Background	Ernest Hemingway wrot.	Miles	2023-07-13 00:00:29-07
+30	Make hay while the sun is shining	Make hay while the sun is shining	To take advantage of favorable conditions; to make the most of an opportunity when it is available.	Eve	2023-07-13 00:00:30-07
+31	Mellow is the man who knows what he’s missing	\N	\N	Eve	2023-07-13 00:00:31-07
+32	Can’t teach an old dog new tricks	It’s hard to teach an old dog new tricks	It is exceptionally difficult to teach some new skill or behavior to someone, especially an older person, who is already firmly set in their ways.	\N	2023-07-13 00:00:32-07
+33	Hindsight’s 20/20	Hindsight is (always) 20/20	It is easier to clearly reevaluate past actions or decisions than when they are being made or done; things are clearer or more obvious when they are reflected upon. A reference to the visual acuity of normal eyesight (20/20 vision).	\N	2023-07-13 00:00:33-07
+34	Give a mouse a cookie and he’ll ask for a glass of milk	\N	\N	Eve	2023-07-13 00:00:34-07
+35	Give an inch and they take a mile	give an inch and they’ll take a mile	Make a small concession and they’ll take advantage of you.	Miles	2023-07-13 00:00:35-07
+36	The more the merrier	The more the merrier	More people will make something more enjoyable. Often used to welcome one to join a group or activity.	\N	2023-07-13 00:00:36-07
+37	Measure twice cut once	Measure twice, cut once	An axiom that encourages careful first steps in order to avoid extra work later on.	Miles	2023-07-13 00:00:37-07
+38	Give a man a fish, feed him for a day; teach a man to fish, feed him for a lifetime	\N	Simply giving someone a fish is not as helpful to them in the long run as teaching them how to fish.	Eve	2023-07-13 00:00:38-07
+39	You can bring a horse to water but can’t make it drink	\N	You can give someone an advantage or provide them with an opportunity, but you can’t force them to do something if they don’t want to	Eve	2023-07-13 00:00:39-07
+40	One man’s trash is another man’s treasure	One man’s trash is another man’s treasure	What one person may consider worthless could be highly prized or valued by someone else.	\N	2023-07-13 00:00:40-07
+41	Burning the candle at both ends	Burn (one’s)/the candle at both ends	To overwork or exhaust oneself by doing too many things, especially both late at night and early in the morning.	\N	2023-07-13 00:00:41-07
+42	Polishing a turd	Polish a turd	To make something unpleasant seem more appealing than it really is—which is often a futile effort. "Turd" is a slang term for a piece of feces.	Miles	2023-07-13 00:00:42-07
+43	Put lipstick on a pig, its still a pig	\N	Making superficial or cosmetic changes to a product in a futile effort to disguise its fundamental failings	Eve	2023-07-13 00:00:43-07
+44	One step forward two steps back	 one step forward, two steps bac.	Marked by a small amount progress that is then eradicated by a large amount of setbacks, problems, or difficulties.	\N	2023-07-13 00:00:44-07
+45	It’s not over till the fat lady sings	It ain’t over till/until the fat lady sings	The final outcome cannot be assumed or determined until a given situation, event, etc., is completely finished.	\N	2023-07-13 00:00:45-07
+46	Heavy is the head that wears the crown	heavy hangs the head that wears a/the crown	The person who has the most power or authority suffers the largest amount of stress, anxiety, doubt, and worry.	Eve	2023-07-13 00:00:46-07
+47	Pick your poison	Pick your poison	\N	\N	2023-07-13 00:00:47-07
+48	An axe to grind	An ax(e) to grind	A complaint or dispute that one feels compelled to discuss.	\N	2023-07-13 00:00:48-07
+49	Big shoes to fill	Big shoes to fill	A role vacated or left behind by someone who was exceptional in their performance and set very high standards as a result.	\N	2023-07-13 00:00:49-07
+50	The apple doesn’t fall far from the tree	The apple does not fall far from the tree	Said when someone is displaying traits or behaving in the same way as their relatives (especially parents).	\N	2023-07-13 00:00:50-07
+51	Chip off the old block	A chip off the old block	Someone whose character or personality resembles that of their parent.	\N	2023-07-13 00:00:51-07
+52	Chip on your shoulder	A chip on (one’s) shoulder	An attitude that leads one to become combative or easily angered.	\N	2023-07-13 00:00:52-07
+53	Reinvent the wheel	Reinvent the wheel	To do something in a wholly and drastically new way, often unnecessarily. (Usually used in negative constructions..	\N	2023-07-13 00:00:53-07
+54	Two peas in a pod	Two peas in a pod	Two people who are very similar, typically in interests, dispositions, or beliefs.	\N	2023-07-13 00:00:54-07
+55	Monkey on your back	Monkey on (one’s) back	\N	\N	2023-07-13 00:00:55-07
+56	Big fish in a small pond	A big fish in a small pond	A situation in which one person has more power, influence, knowledge, or experience than others within a small group. It often implies that the person may not have as much clout i."a bigger pond," i.e., a larger group or arena of some kind.	\N	2023-07-13 00:00:56-07
+57	When pigs fly	When pigs fly	At a point in time that will never come to pass. (Used to show skepticism or cynicism over some hypothetical situation or outcome..	\N	2023-07-13 00:00:57-07
+58	When hell freezes over	When hell freezes over	Never; at no time.	\N	2023-07-13 00:00:58-07
+59	Out of the frying pan and into the fire	\N	\N	Eve	2023-07-13 00:00:59-07
+60	The pot calling the kettle black	The pot calling the kettle black	A situation in which a person accuses someone of or criticizes someone for something that they themselves are guilty of.	Eve	2023-07-13 00:01:00-07
+61	Frog in boiling water	\N	\N	\N	2023-07-13 00:01:01-07
+62	You gotta kiss a lot of frogs to find a prince	\N	\N	\N	2023-07-13 00:01:02-07
+63	Bat out of hell	\N	\N	\N	2023-07-13 00:01:03-07
+64	Going to hell in a hand basket	Go to hell in a handbasket	To be in an extremely and increasingly bad or ruinous condition; to be on the inevitable path to utter failure or ruin.	\N	2023-07-13 00:01:04-07
+65	Bite off more then you can chew	\N	\N	\N	2023-07-13 00:01:05-07
+66	The bigger they are the harder they fall	The bigger they are, the harder they fall	Those who are exceptionally large, powerful, or influential will have more to lose when they fail, and their failure will be all the more dramatic or spectacular because of it.	\N	2023-07-13 00:01:06-07
+67	The hair of the dog that bit you	The hair of the dog (that bit you)	An alcoholic drink consumed to remedy a hangover. The phrase comes from the notion that literally rubbing the hair of the dog that bit you on the wound would help it to heal.	Eve	2023-07-13 00:01:07-07
+68	Wish in one hand and shit in the other	\N	\N	Miles	2023-07-13 00:01:08-07
+69	All who wander are not lost	\N	\N	\N	2023-07-13 00:01:09-07
+70	All that glitters is not gold	All that glitters is not gold	Things that have an outward appeal are often not as beautiful or valuable as they seem.	\N	2023-07-13 00:01:10-07
+71	Diamond in the rough	Diamond in the rough	A person or thing with exceptional qualities or characteristics that cannot be seen from the surface.	\N	2023-07-13 00:01:11-07
+72	Leave no stone unturned	Leave no stone unturned	To look for something in every possible place.	\N	2023-07-13 00:01:12-07
+73	No holds barred	No-holds-barred	free of restrictions or hampering conventions	\N	2023-07-13 00:01:13-07
+74	Throw the baby out with the bath water	Throw the baby out with the bath	To discard something valuable or important while disposing of something considered worthless, especially an outdated idea or form of behavior. The phrase is often used in the negative as a warning against such thoughtless behavior.	Eve	2023-07-13 00:01:14-07
+75	Everything but the kitchen sink	Everything but the kitchen sink	Nearly everything one can reasonably imagine; many different things, often to the point of excess or redundancy.	\N	2023-07-13 00:01:15-07
+76	Slow and steady wins the race	Slow and steady wins the race	Persistent, consistent, and diligent progress, even if it is somewhat slow, will produce better results than rushing to get somewhere or achieve something, as the latter can result in mistakes or may prove unsustainable or unreliable.	\N	2023-07-13 00:01:16-07
+77	Two sides to to the same coin	\N	\N	\N	2023-07-13 00:01:17-07
+78	Play the hand you’re dealt	Play the hand (one) is dealt	To accept, deal with, and make the most of one’s current situation or circumstances; to make use of that which one is afforded or has available.	\N	2023-07-13 00:01:18-07
+79	When life gives you lemons make lemonade	When life gives you lemons, make lemonade	Focus on the good in a bad situation and take action accordingly.	\N	2023-07-13 00:01:19-07
+80	Put a pin in it	Put a pin in it	To take a break from discussing some topic, with plans to resume the discussion later.	\N	2023-07-13 00:01:20-07
+81	The cherry on top	Cherry on top	The flourish that caps something off (much like a cherry tops off an ice cream sundae). Sometimes used in the phrase "pretty please with a cherry on top.".	\N	2023-07-13 00:01:21-07
+82	Icing on the cake	The icing on the cake	An additional benefit or positive aspect to something that is already considered positive or beneficial.	\N	2023-07-13 00:01:22-07
+83	The squeaky wheel gets the grease	The squeaky wheel gets the grease	The person complaining or protesting the loudest or most frequently is the one who will receive the most attention from others.	\N	2023-07-13 00:01:23-07
+84	Raised nails get pounded	\N	\N	\N	2023-07-13 00:01:24-07
+85	Softer than a baby’s bottom	\N	\N	\N	2023-07-13 00:01:25-07
+86	Hell or high water	By hell or high water	By any means necessary; regardless of any difficulty, problem, or obstacle.	\N	2023-07-13 00:01:26-07
+87	Stuck between a rock and a hard place	\N	\N	\N	2023-07-13 00:01:27-07
+88	Airing out your dirty laundry.	\N	\N	\N	2023-07-13 00:01:28-07
+89	Skeletons in your closet	Skeleton in the/(one’s) closet	An embarrassing or shameful secret. Primarily heard in US.	\N	2023-07-13 00:01:29-07
+90	Skating on thin ice	Skating on thin ice	Engaged in some activity or behavior that is very risky, dangerous, or likely to cause a lot of trouble.	\N	2023-07-13 00:01:30-07
+91	Flying too close to the sun	Fly too close to the sun	To do something especially ambitious and daring that can or ultimately does lead to one’s own undoing or downfall. An allusion to the mythical figure Icarus, whose wings made of feathers and wax melted when he flew too close to the sun.	Eve	2023-07-13 00:01:31-07
+92	Toot your own horn	Toot (one’s) own horn	To boast or brag about one’s own abilities, skills, success, achievements, etc.	\N	2023-07-13 00:01:32-07
+93	Pat yourself on the back	\N	\N	\N	2023-07-13 00:01:33-07
+94	Catch more flies with honey than vinegar	You (can) catch more flies with honey than (with) vinegar	You are more likely to get the results you want from other people if you treat them with kindness or flattery, rather than being aggressive, demanding, or caustic.	Eve	2023-07-13 00:01:34-07
+95	Kill them with kindness	Kill (one) with kindness	To harm, inconvenience, or bother one by treating them with excessive favor or kindness.	Eve	2023-07-13 00:01:35-07
+96	Eye for an eye makes the whole world blind	An eye for an eye makes the whole world blind	No good will result from avenging injuries in a manner equal to the original offense.	Eve	2023-07-13 00:01:36-07
+97	In the land of the blind the one eyed man is king	In the land of the blind, the one-eyed man is king	Someone with few skills or abilities can impress and wield power over those who have even less to offer.	Eve	2023-07-13 00:01:37-07
+98	That ship has sailed	That ship has sailed	Some possibility or option is no longer available or likely.	Eve	2023-07-13 00:01:38-07
+99	Two ships passing the night	\N	\N	\N	2023-07-13 00:01:39-07
+100	The pen is mightier than the sword	The pen is mightier than the sword	Strong, eloquent, or well-crafted speech or writing is more influential on a greater number of people than force or violence.	\N	2023-07-13 00:01:40-07
+101	Double edged sword	Double-edged sword	Something that can be both beneficial and problematic.	Miles	2023-07-13 00:01:41-07
+102	I don’t have a dog in that fight	\N	\N	\N	2023-07-13 00:01:42-07
+103	Spare the rod, spoil the child	\N	\N	Eve	2023-07-13 00:01:43-07
+104	Like water off a ducks back	\N	\N	Eve	2023-07-13 00:01:44-07
+105	The juice isn’t worth the squeeze	\N	\N	Miles	2023-07-13 00:01:45-07
+106	Can’t get blood from a stone	You can’t get blood from a stone	It is impossible to obtain something from someone if they are too parsimonious, uncharitable, or resolved against it.	Miles	2023-07-13 00:01:46-07
+107	Don’t judge a book by its cover	Don’t judge a book by its cover	Don’t base your opinion of something (or someone) on the way it (or one) looks.	\N	2023-07-13 00:01:47-07
+108	You can’t step into the same river twice	\N	\N	Eve	2023-07-13 00:01:48-07
+109	Don’t whistle up the wind	\N	\N	\N	2023-07-13 00:01:49-07
+110	Stick a fork in me	Stick a fork in (me/it/something)	A phrase used to indicate that one or something is finished, complete, or no longer able to continue. Alludes to the practice of testing how thoroughly a piece of meat is cooked by piercing it with a fork.	\N	2023-07-13 00:01:50-07
+111	This goose is cooked	(one’s) goose is cooked	One is thoroughly defeated, ruined, or finished.	Eve	2023-07-13 00:01:51-07
+112	You shake it more than twice you’re playing with it	\N	\N	Miles	2023-07-13 00:01:52-07
+113	Why buy the cow when the milk is free	Why buy a/the cow when you can get (the) milk for free?	If someone is already able to obtain some commodity or benefit freely or easily, then they won’t be inclined to pay for the source of it.	\N	2023-07-13 00:01:53-07
+114	Don’t rock the boat	Don’t rock the boat	Don’t say or do something that could upset a stable situation.	\N	2023-07-13 00:01:54-07
+115	If the shoe fits, wear it	If the shoe fits(, wear it)	If something (typically negative) applies to one, one should acknowledge it or accept responsibility or blame for it.	\N	2023-07-13 00:01:55-07
+116	If it walks like a duck, talks like duck, it’s probably a duck	if it looks like a duck and walks like a duck, it is a duck	If something has all the characteristics of a thing, it is probably that thing, regardless of what it is called or presented as. There are many variations of the expression, and it is often shortened to the first part of the phrase.	\N	2023-07-13 00:01:56-07
+117	Waiting for the other shoe to drop	Waiting for the other shoe to drop	To wait for the next, seemingly unavoidable (and typically negative) thing to happen.	Eve	2023-07-13 00:01:57-07
+118	The grass is always greener on the other side of the fence	The grass is always greener (on the other side)	Other people’s circumstances or belongings always seem more desirable than one’s own.	\N	2023-07-13 00:01:58-07
+119	Birds of a feather flock together	Birds of a feather flock together	People who have similar interests, ideas, or characteristics tend to seek out or associate with one another.	\N	2023-07-13 00:01:59-07
+120	What’s good for the goose is good for the gander	what’s good for the goose is good for the gander	Used to say that one person or situation should be treated the same way that another person or situation is treated	Eve	2023-07-13 00:02:00-07
+121	Early bird gets the worm	The early bird catches the worm	Someone who seizes some opportunity at the earliest point in time will have the best chance of reaping its benefits.	\N	2023-07-13 00:02:01-07
+122	Let sleeping dogs lie	Let sleeping dogs lie	To leave a situation alone so as to avoid worsening it.	Eve	2023-07-13 00:02:02-07
+123	A stitch in time saves nine	A stitch in time (saves nine)	A prompt, decisive action taken now will prevent problems later.	Eve	2023-07-13 00:02:03-07
+124	Every dog has his day	Every dog has his/her/their day	Even the least fortunate person will have success at some point.	Eve	2023-07-13 00:02:04-07
+125	Reap what you sow	Reap what (one) sows	To suffer the negative consequences of one’s actions.	\N	2023-07-13 00:02:05-07
+126	Till the cows come home	Until the cows come home	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 00:02:06-07
+127	Chickens come home to roost	(one’s) chickens come home to roost	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 00:02:07-07
+128	Missed the forest for the trees	can’t see the forest for the trees	Cannot see, understand, or focus on a situation in its entirety due to being preoccupied with minor details.	Eve	2023-07-14 00:00:01-07
+129	When in Rome, do as the Romans do	When in rome (do as the romans do)	One should do what is customary or typical in a particular place or setting, especially when one is a tourist.	Miles	2023-07-14 00:00:02-07
+130	6 in one hand half dozen in the other	six in one, (and) half a dozen in the other	The difference between these two options is negligible, irrelevant, or unimportant; either option is fine or will work as well as the other.	Eve	2023-07-14 00:00:03-07
+131	6 ways to Sunday	6 wasy to Sunday	Thoroughly or completely; in every possible way; from every conceivable angle.	Eve	2023-07-14 00:00:04-07
+132	Burning bridges	Burn (one’s) bridges	\N	Miles	2023-07-14 00:00:05-07
+133	Baked in the cake	Baked in the cake	\N	Miles	2023-07-14 00:00:06-07
+134	A wolf in sheep’s clothing	A wolf in sheep’s clothing	A person or thing that appears harmless but is actually dangerous or bad.	Miles	2023-07-14 00:00:07-07
+135	Does a bear shit in the woods	\N	A rhetorical question meaning the answer to the previous question is emphatically and obviously "yes.".	Miles	2023-07-14 00:00:08-07
+136	Raining cats and dogs	It’s raining cats and dogs	It is raining extremely heavily.	Eve	2023-07-14 00:00:09-07
+137	Oldest trick in the book	The oldest trick in the book	A method of deception, or of addressing some issue, that is well known or has been used for a long time.	Miles	2023-07-14 00:00:10-07
+138	I’m picking up what you’re putting down	\N	\N	Miles	2023-07-14 00:00:11-07
+139	Biting the hand that feeds you	Bite the hand that feeds (you)	To scorn or poorly treat those on whom you depend or derive benefit.	Miles	2023-07-14 00:00:12-07
+140	Put you’re money where your mouth is?	\N	\N	Miles	2023-07-14 00:00:13-07
+141	Get your ducks in a row	Get (one’s) ducks in a row	To take action to become well-organized, prepared, or up-to-date.	Miles	2023-07-14 00:00:14-07
+142	As the crow flies	As the crow flies	The measurement of distance in a straight line. (From the notion that crows always fly in a straight line..	Miles	2023-07-14 00:00:15-07
+143	The lights are on by nobody is home	\N	\N	Miles	2023-07-14 00:00:16-07
+144	Not playing with a full deck	Not playing with a full deck	Not mentally sound; crazy or mentally deranged.	Miles	2023-07-14 00:00:17-07
+145	Pay the pied piper	\N	\N	Miles	2023-07-14 00:00:18-07
+146	Got a screw loose	\N	\N	Miles	2023-07-14 00:00:19-07
+147	Walk a mile in someone’s shoes	Walk a mile in (someone’s) shoes	To spend time trying to consider or understand another person’s perspectives, experiences, or motivations before making a judgment about them.	Miles	2023-07-14 00:00:20-07
+148	This isn’t my first rodeo	Not (one’s) first rodeo	One is experienced with a certain situation, especially in relation to potential pitfalls or deceitful practices by others.	Miles	2023-07-14 00:00:21-07
+149	Bury the hatchet	Bury the hatchet	To make peace with someone.	Miles	2023-07-14 00:22:00-07
+150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 00:23:00-07
 \.
-
-ALTER TABLE ONLY public.idiom_examples ALTER COLUMN example_id SET DEFAULT nextval('public.idiom_examples_example_id_seq'::regclass);
 
 COPY public.idiom_examples (example_id, idiom_id, example) FROM stdin;
 1	1	I didn’t want the after effects of involving myself in their drama at the time. Later, when things had calmed down, I told the chef that it was not my circus, not my monkeys. He laughed, and we went back to work.
@@ -797,159 +828,6 @@ COPY public.idiom_examples (example_id, idiom_id, example) FROM stdin;
 673	150	OK, if I did everything right, the engine should work right, but the proof will be in the pudding.
 \.
 
-COPY public.idioms (id, title, title_general, definition, contributor, timestamps) FROM stdin;
-1	Not my circus, not my monkeys	Not my circus, not my monkeys	This troublesome, burdensome, or volatile situation is none of my concern, and thus I refuse to get involved in it. A loan translation of the Polish idio.	Eve	2023-07-13 00:00:01-07
-2	Waiting with baited breath	Wait with bated breath	To remain in a state of eager anticipation (of or for something).	Eve	2023-07-13 00:00:02-07
-3	Don’t hold your breath	Don’t hold your breath	Don’t expect something to happen. (The idea being that one couldn’t hold one’s breath long enough for the unlikely thing to happen.)	\N	2023-07-13 00:00:03-07
-4	People in glass houses shouldn’t throw stones	People (who live) in glass houses shouldn’t throw stones.	People who are vulnerable to criticism should not criticize others, especially not for the faults that they themselves have (since such criticism will likely be returned).	\N	2023-07-13 00:00:04-07
-5	Don’t look a gift horse in the mouth	Don’t look a gift horse in the mouth	If you receive a gift, do so graciously, without voicing criticisms. The saying is attributed to St. Jerome and refers to the practice of looking at a horse’s teeth to determine its age.	\N	2023-07-13 00:00:05-07
-6	Don’t count your chickens before they hatch	Don’t count your chickens before they hatch.	Don’t make plans based on future events, outcomes, or successes that might not come to pass.	\N	2023-07-13 00:00:06-07
-7	Don’t keep all your eggs in one basket	put all (one’s) eggs in one basket	To invest, devote, or commit all of one’s energy or resources into a single venture, opportunity, or goal, generally at the risk of losing everything in the event that that thing fails or does not come to fruition.	\N	2023-07-13 00:00:07-07
-8	A bird in the hand is worth two in the bush	A bird in the hand is worth two in the bush	It is better to have something less valuable than to pursue something more valuable that may not be able to be obtained.	\N	2023-07-13 00:00:08-07
-9	There’s more than one way to skin a cat	There’s more than one way to skin a cat	There are many methods one may employ in achieving one’s ends.	Miles	2023-07-13 00:00:09-07
-10	Let the cat out of the bag	Let the cat out of the bag	To reveal a secret.	\N	2023-07-13 00:00:10-07
-11	Open a can of worms	Open (up) a can of worms	To initiate, instigate, or reveal a situation that is or is likely to become very complicated or problematic or that will have a negative outcome.	\N	2023-07-13 00:00:11-07
-12	Bull in a china shop	A bull in a china shop	Someone who is aggressively reckless and clumsy in a situation that requires delicacy and care.	Miles	2023-07-13 00:00:12-07
-13	One trick pony	A one-trick pony	A person, group, or thing that is known for or limited to only one unique or noteworthy skill, talent, ability, quality, area of success, etc.	\N	2023-07-13 00:00:13-07
-14	Don’t piss on my leg and tell me it’s raining	Piss on someone’s leg and tell them it’s raining	To tell someone an obvious lie.	Miles	2023-07-13 00:00:14-07
-15	Too many chefs in the kitchen	Too many chefs in the kitchen	Too many people are trying to control, influence, or work on something, with the quality of the final product suffering as a result.	Miles	2023-07-13 00:00:15-07
-16	If you can’t handle the heat get out of the kitchen	If you can’t stand the heat, get out of the kitchen	Used as a way to tell someone that they should either stop complaining about a difficult or unpleasant activity, or stop doing it	Miles	2023-07-13 00:00:16-07
-17	Running on fumes	Running on fumes	Continuing to operate with no or very little enthusiasm, energy, or resources left. A reference to a car that has nearly run out of fuel.	\N	2023-07-13 00:00:17-07
-18	One bad apple spoils the bunch	One bad apple spoils the (whole) bunch	It only takes one person, thing, element, etc., to ruin the entire group, situation, project, etc. Refers to the fact that a rotting apple can cause other apples in close proximity to begin to rot as well.	Eve	2023-07-13 00:00:18-07
-19	The cream rises to the top	The cream (always) rises to the top	Those with the most skill, the best work ethic, or the strongest moral character will inevitably find success in life.	Miles	2023-07-13 00:00:19-07
-20	Cut from same cloth	\N	Very similar in characteristics or behaviors.	\N	2023-07-13 00:00:20-07
-21	Stick in the mud	Stick-in-the-mud	Someone who is considered boring, often due to unpopular or outdated beliefs.	Miles	2023-07-13 00:00:21-07
-22	Don’t rain on my parade	Don’t rain on (one’s) parade	Don’t ruin one’s plans or temper one’s excitement.	Eve	2023-07-13 00:00:22-07
-23	Even the darkest storm cloud has a silver lining	\N	The potential for something positive or beneficial to result from a negative situation. Often used in the phrase "every cloud has a silver lining." (A silver lining on a cloud is an indication that the sun is behind it.)	Eve	2023-07-13 00:00:23-07
-24	Mess with a bull you get the horn	If you mess with the bull, you get the horns	If you anger, irritate, or provoke someone enough, you will induce some hostile retaliation or emotional reaction.	Miles	2023-07-13 00:00:24-07
-25	It’s always darkest before dawn	it’s (always) darkest (just) before the dawn	The worst part of an experience, situation, period of time, etc., usually happens just before things get better.	Eve	2023-07-13 00:00:25-07
-26	When it rains it pours	When it rains, it pours	When something good or bad happens, similarly good or bad things tend to follow.	\N	2023-07-13 00:00:26-07
-27	Time and tide wait for no man	time and tide wait for no one	The opportunities of life will pass you by if you delay or procrastinate in taking advantage of them.	\N	2023-07-13 00:00:27-07
-28	Even a broken clock is right twice a day	a broken clock is right twice a day	Even people who are usually wrong can be right sometimes, even if just by accident. From the idea that the stationary hands of a broken clock will still display the correct time at two points during the 24-hour cycle.	Miles	2023-07-13 00:00:28-07
-29	For whom the bell tolls	Background	Ernest Hemingway wrot.	Miles	2023-07-13 00:00:29-07
-30	Make hay while the sun is shining	Make hay while the sun is shining	To take advantage of favorable conditions; to make the most of an opportunity when it is available.	Eve	2023-07-13 00:00:30-07
-31	Mellow is the man who knows what he’s missing	\N	\N	Eve	2023-07-13 00:00:31-07
-32	Can’t teach an old dog new tricks	It’s hard to teach an old dog new tricks	It is exceptionally difficult to teach some new skill or behavior to someone, especially an older person, who is already firmly set in their ways.	\N	2023-07-13 00:00:32-07
-33	Hindsight’s 20/20	Hindsight is (always) 20/20	It is easier to clearly reevaluate past actions or decisions than when they are being made or done; things are clearer or more obvious when they are reflected upon. A reference to the visual acuity of normal eyesight (20/20 vision).	\N	2023-07-13 00:00:33-07
-34	Give a mouse a cookie and he’ll ask for a glass of milk	\N	\N	Eve	2023-07-13 00:00:34-07
-35	Give an inch and they take a mile	give an inch and they’ll take a mile	Make a small concession and they’ll take advantage of you.	Miles	2023-07-13 00:00:35-07
-36	The more the merrier	The more the merrier	More people will make something more enjoyable. Often used to welcome one to join a group or activity.	\N	2023-07-13 00:00:36-07
-37	Measure twice cut once	Measure twice, cut once	An axiom that encourages careful first steps in order to avoid extra work later on.	Miles	2023-07-13 00:00:37-07
-38	Give a man a fish, feed him for a day; teach a man to fish, feed him for a lifetime	\N	Simply giving someone a fish is not as helpful to them in the long run as teaching them how to fish.	Eve	2023-07-13 00:00:38-07
-39	You can bring a horse to water but can’t make it drink	\N	You can give someone an advantage or provide them with an opportunity, but you can’t force them to do something if they don’t want to	Eve	2023-07-13 00:00:39-07
-40	One man’s trash is another man’s treasure	One man’s trash is another man’s treasure	What one person may consider worthless could be highly prized or valued by someone else.	\N	2023-07-13 00:00:40-07
-41	Burning the candle at both ends	Burn (one’s)/the candle at both ends	To overwork or exhaust oneself by doing too many things, especially both late at night and early in the morning.	\N	2023-07-13 00:00:41-07
-42	Polishing a turd	Polish a turd	To make something unpleasant seem more appealing than it really is—which is often a futile effort. "Turd" is a slang term for a piece of feces.	Miles	2023-07-13 00:00:42-07
-43	Put lipstick on a pig, its still a pig	\N	Making superficial or cosmetic changes to a product in a futile effort to disguise its fundamental failings	Eve	2023-07-13 00:00:43-07
-44	One step forward two steps back	 one step forward, two steps bac.	Marked by a small amount progress that is then eradicated by a large amount of setbacks, problems, or difficulties.	\N	2023-07-13 00:00:44-07
-45	It’s not over till the fat lady sings	It ain’t over till/until the fat lady sings	The final outcome cannot be assumed or determined until a given situation, event, etc., is completely finished.	\N	2023-07-13 00:00:45-07
-46	Heavy is the head that wears the crown	heavy hangs the head that wears a/the crown	The person who has the most power or authority suffers the largest amount of stress, anxiety, doubt, and worry.	Eve	2023-07-13 00:00:46-07
-47	Pick your poison	Pick your poison	\N	\N	2023-07-13 00:00:47-07
-48	An axe to grind	An ax(e) to grind	A complaint or dispute that one feels compelled to discuss.	\N	2023-07-13 00:00:48-07
-49	Big shoes to fill	Big shoes to fill	A role vacated or left behind by someone who was exceptional in their performance and set very high standards as a result.	\N	2023-07-13 00:00:49-07
-50	The apple doesn’t fall far from the tree	The apple does not fall far from the tree	Said when someone is displaying traits or behaving in the same way as their relatives (especially parents).	\N	2023-07-13 00:00:50-07
-51	Chip off the old block	A chip off the old block	Someone whose character or personality resembles that of their parent.	\N	2023-07-13 00:00:51-07
-52	Chip on your shoulder	A chip on (one’s) shoulder	An attitude that leads one to become combative or easily angered.	\N	2023-07-13 00:00:52-07
-53	Reinvent the wheel	Reinvent the wheel	To do something in a wholly and drastically new way, often unnecessarily. (Usually used in negative constructions..	\N	2023-07-13 00:00:53-07
-54	Two peas in a pod	Two peas in a pod	Two people who are very similar, typically in interests, dispositions, or beliefs.	\N	2023-07-13 00:00:54-07
-55	Monkey on your back	Monkey on (one’s) back	\N	\N	2023-07-13 00:00:55-07
-56	Big fish in a small pond	A big fish in a small pond	A situation in which one person has more power, influence, knowledge, or experience than others within a small group. It often implies that the person may not have as much clout i."a bigger pond," i.e., a larger group or arena of some kind.	\N	2023-07-13 00:00:56-07
-57	When pigs fly	When pigs fly	At a point in time that will never come to pass. (Used to show skepticism or cynicism over some hypothetical situation or outcome..	\N	2023-07-13 00:00:57-07
-58	When hell freezes over	When hell freezes over	Never; at no time.	\N	2023-07-13 00:00:58-07
-59	Out of the frying pan and into the fire	\N	\N	Eve	2023-07-13 00:00:59-07
-60	The pot calling the kettle black	The pot calling the kettle black	A situation in which a person accuses someone of or criticizes someone for something that they themselves are guilty of.	Eve	2023-07-13 00:01:00-07
-61	Frog in boiling water	\N	\N	\N	2023-07-13 00:01:01-07
-62	You gotta kiss a lot of frogs to find a prince	\N	\N	\N	2023-07-13 00:01:02-07
-63	Bat out of hell	\N	\N	\N	2023-07-13 00:01:03-07
-64	Going to hell in a hand basket	Go to hell in a handbasket	To be in an extremely and increasingly bad or ruinous condition; to be on the inevitable path to utter failure or ruin.	\N	2023-07-13 00:01:04-07
-65	Bite off more then you can chew	\N	\N	\N	2023-07-13 00:01:05-07
-66	The bigger they are the harder they fall	The bigger they are, the harder they fall	Those who are exceptionally large, powerful, or influential will have more to lose when they fail, and their failure will be all the more dramatic or spectacular because of it.	\N	2023-07-13 00:01:06-07
-67	The hair of the dog that bit you	The hair of the dog (that bit you)	An alcoholic drink consumed to remedy a hangover. The phrase comes from the notion that literally rubbing the hair of the dog that bit you on the wound would help it to heal.	Eve	2023-07-13 00:01:07-07
-68	Wish in one hand and shit in the other	\N	\N	Miles	2023-07-13 00:01:08-07
-69	All who wander are not lost	\N	\N	\N	2023-07-13 00:01:09-07
-70	All that glitters is not gold	All that glitters is not gold	Things that have an outward appeal are often not as beautiful or valuable as they seem.	\N	2023-07-13 00:01:10-07
-71	Diamond in the rough	Diamond in the rough	A person or thing with exceptional qualities or characteristics that cannot be seen from the surface.	\N	2023-07-13 00:01:11-07
-72	Leave no stone unturned	Leave no stone unturned	To look for something in every possible place.	\N	2023-07-13 00:01:12-07
-73	No holds barred	No-holds-barred	free of restrictions or hampering conventions	\N	2023-07-13 00:01:13-07
-74	Throw the baby out with the bath water	Throw the baby out with the bath	To discard something valuable or important while disposing of something considered worthless, especially an outdated idea or form of behavior. The phrase is often used in the negative as a warning against such thoughtless behavior.	Eve	2023-07-13 00:01:14-07
-75	Everything but the kitchen sink	Everything but the kitchen sink	Nearly everything one can reasonably imagine; many different things, often to the point of excess or redundancy.	\N	2023-07-13 00:01:15-07
-76	Slow and steady wins the race	Slow and steady wins the race	Persistent, consistent, and diligent progress, even if it is somewhat slow, will produce better results than rushing to get somewhere or achieve something, as the latter can result in mistakes or may prove unsustainable or unreliable.	\N	2023-07-13 00:01:16-07
-77	Two sides to to the same coin	\N	\N	\N	2023-07-13 00:01:17-07
-78	Play the hand you’re dealt	Play the hand (one) is dealt	To accept, deal with, and make the most of one’s current situation or circumstances; to make use of that which one is afforded or has available.	\N	2023-07-13 00:01:18-07
-79	When life gives you lemons make lemonade	When life gives you lemons, make lemonade	Focus on the good in a bad situation and take action accordingly.	\N	2023-07-13 00:01:19-07
-80	Put a pin in it	Put a pin in it	To take a break from discussing some topic, with plans to resume the discussion later.	\N	2023-07-13 00:01:20-07
-81	The cherry on top	Cherry on top	The flourish that caps something off (much like a cherry tops off an ice cream sundae). Sometimes used in the phrase "pretty please with a cherry on top.".	\N	2023-07-13 00:01:21-07
-82	Icing on the cake	The icing on the cake	An additional benefit or positive aspect to something that is already considered positive or beneficial.	\N	2023-07-13 00:01:22-07
-83	The squeaky wheel gets the grease	The squeaky wheel gets the grease	The person complaining or protesting the loudest or most frequently is the one who will receive the most attention from others.	\N	2023-07-13 00:01:23-07
-84	Raised nails get pounded	\N	\N	\N	2023-07-13 00:01:24-07
-85	Softer than a baby’s bottom	\N	\N	\N	2023-07-13 00:01:25-07
-86	Hell or high water	By hell or high water	By any means necessary; regardless of any difficulty, problem, or obstacle.	\N	2023-07-13 00:01:26-07
-87	Stuck between a rock and a hard place	\N	\N	\N	2023-07-13 00:01:27-07
-88	Airing out your dirty laundry.	\N	\N	\N	2023-07-13 00:01:28-07
-89	Skeletons in your closet	Skeleton in the/(one’s) closet	An embarrassing or shameful secret. Primarily heard in US.	\N	2023-07-13 00:01:29-07
-90	Skating on thin ice	Skating on thin ice	Engaged in some activity or behavior that is very risky, dangerous, or likely to cause a lot of trouble.	\N	2023-07-13 00:01:30-07
-91	Flying too close to the sun	Fly too close to the sun	To do something especially ambitious and daring that can or ultimately does lead to one’s own undoing or downfall. An allusion to the mythical figure Icarus, whose wings made of feathers and wax melted when he flew too close to the sun.	Eve	2023-07-13 00:01:31-07
-92	Toot your own horn	Toot (one’s) own horn	To boast or brag about one’s own abilities, skills, success, achievements, etc.	\N	2023-07-13 00:01:32-07
-93	Pat yourself on the back	\N	\N	\N	2023-07-13 00:01:33-07
-94	Catch more flies with honey than vinegar	You (can) catch more flies with honey than (with) vinegar	You are more likely to get the results you want from other people if you treat them with kindness or flattery, rather than being aggressive, demanding, or caustic.	Eve	2023-07-13 00:01:34-07
-95	Kill them with kindness	Kill (one) with kindness	To harm, inconvenience, or bother one by treating them with excessive favor or kindness.	Eve	2023-07-13 00:01:35-07
-96	Eye for an eye makes the whole world blind	An eye for an eye makes the whole world blind	No good will result from avenging injuries in a manner equal to the original offense.	Eve	2023-07-13 00:01:36-07
-97	In the land of the blind the one eyed man is king	In the land of the blind, the one-eyed man is king	Someone with few skills or abilities can impress and wield power over those who have even less to offer.	Eve	2023-07-13 00:01:37-07
-98	That ship has sailed	That ship has sailed	Some possibility or option is no longer available or likely.	Eve	2023-07-13 00:01:38-07
-99	Two ships passing the night	\N	\N	\N	2023-07-13 00:01:39-07
-100	The pen is mightier than the sword	The pen is mightier than the sword	Strong, eloquent, or well-crafted speech or writing is more influential on a greater number of people than force or violence.	\N	2023-07-13 00:01:40-07
-101	Double edged sword	Double-edged sword	Something that can be both beneficial and problematic.	Miles	2023-07-13 00:01:41-07
-102	I don’t have a dog in that fight	\N	\N	\N	2023-07-13 00:01:42-07
-103	Spare the rod, spoil the child	\N	\N	Eve	2023-07-13 00:01:43-07
-104	Like water off a ducks back	\N	\N	Eve	2023-07-13 00:01:44-07
-105	The juice isn’t worth the squeeze	\N	\N	Miles	2023-07-13 00:01:45-07
-106	Can’t get blood from a stone	You can’t get blood from a stone	It is impossible to obtain something from someone if they are too parsimonious, uncharitable, or resolved against it.	Miles	2023-07-13 00:01:46-07
-107	Don’t judge a book by its cover	Don’t judge a book by its cover	Don’t base your opinion of something (or someone) on the way it (or one) looks.	\N	2023-07-13 00:01:47-07
-108	You can’t step into the same river twice	\N	\N	Eve	2023-07-13 00:01:48-07
-109	Don’t whistle up the wind	\N	\N	\N	2023-07-13 00:01:49-07
-110	Stick a fork in me	Stick a fork in (me/it/something)	A phrase used to indicate that one or something is finished, complete, or no longer able to continue. Alludes to the practice of testing how thoroughly a piece of meat is cooked by piercing it with a fork.	\N	2023-07-13 00:01:50-07
-111	This goose is cooked	(one’s) goose is cooked	One is thoroughly defeated, ruined, or finished.	Eve	2023-07-13 00:01:51-07
-112	You shake it more than twice you’re playing with it	\N	\N	Miles	2023-07-13 00:01:52-07
-113	Why buy the cow when the milk is free	Why buy a/the cow when you can get (the) milk for free?	If someone is already able to obtain some commodity or benefit freely or easily, then they won’t be inclined to pay for the source of it.	\N	2023-07-13 00:01:53-07
-114	Don’t rock the boat	Don’t rock the boat	Don’t say or do something that could upset a stable situation.	\N	2023-07-13 00:01:54-07
-115	If the shoe fits, wear it	If the shoe fits(, wear it)	If something (typically negative) applies to one, one should acknowledge it or accept responsibility or blame for it.	\N	2023-07-13 00:01:55-07
-116	If it walks like a duck, talks like duck, it’s probably a duck	if it looks like a duck and walks like a duck, it is a duck	If something has all the characteristics of a thing, it is probably that thing, regardless of what it is called or presented as. There are many variations of the expression, and it is often shortened to the first part of the phrase.	\N	2023-07-13 00:01:56-07
-117	Waiting for the other shoe to drop	Waiting for the other shoe to drop	To wait for the next, seemingly unavoidable (and typically negative) thing to happen.	Eve	2023-07-13 00:01:57-07
-118	The grass is always greener on the other side of the fence	The grass is always greener (on the other side)	Other people’s circumstances or belongings always seem more desirable than one’s own.	\N	2023-07-13 00:01:58-07
-119	Birds of a feather flock together	Birds of a feather flock together	People who have similar interests, ideas, or characteristics tend to seek out or associate with one another.	\N	2023-07-13 00:01:59-07
-120	What’s good for the goose is good for the gander	what’s good for the goose is good for the gander	Used to say that one person or situation should be treated the same way that another person or situation is treated	Eve	2023-07-13 00:02:00-07
-121	Early bird gets the worm	The early bird catches the worm	Someone who seizes some opportunity at the earliest point in time will have the best chance of reaping its benefits.	\N	2023-07-13 00:02:01-07
-122	Let sleeping dogs lie	Let sleeping dogs lie	To leave a situation alone so as to avoid worsening it.	Eve	2023-07-13 00:02:02-07
-123	A stitch in time saves nine	A stitch in time (saves nine)	A prompt, decisive action taken now will prevent problems later.	Eve	2023-07-13 00:02:03-07
-124	Every dog has his day	Every dog has his/her/their day	Even the least fortunate person will have success at some point.	Eve	2023-07-13 00:02:04-07
-125	Reap what you sow	Reap what (one) sows	To suffer the negative consequences of one’s actions.	\N	2023-07-13 00:02:05-07
-126	Till the cows come home	Until the cows come home	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 00:02:06-07
-127	Chickens come home to roost	(one’s) chickens come home to roost	For a very long, indefinite amount of time; forever.	Eve	2023-07-13 00:02:07-07
-128	Missed the forest for the trees	can’t see the forest for the trees	Cannot see, understand, or focus on a situation in its entirety due to being preoccupied with minor details.	Eve	2023-07-14 00:00:01-07
-129	When in Rome, do as the Romans do	When in rome (do as the romans do)	One should do what is customary or typical in a particular place or setting, especially when one is a tourist.	Miles	2023-07-14 00:00:02-07
-130	6 in one hand half dozen in the other	six in one, (and) half a dozen in the other	The difference between these two options is negligible, irrelevant, or unimportant; either option is fine or will work as well as the other.	Eve	2023-07-14 00:00:03-07
-131	6 ways to Sunday	6 wasy to Sunday	Thoroughly or completely; in every possible way; from every conceivable angle.	Eve	2023-07-14 00:00:04-07
-132	Burning bridges	Burn (one’s) bridges	\N	Miles	2023-07-14 00:00:05-07
-133	Baked in the cake	Baked in the cake	\N	Miles	2023-07-14 00:00:06-07
-134	A wolf in sheep’s clothing	A wolf in sheep’s clothing	A person or thing that appears harmless but is actually dangerous or bad.	Miles	2023-07-14 00:00:07-07
-135	Does a bear shit in the woods	\N	A rhetorical question meaning the answer to the previous question is emphatically and obviously "yes.".	Miles	2023-07-14 00:00:08-07
-136	Raining cats and dogs	It’s raining cats and dogs	It is raining extremely heavily.	Eve	2023-07-14 00:00:09-07
-137	Oldest trick in the book	The oldest trick in the book	A method of deception, or of addressing some issue, that is well known or has been used for a long time.	Miles	2023-07-14 00:00:10-07
-138	I’m picking up what you’re putting down	\N	\N	Miles	2023-07-14 00:00:11-07
-139	Biting the hand that feeds you	Bite the hand that feeds (you)	To scorn or poorly treat those on whom you depend or derive benefit.	Miles	2023-07-14 00:00:12-07
-140	Put you’re money where your mouth is?	\N	\N	Miles	2023-07-14 00:00:13-07
-141	Get your ducks in a row	Get (one’s) ducks in a row	To take action to become well-organized, prepared, or up-to-date.	Miles	2023-07-14 00:00:14-07
-142	As the crow flies	As the crow flies	The measurement of distance in a straight line. (From the notion that crows always fly in a straight line..	Miles	2023-07-14 00:00:15-07
-143	The lights are on by nobody is home	\N	\N	Miles	2023-07-14 00:00:16-07
-144	Not playing with a full deck	Not playing with a full deck	Not mentally sound; crazy or mentally deranged.	Miles	2023-07-14 00:00:17-07
-145	Pay the pied piper	\N	\N	Miles	2023-07-14 00:00:18-07
-146	Got a screw loose	\N	\N	Miles	2023-07-14 00:00:19-07
-147	Walk a mile in someone’s shoes	Walk a mile in (someone’s) shoes	To spend time trying to consider or understand another person’s perspectives, experiences, or motivations before making a judgment about them.	Miles	2023-07-14 00:00:20-07
-148	This isn’t my first rodeo	Not (one’s) first rodeo	One is experienced with a certain situation, especially in relation to potential pitfalls or deceitful practices by others.	Miles	2023-07-14 00:00:21-07
-149	Bury the hatchet	Bury the hatchet	To make peace with someone.	Miles	2023-07-14 00:22:00-07
-150	Proof is in the pudding	The proof is in the pudding	The final results of something are the only way to judge its quality or veracity.	Eve	2023-07-14 00:23:00-07
-\.
-
 -- Seed origins for some idioms used in tests
 COPY public.idiom_origins_ai (id, idiom_id, origin_text, model, updated_at) FROM stdin;
 1	1	“Not my circus, not my monkeys” is a loan translation of the Polish saying “Nie mój cyrk, nie moje małpy,” used to mean “this situation is not my responsibility.”	gpt-5.1	2025-01-01 00:00:00-07
@@ -963,30 +841,33 @@ COPY public.requests (id, title, contributor, submitted_at, added) FROM stdin;
 550e8400-e29b-41d4-a716-446655440002	Kick the bucket	TestUser	2025-01-03 12:00:00-07	true
 \.
 
-SELECT pg_catalog.setval('public.idiom_examples_example_id_seq', 674, true);
+-- Reset identity counters to max(id)
+-- SELECT setval(
+--   pg_get_serial_sequence('public.idioms', 'id'),
+--   (SELECT MAX(id) FROM public.idioms),
+--   true
+-- );
 
-SELECT pg_catalog.setval('public.idioms_id_seq', 151, true);
+-- SELECT setval(
+--   pg_get_serial_sequence('public.idiom_examples', 'example_id'),
+--   (SELECT MAX(example_id) FROM public.idiom_examples),
+--   true
+-- );
 
-SELECT pg_catalog.setval('public.idiom_origins_ai_id_seq', 3, true);
+-- SELECT setval(
+--   pg_get_serial_sequence('public.idiom_origins_ai', 'id'),
+--   (SELECT MAX(id) FROM public.idiom_origins_ai),
+--   true
+-- );
+-------
+SELECT setval(pg_get_serial_sequence('public.idioms','id'),
+             COALESCE((SELECT MAX(id) FROM public.idioms), 1));
 
+SELECT setval(pg_get_serial_sequence('public.idiom_examples','example_id'),
+             COALESCE((SELECT MAX(example_id) FROM public.idiom_examples), 1));
 
-ALTER TABLE ONLY public.idiom_examples
-    ADD CONSTRAINT idiom_examples_pkey PRIMARY KEY (example_id);
+SELECT setval(pg_get_serial_sequence('public.idiom_origins_ai','id'),
+             COALESCE((SELECT MAX(id) FROM public.idiom_origins_ai), 1));
 
-ALTER TABLE ONLY public.idioms
-    ADD CONSTRAINT idioms_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY public.idiom_examples
-    ADD CONSTRAINT idiom_examples_idiom_id_fkey
-    FOREIGN KEY (idiom_id)
-    REFERENCES public.idioms(id)
-    ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.idiom_origins_ai
-    ADD CONSTRAINT idiom_origins_ai_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY public.idiom_origins_ai
-    ADD CONSTRAINT idiom_origins_ai_idiom_id_fkey
-    FOREIGN KEY (idiom_id)
-    REFERENCES public.idioms(id)
-    ON DELETE CASCADE;
+SELECT setval(pg_get_serial_sequence('public.staging_scrapes','id'),
+             COALESCE((SELECT MAX(id) FROM public.staging_scrapes), 1));
