@@ -23,6 +23,8 @@ const SpinnerWrapper = styled.div`
   height: 100vh;
 `;
 
+type SearchMode = 'title' | 'keywords';
+
 const DetailPage = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
@@ -38,7 +40,9 @@ const DetailPage = () => {
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
 
   const searchTerm = searchParams.get('search') ?? '';
-  const searchColumn = searchParams.get('searchColumn') ?? 'title';
+
+  const raw = searchParams.get('searchColumn');
+  const searchColumn: SearchMode = raw === 'keywords' ? 'keywords' : 'title';
 
   const navigate = useNavigate();
 
@@ -160,6 +164,8 @@ const DetailPage = () => {
           nextId={nextId}
           buildHref={(targetId) => `/idioms/${targetId}?${searchParams.toString()}`}
           backHref={backHref}
+          searchTerm={searchTerm}
+          searchColumn={searchColumn}
         />
       )}
 

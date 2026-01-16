@@ -6,16 +6,15 @@ export const IdiomHeader = styled.div`
   margin-bottom: var(--margin-md);
   margin-left: var(--margin-sm);
   margin-right: var(--margin-sm);
-  margin-top: var(--margin-xl);
+  margin-top: var(--margin-md);
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.3px;
     text-align: center;
     margin-bottom: var(--margin-xl);
-    margin-top: var(--margin-sm);
     padding-top: var(--padding-md);
   }
 `;

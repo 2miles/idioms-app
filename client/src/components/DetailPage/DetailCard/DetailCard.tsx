@@ -24,7 +24,7 @@ type DetailCardProps = {
   idiom: Idiom;
   openModal: () => void;
   searchTerm?: string;
-  searchColumn?: SearchMode;
+  searchColumn: SearchMode;
 };
 
 const DetailCard = ({ idiom, openModal, searchTerm, searchColumn }: DetailCardProps) => {
