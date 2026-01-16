@@ -37,6 +37,9 @@ const DetailPage = () => {
   const [isExampleModalOpen, setIsExampleModalOpen] = useState(false);
   const [isAddExampleModalOpen, setIsAddExampleModalOpen] = useState(false);
 
+  const searchTerm = searchParams.get('search') ?? '';
+  const searchColumn = searchParams.get('searchColumn') ?? 'title';
+
   const navigate = useNavigate();
 
   const fetchIdiom = async () => {
@@ -160,7 +163,12 @@ const DetailPage = () => {
         />
       )}
 
-      <DetailCard idiom={selectedIdiom} openModal={openModal} />
+      <DetailCard
+        idiom={selectedIdiom}
+        openModal={openModal}
+        searchTerm={searchTerm}
+        searchColumn={searchColumn}
+      />
     </DetailPageContainer>
   );
 };

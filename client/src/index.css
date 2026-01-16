@@ -152,3 +152,12 @@ body.no-scroll {
   display: flex;
   flex-direction: column;
 }
+
+mark {
+  background-color: color-mix(in oklab, var(--color-brand-primary) 60%, transparent);
+  color: inherit;
+  padding: 0 0.12em;
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

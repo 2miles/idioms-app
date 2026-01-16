@@ -6,7 +6,8 @@ import { getCoreRowModel, useReactTable, type SortingState } from '@tanstack/rea
 import TableBody from '@/components/Table/TableBody/TableBody';
 import TableHead from '@/components/Table/TableHead/TableHead';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { ColumnAccessors, ColumnVisibility, Columns, Idiom } from '@/types';
+import { ColumnAccessors, ColumnVisibility, Columns, Idiom, SearchColumnAccessors } from '@/types';
+import { highlightTokens } from '@/utils/highlightSearchTokens';
 
 export const StyledTable = styled.table`
   width: 100%;
@@ -33,6 +34,8 @@ type TableProps = {
   onSortingChange: (s: SortingState) => void;
   columnVisibility: ColumnVisibility;
   onColumnVisibilityChange: (v: ColumnVisibility) => void;
+  searchTerm: string;
+  searchColumn: SearchColumnAccessors;
 };
 
 const Table = ({
@@ -46,24 +49,61 @@ const Table = ({
   onSortingChange,
   columnVisibility,
   onColumnVisibilityChange,
+  searchTerm,
+  searchColumn,
 }: TableProps) => {
   const isSmall = useMediaQuery('(max-width: 770px)');
 
-  const columnDefs = Columns.map((c) => ({
-    id: c.accessor,
-    header: c.label,
-    accessorKey: c.accessor as ColumnAccessors,
-    enableSorting: true,
-    ...(c.accessor === 'timestamps' && {
-      cell: (info: any) => moment(info.getValue()).format('MM-DD-YY'),
-    }),
-    ...(c.accessor === 'definition' && {
+  const shouldHighlightColumn = (col: ColumnAccessors) => {
+    if (!searchTerm?.trim()) return false;
+
+    // In the backend, "keywords" means match can be in title/definition/origin_text.
+    // In the table, we can only reasonably highlight visible text fields.
+    if (searchColumn === 'keywords') return col === 'title' || col === 'definition';
+
+    return searchColumn === col;
+  };
+
+  const columnDefs = Columns.map((c) => {
+    const accessor = c.accessor as ColumnAccessors;
+
+    const base = {
+      id: c.accessor,
+      header: c.label,
+      accessorKey: accessor,
+      enableSorting: true,
+    };
+
+    if (accessor === 'timestamps') {
+      return {
+        ...base,
+        cell: (info: any) => moment(info.getValue()).format('MM-DD-YY'),
+      };
+    }
+
+    if (accessor === 'definition') {
+      return {
+        ...base,
+        cell: (info: any) => {
+          const text = (info.getValue() as string) ?? '';
+          const truncated = text.length > 150 ? text.slice(0, 150) + '…' : text;
+          return shouldHighlightColumn('definition')
+            ? highlightTokens(truncated, searchTerm)
+            : truncated;
+        },
+      };
+    }
+
+    // default: only highlight where appropriate, otherwise behave like old default
+    return {
+      ...base,
       cell: (info: any) => {
-        const text = info.getValue() as string;
-        return text?.length > 150 ? text.slice(0, 150) + '…' : text;
+        const value = info.getValue();
+        if (!shouldHighlightColumn(accessor)) return value ?? '';
+        return highlightTokens(String(value ?? ''), searchTerm);
       },
-    }),
-  }));
+    };
+  });
 
   const effectiveVisibility: ColumnVisibility = isSmall
     ? {
