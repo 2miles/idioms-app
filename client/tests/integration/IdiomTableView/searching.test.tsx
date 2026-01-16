@@ -10,6 +10,11 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
+const getByTextContent = (text: string) => screen.getByText((_, el) => el?.textContent === text);
+
+const queryByTextContent = (text: string) =>
+  screen.queryByText((_, el) => el?.textContent === text);
+
 describe('IdiomTableView - Searching', () => {
   test('filters results based on search input', async () => {
     // Render the component with default idioms
@@ -17,8 +22,8 @@ describe('IdiomTableView - Searching', () => {
 
     // Wait for initial idioms to load
     await waitFor(() => {
-      expect(screen.getByText('Break the ice')).toBeInTheDocument();
-      expect(screen.queryByText('Hit the sack')).toBeInTheDocument();
+      expect(getByTextContent('Break the ice')).toBeInTheDocument();
+      expect(queryByTextContent('Hit the sack')).toBeInTheDocument();
     });
 
     // Mock the filtered API response for search input "Break the ice"
@@ -38,8 +43,8 @@ describe('IdiomTableView - Searching', () => {
 
     // Wait for filtered idioms to appear
     await waitFor(() => {
-      expect(screen.getByText('Break the ice')).toBeInTheDocument();
-      expect(screen.queryByText('Hit the sack')).not.toBeInTheDocument();
+      expect(getByTextContent('Break the ice')).toBeInTheDocument();
+      expect(queryByTextContent('Hit the sack')).not.toBeInTheDocument();
     });
   });
 });

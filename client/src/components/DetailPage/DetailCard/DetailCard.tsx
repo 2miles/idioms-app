@@ -18,22 +18,26 @@ import {
   SectionHeader,
 } from './DetailCard.styles';
 
+type SearchMode = 'title' | 'keywords';
+
 type DetailCardProps = {
   idiom: Idiom;
   openModal: () => void;
-  searchTerm: string;
-  searchColumn: string;
+  searchTerm?: string;
+  searchColumn?: SearchMode;
 };
 
 const DetailCard = ({ idiom, openModal, searchTerm, searchColumn }: DetailCardProps) => {
   const { isAdmin } = useUser();
   const examples = Array.isArray(idiom.examples) ? idiom.examples : [];
 
-  const hasSearch = searchTerm.trim().length > 0;
+  const safeSearchTerm = searchTerm ?? '';
+  const safeSearchColumn: SearchMode = searchColumn ?? 'title';
+  const hasSearch = safeSearchTerm.trim().length > 0;
 
   const shouldHighlight = (field: 'title' | 'definition' | 'origin' | 'examples') => {
     if (!hasSearch) return false;
-    if (searchColumn === 'title') return field === 'title';
+    if (safeSearchColumn === 'title') return field === 'title';
     return true;
   };
 
@@ -44,7 +48,7 @@ const DetailCard = ({ idiom, openModal, searchTerm, searchColumn }: DetailCardPr
     <PageBody>
       <IdiomHeader>
         <h1 data-testid='displaytitle'>
-          {shouldHighlight('title') ? highlightTokens(displayTitle, searchTerm) : displayTitle}
+          {shouldHighlight('title') ? highlightTokens(displayTitle, safeSearchTerm) : displayTitle}
         </h1>
       </IdiomHeader>
 
@@ -74,7 +78,7 @@ const DetailCard = ({ idiom, openModal, searchTerm, searchColumn }: DetailCardPr
             <SectionBody>
               <div data-testid='definition'>
                 {idiom.definition && shouldHighlight('definition')
-                  ? highlightTokens(idiom.definition, searchTerm)
+                  ? highlightTokens(idiom.definition, safeSearchTerm)
                   : idiom.definition}
               </div>
             </SectionBody>
@@ -89,7 +93,7 @@ const DetailCard = ({ idiom, openModal, searchTerm, searchColumn }: DetailCardPr
             <SectionBody>
               <OriginText>
                 {idiom.origin?.origin_text && shouldHighlight('origin')
-                  ? highlightTokens(idiom.origin.origin_text, searchTerm)
+                  ? highlightTokens(idiom.origin.origin_text, safeSearchTerm)
                   : idiom.origin?.origin_text}
               </OriginText>
               {idiom.origin?.model && (
@@ -112,7 +116,7 @@ const DetailCard = ({ idiom, openModal, searchTerm, searchColumn }: DetailCardPr
                 const text = example.example;
                 return (
                   <li key={example.example_id}>
-                    {shouldHighlight('examples') ? highlightTokens(text, searchTerm) : text}
+                    {shouldHighlight('examples') ? highlightTokens(text, safeSearchTerm) : text}
                   </li>
                 );
               })}
