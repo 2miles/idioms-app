@@ -306,6 +306,8 @@ const IdiomTableView = () => {
         onSortingChange={handleTableSortingChange}
         columnVisibility={columnVisibility}
         onColumnVisibilityChange={setColumnVisibility}
+        searchTerm={searchTerm}
+        searchColumn={searchColumn}
       />
       <TableControls>
         <PaginationWrapper>
