@@ -90,7 +90,7 @@ export const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
   /* Box + background */
   display: ${(props) => (props.$visible ? 'block' : 'none')};
   background-color: var(--bg-medium);
-  border: 1px solid var(--color-border) !important;
+  border: 1px solid var(--color-border-light) !important;
   border-radius: var(--radius-sm);
   list-style: none;
   padding: 0;
@@ -101,11 +101,15 @@ export const Options = styled.ul.attrs({ role: 'listbox' })<StyleProps>`
   overflow-y: auto;
 
   /* Shadows */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.156), 0 2px 5px rgba(0, 0, 0, 0.101);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.156),
+    0 2px 5px rgba(0, 0, 0, 0.101);
 
   /* Dark mode override */
   .theme-dark & {
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.06), /* light glow */ 0 2px 4px rgba(0, 0, 0, 0.3); /* deeper dark edge */
+    box-shadow:
+      0 4px 10px rgba(255, 255, 255, 0.06),
+      /* light glow */ 0 2px 4px rgba(0, 0, 0, 0.3); /* deeper dark edge */
   }
 `;
 
