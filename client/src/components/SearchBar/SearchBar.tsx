@@ -90,9 +90,7 @@ const SearchBar = ({
 
   return (
     <Container>
-      <IconContainer>
-        <Icon />
-      </IconContainer>
+      <IconContainer></IconContainer>
       <Input
         type='text'
         className='form-control'
