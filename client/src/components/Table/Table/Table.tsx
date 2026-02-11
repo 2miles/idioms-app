@@ -12,14 +12,9 @@ import { highlightTokens } from '@/utils/highlightSearchTokens';
 export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  border-left: none !important;
-  border-right: none !important;
-  border-radius: var(--radius-md) !important;
   overflow: hidden !important;
   border-collapse: separate;
   border-spacing: 0;
-  border-right: 1px solid var(--color-border) !important;
-  border-left: 1px solid var(--color-border) !important;
   margin-bottom: var(--margin-md);
 `;
 

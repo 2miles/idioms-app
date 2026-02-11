@@ -14,29 +14,37 @@ const StyledTr = styled.tr`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover > td {
-      background-color: var(--bg-medium);
+      background-color: var(--bg-dark);
     }
   }
 `;
 
 const StyledTd = styled.td<StyleProps>`
-  padding: var(--padding-lg) var(--padding-lg) !important;
+  padding: var(--padding-md) var(--padding-md) !important;
+  padding: 14px var(--padding-md) !important;
   border-bottom: 1px solid var(--color-border) !important;
-  background: var(--bg-dark);
+  background: var(--bg-darkest);
   color: var(--color-text-primary) !important;
+  font-size: var(--font-md);
 
-  ${(props) =>
+  /* ${(props) =>
     props.$accessor === 'title' &&
     `
-      font-weight: 550;
+      font-weight: 400;
       font-size: var(--font-md);
+  `} */
+  ${(props) =>
+    props.$accessor === 'position' &&
+    `
+      font-weight: 400;
+      font-size: var(--font-sm);
   `}
 
   ${(props) =>
     props.$accessor === 'default' &&
     `
       text-align: center;
-      font-size: var(--font-lg);
+      font-size: var(--font-md);
       color: var(--color-ui-border) !important;
   `}
 `;

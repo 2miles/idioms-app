@@ -18,20 +18,20 @@ type StyledThProps = {
 };
 
 const StyledTh = styled.th<StyledThProps>`
-  background-color: var(--bg-dark);
-  border: 1px solid var(--color-border);
-  border-left: none !important;
-  border-right: none !important;
+  background-color: var(--bg-darkest);
+  border-bottom: 1px solid var(--color-border);
   color: var(--color-text-primary) !important;
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: left center;
-  padding-left: 20px !important;
-  padding-top: var(--padding-md);
-  padding-bottom: var(--padding-md);
+  padding-left: 14px !important;
+  padding-top: var(--padding-sm);
+  padding-bottom: var(--padding-sm);
   background-size: 25px 25px;
-  font-weight: 600;
-  font-size: var(--font-md);
+  font-weight: 400;
+  font-size: var(--font-ms);
+  opacity: 0.8;
+  color: var(--color-text-secondary) !important;
 
   &:hover {
     background-color: var(--bg-medium);
