@@ -13,6 +13,7 @@
 
   --font-xs: 0.75rem; /* 12px */
   --font-sm: 0.875rem; /* 14px */
+  --font-ms: 0.9375rem; /* 15px */
   --font-md: 1rem; /* 16px */
   --font-lg: 1.25rem; /* 20px */
   --font-xl: 1.5rem; /* 24px */
@@ -39,23 +40,28 @@
   --margin-lg: 20px;
   --margin-xl: 24px;
   --margin-xxl: 32px;
+
+  --ambient-fade-height: 420px; /* height of the top-only background fade */
 }
 
 :root.theme-light {
-  --bg-darkest: hsla(187, 5%, 88%);
-  --bg-darker: hsla(187, 7%, 90%);
-  --bg-dark: hsla(187, 10%, 93%);
-  --bg-medium: hsla(187, 5%, 95%);
-  --bg-light: hsla(187, 5%, 98%);
+  --bg-darkest: hsla(187, 7%, 98%);
+  --bg-darker: hsla(187, 5%, 95%);
+  --bg-dark: hsla(187, 5%, 93%);
+  --bg-medium: hsla(187, 7%, 90%);
+  --bg-light: hsla(187, 7%, 86%);
+  --bg-lightest: hsla(187, 7%, 71%);
   --bg-nav: var(--bg-medium);
 
-  --bg-header: var(--bg-darker);
+  --bg-header: var(--bg-light);
 
-  --color-border: hsla(197, 10%, 80%);
+  --color-border-old: hsla(187, 10%, 23%);
+  --color-border-light: hsla(197, 10%, 60%);
+  --color-border: hsla(197, 10%, 70%);
 
   --color-brand-primary: hsla(187, 74%, 39%, 1);
 
-  --color-active-pagination-bg: var(--color-brand-primary);
+  --color-active-pagination-bg: var(--bg-light);
   --color-active-pagination-border: var(--color-border);
 
   --color-text-primary: hsla(0, 0%, 10%);
@@ -94,12 +100,13 @@
 
   --bg-header: var(--bg-light-dark);
 
-  --color-border: hsla(187, 10%, 20%);
+  --color-border: hsla(187, 10%, 15%);
+  --color-border-light: hsla(187, 10%, 23%);
 
   --color-brand-primary: hsla(187, 74%, 39%, 1);
 
   --color-active-pagination-bg: var(--bg-light);
-  --color-active-pagination-border: var(--color-brand-primary);
+  --color-active-pagination-border: var(--color-border);
 
   --color-text-primary: hsla(0, 0%, 95%);
   --color-text-secondary: hsla(0, 0%, 75%);
@@ -133,13 +140,28 @@ body {
 
 body {
   background-color: var(--bg-darkest);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-
   color: var(--color-text-primary);
-  line-height: 1.5;
   font-family: var(--font-body);
+  line-height: 1.5;
+  position: relative;
+}
+
+/* Ambient gradient overlay */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--ambient-fade-height);
+  pointer-events: none;
+  z-index: -1;
+
+  /* Default (dark theme): subtle lift from the top */
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+}
+:root.theme-light body::before {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
 body.no-scroll {
