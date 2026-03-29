@@ -1,130 +1,26 @@
 import { useEffect, useState } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
-import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
-import { InfoElementKey } from '@/components/DetailPage/DetailCard/DetailCard.styles';
+import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
+import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
-import CheckIcon from '@/images/check_2.svg?react';
 import { Request } from '@/types';
-
-const Card = styled.div`
-  font-size: var(--font-md);
-  background: var(--bg-dark);
-  overflow: hidden;
-`;
-
-const CardHeader = styled.div`
-  color: var(--color-text-primary);
-  background-color: var(--bg-medium);
-  border-bottom: 1px solid var(--color-border);
-
-  h1 {
-    font-size: 1.3rem;
-    color: var(--color-text-primary);
-    padding-top: var(--padding-md);
-    padding-bottom: var(--padding-sm);
-    text-align: center;
-  }
-`;
-
-const CardBody = styled.div`
-  color: var(--color-text-primary);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-
-  @media (max-width: 770px) {
-    padding-left: var(--padding-md);
-    padding-right: var(--padding-md);
-  }
-`;
-
-const StyledCheckIcon = styled(CheckIcon)`
-  width: 1.5rem;
-  height: 1.5rem;
-  display: inline-block;
-  vertical-align: middle;
-  color: green;
-  margin-bottom: var(--margin-xs);
-`;
-
-const SpinnerWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40vh;
-`;
-
-const CardsWrapper = styled.div`
-  display: flex;
-  margin: auto;
-  flex-direction: column;
-  max-width: 800px;
-`;
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  gap: var(--margin-md);
-
-  button,
-  div {
-    flex: 1;
-  }
-
-  @media (max-width: 769px) {
-    flex-direction: column;
-
-    button,
-    div {
-      width: 100%;
-    }
-  }
-`;
-
-const ButtonPlaceholder = styled.div`
-  flex: 1;
-  visibility: hidden;
-`;
-
-const RequestCard = styled(Card)`
-  &.card {
-    margin-bottom: var(--margin-sm);
-    margin-top: var(--margin-sm);
-  }
-`;
-
-const RequestCardHeader = styled(CardHeader)`
-  h1 {
-    text-align: left;
-    padding-left: var(--padding-lg);
-    font-size: 1.5rem;
-  }
-`;
-
-const RequestIdiomInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: var(--margin-lg);
-  margin-top: 0px;
-`;
-
-const RequestInfoElement = styled.div`
-  margin-top: 0px;
-  padding: 0px;
-`;
-
-const RequestInfoElementKey = styled(InfoElementKey)`
-  font-weight: normal;
-`;
-
-const PageTitle = styled.h1`
-  text-align: center;
-  margin-bottom: var(--margin-xxl);
-  margin-top: var(--margin-xxl);
-  font-size: 2rem;
-`;
+import {
+  ButtonsWrapper,
+  CardBody,
+  CardsWrapper,
+  PageTitle,
+  RequestCard,
+  RequestCardHeader,
+  RequestIdiomInfo,
+  RequestInfoElement,
+  RequestInfoElementKey,
+  SpinnerWrapper,
+  StyledCheckIcon,
+} from './RequestsPage.styles';
 
 function formatDateMinusHours(isoString: string, hoursToSubtract: number = 7): string {
   const date = new Date(isoString);
@@ -135,6 +31,9 @@ function formatDateMinusHours(isoString: string, hoursToSubtract: number = 7): s
 const RequestsPage = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+
   const getAuthorizedApi = useAuthorizedRequestFinder();
 
   useEffect(() => {
@@ -152,6 +51,16 @@ const RequestsPage = () => {
 
     fetchRequests();
   }, []);
+
+  const handleOpenAddModal = (request: Request) => {
+    setSelectedRequest(request);
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+    setSelectedRequest(null);
+  };
 
   const handleDelete = async (id: string) => {
     const confirmResult = await Swal.fire({
@@ -218,51 +127,67 @@ const RequestsPage = () => {
         <p>No idioms have been requested yet.</p>
       ) : (
         <CardsWrapper>
-          {requests.map(({ id, title, contributor, submitted_at, added }) => (
-            <RequestCard className='card' key={id}>
-              <RequestCardHeader>
-                <h1>
-                  {added && <StyledCheckIcon />} {title}
-                </h1>
-              </RequestCardHeader>
-              <CardBody className='card-body'>
-                <RequestIdiomInfo>
-                  <RequestInfoElement>
-                    <RequestInfoElementKey>Requested On:</RequestInfoElementKey>{' '}
-                    {formatDateMinusHours(submitted_at)}
-                  </RequestInfoElement>
-                  <RequestInfoElement>
-                    <RequestInfoElementKey>Requested By:</RequestInfoElementKey>{' '}
-                    {contributor || 'Anonymous'}
-                  </RequestInfoElement>
-                </RequestIdiomInfo>
+          {requests.map((request) => {
+            const { id, title, contributor, submitted_at, added } = request;
 
-                <ButtonsWrapper>
-                  {!added ? (
+            return (
+              <RequestCard className='card' key={id}>
+                <RequestCardHeader>
+                  <h1>
+                    {added && <StyledCheckIcon />} {title}
+                  </h1>
+                </RequestCardHeader>
+                <CardBody className='card-body'>
+                  <RequestIdiomInfo>
+                    <RequestInfoElement>
+                      <RequestInfoElementKey>Requested On:</RequestInfoElementKey>{' '}
+                      {formatDateMinusHours(submitted_at)}
+                    </RequestInfoElement>
+                    <RequestInfoElement>
+                      <RequestInfoElementKey>Requested By:</RequestInfoElementKey>{' '}
+                      {contributor || 'Anonymous'}
+                    </RequestInfoElement>
+                  </RequestIdiomInfo>
+                  <ButtonsWrapper>
                     <SuccessButton
                       type='button'
                       className='btn btn-success'
-                      onClick={() => handleMarkAsAdded(id)}
+                      disabled={added}
+                      onClick={() => handleOpenAddModal(request)}
                     >
-                      Add
+                      {added ? 'Added' : 'Add'}
                     </SuccessButton>
-                  ) : (
-                    <ButtonPlaceholder />
-                  )}
-
-                  <DangerButton
-                    type='button'
-                    className='btn btn-danger'
-                    onClick={() => handleDelete(id)}
-                  >
-                    Delete
-                  </DangerButton>
-                </ButtonsWrapper>
-              </CardBody>
-            </RequestCard>
-          ))}
+                    <DangerButton
+                      type='button'
+                      className='btn btn-danger'
+                      onClick={() => handleDelete(id)}
+                    >
+                      Delete
+                    </DangerButton>
+                  </ButtonsWrapper>
+                </CardBody>
+              </RequestCard>
+            );
+          })}
         </CardsWrapper>
       )}
+
+      <Modal title='Add Idiom' isOpen={isAddModalOpen} onClose={handleCloseAddModal}>
+        {selectedRequest && (
+          <AddIdiomForm
+            onClose={handleCloseAddModal}
+            hideKeepOpen
+            initialValues={{
+              title: selectedRequest.title,
+              contributor: selectedRequest.contributor || null,
+              timestamp: new Date(selectedRequest.submitted_at),
+            }}
+            onSuccess={async () => {
+              await handleMarkAsAdded(selectedRequest.id);
+            }}
+          />
+        )}
+      </Modal>
     </PageContainer>
   );
 };
