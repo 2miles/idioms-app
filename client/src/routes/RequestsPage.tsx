@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 
+import { publicIdiomFinder } from '@/apis/idiomFinder';
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
 import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
@@ -18,9 +19,16 @@ import {
   RequestIdiomInfo,
   RequestInfoElement,
   RequestInfoElementKey,
+  SearchButton,
+  SearchForm,
+  SearchInputWrapper,
+  SearchResultText,
+  SearchSection,
   SpinnerWrapper,
   StyledCheckIcon,
 } from './RequestsPage.styles';
+
+import { Input as SearchInput } from '@/components/SearchBar/SearchBar.styles';
 
 function formatDateMinusHours(isoString: string, hoursToSubtract: number = 7): string {
   const date = new Date(isoString);
@@ -33,6 +41,11 @@ const RequestsPage = () => {
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+
+  const [manualSearch, setManualSearch] = useState('');
+  const [manualSearchCount, setManualSearchCount] = useState<number | null>(null);
+  const [manualSearchLoading, setManualSearchLoading] = useState(false);
+  const [manualSearchError, setManualSearchError] = useState<string | null>(null);
 
   const getAuthorizedApi = useAuthorizedRequestFinder();
 
@@ -60,6 +73,38 @@ const RequestsPage = () => {
   const handleCloseAddModal = () => {
     setIsAddModalOpen(false);
     setSelectedRequest(null);
+  };
+
+  const handleManualSearch = async () => {
+    const trimmedSearch = manualSearch.trim();
+
+    if (!trimmedSearch) {
+      setManualSearchCount(null);
+      setManualSearchError(null);
+      return;
+    }
+
+    setManualSearchLoading(true);
+    setManualSearchError(null);
+
+    try {
+      const res = await publicIdiomFinder.get('/', {
+        params: {
+          page: 1,
+          limit: 1,
+          search: trimmedSearch,
+          searchColumn: 'title',
+        },
+      });
+
+      setManualSearchCount(res.data.data.totalCount);
+    } catch (err) {
+      console.error('Failed to search idioms:', err);
+      setManualSearchError('Search failed.');
+      setManualSearchCount(null);
+    } finally {
+      setManualSearchLoading(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -122,6 +167,45 @@ const RequestsPage = () => {
   return (
     <PageContainer>
       <PageTitle>Idiom Requests</PageTitle>
+
+      <SearchSection>
+        <SearchForm
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleManualSearch();
+          }}
+        >
+          <SearchInputWrapper>
+            <SearchInput
+              type='text'
+              className='form-control'
+              placeholder='Search idioms by title...'
+              value={manualSearch}
+              onChange={(e) => {
+                const value = e.target.value;
+                setManualSearch(value);
+
+                if (!value.trim()) {
+                  setManualSearchCount(null);
+                  setManualSearchError(null);
+                }
+              }}
+            />
+          </SearchInputWrapper>
+
+          <SearchButton type='submit' className='btn btn-success' disabled={manualSearchLoading}>
+            {manualSearchLoading ? 'Searching...' : 'Search'}
+          </SearchButton>
+        </SearchForm>
+
+        {manualSearchCount !== null && (
+          <SearchResultText>
+            {manualSearchCount} {manualSearchCount === 1 ? 'idiom' : 'idioms'} found
+          </SearchResultText>
+        )}
+
+        {manualSearchError && <SearchResultText>{manualSearchError}</SearchResultText>}
+      </SearchSection>
 
       {requests.length === 0 ? (
         <p>No idioms have been requested yet.</p>

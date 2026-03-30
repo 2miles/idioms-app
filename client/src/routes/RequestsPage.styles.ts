@@ -1,3 +1,4 @@
+import { SuccessButton } from '@/components/ButtonStyles';
 import { InfoElementKey } from '@/components/DetailPage/DetailCard/DetailCard.styles';
 import CheckIcon from '@/images/check_2.svg?react';
 import { styled } from 'styled-components';
@@ -116,4 +117,38 @@ export const PageTitle = styled.h1`
   margin-bottom: var(--margin-xxl);
   margin-top: var(--margin-xxl);
   font-size: 2rem;
+`;
+
+export const SearchSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--margin-xl);
+`;
+
+export const SearchForm = styled.form`
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  gap: var(--margin-md);
+  align-items: stretch;
+
+  @media (max-width: 660px) {
+    flex-direction: column;
+  }
+`;
+
+export const SearchInputWrapper = styled.div`
+  position: relative;
+  flex: 1;
+`;
+
+export const SearchButton = styled(SuccessButton)`
+  min-width: 120px;
+`;
+
+export const SearchResultText = styled.p`
+  margin-top: var(--margin-md);
+  margin-bottom: 0;
+  color: var(--color-text-primary);
 `;
