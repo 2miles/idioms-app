@@ -147,8 +147,23 @@ export const SearchButton = styled(SuccessButton)`
   min-width: 120px;
 `;
 
-export const SearchResultText = styled.p`
+export const SearchResultText = styled.p<{ $status: 'good' | 'bad' }>`
   margin-top: var(--margin-md);
   margin-bottom: 0;
-  color: var(--color-text-primary);
+  min-height: 24px;
+
+  color: ${({ $status }) =>
+    $status === 'good' ? 'var(--color-status-good)' : 'var(--color-status-bad)'};
+`;
+
+export const TestResultRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--margin-sm);
+`;
+
+export const TestResultDimText = styled.span`
+  color: var(--color-text-dim);
+  font-size: var(--font-sm);
 `;

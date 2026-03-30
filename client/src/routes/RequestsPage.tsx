@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 
@@ -8,7 +8,7 @@ import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
 import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
 import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
-import { Request } from '@/types';
+import { Request, TestResult } from '@/types';
 import {
   ButtonsWrapper,
   CardBody,
@@ -26,6 +26,8 @@ import {
   SearchSection,
   SpinnerWrapper,
   StyledCheckIcon,
+  TestResultDimText,
+  TestResultRow,
 } from './RequestsPage.styles';
 
 import { Input as SearchInput } from '@/components/SearchBar/SearchBar.styles';
@@ -36,11 +38,71 @@ function formatDateMinusHours(isoString: string, hoursToSubtract: number = 7): s
   return date.toISOString().split('T')[0];
 }
 
+function buildHeuristicSearchTerm(title: string): string {
+  const stopWords = new Set([
+    'a',
+    'an',
+    'the',
+    'and',
+    'or',
+    'but',
+    'of',
+    'to',
+    'in',
+    'on',
+    'at',
+    'by',
+    'for',
+    'with',
+    'from',
+    'up',
+    'down',
+    'out',
+    'off',
+    'over',
+    'under',
+    'into',
+    'through',
+    'your',
+    'my',
+    'his',
+    'her',
+    'our',
+    'their',
+    'one',
+    'ones',
+    'oneself',
+    'it',
+    'is',
+    'be',
+    'as',
+  ]);
+
+  const words = title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s']/g, ' ')
+    .split(/\s+/)
+    .map((word) => word.trim())
+    .filter(Boolean)
+    .filter((word) => !stopWords.has(word));
+
+  const strongestWords = words
+    .map((word, index) => ({ word, index })) // keep position
+    .sort((a, b) => b.word.length - a.word.length) // pick strongest
+    .slice(0, 3)
+    .sort((a, b) => a.index - b.index) // restore original order
+    .map((item) => item.word);
+
+  return strongestWords.join(' ');
+}
+
 const RequestsPage = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+
+  const [testResults, setTestResults] = useState<Record<string, TestResult>>({});
 
   const [manualSearch, setManualSearch] = useState('');
   const [manualSearchCount, setManualSearchCount] = useState<number | null>(null);
@@ -107,6 +169,54 @@ const RequestsPage = () => {
     }
   };
 
+  const handleTest = async (request: Request) => {
+    // const searchTerm = request.title.trim();
+    const searchTerm = buildHeuristicSearchTerm(request.title);
+
+    setTestResults((prev) => ({
+      ...prev,
+      [request.id]: {
+        loading: true,
+        count: null,
+        error: null,
+        searchTerm,
+      },
+    }));
+
+    try {
+      const res = await publicIdiomFinder.get('/', {
+        params: {
+          page: 1,
+          limit: 1,
+          search: searchTerm,
+          searchColumn: 'title',
+        },
+      });
+
+      setTestResults((prev) => ({
+        ...prev,
+        [request.id]: {
+          loading: false,
+          count: res.data.data.totalCount,
+          error: null,
+          searchTerm,
+        },
+      }));
+    } catch (err) {
+      console.error('Failed to test request:', err);
+
+      setTestResults((prev) => ({
+        ...prev,
+        [request.id]: {
+          loading: false,
+          count: null,
+          error: 'Test failed.',
+          searchTerm,
+        },
+      }));
+    }
+  };
+
   const handleDelete = async (id: string) => {
     const confirmResult = await Swal.fire({
       title: 'Are you sure?',
@@ -164,6 +274,18 @@ const RequestsPage = () => {
     );
   }
 
+  let message = '';
+  let status: 'good' | 'bad' = 'bad';
+
+  if (manualSearchError) {
+    message = 'Something went wrong while checking';
+  } else if (manualSearchCount === 0) {
+    status = 'good';
+    message = 'We don’t have that one!';
+  } else if (manualSearchCount !== null) {
+    message = 'Looks like a duplicate';
+  }
+
   return (
     <PageContainer>
       <PageTitle>Idiom Requests</PageTitle>
@@ -197,14 +319,7 @@ const RequestsPage = () => {
             {manualSearchLoading ? 'Searching...' : 'Search'}
           </SearchButton>
         </SearchForm>
-
-        {manualSearchCount !== null && (
-          <SearchResultText>
-            {manualSearchCount} {manualSearchCount === 1 ? 'idiom' : 'idioms'} found
-          </SearchResultText>
-        )}
-
-        {manualSearchError && <SearchResultText>{manualSearchError}</SearchResultText>}
+        <SearchResultText $status={status}>{message}</SearchResultText>
       </SearchSection>
 
       {requests.length === 0 ? (
@@ -213,6 +328,29 @@ const RequestsPage = () => {
         <CardsWrapper>
           {requests.map((request) => {
             const { id, title, contributor, submitted_at, added } = request;
+            const testResult = testResults?.[id];
+
+            let testMessage: ReactNode = '';
+            let testStatus: 'good' | 'bad' = 'bad';
+
+            if (testResult?.error) {
+              testMessage = 'Something went wrong while checking';
+            } else if (testResult?.count === 0) {
+              testStatus = 'good';
+              testMessage = (
+                <TestResultRow>
+                  <span>We don’t have that one!</span>
+                  <TestResultDimText>Search: "{testResult.searchTerm}"</TestResultDimText>
+                </TestResultRow>
+              );
+            } else if (testResult && testResult.count !== null && testResult.count > 0) {
+              testMessage = (
+                <TestResultRow>
+                  <span>Looks like a duplicate!</span>
+                  <TestResultDimText>Search: "{testResult.searchTerm}"</TestResultDimText>
+                </TestResultRow>
+              );
+            }
 
             return (
               <RequestCard className='card' key={id}>
@@ -236,11 +374,21 @@ const RequestsPage = () => {
                     <SuccessButton
                       type='button'
                       className='btn btn-success'
+                      onClick={() => handleTest(request)}
+                      disabled={testResults[id]?.loading}
+                    >
+                      {testResults[id]?.loading ? 'Testing...' : 'Test'}
+                    </SuccessButton>
+
+                    <SuccessButton
+                      type='button'
+                      className='btn btn-success'
                       disabled={added}
                       onClick={() => handleOpenAddModal(request)}
                     >
                       {added ? 'Added' : 'Add'}
                     </SuccessButton>
+
                     <DangerButton
                       type='button'
                       className='btn btn-danger'
@@ -249,6 +397,9 @@ const RequestsPage = () => {
                       Delete
                     </DangerButton>
                   </ButtonsWrapper>
+                  {testResult && testMessage && (
+                    <SearchResultText $status={testStatus}>{testMessage}</SearchResultText>
+                  )}
                 </CardBody>
               </RequestCard>
             );
