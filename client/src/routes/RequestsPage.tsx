@@ -19,6 +19,7 @@ import {
   RequestIdiomInfo,
   RequestInfoElement,
   RequestInfoElementKey,
+  RequestMetaRow,
   SearchButton,
   SearchForm,
   SearchInputWrapper,
@@ -26,8 +27,10 @@ import {
   SearchSection,
   SpinnerWrapper,
   StyledCheckIcon,
+  TestButton,
   TestResultDimText,
   TestResultRow,
+  TestSection,
 } from './RequestsPage.styles';
 
 import { Input as SearchInput } from '@/components/SearchBar/SearchBar.styles';
@@ -275,14 +278,16 @@ const RequestsPage = () => {
   }
 
   let message = '';
-  let status: 'good' | 'bad' = 'bad';
+  let status: 'good' | 'bad' | 'neutral' = 'neutral';
 
   if (manualSearchError) {
+    status = 'bad';
     message = 'Something went wrong while checking';
   } else if (manualSearchCount === 0) {
     status = 'good';
     message = 'We don’t have that one!';
   } else if (manualSearchCount !== null) {
+    status = 'bad';
     message = 'Looks like a duplicate';
   }
 
@@ -301,7 +306,7 @@ const RequestsPage = () => {
             <SearchInput
               type='text'
               className='form-control'
-              placeholder='Search idioms by title...'
+              placeholder='Search for duplicates'
               value={manualSearch}
               onChange={(e) => {
                 const value = e.target.value;
@@ -319,7 +324,9 @@ const RequestsPage = () => {
             {manualSearchLoading ? 'Searching...' : 'Search'}
           </SearchButton>
         </SearchForm>
-        <SearchResultText $status={status}>{message}</SearchResultText>
+        <TestResultRow>
+          <SearchResultText $status={status}>{message}</SearchResultText>
+        </TestResultRow>
       </SearchSection>
 
       {requests.length === 0 ? (
@@ -331,24 +338,26 @@ const RequestsPage = () => {
             const testResult = testResults?.[id];
 
             let testMessage: ReactNode = '';
-            let testStatus: 'good' | 'bad' = 'bad';
+            let testStatus: 'good' | 'bad' | 'neutral' = 'neutral';
 
             if (testResult?.error) {
+              testStatus = 'bad';
               testMessage = 'Something went wrong while checking';
             } else if (testResult?.count === 0) {
               testStatus = 'good';
               testMessage = (
-                <TestResultRow>
-                  <span>We don’t have that one!</span>
+                <>
+                  <span>We don’t have it!</span>
                   <TestResultDimText>Search: "{testResult.searchTerm}"</TestResultDimText>
-                </TestResultRow>
+                </>
               );
             } else if (testResult && testResult.count !== null && testResult.count > 0) {
+              testStatus = 'bad';
               testMessage = (
-                <TestResultRow>
-                  <span>Looks like a duplicate!</span>
+                <>
+                  <span>It's a duplicate!</span>
                   <TestResultDimText>Search: "{testResult.searchTerm}"</TestResultDimText>
-                </TestResultRow>
+                </>
               );
             }
 
@@ -359,27 +368,38 @@ const RequestsPage = () => {
                     {added && <StyledCheckIcon />} {title}
                   </h1>
                 </RequestCardHeader>
-                <CardBody className='card-body'>
-                  <RequestIdiomInfo>
-                    <RequestInfoElement>
-                      <RequestInfoElementKey>Requested On:</RequestInfoElementKey>{' '}
-                      {formatDateMinusHours(submitted_at)}
-                    </RequestInfoElement>
-                    <RequestInfoElement>
-                      <RequestInfoElementKey>Requested By:</RequestInfoElementKey>{' '}
-                      {contributor || 'Anonymous'}
-                    </RequestInfoElement>
-                  </RequestIdiomInfo>
-                  <ButtonsWrapper>
-                    <SuccessButton
-                      type='button'
-                      className='btn btn-success'
-                      onClick={() => handleTest(request)}
-                      disabled={testResults[id]?.loading}
-                    >
-                      {testResults[id]?.loading ? 'Testing...' : 'Test'}
-                    </SuccessButton>
 
+                <CardBody className='card-body'>
+                  <RequestMetaRow>
+                    <RequestIdiomInfo>
+                      <RequestInfoElement>
+                        <RequestInfoElementKey>Requested On:</RequestInfoElementKey>{' '}
+                        {formatDateMinusHours(submitted_at)}
+                      </RequestInfoElement>
+                      <RequestInfoElement>
+                        <RequestInfoElementKey>Requested By:</RequestInfoElementKey>{' '}
+                        {contributor || 'Anonymous'}
+                      </RequestInfoElement>
+                    </RequestIdiomInfo>
+
+                    <TestSection>
+                      <TestButton
+                        type='button'
+                        className='btn btn-success'
+                        onClick={() => handleTest(request)}
+                        disabled={testResult?.loading}
+                      >
+                        {testResult?.loading ? 'Testing...' : 'Test'}
+                      </TestButton>
+                    </TestSection>
+                  </RequestMetaRow>
+                  <TestResultRow>
+                    <SearchResultText $status={testStatus}>
+                      {testResult && testMessage ? testMessage : ''}
+                    </SearchResultText>
+                  </TestResultRow>
+
+                  <ButtonsWrapper>
                     <SuccessButton
                       type='button'
                       className='btn btn-success'
@@ -397,9 +417,6 @@ const RequestsPage = () => {
                       Delete
                     </DangerButton>
                   </ButtonsWrapper>
-                  {testResult && testMessage && (
-                    <SearchResultText $status={testStatus}>{testMessage}</SearchResultText>
-                  )}
                 </CardBody>
               </RequestCard>
             );
