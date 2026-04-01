@@ -1,5 +1,4 @@
 import { SecondaryButton } from '@/components/ButtonStyles';
-import { InfoElementKey } from '@/components/DetailPage/DetailCard/DetailCard.styles';
 import CheckIcon from '@/images/check_2.svg?react';
 import { styled } from 'styled-components';
 
@@ -10,22 +9,27 @@ const Card = styled.div`
   margin-bottom: var(--margin-lg) !important;
 `;
 
-const CardHeader = styled.div`
-  color: var(--color-text-primary);
-  background-color: var(--bg-medium);
-  border-bottom: 1px solid var(--color-border);
+export const CardHeader = styled.div<{ $added: boolean }>`
+  color: ${({ $added }) => ($added ? 'var(--color-text-secondary)' : 'var(--color-text-primary)')};
 
+  background: ${({ $added }) =>
+    $added ? 'color-mix(in oklab, var(--bg-dark) 85%, black)' : 'transparent'};
+
+  border-bottom: 1px solid var(--color-border);
   h1 {
-    font-size: 1.3rem;
-    color: var(--color-text-primary);
+    font-size: 1.2rem;
     padding-top: var(--padding-md);
     padding-bottom: var(--padding-sm);
     text-align: center;
   }
 `;
 
-export const CardBody = styled.div`
-  color: var(--color-text-primary);
+export const CardBody = styled.div<{ $added: boolean }>`
+  color: ${({ $added }) => ($added ? 'var(--color-text-dim)' : 'var(--color-text-primary)')};
+
+  background: ${({ $added }) =>
+    $added ? 'color-mix(in oklab, var(--bg-dark) 85%, black)' : 'transparent'};
+
   padding-left: var(--padding-lg);
   padding-right: var(--padding-lg);
 
@@ -103,22 +107,15 @@ export const RequestIdiomInfo = styled.div`
   flex-direction: column;
   margin-bottom: var(--margin-lg);
   margin-top: 0px;
-`;
-
-export const RequestInfoElement = styled.div`
-  margin-top: 0px;
-  padding: 0px;
-`;
-
-export const RequestInfoElementKey = styled(InfoElementKey)`
-  font-weight: normal;
+  color: var(--color-text-secondary);
 `;
 
 export const PageTitle = styled.h1`
   text-align: center;
   margin-bottom: var(--margin-xxl);
   margin-top: var(--margin-xxl);
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-weight: 400;
 `;
 
 export const SearchSection = styled.div`
@@ -170,7 +167,7 @@ export const RequestMetaRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0;
+  margin-bottom: var(--margin-sm);
 `;
 
 export const TestSection = styled.div`

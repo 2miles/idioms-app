@@ -17,8 +17,6 @@ import {
   RequestCard,
   RequestCardHeader,
   RequestIdiomInfo,
-  RequestInfoElement,
-  RequestInfoElementKey,
   RequestMetaRow,
   SearchButton,
   SearchForm,
@@ -293,8 +291,8 @@ const RequestsPage = () => {
 
   return (
     <PageContainer>
-      <PageTitle>Idiom Requests</PageTitle>
-
+      <PageTitle>Requests</PageTitle>
+      {/* Review submitted requests, test for duplicates, and add new idioms. */}
       <SearchSection>
         <SearchForm
           onSubmit={(e) => {
@@ -328,7 +326,6 @@ const RequestsPage = () => {
           <SearchResultText $status={status}>{message}</SearchResultText>
         </TestResultRow>
       </SearchSection>
-
       {requests.length === 0 ? (
         <p>No idioms have been requested yet.</p>
       ) : (
@@ -363,58 +360,56 @@ const RequestsPage = () => {
 
             return (
               <RequestCard className='card' key={id}>
-                <RequestCardHeader>
+                <RequestCardHeader $added={added}>
                   <h1>
                     {added && <StyledCheckIcon />} {title}
                   </h1>
                 </RequestCardHeader>
 
-                <CardBody className='card-body'>
+                <CardBody $added={added} className='card-body'>
                   <RequestMetaRow>
                     <RequestIdiomInfo>
-                      <RequestInfoElement>
-                        <RequestInfoElementKey>Requested On:</RequestInfoElementKey>{' '}
-                        {formatDateMinusHours(submitted_at)}
-                      </RequestInfoElement>
-                      <RequestInfoElement>
-                        <RequestInfoElementKey>Requested By:</RequestInfoElementKey>{' '}
-                        {contributor || 'Anonymous'}
-                      </RequestInfoElement>
+                      {`${formatDateMinusHours(submitted_at)}  ·  ${contributor || 'Anonymous'}`}
                     </RequestIdiomInfo>
 
                     <TestSection>
-                      <TestButton
-                        type='button'
-                        className='btn btn-success'
-                        onClick={() => handleTest(request)}
-                        disabled={testResult?.loading}
-                      >
-                        {testResult?.loading ? 'Testing...' : 'Test'}
-                      </TestButton>
+                      {!added && (
+                        <TestButton
+                          type='button'
+                          className='btn btn-success'
+                          onClick={() => handleTest(request)}
+                          disabled={testResult?.loading}
+                        >
+                          {testResult?.loading ? 'Testing...' : 'Test'}
+                        </TestButton>
+                      )}
                     </TestSection>
                   </RequestMetaRow>
-                  <TestResultRow>
-                    <SearchResultText $status={testStatus}>
-                      {testResult && testMessage ? testMessage : ''}
-                    </SearchResultText>
-                  </TestResultRow>
-
+                  {!added && (
+                    <TestResultRow>
+                      <SearchResultText $status={testStatus}>
+                        {testResult && testMessage ? testMessage : ''}
+                      </SearchResultText>
+                    </TestResultRow>
+                  )}
                   <ButtonsWrapper>
-                    <SuccessButton
-                      type='button'
-                      className='btn btn-success'
-                      disabled={added}
-                      onClick={() => handleOpenAddModal(request)}
-                    >
-                      {added ? 'Added' : 'Add'}
-                    </SuccessButton>
+                    {!added && (
+                      <SuccessButton
+                        type='button'
+                        className='btn btn-success'
+                        disabled={added}
+                        onClick={() => handleOpenAddModal(request)}
+                      >
+                        {added ? 'Added' : 'Add'}
+                      </SuccessButton>
+                    )}
 
                     <DangerButton
                       type='button'
                       className='btn btn-danger'
                       onClick={() => handleDelete(id)}
                     >
-                      Delete
+                      {!added ? 'Reject' : 'Delete'}
                     </DangerButton>
                   </ButtonsWrapper>
                 </CardBody>
@@ -423,7 +418,6 @@ const RequestsPage = () => {
           })}
         </CardsWrapper>
       )}
-
       <Modal title='Add Idiom' isOpen={isAddModalOpen} onClose={handleCloseAddModal}>
         {selectedRequest && (
           <AddIdiomForm
