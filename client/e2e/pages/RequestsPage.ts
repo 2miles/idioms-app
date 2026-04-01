@@ -8,7 +8,7 @@ export class RequestsPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.pageTitle = page.getByRole('heading', { name: /idiom requests/i });
+    this.pageTitle = page.getByRole('heading', { name: /requests/i });
     this.emptyMessage = page.getByText(/no idioms have been requested yet/i);
     this.requestCards = page.locator('.card'); // each request renders as .card
   }
