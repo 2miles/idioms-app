@@ -87,6 +87,9 @@
   --button-primary-bg-hover: hsl(187, 50%, 50%);
   --button-primary-border: hsl(187, 50%, 60%);
   --button-primary-border-hover: hsl(187, 50%, 70%);
+
+  --color-status-good: green;
+  --color-status-bad: var(--button-danger-border-hover);
 }
 
 :root.theme-dark {
@@ -126,6 +129,9 @@
   --button-primary-bg-hover: hsl(187, 50%, 25%);
   --button-primary-border: hsl(187, 50%, 30%);
   --button-primary-border-hover: hsl(187, 50%, 35%);
+
+  --color-status-good: green;
+  --color-status-bad: var(--button-danger-border-hover);
 }
 
 * {

@@ -93,7 +93,7 @@ const HomePage = () => {
       <IdiomTableView />
 
       <Modal title='Add Idiom' isOpen={isAddModalOpen} onClose={closeAddModal}>
-        <AddIdiomForm onClose={closeAddModal} onSucess={refreshIdiomList} />
+        <AddIdiomForm onClose={closeAddModal} onSuccess={refreshIdiomList} />
       </Modal>
       <Modal title='Request an Idiom' isOpen={isRequestModalOpen} onClose={closeRequestModal}>
         <RequestIdiomForm onClose={closeRequestModal} />

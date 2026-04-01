@@ -8,14 +8,18 @@ export class RequestsPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.pageTitle = page.getByRole('heading', { name: /idiom requests/i });
+    this.pageTitle = page.getByRole('heading', { name: /requests/i });
     this.emptyMessage = page.getByText(/no idioms have been requested yet/i);
-    this.requestCards = page.locator('.card'); // each request renders as .card
+    this.requestCards = page.locator('.card');
   }
 
   async goTo() {
     await this.page.goto('/requests');
     await expect(this.pageTitle).toBeVisible({ timeout: 5000 });
+  }
+
+  getRequestCard(title: string) {
+    return this.page.locator('.card', { hasText: title });
   }
 
   async expectRequestVisible(title: string) {
@@ -31,30 +35,29 @@ export class RequestsPage {
   }
 
   async clickAddButtonFor(title: string) {
-    const card = this.page.locator('.card', { hasText: title });
-    const addButton = card.getByRole('button', { name: /^add$/i });
-    await addButton.click();
-  }
-
-  async markRequestAsAdded(title: string) {
-    const card = this.page.locator('.card', { hasText: title });
+    const card = this.getRequestCard(title);
     await card.getByRole('button', { name: /^add$/i }).click();
   }
 
+  async clickTestButtonFor(title: string) {
+    const card = this.getRequestCard(title);
+    await card.getByRole('button', { name: /^test$/i }).click();
+  }
+
   async expectRequestMarkedAsAdded(title: string) {
-    const card = this.page.locator('.card', { hasText: title });
+    const card = this.getRequestCard(title);
 
-    // Assert Add button is gone (replaced by ButtonPlaceholder)
     await expect(card.getByRole('button', { name: /^add$/i })).toHaveCount(0);
+    await expect(card.getByRole('button', { name: /^test$/i })).toHaveCount(0);
+    await expect(card.getByRole('button', { name: /^delete$/i })).toBeVisible();
 
-    // Assert the check icon is present
-    const checkIcon = card.locator('svg'); // StyledCheckIcon renders an <svg>
+    const checkIcon = card.locator('svg');
     await expect(checkIcon).toBeVisible();
   }
 
   async clickDeleteButtonFor(title: string) {
-    const card = this.page.locator('.card', { hasText: title });
-    await card.getByRole('button', { name: /^delete$/i }).click();
+    const card = this.getRequestCard(title);
+    await card.getByRole('button', { name: /^(reject|delete)$/i }).click();
   }
 
   async confirmDeleteIfVisible() {

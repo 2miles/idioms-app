@@ -1,130 +1,37 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
-import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
+import { publicIdiomFinder } from '@/apis/idiomFinder';
 import useAuthorizedRequestFinder from '@/apis/useAuthorizedRequestFinder';
 import { DangerButton, SuccessButton } from '@/components/ButtonStyles';
-import { InfoElementKey } from '@/components/DetailPage/DetailCard/DetailCard.styles';
+import AddIdiomForm from '@/components/Forms/AddIdiomForm/AddIdiomForm';
+import Modal from '@/components/Modal/Modal';
 import PageContainer from '@/components/PageContainer';
-import CheckIcon from '@/images/check_2.svg?react';
-import { Request } from '@/types';
+import { Request, TestResult } from '@/types';
+import {
+  ButtonsWrapper,
+  CardBody,
+  CardsWrapper,
+  PageTitle,
+  RequestCard,
+  RequestCardHeader,
+  RequestIdiomInfo,
+  RequestMetaRow,
+  SearchButton,
+  SearchForm,
+  SearchInputWrapper,
+  SearchResultText,
+  SearchSection,
+  SpinnerWrapper,
+  StyledCheckIcon,
+  TestButton,
+  TestResultDimText,
+  TestResultRow,
+  TestSection,
+} from './RequestsPage.styles';
 
-const Card = styled.div`
-  font-size: var(--font-md);
-  background: var(--bg-dark);
-  overflow: hidden;
-`;
-
-const CardHeader = styled.div`
-  color: var(--color-text-primary);
-  background-color: var(--bg-medium);
-  border-bottom: 1px solid var(--color-border);
-
-  h1 {
-    font-size: 1.3rem;
-    color: var(--color-text-primary);
-    padding-top: var(--padding-md);
-    padding-bottom: var(--padding-sm);
-    text-align: center;
-  }
-`;
-
-const CardBody = styled.div`
-  color: var(--color-text-primary);
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-
-  @media (max-width: 770px) {
-    padding-left: var(--padding-md);
-    padding-right: var(--padding-md);
-  }
-`;
-
-const StyledCheckIcon = styled(CheckIcon)`
-  width: 1.5rem;
-  height: 1.5rem;
-  display: inline-block;
-  vertical-align: middle;
-  color: green;
-  margin-bottom: var(--margin-xs);
-`;
-
-const SpinnerWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40vh;
-`;
-
-const CardsWrapper = styled.div`
-  display: flex;
-  margin: auto;
-  flex-direction: column;
-  max-width: 800px;
-`;
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  gap: var(--margin-md);
-
-  button,
-  div {
-    flex: 1;
-  }
-
-  @media (max-width: 769px) {
-    flex-direction: column;
-
-    button,
-    div {
-      width: 100%;
-    }
-  }
-`;
-
-const ButtonPlaceholder = styled.div`
-  flex: 1;
-  visibility: hidden;
-`;
-
-const RequestCard = styled(Card)`
-  &.card {
-    margin-bottom: var(--margin-sm);
-    margin-top: var(--margin-sm);
-  }
-`;
-
-const RequestCardHeader = styled(CardHeader)`
-  h1 {
-    text-align: left;
-    padding-left: var(--padding-lg);
-    font-size: 1.5rem;
-  }
-`;
-
-const RequestIdiomInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: var(--margin-lg);
-  margin-top: 0px;
-`;
-
-const RequestInfoElement = styled.div`
-  margin-top: 0px;
-  padding: 0px;
-`;
-
-const RequestInfoElementKey = styled(InfoElementKey)`
-  font-weight: normal;
-`;
-
-const PageTitle = styled.h1`
-  text-align: center;
-  margin-bottom: var(--margin-xxl);
-  margin-top: var(--margin-xxl);
-  font-size: 2rem;
-`;
+import { Input as SearchInput } from '@/components/SearchBar/SearchBar.styles';
 
 function formatDateMinusHours(isoString: string, hoursToSubtract: number = 7): string {
   const date = new Date(isoString);
@@ -132,9 +39,77 @@ function formatDateMinusHours(isoString: string, hoursToSubtract: number = 7): s
   return date.toISOString().split('T')[0];
 }
 
+function buildHeuristicSearchTerm(title: string): string {
+  const stopWords = new Set([
+    'a',
+    'an',
+    'the',
+    'and',
+    'or',
+    'but',
+    'of',
+    'to',
+    'in',
+    'on',
+    'at',
+    'by',
+    'for',
+    'with',
+    'from',
+    'up',
+    'down',
+    'out',
+    'off',
+    'over',
+    'under',
+    'into',
+    'through',
+    'your',
+    'my',
+    'his',
+    'her',
+    'our',
+    'their',
+    'one',
+    'ones',
+    'oneself',
+    'it',
+    'is',
+    'be',
+    'as',
+  ]);
+
+  const words = title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s']/g, ' ')
+    .split(/\s+/)
+    .map((word) => word.trim())
+    .filter(Boolean)
+    .filter((word) => !stopWords.has(word));
+
+  const strongestWords = words
+    .map((word, index) => ({ word, index })) // keep position
+    .sort((a, b) => b.word.length - a.word.length) // pick strongest
+    .slice(0, 3)
+    .sort((a, b) => a.index - b.index) // restore original order
+    .map((item) => item.word);
+
+  return strongestWords.join(' ');
+}
+
 const RequestsPage = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+
+  const [testResults, setTestResults] = useState<Record<string, TestResult>>({});
+
+  const [manualSearch, setManualSearch] = useState('');
+  const [manualSearchCount, setManualSearchCount] = useState<number | null>(null);
+  const [manualSearchLoading, setManualSearchLoading] = useState(false);
+  const [manualSearchError, setManualSearchError] = useState<string | null>(null);
+
   const getAuthorizedApi = useAuthorizedRequestFinder();
 
   useEffect(() => {
@@ -152,6 +127,96 @@ const RequestsPage = () => {
 
     fetchRequests();
   }, []);
+
+  const handleOpenAddModal = (request: Request) => {
+    setSelectedRequest(request);
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+    setSelectedRequest(null);
+  };
+
+  const handleManualSearch = async () => {
+    const trimmedSearch = manualSearch.trim();
+
+    if (!trimmedSearch) {
+      setManualSearchCount(null);
+      setManualSearchError(null);
+      return;
+    }
+
+    setManualSearchLoading(true);
+    setManualSearchError(null);
+
+    try {
+      const res = await publicIdiomFinder.get('/', {
+        params: {
+          page: 1,
+          limit: 1,
+          search: trimmedSearch,
+          searchColumn: 'title',
+        },
+      });
+
+      setManualSearchCount(res.data.data.totalCount);
+    } catch (err) {
+      console.error('Failed to search idioms:', err);
+      setManualSearchError('Search failed.');
+      setManualSearchCount(null);
+    } finally {
+      setManualSearchLoading(false);
+    }
+  };
+
+  const handleTest = async (request: Request) => {
+    // const searchTerm = request.title.trim();
+    const searchTerm = buildHeuristicSearchTerm(request.title);
+
+    setTestResults((prev) => ({
+      ...prev,
+      [request.id]: {
+        loading: true,
+        count: null,
+        error: null,
+        searchTerm,
+      },
+    }));
+
+    try {
+      const res = await publicIdiomFinder.get('/', {
+        params: {
+          page: 1,
+          limit: 1,
+          search: searchTerm,
+          searchColumn: 'title',
+        },
+      });
+
+      setTestResults((prev) => ({
+        ...prev,
+        [request.id]: {
+          loading: false,
+          count: res.data.data.totalCount,
+          error: null,
+          searchTerm,
+        },
+      }));
+    } catch (err) {
+      console.error('Failed to test request:', err);
+
+      setTestResults((prev) => ({
+        ...prev,
+        [request.id]: {
+          loading: false,
+          count: null,
+          error: 'Test failed.',
+          searchTerm,
+        },
+      }));
+    }
+  };
 
   const handleDelete = async (id: string) => {
     const confirmResult = await Swal.fire({
@@ -210,59 +275,165 @@ const RequestsPage = () => {
     );
   }
 
+  let message = '';
+  let status: 'good' | 'bad' | 'neutral' = 'neutral';
+
+  if (manualSearchError) {
+    status = 'bad';
+    message = 'Something went wrong while checking';
+  } else if (manualSearchCount === 0) {
+    status = 'good';
+    message = 'We don’t have that one!';
+  } else if (manualSearchCount !== null) {
+    status = 'bad';
+    message = 'Looks like a duplicate';
+  }
+
   return (
     <PageContainer>
-      <PageTitle>Idiom Requests</PageTitle>
+      <PageTitle>Requests</PageTitle>
+      {/* Review submitted requests, test for duplicates, and add new idioms. */}
+      <SearchSection>
+        <SearchForm
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleManualSearch();
+          }}
+        >
+          <SearchInputWrapper>
+            <SearchInput
+              type='text'
+              className='form-control'
+              placeholder='Search for duplicates'
+              value={manualSearch}
+              onChange={(e) => {
+                const value = e.target.value;
+                setManualSearch(value);
 
+                if (!value.trim()) {
+                  setManualSearchCount(null);
+                  setManualSearchError(null);
+                }
+              }}
+            />
+          </SearchInputWrapper>
+
+          <SearchButton type='submit' className='btn btn-success' disabled={manualSearchLoading}>
+            {manualSearchLoading ? 'Searching...' : 'Search'}
+          </SearchButton>
+        </SearchForm>
+        <TestResultRow>
+          <SearchResultText $status={status}>{message}</SearchResultText>
+        </TestResultRow>
+      </SearchSection>
       {requests.length === 0 ? (
         <p>No idioms have been requested yet.</p>
       ) : (
         <CardsWrapper>
-          {requests.map(({ id, title, contributor, submitted_at, added }) => (
-            <RequestCard className='card' key={id}>
-              <RequestCardHeader>
-                <h1>
-                  {added && <StyledCheckIcon />} {title}
-                </h1>
-              </RequestCardHeader>
-              <CardBody className='card-body'>
-                <RequestIdiomInfo>
-                  <RequestInfoElement>
-                    <RequestInfoElementKey>Requested On:</RequestInfoElementKey>{' '}
-                    {formatDateMinusHours(submitted_at)}
-                  </RequestInfoElement>
-                  <RequestInfoElement>
-                    <RequestInfoElementKey>Requested By:</RequestInfoElementKey>{' '}
-                    {contributor || 'Anonymous'}
-                  </RequestInfoElement>
-                </RequestIdiomInfo>
+          {requests.map((request) => {
+            const { id, title, contributor, submitted_at, added } = request;
+            const testResult = testResults?.[id];
 
-                <ButtonsWrapper>
-                  {!added ? (
-                    <SuccessButton
-                      type='button'
-                      className='btn btn-success'
-                      onClick={() => handleMarkAsAdded(id)}
-                    >
-                      Add
-                    </SuccessButton>
-                  ) : (
-                    <ButtonPlaceholder />
+            let testMessage: ReactNode = '';
+            let testStatus: 'good' | 'bad' | 'neutral' = 'neutral';
+
+            if (testResult?.error) {
+              testStatus = 'bad';
+              testMessage = 'Something went wrong while checking';
+            } else if (testResult?.count === 0) {
+              testStatus = 'good';
+              testMessage = (
+                <>
+                  <span>We don’t have it!</span>
+                  <TestResultDimText>Search: "{testResult.searchTerm}"</TestResultDimText>
+                </>
+              );
+            } else if (testResult && testResult.count !== null && testResult.count > 0) {
+              testStatus = 'bad';
+              testMessage = (
+                <>
+                  <span>It's a duplicate!</span>
+                  <TestResultDimText>Search: "{testResult.searchTerm}"</TestResultDimText>
+                </>
+              );
+            }
+
+            return (
+              <RequestCard className='card' key={id}>
+                <RequestCardHeader $added={added}>
+                  <h1>
+                    {added && <StyledCheckIcon />} {title}
+                  </h1>
+                </RequestCardHeader>
+
+                <CardBody $added={added} className='card-body'>
+                  <RequestMetaRow>
+                    <RequestIdiomInfo>
+                      {`${formatDateMinusHours(submitted_at)}  ·  ${contributor || 'Anonymous'}`}
+                    </RequestIdiomInfo>
+
+                    <TestSection>
+                      {!added && (
+                        <TestButton
+                          type='button'
+                          className='btn btn-success'
+                          onClick={() => handleTest(request)}
+                          disabled={testResult?.loading}
+                        >
+                          {testResult?.loading ? 'Testing...' : 'Test'}
+                        </TestButton>
+                      )}
+                    </TestSection>
+                  </RequestMetaRow>
+                  {!added && (
+                    <TestResultRow>
+                      <SearchResultText $status={testStatus}>
+                        {testResult && testMessage ? testMessage : ''}
+                      </SearchResultText>
+                    </TestResultRow>
                   )}
+                  <ButtonsWrapper>
+                    {!added && (
+                      <SuccessButton
+                        type='button'
+                        className='btn btn-success'
+                        disabled={added}
+                        onClick={() => handleOpenAddModal(request)}
+                      >
+                        {added ? 'Added' : 'Add'}
+                      </SuccessButton>
+                    )}
 
-                  <DangerButton
-                    type='button'
-                    className='btn btn-danger'
-                    onClick={() => handleDelete(id)}
-                  >
-                    Delete
-                  </DangerButton>
-                </ButtonsWrapper>
-              </CardBody>
-            </RequestCard>
-          ))}
+                    <DangerButton
+                      type='button'
+                      className='btn btn-danger'
+                      onClick={() => handleDelete(id)}
+                    >
+                      {!added ? 'Reject' : 'Delete'}
+                    </DangerButton>
+                  </ButtonsWrapper>
+                </CardBody>
+              </RequestCard>
+            );
+          })}
         </CardsWrapper>
       )}
+      <Modal title='Add Idiom' isOpen={isAddModalOpen} onClose={handleCloseAddModal}>
+        {selectedRequest && (
+          <AddIdiomForm
+            onClose={handleCloseAddModal}
+            hideKeepOpen
+            initialValues={{
+              title: selectedRequest.title,
+              contributor: selectedRequest.contributor || null,
+              timestamp: new Date(selectedRequest.submitted_at),
+            }}
+            onSuccess={async () => {
+              await handleMarkAsAdded(selectedRequest.id);
+            }}
+          />
+        )}
+      </Modal>
     </PageContainer>
   );
 };

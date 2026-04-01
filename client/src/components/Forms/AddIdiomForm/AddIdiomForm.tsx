@@ -16,23 +16,35 @@ import { FormContainer, FormControlsWrapper, SubmitButtonWrapper } from '../Form
 
 type AddIdiomProps = {
   onClose: () => void;
-  onSucess?: () => void;
+  onSuccess?: () => void;
+  initialValues?: Partial<IdiomFormValues>;
+  hideKeepOpen?: boolean;
 };
 
-const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
+const AddIdiomForm = ({
+  onClose,
+  onSuccess,
+  initialValues,
+  hideKeepOpen = false,
+}: AddIdiomProps) => {
   const { addIdiom, upsertOrigin } = useContext(IdiomsContext);
   const [keepOpen, setKeepOpen] = useState(false);
+
+  const baseDefaultValues: IdiomFormValues = {
+    title: '',
+    titleGeneral: null,
+    definition: null,
+    contributor: null,
+    timestamp: new Date(),
+    originText: null,
+  };
 
   const methods = useForm<IdiomFormValues>({
     resolver: zodResolver(idiomSchema),
     mode: 'onBlur',
     defaultValues: {
-      title: '',
-      titleGeneral: null,
-      definition: null,
-      contributor: null,
-      timestamp: new Date(),
-      originText: null, // ← NEW FIELD
+      ...baseDefaultValues,
+      ...initialValues,
     },
   });
 
@@ -54,6 +66,7 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
 
     if (addedIdiom) {
       const trimmedOrigin = values.originText?.trim();
+
       if (trimmedOrigin) {
         await upsertOrigin(addedIdiom.id, {
           origin_text: trimmedOrigin,
@@ -61,11 +74,11 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
         });
       }
 
-      reset();
-      onSucess?.();
+      reset(baseDefaultValues);
+      onSuccess?.();
       showSuccess('Idiom Added', 'The idiom has been successfully added.');
 
-      if (!keepOpen) {
+      if (hideKeepOpen || !keepOpen) {
         setTimeout(() => onClose(), 200);
       }
     } else {
@@ -107,18 +120,21 @@ const AddIdiomForm = ({ onClose, onSucess }: AddIdiomProps) => {
           />
 
           <FormControlsWrapper>
-            <div className='form-check'>
-              <input
-                id='flexCheckDefault'
-                type='checkbox'
-                className='form-check-input'
-                checked={keepOpen}
-                onChange={(e) => setKeepOpen(e.target.checked)}
-              />
-              <label className='form-check-label' htmlFor='flexCheckDefault'>
-                Keep Open
-              </label>
-            </div>
+            {!hideKeepOpen && (
+              <div className='form-check'>
+                <input
+                  id='flexCheckDefault'
+                  type='checkbox'
+                  className='form-check-input'
+                  checked={keepOpen}
+                  onChange={(e) => setKeepOpen(e.target.checked)}
+                />
+                <label className='form-check-label' htmlFor='flexCheckDefault'>
+                  Keep Open
+                </label>
+              </div>
+            )}
+
             <SubmitButtonWrapper>
               <WideSuccessButton
                 type='submit'

@@ -62,6 +62,13 @@ export type Request = {
   added: boolean;
 };
 
+export type TestResult = {
+  loading: boolean;
+  count: number | null;
+  error: string | null;
+  searchTerm: string;
+};
+
 export type ColumnAccessors = 'position' | 'title' | 'definition' | 'timestamps' | 'contributor';
 export type ColumnLabels = 'Order' | 'Idiom' | 'Title' | 'Definition' | 'Day' | 'Owner';
 
