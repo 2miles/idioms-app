@@ -7,7 +7,6 @@ test.describe('User, Admin: Request Submission', () => {
   test('User can submit request and Admin sees it', async ({ browser }) => {
     const title = `Cross-role request ${Date.now()}`;
 
-    // User submits a request
     const userContext = await browser.newContext({ storageState: './e2e/.auth/user.json' });
     const userPage = await userContext.newPage();
     const home = new HomePage(userPage);
@@ -19,17 +18,20 @@ test.describe('User, Admin: Request Submission', () => {
     await requestForm.submit();
     await userContext.close();
 
-    // Admin workflow
     const adminContext = await browser.newContext({ storageState: './e2e/.auth/admin.json' });
     const adminPage = await adminContext.newPage();
     const requestsPage = new RequestsPage(adminPage);
 
-    // Go to Requests page and see the new request
     await requestsPage.goTo();
     await requestsPage.expectRequestVisible(title);
 
-    // Mark as added and confirm
-    await requestsPage.markRequestAsAdded(title);
+    // Open Add Idiom modal from request card
+    await requestsPage.clickAddButtonFor(title);
+
+    // Submit the modal form
+    await adminPage.getByTestId('submit-add-idiom-button').click();
+
+    // Assert request is now marked as added
     await requestsPage.expectRequestMarkedAsAdded(title);
 
     // Delete the request and confirm deletion
