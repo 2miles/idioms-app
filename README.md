@@ -1,111 +1,91 @@
-# Idioms App
+# IdiomVault
 
-## Overview
+A full-stack web app for exploring, searching, and managing a curated collection of idioms.
 
-**IdiomVault** is a web app for exploring and managing a curated list of idioms.
-
-## Features
-
-- User profiles with authentication and role-based permissions
-- Searchable, sortable, paginated idiom table
-- Detail pages for each idiom with definitions and examples
-- Admins can add, edit, and delete idioms
-- Mobile-friendly design
-
-## Tech Stack
-
-### Frontend
-
-- **React 18** with **TypeScript**
-- **Vite** for fast dev builds and HMR
-- **Styled Components** for scoped styling
-- **Auth0** via `@auth0/auth0-react` for authentication
-- **React Router DOM** for SPA routing
-- **Axios**, `jwt-decode`, `moment`, `react-datetime`, `sweetalert2`, etc. for supporting features
-- **Vitest**, **Testing Library**, and **Playwright** for unit, integration, and E2E testing
-
-### Backend
-
-- **Express.js** (TypeScript)
-- **PostgreSQL** (via Supabase or local Docker)
-- **Auth0 JWT Middleware** for protected routes (`express-oauth2-jwt-bearer`)
-- **CORS**, **dotenv**, **morgan**, **pg** for core server functionality
-- Scripts and config for local `.env`, test env (`env-cmd`), and database resets
-
-### Tooling
-
-- **Monorepo** with shared root scripts
-- **Docker Compose** for local Postgres (optional)
-- **Concurrently** for parallel dev server launch
-- **ESLint** with React + TypeScript configs
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v18+ recommended)
-- [Docker](https://www.docker.com/) + Docker Compose (optional, for local DB)
-- A remote PostgreSQL database (e.g. Supabase, Railway, Render)
-- An Auth0 tenant (or another OpenID-compliant identity provider)
-
-## Setup Instructions
-
-### 1. Clone the Repository:
+## Quick Start
 
 ```bash
 git clone https://github.com/2miles/idioms-app.git
 cd idioms-app
+
+cp server/.env.example server/.env
+cp server/.env.test.example server/.env.test
+cp client/.env.example client/.env
+cp client/.env.test.example client/.env.test
+
+npm install
+npm install --prefix client
+npm install --prefix server
+
+npm start
 ```
 
-### 2. Setup environment variables
+App URLs:
 
-Copy example .env files for both the server and client:
+- Frontend: `http://localhost:5173`
+- API: `http://localhost:3001`
+
+## Features
+
+- Authenticated user profiles with role-based permissions
+- Searchable, sortable, paginated idiom table
+- Idiom detail pages with definitions and examples
+- Admin CRUD for idioms
+- Mobile-friendly responsive UI
+
+## Tech Stack
+
+- Frontend: React, TypeScript, Vite, Styled Components
+- Backend: Express, TypeScript, PostgreSQL
+- Auth: Auth0
+- Testing: Vitest, Testing Library, Playwright
+- Tooling: Docker Compose, ESLint
+
+## Prerequisites
+
+- Node.js 18+
+- npm 9+
+- Auth0 tenant (or compatible OIDC provider)
+- PostgreSQL database
+- Docker + Docker Compose (optional)
+
+## Environment Setup
+
+Copy env templates:
 
 ```bash
 cp server/.env.example server/.env
 cp server/.env.test.example server/.env.test
-
 cp client/.env.example client/.env
 cp client/.env.test.example client/.env.test
-
 ```
 
-Then update the values using your own credentials:
+Update values with your credentials:
 
-- **Remote Database**:
-  - Get your connection string from your hosting provider (e.g. Supabase, Railway, Render)
-- **Auth0**:
-  - Use your tenant’s API settings to fill in `AUTH0_AUDIENCE` and `AUTH0_ISSUER_BASE_URL`
-- **VITE_API_BASE_URL** (in both `client/.env` and `client/.env.test`):
-  - For local dev: http://localhost:3001
-  - For test runs: http://localhost:3010
+| Variable                                 | File(s)                           | Purpose                               |
+| ---------------------------------------- | --------------------------------- | ------------------------------------- |
+| `DATABASE_URL_DEV`                       | `server/.env`                     | Dev database connection               |
+| `DATABASE_URL_TEST` (or test equivalent) | `server/.env.test`                | Test database connection              |
+| `AUTH0_AUDIENCE`                         | `server/.env`, `server/.env.test` | API audience validation               |
+| `AUTH0_ISSUER_BASE_URL`                  | `server/.env`, `server/.env.test` | JWT issuer validation                 |
+| `VITE_API_BASE_URL`                      | `client/.env`, `client/.env.test` | Frontend API target                   |
+| `VITE_APP_ENV`                           | `client/.env`, `client/.env.test` | UI environment banner (`dev`, `test`) |
 
-VITE_APP_ENV controls the banner in the UI (e.g. dev or test).
+Recommended local values:
 
-## Running the program
+- `client/.env`: `VITE_API_BASE_URL=http://localhost:3001`
+- `client/.env.test`: `VITE_API_BASE_URL=http://localhost:3010`
 
-### Option A: Run with Docker
+## Local Postgres (Optional)
 
-To run both the frontend and backend in development containers (with hot reload):
-
-```bash
-docker-compose build
-docker-compose up
-```
-
-To stop the containers:
-
-```bash
-docker-compose down
-```
-
-### 🧠 Bonus suggestions (optional):
-
-If you want to run Postgres locally (instead of using a remote database), you could add:
+If you prefer local PostgreSQL instead of a hosted database, add a `db` service to your existing `docker-compose.yml`:
 
 ```yaml
+services:
   db:
     image: postgres:15
     ports:
-      - "5433:5432"
+      - '5433:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -117,123 +97,100 @@ volumes:
   pgdata:
 ```
 
-And update your .env with:
+Then point your dev backend connection to that local instance in `server/.env`:
 
 ```conf
 DATABASE_URL_DEV=postgresql://postgres:postgres@localhost:5433/idioms_db
 ```
 
-## Option B: Running the program manually
+To start only the database service:
 
-### Install Dependencies
+```bash
+docker compose up db -d
+```
 
-In root `/`, `client/`, and `server/` run:
+## Running the App
+
+### Option A (Recommended): Local Dev
+
+Install dependencies:
 
 ```bash
 npm install
+npm install --prefix client
+npm install --prefix server
 ```
 
-### Start the development server
-
-From the root folder
+Start frontend + backend together:
 
 ```bash
 npm start
 ```
 
-This runs both the frontend (Vite) and backend (Express) concurrently.
+### Option B: Docker Compose
 
-- Frontend: http://localhost:5173
-- API: http://localhost:3001
+```bash
+docker-compose build
+docker-compose up
+```
 
-## Running Tests
+Stop containers:
 
-### Unit & Integration Tests
+```bash
+docker-compose down
+```
 
-The client uses [Vitest](https://vitest.dev/) for unit and integration testing.
+## Testing
 
-To run the test suite:
+### Unit and Integration (Client)
 
 ```bash
 npm run test --prefix client
-
-# or
-cd client
-npm run test
 ```
 
-Other available scripts:
+Other test scripts:
 
-- `test:watch`
-- `test:coverage`
-- `test:ui`
-- `test:verbose`
+- `npm run test:watch --prefix client`
+- `npm run test:coverage --prefix client`
+- `npm run test:ui --prefix client`
+- `npm run test:verbose --prefix client`
 
-### e2e tests (Playwright)
+### End-to-End (Playwright)
 
-The app is run in **test mode** on different ports for end-to-end (E2E) testing.
+Test mode uses isolated ports and env files:
 
-- Backend [http://localhost:3010](http://localhost:3010)
-- Frontend [http://localhost:5174](http://localhost:5174)
+- Backend: `http://localhost:3010`
+- Frontend: `http://localhost:5174`
 
-These use `.env.test` files to isolate test settings.
+Start only test-mode servers:
 
 ```bash
-# Start the test servers only:
 npm run test:stack
-
-# Start test-mode servers and run Playwright tests:
-npm run test:e2e
-
-# Run Playwright in interactive UI mode:
-npm run test:e2e:ui
 ```
 
-The test environment is functionally identical to dev mode, but uses:
-
-- Isolated ports (3010, 5174)
-- Dedicated .env.test files
-- A separate test database
-- A visible “TEST” banner in the UI (VITE_APP_ENV=test)
-
-This setup prevents accidental interactions with dev or production data.
-
-## Test Environment Setup
-
-Before running E2E tests, make sure you've set up your .env.test files:
+Run full E2E suite:
 
 ```bash
-cp server/.env.test.example server/.env.test
-cp client/.env.test.example client/.env.test
+npm run test:e2e --prefix client
 ```
 
-### Resetting the Test Database
+Run E2E in UI mode:
 
-The backend connects to a dedicated test PostgreSQL database as defined in server/.env.test.
+```bash
+npm run test:e2e:ui --prefix client
+```
 
-To ensure the test database is populated before testing, run:
+### Test DB Reset
 
 ```bash
 npm run test:reset --prefix server
 ```
 
-This script:
+This recreates and reseeds the test database.
 
-- Drops and recreates test tables (if necessary)
-- Seeds the database with test data.
+### Auth State for E2E
 
-You can run this script manually at any time to restore a clean testing state.
-
-### Auth State for E2E Tests
-
-Playwright E2E tests rely on pre-populated storage state files for test accounts:
-
-- `client/e2e/.auth/admin.json`
-- `client/e2e/.auth/user.json`
-
-These files contain login cookies + tokens for your test admin and test user accounts in Auth0.
-
-To generate them, add your test account credentials to `client/e2e/.env`:
+Set test credentials in `client/e2e/.env`:
 
 ```conf
 TEST_ADMIN_EMAIL=admintest@example.com
@@ -242,43 +199,83 @@ TEST_USER_EMAIL=usertest@example.com
 TEST_USER_PASSWORD=supersecret
 ```
 
-Then run:
+Generate auth state files:
 
 ```bash
-# one-time setup to populate .auth files
 npx tsx client/e2e/global.setup.ts
 ```
 
-## Deployment
+Expected files:
 
-You can deploy the backend to any Node-compatible cloud host (e.g. Railway, Render, Fly.io) and the frontend to Vercel, Netlify, or another static host.
+- `client/e2e/.auth/admin.json`
+- `client/e2e/.auth/user.json`
 
-Environment variables should be set based on `.env.production.example` files.
+## Database and Migrations
 
-## Databse & Migrations
+IdiomVault uses SQL-based migrations.
 
-This project uses SQL-based migrations for schema changes.
+Principles:
 
-- **Dev & Prod** use forward-only migrations (`migrate.sh`).
-- **Test / CI** databases are rebuilt from scratch every run
+- Dev and prod use forward-only migrations
+- Test/CI databases are rebuilt from scratch
+- Never edit already-applied migrations
+- Always create a new migration for schema changes
 
-### Running Migrations
-
-#### Dev:
+Run migrations (dev):
 
 ```bash
 set -a && source server/.env && set +a
 MIGRATION_ENV=dev ./server/scripts/migrate.sh
 ```
 
-#### Prod:
+Run migrations (prod):
 
 ```bash
 MIGRATION_ENV=prod DATABASE_URL="postgresql://..." ./server/scripts/migrate.sh
 ```
 
-### Rules
+## Deployment
 
-- Never edit applied migrations
-- Always add new migrations
-- Back up prod before running migrations
+- Backend: deploy to any Node-compatible host (Railway, Render, Fly.io, etc.)
+- Frontend: deploy to static hosting (Vercel, Netlify, etc.)
+- Configure environment variables based on the provided `.env.production.example` files
+
+## Scripts Reference
+
+Root:
+
+- `npm start` - run frontend and backend concurrently
+- `npm run test:stack` - run frontend/backend in test mode
+
+Client:
+
+- `npm run dev --prefix client`
+- `npm run build --prefix client`
+- `npm run test --prefix client`
+- `npm run test:e2e --prefix client`
+
+Server:
+
+- `npm run dev --prefix server`
+- `npm run build --prefix server`
+- `npm run test:reset --prefix server`
+
+## Troubleshooting
+
+- Auth0 errors (`401`, invalid issuer/audience): verify `AUTH0_AUDIENCE` and `AUTH0_ISSUER_BASE_URL` in server env files.
+- Frontend cannot reach API: confirm `VITE_API_BASE_URL` matches active backend port.
+- E2E login failures: regenerate auth state via `npx tsx client/e2e/global.setup.ts`.
+- Port already in use: free ports `5173`, `5174`, `3001`, or `3010`, or change config.
+
+## Contributing
+
+1. Create a feature branch.
+2. Run relevant tests locally.
+3. Open a PR with clear notes/screenshots for UI changes.
+
+- CI runs unit and E2E tests automatically on PRs to `main`.
+- E2E requires configured repository secrets in GitHub Actions.
+
+## License
+
+ISC
